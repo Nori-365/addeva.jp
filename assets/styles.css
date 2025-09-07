@@ -4,36 +4,49 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Aria
 a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
 .container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-/* Header / Nav */
+/* Header with <details> mobile nav (no JS) */
 .site-header{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.95);
   backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid #eee;
   display:flex; align-items:center; gap:12px; padding:10px 16px}
 .brand{font-weight:800; color:#111; letter-spacing:.2px}
-.primary-nav{margin-left:auto; display:flex; gap:6px}
-.primary-nav a{padding:10px 12px; border-radius:10px; font-weight:600; color:#0a4a9a}
-.primary-nav a:hover{background:rgba(10,132,255,.08)}
-.nav-toggle{display:none; width:42px; height:42px; align-items:center; justify-content:center; cursor:pointer; background:transparent; border:0}
-.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0; border-radius:2px; transition:.25s}
-.backdrop{display:none}
 
+/* Mobile nav */
+.nav-mobile{margin-left:auto; position:relative}
+.nav-toggle{list-style:none; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:10px}
+.nav-toggle::-webkit-details-marker{display:none}
+.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0; border-radius:2px; transition:.25s}
+/* Drawer */
+.nav-mobile .drawer{display:none}
+.nav-mobile[open] .drawer{display:block}
+.nav-mobile[open] .nav-toggle span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-mobile[open] .nav-toggle span:nth-child(2){opacity:0}
+.nav-mobile[open] .nav-toggle span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* Drawer panel + backdrop */
+.nav-mobile[open]::before{
+  content:""; position:fixed; top:56px; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,.35); z-index:97;
+}
+.nav-mobile .primary-nav{
+  position:fixed; top:56px; left:0; right:0; bottom:0; z-index:98;
+  background:#fff; padding:16px; display:flex; flex-direction:column; gap:0; overflow:auto;
+  box-shadow:0 8px 24px rgba(0,0,0,.08)
+}
+.nav-mobile .primary-nav a{display:block; padding:14px 8px; border-bottom:1px solid #efefef; color:#111}
+
+/* Desktop nav (same linksを横並び表示) */
+.nav-desktop{margin-left:auto; display:flex; gap:6px}
+.nav-desktop a{padding:10px 12px; border-radius:10px; font-weight:600; color:#0a4a9a}
+.nav-desktop a:hover{background:rgba(10,132,255,.08)}
+
+/* 切替 */
+@media (min-width:961px){
+  .nav-mobile{display:none}
+  .nav-desktop{display:flex}
+}
 @media (max-width:960px){
-  .nav-toggle{display:inline-flex}
-  /* 強制的に “閉じた状態は非表示” にする（!important で上書き） */
-  .primary-nav{
-    position:fixed; top:56px; left:0; right:0; bottom:0;
-    display:none !important; background:#fff; padding:16px;
-    z-index:999; box-shadow:0 8px 24px rgba(0,0,0,.08);
-    flex-direction:column; gap:0; overflow:auto
-  }
-  .primary-nav a{display:block; padding:14px 8px; border-bottom:1px solid #efefef; border-radius:0; color:#111}
-  /* 開いたら必ず表示（!important） */
-  .site-header.nav-open .primary-nav{ display:flex !important; }
-  .backdrop{position:fixed; top:56px; left:0; right:0; bottom:0; background:rgba(0,0,0,.35); z-index:998}
-  .site-header.nav-open .backdrop{ display:block !important; }
-  /* ハンバーガー → X */
-  .site-header.nav-open .nav-toggle .bar1{transform:translateY(6px) rotate(45deg)}
-  .site-header.nav-open .nav-toggle .bar2{opacity:0}
-  .site-header.nav-open .nav-toggle .bar3{transform:translateY(-6px) rotate(-45deg)}
+  .nav-desktop{display:none}
+  .nav-mobile{display:block}
 }
 
 /* Hero / sections */
@@ -55,7 +68,6 @@ td,th{border:1px solid #e5e5e5;padding:.5rem;text-align:left}
 footer{border-top:1px solid #eee;color:var(--muted);font-size:.9rem;padding:16px}
 small.muted{color:var(--muted)}
 figure{margin:0}
-
 .grid.cols-2 > a.card figure{ aspect-ratio: 16/10; overflow:hidden; border-radius:10px; }
 .grid.cols-2 > a.card figure img{ width:100%; height:100%; object-fit:cover; }
 
