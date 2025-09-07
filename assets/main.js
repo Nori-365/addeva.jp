@@ -1,1 +1,1 @@
-/* v39: mobile nav uses <details>, no JS needed */
+/* v40: nav is CSS-only (<details>), JS not required. */
