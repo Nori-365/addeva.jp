@@ -1,0 +1,27 @@
+name: Deploy to Sakura VPS (rsync over SSH)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Sync files to VPS via rsync
+        uses: burnett01/rsync-deployments@6.0
+        with:
+          # --delete: server側でリポジトリに無いファイルを削除（常に“正”を保つ）
+          # 不要物は除外して配信しない
+          switches: -avzr --delete --exclude='.git*' --exclude='.github/' --exclude='README*' --exclude='LICENSE*'
+          path: ./
+          remote_path: ${{ secrets.VPS_PATH }}
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_user: ${{ secrets.VPS_USER }}
+          remote_key: ${{ secrets.VPS_SSH_KEY }}
