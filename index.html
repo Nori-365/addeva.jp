@@ -2,113 +2,87 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ADDEVA | 3Way Backpack – Perfect for Business and Travel</title>
   <meta name="description" content="ADDEVA | 付加価値のある鞄で、毎日の通勤と旅行をスマートに。">
-
-  <!-- 既存のサイトCSS（そのまま） -->
-  <link rel="stylesheet" href="assets/styles.css?v=40">
-
-  <!-- v41: モバイルナビを“必ず”全画面にするインラインCSS（外部より強い） -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* レイアウト基準 */
-    header.site-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px;padding:10px 16px}
-    header.site-header .brand{font-weight:800;color:#111;letter-spacing:.2px;text-decoration:none}
-    /* PCナビ */
-    nav.nav-desktop{margin-left:auto;display:flex;gap:6px}
-    nav.nav-desktop a{padding:10px 12px;border-radius:10px;font-weight:600;color:#0a4a9a;text-decoration:none}
-    nav.nav-desktop a:hover{background:rgba(10,132,255,.08)}
-    /* モバイル：<details> ドロワー（JS不要） */
-    details.nav-mobile{margin-left:auto;position:relative;display:none}
-    details.nav-mobile > summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:10px}
-    details.nav-mobile > summary::-webkit-details-marker{display:none}
-    details.nav-mobile > summary .bar{display:block;width:22px;height:2px;background:#222;margin:4px 0;border-radius:2px;transition:.25s}
-    /* 開いたら背景暗転 */
-    details.nav-mobile[open]::before{content:"";position:fixed;top:56px;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:999}
-    /* ドロワー本体（ここが“1行になる”現象を潰す）*/
-    header.site-header details.nav-mobile .drawer{display:none}
-    header.site-header details.nav-mobile[open] .drawer{display:block !important}
-    header.site-header details.nav-mobile .primary-nav{
-      position:fixed;inset:56px 0 0 0;z-index:1000;background:#fff;padding:16px;
-      display:block !important;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.08)
-    }
-    header.site-header details.nav-mobile .primary-nav a{
-      display:block !important;padding:14px 8px;border-bottom:1px solid #efefef;color:#111;text-decoration:none
-    }
-    /* ハンバーガー→X */
-    details.nav-mobile[open] > summary .bar:nth-child(1){transform:translateY(6px) rotate(45deg)}
-    details.nav-mobile[open] > summary .bar:nth-child(2){opacity:0}
-    details.nav-mobile[open] > summary .bar:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-    /* ブレークポイント切り替え */
-    @media (max-width:960px){ nav.nav-desktop{display:none !important} details.nav-mobile{display:block !important} }
-    @media (min-width:961px){ nav.nav-desktop{display:flex} details.nav-mobile{display:none} }
-
-    /* ヒーローは既存を壊さない最小限 */
     .hero{position:relative;min-height:56vh;display:grid;place-items:center;overflow:hidden}
-    .hero img{width:100%;height:clamp(48vh,68vh,78vh);display:block;object-fit:cover}
+    .hero img{width:100%;height:clamp(48vh,68vh,78vh);object-fit:cover;display:block;filter:contrast(1.05)}
     .hero .overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.15) 50%,rgba(0,0,0,0) 80%)}
-    .hero .content{position:absolute;inset:0;display:flex;align-items:center;padding:clamp(16px,6vw,64px);color:#fff}
-    .cta{display:inline-block;background:#0a84ff;color:#fff;padding:.78rem 1.05rem;border-radius:10px;text-decoration:none}
+    .hero .content{position:absolute;inset:0;display:flex;align-items:center;color:#fff;padding:clamp(16px,6vw,64px)}
+    .card h3{font-size:1.1rem;margin-bottom:.5rem}
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="index.html">ADDEVA</a>
-
-    <!-- モバイル用（<details>なのでJS不要） -->
-    <details class="nav-mobile">
-      <summary aria-label="メニュー">
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-      </summary>
-      <div class="drawer">
-        <nav class="primary-nav" aria-label="モバイルメニュー">
-          <a href="index.html">Home</a>
-          <a href="product/urbanflex-2r18.html">2R-18</a>
-          <a href="product/urbanflex-3rex40.html">3REX-40</a>
-          <a href="story.html">Story</a>
-          <a href="faq.html">FAQ</a>
-          <a href="contact.html">Contact</a>
-          <a href="policies.html">Policies</a>
-          <a href="https://addeva.official.ec/" target="_blank" rel="noopener">Shop</a>
-        </nav>
-      </div>
-    </details>
-
-    <!-- PC用 -->
-    <nav class="nav-desktop" aria-label="デスクトップメニュー">
-      <a href="index.html">Home</a>
-      <a href="product/urbanflex-2r18.html">2R-18</a>
-      <a href="product/urbanflex-3rex40.html">3REX-40</a>
-      <a href="story.html">Story</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact</a>
-      <a href="policies.html">Policies</a>
-      <a href="https://addeva.official.ec/" target="_blank" rel="noopener">Shop</a>
-    </nav>
-  </header>
-
-  <!-- 既存ヒーロー（画像URLはそのまま） -->
-  <section class="hero">
-    <img src="https://baseec-img-mng.akamaized.net/images/item/origin/fce6083dbe3f440975f033c9210ce66d.png?im=Resize%2Cwidth%3D1280%2Ctype%3Dnormal&imformat=generic&q=90" alt="">
-    <div class="overlay"></div>
-    <div class="content">
-      <div>
-        <small>ADDEVA</small>
-        <h1>3Way Backpack – Perfect for Business and Travel</h1>
-        <p>通勤から小旅行まで、拡張・防滴・PC保護を備えた3wayバックパック。</p>
-        <p>
-          <a class="cta" href="https://addeva.official.ec/items/112486285" target="_blank" rel="noopener">2R-18 を見る（BASE）</a>
-          &nbsp;&nbsp;
-          <a class="cta" href="https://addeva.official.ec/items/111589208" target="_blank" rel="noopener">3REX-40 を見る（BASE）</a>
-        </p>
+  <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top border-bottom">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">ADDEVA</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="メニューを開閉">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="product/urbanflex-2r18.html">2R-18</a></li>
+          <li class="nav-item"><a class="nav-link" href="product/urbanflex-3rex40.html">3REX-40</a></li>
+          <li class="nav-item"><a class="nav-link" href="story.html">Story</a></li>
+          <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="policies.html">Policies</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://addeva.official.ec/" target="_blank" rel="noopener">Shop</a></li>
+        </ul>
       </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- 以降の本文は既存のままでOK。必要なら差し込んでください。 -->
+  <main>
+    <section class="hero">
+      <img src="https://baseec-img-mng.akamaized.net/images/item/origin/fce6083dbe3f440975f033c9210ce66d.png?im=Resize%2Cwidth%3D1280%2Ctype%3Dnormal&imformat=generic&q=90" alt="">
+      <div class="overlay"></div>
+      <div class="content container">
+        <div>
+          <small class="opacity-75">ADDEVA</small>
+          <h1 class="fw-bold">3Way Backpack – Perfect for Business and Travel</h1>
+          <p>通勤から小旅行まで、拡張・防滴・PC保護を備えた3wayバックパック。</p>
+          <div class="d-flex gap-2">
+            <a class="btn btn-primary" href="https://addeva.official.ec/items/112486285" target="_blank" rel="noopener">2R-18 を見る（BASE）</a>
+            <a class="btn btn-primary" href="https://addeva.official.ec/items/111589208" target="_blank" rel="noopener">3REX-40 を見る（BASE）</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <footer style="border-top:1px solid #eee;padding:16px;color:#666">
-    <p>© 2025 ADDEVA</p>
+    <section class="container my-5">
+      <h2 class="h4 mb-3">特徴</h2>
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <div class="card h-100 p-3">
+            <h3 class="fw-semibold">3way</h3>
+            <p class="mb-0">バックパック / ブリーフ / ショルダー。</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card h-100 p-3">
+            <h3 class="fw-semibold">容量可変</h3>
+            <p class="mb-0">（2R-18）可変間仕切りで容量調整。（3REX-40）3ルーム＋拡張マチ。</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card h-100 p-3">
+            <h3 class="fw-semibold">防滴素材</h3>
+            <p class="mb-0">撥水生地で軽い雨でも安心。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-top text-muted small py-3">
+    <div class="container">© 2025 ADDEVA</div>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
 </html>
