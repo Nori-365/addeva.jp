@@ -3,33 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>株式会社ADDEVA｜ベトナムと日本をつなぐものづくり</title>
-  <meta name="description" content="株式会社ADDEVA。ベトナムと日本をつなぐものづくり。UrbanFlexブランドの3Wayリュックを主力に、共同輸入とOEMにも対応。">
+  <title>株式会社ADDEVA｜使い勝手という付加価値を、設計する。</title>
+  <meta name="description" content="株式会社ADDEVA。ベトナムと日本をつなぎ、ユーザー視点で“毎日使う”を更新するプロダクトを設計・供給。UrbanFlexは最初の成果です。">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .hero{position:relative;min-height:62vh;display:grid;place-items:center;overflow:hidden}
-    .hero img{width:100%;height:clamp(52vh,70vh,82vh);object-fit:cover;display:block;filter:contrast(1.05)}
-    .hero .overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.15) 55%,rgba(0,0,0,0) 85%)}
-    .hero .content{position:absolute;inset:0;display:flex;align-items:center;color:#fff;padding:clamp(16px,6vw,64px)}
-    .hero h1{font-weight:800;letter-spacing:.02em}
-    .brand-chip{display:inline-block;padding:.25rem .6rem;border-radius:999px;background:rgba(255,255,255,.15);backdrop-filter:saturate(150%) blur(6px)}
-    .card h3{font-size:1.15rem;margin-bottom:.35rem}
-    .icon-bullet{width:26px;height:26px;display:inline-grid;place-items:center;border-radius:50%;background:#0d6efd;color:#fff;font-weight:700;margin-right:.5rem}
+    :root {
+      --brand: #0d6efd;
+    }
+    .navbar { background:#fff }
+    .hero {
+      position:relative;
+      padding: clamp(24px,5vw,48px) 0;
+      background: linear-gradient(180deg,#f8fafc, #fff);
+    }
+    .hero h1 { font-weight:800; letter-spacing:.01em; }
+    .hero-sub { color:#555 }
+    .img-tile { border-radius:14px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,.08) }
+    .img-tile img { width:100%; height:100%; object-fit:cover; filter: grayscale(.08) contrast(1.04) }
+    .badges .badge-item {
+      background:#fff; border:1px solid #eee; border-radius:12px; padding:10px 12px;
+    }
+    .section-title { font-weight:800 }
+    .card h3 { font-size:1.15rem; margin-bottom:.35rem }
+    .footer-note { opacity:.75 }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top border-bottom">
+  <nav class="navbar navbar-expand-lg sticky-top border-bottom">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">ADDEVA</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-        aria-controls="mainNav" aria-expanded="false" aria-label="メニューを開閉">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="メニューを開閉">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="#about">ADDEVAとは</a></li>
           <li class="nav-item"><a class="nav-link" href="#services">サービス</a></li>
-          <li class="nav-item"><a class="nav-link" href="#urbanflex">UrbanFlex</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">会社情報</a></li>
           <li class="nav-item"><a class="nav-link" href="story.html">Story</a></li>
           <li class="nav-item"><a class="nav-link" href="faq.html">FAQ</a></li>
           <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
@@ -40,67 +49,73 @@
   </nav>
 
   <main>
+    <!-- HERO: abstract (no product), mobile-first two-column -->
     <section class="hero">
-      <img src="https://baseec-img-mng.akamaized.net/images/item/origin/a88b89708f7aa17701b98700079bafc3.png?im=Resize%2Cwidth%3D1600%2Ctype%3Dnormal&imformat=generic&q=90" alt="UrbanFlexのイメージ">
-      <div class="overlay"></div>
-      <div class="content container">
-        <div class="col-12 col-lg-7">
-          <div class="brand-chip mb-2">株式会社ADDEVA</div>
-          <h1 class="display-6">ベトナムと日本をつなぐ、価値あるものづくり</h1>
-          <p class="mb-3">私たちは日本とベトナムを拠点に、使い勝手と品質にこだわったプロダクトを開発・輸入し、ユーザーへお届けします。主力は、通勤と旅のための <strong>UrbanFlex</strong> 3Wayリュック。</p>
-          <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-primary" href="#urbanflex">UrbanFlexを見る</a>
-            <a class="btn btn-outline-light" href="#services">サービスを見る</a>
-            <a class="btn btn-outline-light" href="https://addeva.official.ec/" target="_blank" rel="noopener">ショップ（BASE）</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="container py-5">
-      <div class="row align-items-center g-4">
-        <div class="col-12 col-lg-6">
-          <h2 class="h3 mb-3">ADDEVAとは</h2>
-          <p>ADDEVAは、小さなチームならではの機動力で、<strong>日本の設計・品質基準</strong>と<strong>ベトナムの確かな製造力</strong>を掛け合わせたものづくりを行っています。余計な装飾より、毎日の使い勝手に効く機能を磨き込むことを大切にしています。</p>
-          <ul class="list-unstyled mt-3">
-            <li class="mb-2"><span class="icon-bullet">1</span>日本基準の検品と初期不良対応</li>
-            <li class="mb-2"><span class="icon-bullet">2</span>小ロットからの開発・量産に対応</li>
-            <li class="mb-2"><span class="icon-bullet">3</span>ベトナムとの直接連携による適正価格</li>
-          </ul>
-        </div>
-        <div class="col-12 col-lg-6">
-          <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
-            <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1600&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" alt="Vietnam & Japan">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="services" class="bg-light py-5">
       <div class="container">
-        <h2 class="h3 mb-4">サービス</h2>
+        <div class="row g-4 align-items-center">
+          <div class="col-12 col-lg-6">
+            <h1 class="display-6">使い勝手という<strong>付加価値</strong>を、設計する。</h1>
+            <p class="hero-sub mt-2">日本の設計基準とベトナムの確かな製造力で、“毎日使う”を更新するプロダクトを届けます。UrbanFlex はその最初の成果です。</p>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <a class="btn btn-primary" href="#services">サービスを見る</a>
+              <a class="btn btn-outline-secondary" href="#about">会社の取り組み</a>
+            </div>
+
+            <!-- trust badges -->
+            <div class="badges d-flex flex-wrap gap-2 mt-3">
+              <div class="badge-item small">✓ 日本基準の検品・初期不良対応</div>
+              <div class="badge-item small">✓ 公式ショップ（BASE）で安心購入</div>
+              <div class="badge-item small">✓ 返品・交換ガイド公開</div>
+            </div>
+          </div>
+
+          <!-- collage (abstract process) -->
+          <div class="col-12 col-lg-6">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="img-tile ratio ratio-4x3">
+                  <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop" alt="設計・レビューのイメージ（抽象）">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="img-tile ratio ratio-4x3">
+                  <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=1200&auto=format&fit=crop" alt="梱包・ロジスティクスのイメージ（抽象）">
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="img-tile ratio ratio-21x9">
+                  <img src="https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?q=80&w=1600&auto=format&fit=crop" alt="チェックリスト・品質管理のイメージ（抽象）">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-5">
+      <div class="container">
+        <h2 class="section-title h3 mb-4">サービス</h2>
         <div class="row g-3">
           <div class="col-12 col-lg-4">
             <div class="card h-100 p-3">
-              <h3 class="fw-semibold">UrbanFlex ブランド（メイン事業）</h3>
-              <p class="mb-3">通勤と旅のための3Wayリュックを中心とした、自社バッグブランドです。</p>
-              <div class="d-flex gap-2">
-                <a class="btn btn-sm btn-primary" href="#urbanflex">シリーズを見る</a>
-                <a class="btn btn-sm btn-outline-secondary" href="https://addeva.official.ec/" target="_blank" rel="noopener">購入（BASE）</a>
-              </div>
+              <h3 class="fw-semibold">UrbanFlex（自社ブランド）</h3>
+              <p class="mb-3">通勤と旅のための3Wayリュックを中心に、使い勝手にこだわったプロダクトを展開。</p>
+              <a class="btn btn-sm btn-outline-primary" href="product/urbanflex-2r18.html">ブランドページへ</a>
             </div>
           </div>
           <div class="col-12 col-lg-4">
             <div class="card h-100 p-3">
               <h3 class="fw-semibold">共同輸入（相乗りFCL・小ロットLCL）</h3>
-              <p class="mb-3">輸入未経験の企業でもOK。ADDEVAが<strong>輸入者（Consignee）</strong>となり、ベトナムからの輸入をワンストップで支援。200個前後などの小ロットにも対応します。</p>
-              <a class="btn btn-sm btn-outline-primary" href="contact.html">見積り・相談</a>
+              <p class="mb-3">輸入未経験でもOK。ADDEVAが輸入者（Consignee）となり、ベトナムからの輸入をワンストップで支援。</p>
+              <a class="btn btn-sm btn-outline-primary" href="contact.html">見積・相談</a>
             </div>
           </div>
           <div class="col-12 col-lg-4">
             <div class="card h-100 p-3">
               <h3 class="fw-semibold">OEM / ODM（鞄・アパレル）</h3>
-              <p class="mb-3">試作から量産まで、小ロットにも対応。日本側で仕様詰め・検品基準を整え、ベトナム工場と連携して生産します。</p>
+              <p class="mb-3">試作から量産まで、小ロットにも対応。日本側で仕様と検品基準を整え、ベトナム工場と連携して生産。</p>
               <a class="btn btn-sm btn-outline-primary" href="contact.html">お問い合わせ</a>
             </div>
           </div>
@@ -108,48 +123,36 @@
       </div>
     </section>
 
-    <section id="urbanflex" class="container py-5">
-      <div class="d-flex align-items-end justify-content-between mb-3 flex-wrap gap-2">
-        <h2 class="h3 m-0">UrbanFlex シリーズ</h2>
-        <a class="btn btn-outline-secondary btn-sm" href="story.html">ブランドのストーリー</a>
-      </div>
-      <div class="row g-3">
-        <div class="col-12 col-md-6">
-          <div class="card h-100">
-            <img class="card-img-top" src="https://baseec-img-mng.akamaized.net/images/item/origin/fce6083dbe3f440975f033c9210ce66d.png?im=Resize%2Cwidth%3D1280%2Ctype%3Dnormal&imformat=generic&q=90" alt="UrbanFlex 2R-18">
-            <div class="card-body">
-              <h3 class="card-title h5">UrbanFlex 2R-18</h3>
-              <p class="card-text">18L／2ルーム（可変仕切り）／防滴。日常〜出張まで。</p>
-              <div class="d-flex gap-2">
-                <a class="btn btn-primary" href="product/urbanflex-2r18.html">詳細ページ</a>
-                <a class="btn btn-outline-secondary" href="https://addeva.official.ec/items/112486285" target="_blank" rel="noopener">購入（BASE）</a>
-              </div>
-            </div>
+    <!-- About ADDEVA -->
+    <section id="about" class="py-5 bg-light">
+      <div class="container">
+        <h2 class="section-title h3 mb-3">ADDEVA＝ADDED VALUE</h2>
+        <div class="row g-4">
+          <div class="col-12 col-lg-6">
+            <p>ADDEVAは“小さな総合力”で、設計・調達・検品・供給までを一気通貫で担います。代表者名は出しませんが、仕組みと公開姿勢で信頼を築きます。</p>
+            <ul class="mt-3">
+              <li><strong>価値設計：</strong>ユースケース起点で“いらない”を削ぎ、使い勝手を磨く。</li>
+              <li><strong>検証と改善：</strong>日本基準のQCとユーザーフィードバックで継続改善。</li>
+              <li><strong>供給とサポート：</strong>適正価格・初期不良対応・明確な返品交換ガイド。</li>
+            </ul>
           </div>
-        </div>
-        <div class="col-12 col-md-6">
-          <div class="card h-100">
-            <img class="card-img-top" src="https://baseec-img-mng.akamaized.net/images/item/origin/a88b89708f7aa17701b98700079bafc3.png?im=Resize%2Cwidth%3D1280%2Ctype%3Dnormal&imformat=generic&q=90" alt="UrbanFlex 3REX-40">
-            <div class="card-body">
-              <h3 class="card-title h5">UrbanFlex 3REX-40</h3>
-              <p class="card-text">20L→40L／3ルーム＋拡張マチ／防滴。旅にも対応。</p>
-              <div class="d-flex gap-2">
-                <a class="btn btn-primary" href="product/urbanflex-3rex40.html">詳細ページ</a>
-                <a class="btn btn-outline-secondary" href="https://addeva.official.ec/items/111589208" target="_blank" rel="noopener">購入（BASE）</a>
-              </div>
+          <div class="col-12 col-lg-6">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+              <img class="w-100 h-100 object-fit-cover" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop" alt="チームでの設計・検討の抽象イメージ">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-5 bg-primary text-white">
+    <!-- CTA -->
+    <section class="py-5">
       <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
         <div>
-          <h2 class="h4 m-0">ご相談・お見積り</h2>
-          <p class="m-0 opacity-75">共同輸入・OEMについてのご相談は、メールにてお気軽にお寄せください。</p>
+          <h2 class="h5 m-0">ご相談・お見積り</h2>
+          <p class="m-0 text-muted">共同輸入・OEMについてのご相談は、メールにてお気軽にお寄せください。</p>
         </div>
-        <a class="btn btn-light" href="contact.html">お問い合わせ</a>
+        <a class="btn btn-primary" href="contact.html">お問い合わせ</a>
       </div>
     </section>
   </main>
@@ -157,7 +160,7 @@
   <footer class="border-top text-muted small py-3">
     <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
       <div>© 2025 株式会社ADDEVA</div>
-      <div class="opacity-75">法務（特商法・プライバシー）：<a href="https://addeva.official.ec/" target="_blank" rel="noopener">BASE公式ストア</a> へ準拠</div>
+      <div class="footer-note">法務（特商法・プライバシー）：<a href="https://addeva.official.ec/" target="_blank" rel="noopener">BASE公式ストア</a> へ準拠</div>
     </div>
   </footer>
 
