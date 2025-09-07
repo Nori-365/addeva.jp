@@ -2,28 +2,35 @@
 *{box-sizing:border-box} html{scroll-behavior:smooth}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg)}
 a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-.container{max-width:1080px;margin:0 auto;padding:0 16px}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-/* ==== Header / Nav (CSS only hamburger) ==== */
-.site-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.9);
+/* ==== Header / Nav (CSS only hamburger with overlay) ==== */
+.site-header{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.95);
   backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid #eee;
   display:flex; align-items:center; gap:12px; padding:10px 16px}
-.brand{font-weight:700; color:#111; margin-right:8px}
-.primary-nav{margin-left:auto; display:flex; gap:10px}
-.primary-nav a{padding:8px 12px; border-radius:10px; font-weight:500}
+.brand{font-weight:800; color:#111; letter-spacing:.2px}
+.primary-nav{margin-left:auto; display:flex; gap:6px}
+.primary-nav a{padding:10px 12px; border-radius:10px; font-weight:600; color:#0a4a9a}
 .primary-nav a:hover{background:rgba(10,132,255,.08)}
 #nav-check{display:none}
-.nav-toggle{display:none; width:40px; height:40px; align-items:center; justify-content:center; cursor:pointer}
-.nav-toggle span{display:block; width:22px; height:2px; background:#333; margin:4px 0; border-radius:2px; transition:.25s}
+.nav-toggle{display:none; width:42px; height:42px; align-items:center; justify-content:center; cursor:pointer}
+.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0; border-radius:2px; transition:.25s}
+
+/* overlay backdrop hidden by default */
+.backdrop{display:none}
 
 @media (max-width:960px){
   .nav-toggle{display:inline-flex}
   .primary-nav{
-    position:fixed; inset:56px 0 0 0; display:none; background:#fff; padding:12px 16px;
-    flex-direction:column; gap:0; box-shadow:0 8px 24px rgba(0,0,0,.08)
+    position:fixed; top:56px; left:0; right:0; bottom:0; display:none; background:#fff;
+    padding:16px; z-index:98; box-shadow:0 8px 24px rgba(0,0,0,.08);
+    flex-direction:column; gap:0; overflow:auto
   }
-  .primary-nav a{display:block; padding:12px 8px; border-bottom:1px solid #eee; border-radius:0}
+  .primary-nav a{display:block; padding:14px 8px; border-bottom:1px solid #efefef; border-radius:0; color:#111}
   #nav-check:checked + label + .primary-nav{display:flex}
+  .backdrop{position:fixed; top:56px; left:0; right:0; bottom:0; background:rgba(0,0,0,.35); z-index:97}
+  #nav-check:checked ~ .backdrop{display:block}
+  /* animate hamburger to X */
   #nav-check:checked + label .bar1{transform:translateY(6px) rotate(45deg)}
   #nav-check:checked + label .bar2{opacity:0}
   #nav-check:checked + label .bar3{transform:translateY(-6px) rotate(-45deg)}
@@ -36,7 +43,7 @@ a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
 .hero .content{position:absolute;inset:0;display:flex;align-items:center;padding:clamp(16px,6vw,64px);color:#fff}
 .hero h1{margin:.2rem 0;font-size:clamp(1.6rem,4vw,2.8rem);line-height:1.2;letter-spacing:.2px}
 .hero p{margin:.2rem 0 1rem;max-width:52ch}
-.cta{display:inline-block;background:var(--accent);color:#fff;padding:.75rem 1rem;border-radius:10px;box-shadow:0 2px 8px rgba(10,132,255,.25)}
+.cta{display:inline-block;background:var(--accent);color:#fff;padding:.78rem 1.05rem;border-radius:10px;box-shadow:0 2px 8px rgba(10,132,255,.25)}
 
 .grid{display:grid;gap:16px}
 .grid.cols-2{grid-template-columns:repeat(2,1fr)}
