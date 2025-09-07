@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://brand.example.jp/sitemap.xml
