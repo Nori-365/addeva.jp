@@ -1,29 +1,77 @@
-/* === v34 PATCH: mobile nav open fix + small polish === */
-@media (max-width:960px){
-  /* ensure toggle is visible on mobile */
-  .nav-toggle{display:inline-flex}
+:root{--text:#121212;--bg:#fff;--accent:#0a84ff;--muted:#666}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg)}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
 
-  /* drawer default state */
+/* ==== Header / Nav (CSS-only hamburger) ==== */
+.site-header{position:sticky;top:0;z-index:90;background:rgba(255,255,255,.95);
+  backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid #eee;
+  display:flex; align-items:center; gap:12px; padding:10px 16px}
+.brand{font-weight:800; color:#111; letter-spacing:.2px}
+.primary-nav{margin-left:auto; display:flex; gap:6px}
+.primary-nav a{padding:10px 12px; border-radius:10px; font-weight:600; color:#0a4a9a}
+.primary-nav a:hover{background:rgba(10,132,255,.08)}
+
+/* hide the checkbox (robustly) */
+#nav-check{position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none}
+.nav-toggle{display:none; width:42px; height:42px; align-items:center; justify-content:center; cursor:pointer}
+.nav-toggle span{display:block; width:22px; height:2px; background:#222; margin:4px 0; border-radius:2px; transition:.25s}
+
+/* overlay backdrop hidden by default */
+.backdrop{display:none}
+
+@media (max-width:960px){
+  .nav-toggle{display:inline-flex}
   .primary-nav{
-    position:fixed; top:56px; left:0; right:0; bottom:0;
-    display:none; background:#fff; padding:16px; z-index:98;
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    position:fixed; top:56px; left:0; right:0; bottom:0; display:none; background:#fff;
+    padding:16px; z-index:98; box-shadow:0 8px 24px rgba(0,0,0,.08);
     flex-direction:column; gap:0; overflow:auto
   }
   .primary-nav a{display:block; padding:14px 8px; border-bottom:1px solid #efefef; border-radius:0; color:#111}
-
-  /* >>> key change: use general-sibling (~) so minor DOM changes do not break <<< */
+  /* general-sibling so minor DOM reorders won't break */
   #nav-check:checked ~ .primary-nav{display:flex}
+  .backdrop{position:fixed; top:56px; left:0; right:0; bottom:0; background:rgba(0,0,0,.35); z-index:87}
   #nav-check:checked ~ .backdrop{display:block}
-
   /* animate hamburger to X */
   #nav-check:checked ~ label .bar1{transform:translateY(6px) rotate(45deg)}
   #nav-check:checked ~ label .bar2{opacity:0}
   #nav-check:checked ~ label .bar3{transform:translateY(-6px) rotate(-45deg)}
 }
 
-/* Backdrop (kept outside media just in case) */
-.backdrop{display:none}
-@media (max-width:960px){
-  .backdrop{position:fixed; top:56px; left:0; right:0; bottom:0; background:rgba(0,0,0,.35); z-index:97}
+/* ==== Hero / sections ==== */
+.hero{position:relative;min-height:56vh;display:grid;place-items:center;overflow:hidden}
+.hero img{width:100%;height:clamp(48vh,68vh,78vh);display:block;object-fit:cover;filter:contrast(1.05)}
+.hero .overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.15) 50%,rgba(0,0,0,0) 80%)}
+.hero .content{position:absolute;inset:0;display:flex;align-items:center;padding:clamp(16px,6vw,64px);color:#fff}
+.hero h1{margin:.2rem 0;font-size:clamp(1.6rem,4vw,2.8rem);line-height:1.2;letter-spacing:.2px}
+.hero p{margin:.2rem 0 1rem;max-width:52ch}
+.cta{display:inline-block;background:var(--accent);color:#fff;padding:.78rem 1.05rem;border-radius:10px;box-shadow:0 2px 8px rgba(10,132,255,.25)}
+
+/* ==== Grids / Cards ==== */
+.grid{display:grid;gap:16px}
+.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.card{border:1px solid #e9e9e9;border-radius:12px;padding:16px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+h2{margin-top:2rem;font-size:clamp(1.1rem,2.4vw,1.4rem)}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.95rem}
+td,th{border:1px solid #e5e5e5;padding:.5rem;text-align:left}
+footer{border-top:1px solid #eee;color:var(--muted);font-size:.9rem;padding:16px}
+small.muted{color:var(--muted)}
+figure{margin:0}
+
+/* Home cards: keep ratio */
+.grid.cols-2 > a.card figure{ aspect-ratio: 16/10; overflow:hidden; border-radius:10px; }
+.grid.cols-2 > a.card figure img{ width:100%; height:100%; object-fit:cover; }
+
+/* Product detail: image limit on mobile */
+@media (max-width:640px){
+  main .grid.cols-2 figure.card img{ max-height:320px; width:100%; height:auto; object-fit:contain; }
+  .hero h1{ font-size:clamp(1.4rem,6vw,2rem) }
+  .hero p{ font-size:.95rem }
+}
+
+@media (max-width:780px){
+  .grid.cols-3{grid-template-columns:1fr}
+  .grid.cols-2{grid-template-columns:1fr}
 }
