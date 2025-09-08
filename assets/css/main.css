@@ -1,5 +1,5 @@
 
-/* ADDEVA minimal styles (v3.3) — keep only this besides Bootstrap */
+/* ADDEVA minimal styles (v3.4): Bootstrap以外はこの1枚のみ */
 :root{ --bg:#fff; --bg-soft:#f7f9fc; --ink:#111; --line:#e5e7eb; --maxw:1120px; }
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);
@@ -17,8 +17,6 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .hero .col-left{position:relative;min-height:56svh}
 .hero .col-left .bg-wrap{position:absolute;inset:0;overflow:hidden;border-radius:12px}
 .hero .col-left .bg-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02);z-index:0}
-/* Keep legacy overlay neutral */
-.hero .overlay{position:absolute;inset:0;z-index:2;pointer-events:none;background:transparent !important}
 /* Copy block */
 .hero .copy{position:absolute;left:0;right:0;top:0;bottom:0;z-index:3;
   display:flex;flex-direction:column;gap:12px;max-width:720px;
