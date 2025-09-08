@@ -1,0 +1,2 @@
+左ヒーロー画像はサーバ上の既存ファイルを使用します:
+assets/img/hero/hero_left_bg_station_21x9_v3.jpg
