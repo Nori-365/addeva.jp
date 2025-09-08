@@ -13,19 +13,14 @@
   <meta property="og:image" content="/assets/img/og_addeva_urbanflex.jpg" />
   <meta property="og:url" content="https://addeva.jp/" />
   <link rel="icon" href="/favicon.ico" />
-  <!-- Build: ADDEVA index.html (No external CDN). Generated 2025-09-08 06:59:10 -->
+  <!-- Build: ADDEVA index.html (v2 robust). Generated 2025-09-08 07:12:34 -->
   <style>
     :root{
-      --bg:#0b0c10;
-      --bg-2:#101319;
-      --fg:#f5f7fb;
-      --muted:#aab1bd;
-      --brand:#e7eaf0;
-      --line:#1a1d24;
-      --accent:#98a4b3;
+      --bg:#0b0c10; --bg-2:#101319; --fg:#f5f7fb;
+      --muted:#aab1bd; --brand:#e7eaf0; --line:#1a1d24; --accent:#98a4b3;
       --maxw:1120px;
     }
-    *{box-sizing:border-box}
+    *, *::before, *::after{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--fg);
@@ -37,25 +32,26 @@
     .wrap{max-width:var(--maxw); margin:auto; padding:0 20px}
     header{
       position:sticky; top:0; z-index:20; backdrop-filter:saturate(140%) blur(6px);
-      background:color-mix(in lch, var(--bg), transparent 40%);
+      background:rgba(11,12,16,.7);
       border-bottom:1px solid var(--line);
     }
     .nav{display:flex; align-items:center; justify-content:space-between; height:64px}
     .logo{font-weight:700; letter-spacing:.12em}
     nav ul{display:flex; gap:20px; list-style:none; margin:0; padding:0}
-    nav a{opacity:.9}
-    nav a:hover{opacity:1}
+    nav a{opacity:.9} nav a:hover{opacity:1}
+
     /* ===== Hero ===== */
-    .hero{display:grid; grid-template-columns: 1.2fr 1fr; min-height:68svh}
+    .hero{display:grid; grid-template-columns: 1.2fr 1fr; min-height:68svh; overflow:hidden}
     .hero-left{position:relative; overflow:hidden}
     .hero-left::before{
       content:""; position:absolute; inset:0;
-      background:url('/assets/img/hero/hero_left_bg_station_21x9_v3.jpg') center/cover no-repeat;
+      background-image:url('/assets/img/hero/hero_left_bg_station_21x9_v3.jpg');
+      background-position:center; background-size:cover; background-repeat:no-repeat;
       transform:scale(1.02);
     }
     .hero-left::after{
-      content:""; position:absolute; inset:0; 
-      background:linear-gradient(90deg, rgba(0,0,0,.48), rgba(0,0,0,.22) 52%, rgba(0,0,0,0) 86%);
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg, rgba(0,0,0,.58), rgba(0,0,0,.25) 52%, rgba(0,0,0,0) 86%);
     }
     .hero-copy{position:relative; z-index:1; padding: clamp(28px, 6vw, 56px); max-width: 680px;}
     .eyebrow{color:var(--accent); font-size:.92rem; text-transform:uppercase; letter-spacing:.18em}
@@ -67,10 +63,11 @@
     .pills{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
     .pill{border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:.92rem; color:var(--muted); background:#0f131a}
     .hero-right{display:grid; grid-template-rows: 56% 44%; gap:14px; padding:14px; background:var(--bg-2)}
-    .top-wide{width:100%; aspect-ratio: 21/9; object-fit:cover; border-radius:14px; display:block}
+    .bgimg{background-position:center; background-size:cover; background-repeat:no-repeat; border-radius:14px}
+    .top-wide{width:100%; aspect-ratio: 21/9;}
     .bottom{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    .tile{width:100%; aspect-ratio: 1/1; object-fit:cover; border-radius:14px; display:block}
-    .caption{font-size:.85rem; color:var(--muted); margin-top:8px}
+    .tile{width:100%; aspect-ratio: 1/1;}
+
     /* Sections */
     section{padding:64px 0; border-top:1px solid var(--line)}
     h2{font-size: clamp(22px, 4.2vw, 32px); margin:0 0 .6em;}
@@ -79,7 +76,12 @@
     ul.features{margin:0; padding-left:18px}
     .notice{background: #0e1219; border:1px solid var(--line); padding:18px; border-radius:14px; font-size:.95rem}
     footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--muted)}
-    /* Responsive */
+
+    /* Guardrails against theme CSS */
+    .hero img{max-width:none; height:auto}
+    .hero .bgimg{display:block}
+    .hero .top-wide, .hero .tile{overflow:hidden}
+
     @media (max-width: 980px){
       .hero{grid-template-columns:1fr;}
       .hero-right{order:2}
@@ -109,14 +111,10 @@
     <section class="hero" aria-label="ヒーロー">
       <div class="hero-left" role="img" aria-label="都市の通勤風景とADDEVA UrbanFlex"></div>
       <div class="hero-right">
-        <img src="/assets/img/hero/hero_right_forest_21x9.jpg" alt="林道で使用するADDEVA UrbanFlex" class="top-wide" />
+        <div class="top-wide bgimg" style="background-image:url('/assets/img/hero/hero_right_forest_21x9.jpg')" aria-label="林道で使用するADDEVA UrbanFlex"></div>
         <div class="bottom">
-          <div>
-            <img src="/assets/img/hero/hero_right_hand_tile.jpg" alt="手に持ったときのサイズ感" class="tile" />
-          </div>
-          <div>
-            <img src="/assets/img/hero/hero_right_back_tile.jpg" alt="背負ったときの背面設計とディテール" class="tile" />
-          </div>
+          <div class="tile bgimg" style="background-image:url('/assets/img/hero/hero_right_hand_tile.jpg')" aria-label="手に持ったときのサイズ感"></div>
+          <div class="tile bgimg" style="background-image:url('/assets/img/hero/hero_right_back_tile.jpg')" aria-label="背負ったときの背面設計とディテール"></div>
         </div>
       </div>
       <div class="hero-copy">
