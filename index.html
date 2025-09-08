@@ -11,78 +11,16 @@
   <meta property="og:title" content="ADDEVA UrbanFlex – 都市と旅をシームレスに">
   <meta property="og:description" content="はじめて知った人の不安を消し、価格以上の価値を納得してもらう。ADDEVAの旗艦『ADDEVA UrbanFlex』。">
   <meta property="og:image" content="assets/img/og_addeva_urbanflex.jpg">
-  <meta property="og:url" content="https://addeva.jp/">
   <link rel="icon" href="favicon.ico">
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <!-- Build: v2.3 (Bootstrap + image-based hero-left). Generated 2025-09-08 08:26:09 -->
-  <style>
-    :root {
-      --bg:#0b0c10; --bg-2:#101319; --fg:#f5f7fb;
-      --muted:#aab1bd; --brand:#e7eaf0; --line:#1a1d24; --accent:#98a4b3;
-      --maxw:1120px;
-    }
-    *, *::before, *::after { box-sizing:border-box; }
-    html, body { height:100%; }
-    body {
-      margin:0; background:var(--bg); color:var(--fg);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      line-height:1.6; letter-spacing:.02em;
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-    }
-    a { color:inherit; text-decoration:none; }
-    .wrap { max-width:var(--maxw); margin:0 auto; padding:0 20px; }
-
-    /* ====== HEADER (Bootstrap navbar) ====== */
-    .site-header.sticky-top { backdrop-filter:saturate(140%) blur(6px); background:rgba(11,12,16,.8); border-bottom:1px solid var(--line); }
-    .navbar-brand { font-weight:700; letter-spacing:.12em; color:var(--fg); }
-    .navbar-dark .navbar-nav .nav-link { color: var(--fg); opacity:.9; }
-    .navbar-dark .navbar-nav .nav-link:hover { opacity:1; }
-    .navbar .nav-link { padding-left:.75rem; padding-right:.75rem; }
-    .navbar-collapse { background: rgba(11,12,16,.96); border-top:1px solid var(--line); }
-    @media (min-width:992px) { .navbar-collapse { background: transparent; border-top:0; } }
-
-    /* ========== HERO ========== */
-    .hero { display:grid; grid-template-columns: 1.2fr 1fr; min-height:68svh; overflow:hidden; position:relative; }
-    .hero-left { position:relative; min-height:68svh; }
-    .hero-left .hero-bg { position:absolute; inset:0; }
-    .hero-left .hero-bg img { width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.02); filter:none; }
-    .hero-left .overlay { position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.36), rgba(0,0,0,.18) 54%, rgba(0,0,0,0) 86%); }
-    .hero-copy { position:relative; z-index:2; padding: clamp(28px, 6vw, 56px); max-width: 680px; grid-area: 1 / 1 / 2 / 2; align-self:center; }
-    .eyebrow { color:var(--accent); font-size:.92rem; text-transform:uppercase; letter-spacing:.18em; }
-    h1 { margin:.2em 0 .4em; font-size: clamp(26px, 5.2vw, 42px); line-height:1.22; color:var(--brand); }
-    .lead { font-size: clamp(15px, 2.2vw, 18px); color:var(--fg); opacity:.95; }
-    .pills { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
-    .pill { border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:.92rem; color:var(--muted); background:#0f131a; }
-    .hero-actions { margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; }
-    .btn-ghost { display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); padding:10px 14px; border-radius:999px; }
-    .btn-ghost:hover { background:#131722; }
-
-    .hero-right { display:grid; grid-template-rows: 56% 44%; gap:14px; padding:14px; background:var(--bg-2); grid-area: 1 / 2 / 2 / 3; }
-    .bgbox { position:relative; width:100%; overflow:hidden; border-radius:14px; background-position:center; background-size:cover; background-repeat:no-repeat; }
-    .bgbox::before { content:""; display:block; padding-top:var(--ratio,100%); }
-
-    /* Sections */
-    section { padding:64px 0; border-top:1px solid var(--line); }
-    h2 { font-size: clamp(22px, 4.2vw, 32px); margin:0 0 .6em; }
-    .cols { display:grid; grid-template-columns: 1fr 1fr; gap:28px; }
-    .kicker { color:var(--accent); font-size:.92rem; letter-spacing:.14em; text-transform:uppercase; }
-    ul.features { margin:0; padding-left:18px; }
-    .notice { background: #0e1219; border:1px solid var(--line); padding:18px; border-radius:14px; font-size:.95rem; }
-    footer { border-top:1px solid var(--line); padding:26px 0 60px; color:var(--muted); }
-
-    @media (max-width: 992px) {
-      .hero { grid-template-columns:1fr; }
-      .hero-left { min-height:56svh; grid-area: 1 / 1 / 2 / 2; }
-      .hero-right { grid-area: 2 / 1 / 3 / 2; }
-      .hero-copy { grid-area: 1 / 1 / 2 / 2; }
-    }
-  </style>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Site CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
   <header class="site-header sticky-top">
     <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container" style="max-width:1120px;">
+      <div class="container container-narrow">
         <a class="navbar-brand" href="#">ADDEVA®</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="メニュー">
           <span class="navbar-toggler-icon"></span>
@@ -101,131 +39,149 @@
   </header>
 
   <main>
-    <!-- ================= Hero ================= -->
-    <section class="hero" aria-label="ヒーロー">
-      <div class="hero-left" role="img" aria-label="都市の通勤風景とADDEVA UrbanFlex" style="grid-area: 1 / 1 / 2 / 2;">
-        <picture class="hero-bg">
-          <!-- サブパス運用対策：先頭スラッシュ有りを優先、無ければ相対を使う -->
-          <source srcset="/assets/img/hero/hero_left_bg_station_21x9_v3.jpg">
-          <img src="assets/img/hero/hero_left_bg_station_21x9_v3.jpg" alt="" decoding="async" fetchpriority="high">
-        </picture>
-        <div class="overlay" aria-hidden="true"></div>
-      </div>
-      <div class="hero-right">
-        <div class="bgbox" style="--ratio: calc(100% * 9 / 21); background-image:url('assets/img/hero/hero_right_forest_21x9.jpg');" aria-label="林道で使用するADDEVA UrbanFlex"></div>
-        <div class="cols bottom" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-          <div class="bgbox" style="--ratio:100%; background-image:url('assets/img/hero/hero_right_hand_tile.jpg');" aria-label="手に持ったときのサイズ感"></div>
-          <div class="bgbox" style="--ratio:100%; background-image:url('assets/img/hero/hero_right_back_tile.jpg');" aria-label="背面設計とディテール"></div>
-        </div>
-      </div>
-      <div class="hero-copy">
-        <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
-        <h1>仕事も旅も、これ一つ。 — ADDEVA UrbanFlex</h1>
-        <p class="lead">3WAYでオンもオフも切り替えいらず。15.6&quot;対応、必要十分の合理設計。</p>
-        <div class="pills" aria-label="補助バッジ">
-          <span class="pill">時短を叶える収納設計。</span>
-          <span class="pill">疲れを軽減させる背面設計。</span>
-          <span class="pill">空港利用を想定したスマート収納。</span>
-        </div>
-        <div class="hero-actions" aria-label="ブランド導線">
-          <a class="btn-ghost" href="#story">ブランドストーリー</a>
-          <a class="btn-ghost" href="#support">サポート</a>
-          <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener" aria-label="BASEでADDEVA UrbanFlexの詳説を見る">詳しく見る（BASE）</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============== Flagship / Rationale ============== -->
-    <section id="flagship" class="wrap">
-      <div class="kicker">合理性をデザインする</div>
-      <h2>ADDEVA UrbanFlex という選択</h2>
-      <div class="cols">
-        <div>
-          <p>機能を盛るのではなく、<strong>“一つで完結する合理”</strong>にフォーカス。通勤、顧客訪問、週末の小旅行まで、切り替え不要でシームレスに。</p>
-          <ul class="features">
-            <li>3WAY（バックパック／ブリーフ／ショルダー）</li>
-            <li>PC 15.6&quot;対応・独立クッション</li>
-            <li>アジャスタブル仕切りで荷室を最適化</li>
-            <li>止水ファスナー採用（主要部）</li>
-          </ul>
-        </div>
-        <div>
-          <p>仕様の完全版・写真多数・ギフト可否・同梱物・注意事項は、展示ストア（BASE）に集約しています。一次販売はAmazonのみ。価格はAmazonに準拠します。</p>
-          <p><a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳説を見る（BASE）</a></p>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container container-narrow">
+        <div class="row g-3 align-items-stretch">
+          <!-- Left: background image with copy overlay -->
+          <div class="col-12 col-lg-7 col-left">
+            <div class="bg-wrap">
+              <img src="assets/img/hero/hero_left_bg_station_21x9_v3.jpg" alt="都市の通勤風景とADDEVA UrbanFlex">
+              <div class="overlay" aria-hidden="true"></div>
+            </div>
+            <div class="copy">
+              <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
+              <h1>仕事も旅も、これ一つ。 — ADDEVA UrbanFlex</h1>
+              <p class="lead">3WAYでオンもオフも切り替えいらず。15.6&quot;対応、必要十分の合理設計。</p>
+              <div class="pills" aria-label="補助バッジ">
+                <span class="pill">時短を叶える収納設計。</span>
+                <span class="pill">疲れを軽減させる背面設計。</span>
+                <span class="pill">空港利用を想定したスマート収納。</span>
+              </div>
+              <div class="d-flex gap-2 mt-3 flex-wrap">
+                <a class="btn-ghost" href="#story">ブランドストーリー</a>
+                <a class="btn-ghost" href="#support">サポート</a>
+                <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳しく見る（BASE）</a>
+              </div>
+            </div>
+          </div>
+          <!-- Right: collage -->
+          <div class="col-12 col-lg-5">
+            <div class="right-wrap h-100">
+              <img src="assets/img/hero/hero_right_forest_21x9.jpg" class="top-wide" alt="林道で使用するADDEVA UrbanFlex">
+              <div class="row g-3 mt-1">
+                <div class="col-6"><img src="assets/img/hero/hero_right_hand_tile.jpg" class="tile" alt="手に持ったときのサイズ感"></div>
+                <div class="col-6"><img src="assets/img/hero/hero_right_back_tile.jpg" class="tile" alt="背面設計とディテール"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ============== Support / Returns ============== -->
-    <section id="support" class="wrap">
-      <div class="kicker">サポート</div>
-      <h2>返品・交換ガイド（正本）</h2>
-      <div class="notice">
-        <p>初期不良・欠品・配送事故などへの対応は、こちらのガイドラインを正本とします。展示ストアやAmazonの商品ページに記載の要約と矛盾する場合は、<strong>本ページの内容</strong>を優先します。</p>
-        <p><a href="/support/returns.html">返品・交換ガイドを開く</a></p>
-      </div>
-    </section>
-
-    <!-- ============== Company ============== -->
-    <section id="company" class="wrap">
-      <div class="kicker">Company</div>
-      <h2>会社情報</h2>
-      <div class="cols">
-        <div>
-          <p>ADDEVAは、日本で企画・検証し、ベトナムのパートナー工場と連携して製造するブランドです。品質と価格の最適点を追求し、<em>“価格以上の価値”</em>をお届けします。</p>
-          <p>代表メッセージ、沿革、生産体制の詳細は準備中です。</p>
-        </div>
-        <div>
-          <ul class="features">
-            <li>企画：Japan（関東）</li>
-            <li>製造：Vietnam（Binh Duong / HCMC）</li>
-            <li>販売：Amazon（一次チャネル）</li>
-            <li>展示：BASE（詳説・写真・FAQ）</li>
-          </ul>
+    <!-- Flagship -->
+    <section id="flagship">
+      <div class="container container-narrow">
+        <div class="kicker">合理性をデザインする</div>
+        <h2>ADDEVA UrbanFlex という選択</h2>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <p>機能を盛るのではなく、<strong>“一つで完結する合理”</strong>にフォーカス。通勤、顧客訪問、週末の小旅行まで、切り替え不要でシームレスに。</p>
+            <ul class="mb-0">
+              <li>3WAY（バックパック／ブリーフ／ショルダー）</li>
+              <li>PC 15.6&quot;対応・独立クッション</li>
+              <li>アジャスタブル仕切りで荷室を最適化</li>
+              <li>止水ファスナー採用（主要部）</li>
+            </ul>
+          </div>
+          <div class="col-12 col-md-6">
+            <p>仕様の完全版・写真多数・ギフト可否・同梱物・注意事項は、展示ストア（BASE）に集約しています。一次販売はAmazonのみ。価格はAmazonに準拠します。</p>
+            <p><a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳説を見る（BASE）</a></p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ============== Story ============== -->
-    <section id="story" class="wrap">
-      <div class="kicker">Brand Story</div>
-      <h2>“盛らない設計”で、毎日を軽く。</h2>
-      <p>ADDEVA UrbanFlex は、機能を足すのではなく“引き算”で使い勝手を磨きました。都市と旅をひとつに結ぶ合理性。その結果が、3WAY・15.6&quot;対応・必要十分の耐久と軽快さです。</p>
-    </section>
-
-    <!-- ============== FAQ ============== -->
-    <section id="faq" class="wrap">
-      <div class="kicker">FAQ</div>
-      <h2>よくあるご質問</h2>
-      <div class="cols">
-        <div>
-          <p><strong>Q. どこで購入できますか？</strong><br> A. Amazonのみで販売しています。展示ストア（BASE）では決済できません。</p>
-          <p><strong>Q. 保証はありますか？</strong><br> A. 初期不良・配送事故に関しては<strong>返品・交換ガイド</strong>に準じます。</p>
-        </div>
-        <div>
-          <p><strong>Q. 仕様の詳細を知りたいです。</strong><br> A. 写真多数・仕様の完全版はBASEにて公開しています。</p>
-          <p><a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">BASEを開く</a></p>
+    <!-- Support / Returns -->
+    <section id="support">
+      <div class="container container-narrow">
+        <div class="kicker">サポート</div>
+        <h2>返品・交換ガイド（正本）</h2>
+        <div class="notice">
+          <p>初期不良・欠品・配送事故などへの対応は、こちらのガイドラインを正本とします。展示ストアやAmazonの商品ページに記載の要約と矛盾する場合は、<strong>本ページの内容</strong>を優先します。</p>
+          <p><a href="support/returns.html">返品・交換ガイドを開く</a></p>
         </div>
       </div>
     </section>
 
-    <!-- ============== Contact ============== -->
-    <section id="contact" class="wrap">
-      <div class="kicker">Contact</div>
-      <h2>お問い合わせ</h2>
-      <p>製品・取材・お取引に関するお問い合わせは、メールにて承ります。</p>
-      <p><a class="btn-ghost" href="mailto:info@addeva.jp">info@addeva.jp</a></p>
+    <!-- Company -->
+    <section id="company">
+      <div class="container container-narrow">
+        <div class="kicker">Company</div>
+        <h2>会社情報</h2>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <p>ADDEVAは、日本で企画・検証し、ベトナムのパートナー工場と連携して製造するブランドです。品質と価格の最適点を追求し、<em>“価格以上の価値”</em>をお届けします。</p>
+            <p>代表メッセージ、沿革、生産体制の詳細は準備中です。</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <ul class="mb-0">
+              <li>企画：Japan（関東）</li>
+              <li>製造：Vietnam（Binh Duong / HCMC）</li>
+              <li>販売：Amazon（一次チャネル）</li>
+              <li>展示：BASE（詳説・写真・FAQ）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Story -->
+    <section id="story">
+      <div class="container container-narrow">
+        <div class="kicker">Brand Story</div>
+        <h2>“盛らない設計”で、毎日を軽く。</h2>
+        <p>ADDEVA UrbanFlex は、機能を足すのではなく“引き算”で使い勝手を磨きました。都市と旅をひとつに結ぶ合理性。その結果が、3WAY・15.6&quot;対応・必要十分の耐久と軽快さです。</p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container container-narrow">
+        <div class="kicker">FAQ</div>
+        <h2>よくあるご質問</h2>
+        <div class="row g-4">
+          <div class="col-12 col-md-6">
+            <p><strong>Q. どこで購入できますか？</strong><br> A. Amazonのみで販売しています。展示ストア（BASE）では決済できません。</p>
+            <p><strong>Q. 保証はありますか？</strong><br> A. 初期不良・配送事故に関しては<strong>返品・交換ガイド</strong>に準じます。</p>
+          </div>
+          <div class="col-12 col-md-6">
+            <p><strong>Q. 仕様の詳細を知りたいです。</strong><br> A. 写真多数・仕様の完全版はBASEにて公開しています。</p>
+            <p><a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">BASEを開く</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container container-narrow">
+        <div class="kicker">Contact</div>
+        <h2>お問い合わせ</h2>
+        <p>製品・取材・お取引に関するお問い合わせは、メールにて承ります。</p>
+        <p><a class="btn-ghost" href="mailto:info@addeva.jp">info@addeva.jp</a></p>
+      </div>
     </section>
   </main>
 
   <footer>
-    <div class="wrap">
+    <div class="container container-narrow">
       <p>ご購入はAmazonで。</p>
-      <p style="margin-top:10px;">© <span id="y"></span> ADDEVA®</p>
+      <p class="mt-2">© <span id="y"></span> ADDEVA®</p>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
