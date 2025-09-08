@@ -13,9 +13,9 @@
   <meta property="og:image" content="assets/img/og_addeva_urbanflex.jpg">
   <meta property="og:url" content="https://addeva.jp/">
   <link rel="icon" href="favicon.ico">
-  <!-- Bootstrap 5 (CSS first, custom CSS after) -->
+  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <!-- Build: v2.2 (Bootstrap navbar). Generated 2025-09-08 08:17:07 -->
+  <!-- Build: v2.3 (Bootstrap + image-based hero-left). Generated 2025-09-08 08:26:09 -->
   <style>
     :root {
       --bg:#0b0c10; --bg-2:#101319; --fg:#f5f7fb;
@@ -39,24 +39,16 @@
     .navbar-dark .navbar-nav .nav-link { color: var(--fg); opacity:.9; }
     .navbar-dark .navbar-nav .nav-link:hover { opacity:1; }
     .navbar .nav-link { padding-left:.75rem; padding-right:.75rem; }
-    /* collapse menu background */
     .navbar-collapse { background: rgba(11,12,16,.96); border-top:1px solid var(--line); }
     @media (min-width:992px) { .navbar-collapse { background: transparent; border-top:0; } }
 
     /* ========== HERO ========== */
-    .hero { display:grid; grid-template-columns: 1.2fr 1fr; min-height:68svh; overflow:hidden; }
-    .hero-left { position:relative; overflow:hidden; }
-    .hero-left::before {
-      content:""; position:absolute; left:0; top:0; right:0; bottom:0;
-      background-image:url('assets/img/hero/hero_left_bg_station_21x9_v3.jpg');
-      background-position:center; background-size:cover; background-repeat:no-repeat;
-      transform:scale(1.02);
-    }
-    .hero-left::after {
-      content:""; position:absolute; left:0; top:0; right:0; bottom:0;
-      background:linear-gradient(90deg, rgba(0,0,0,.36), rgba(0,0,0,.18) 54%, rgba(0,0,0,0) 86%);
-    }
-    .hero-copy { position:relative; z-index:2; padding: clamp(28px, 6vw, 56px); max-width: 680px; }
+    .hero { display:grid; grid-template-columns: 1.2fr 1fr; min-height:68svh; overflow:hidden; position:relative; }
+    .hero-left { position:relative; min-height:68svh; }
+    .hero-left .hero-bg { position:absolute; inset:0; }
+    .hero-left .hero-bg img { width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.02); filter:none; }
+    .hero-left .overlay { position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.36), rgba(0,0,0,.18) 54%, rgba(0,0,0,0) 86%); }
+    .hero-copy { position:relative; z-index:2; padding: clamp(28px, 6vw, 56px); max-width: 680px; grid-area: 1 / 1 / 2 / 2; align-self:center; }
     .eyebrow { color:var(--accent); font-size:.92rem; text-transform:uppercase; letter-spacing:.18em; }
     h1 { margin:.2em 0 .4em; font-size: clamp(26px, 5.2vw, 42px); line-height:1.22; color:var(--brand); }
     .lead { font-size: clamp(15px, 2.2vw, 18px); color:var(--fg); opacity:.95; }
@@ -66,8 +58,7 @@
     .btn-ghost { display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); padding:10px 14px; border-radius:999px; }
     .btn-ghost:hover { background:#131722; }
 
-    /* Right collage as background boxes with ratio fallback */
-    .hero-right { display:grid; grid-template-rows: 56% 44%; gap:14px; padding:14px; background:var(--bg-2); }
+    .hero-right { display:grid; grid-template-rows: 56% 44%; gap:14px; padding:14px; background:var(--bg-2); grid-area: 1 / 2 / 2 / 3; }
     .bgbox { position:relative; width:100%; overflow:hidden; border-radius:14px; background-position:center; background-size:cover; background-repeat:no-repeat; }
     .bgbox::before { content:""; display:block; padding-top:var(--ratio,100%); }
 
@@ -80,16 +71,11 @@
     .notice { background: #0e1219; border:1px solid var(--line); padding:18px; border-radius:14px; font-size:.95rem; }
     footer { border-top:1px solid var(--line); padding:26px 0 60px; color:var(--muted); }
 
-    /* Grid placement fix (ensure copy overlays left) */
-    .hero > .hero-left  { grid-area: 1 / 1 / 2 / 2; min-height:68svh; }
-    .hero > .hero-right { grid-area: 1 / 2 / 2 / 3; }
-    .hero > .hero-copy  { grid-area: 1 / 1 / 2 / 2; align-self:center; }
-
     @media (max-width: 992px) {
       .hero { grid-template-columns:1fr; }
-      .hero > .hero-left  { grid-area: 1 / 1 / 2 / 2; min-height:56svh; }
-      .hero > .hero-copy  { grid-area: 1 / 1 / 2 / 2; }
-      .hero > .hero-right { grid-area: 2 / 1 / 3 / 2; }
+      .hero-left { min-height:56svh; grid-area: 1 / 1 / 2 / 2; }
+      .hero-right { grid-area: 2 / 1 / 3 / 2; }
+      .hero-copy { grid-area: 1 / 1 / 2 / 2; }
     }
   </style>
 </head>
@@ -117,7 +103,14 @@
   <main>
     <!-- ================= Hero ================= -->
     <section class="hero" aria-label="ヒーロー">
-      <div class="hero-left" role="img" aria-label="都市の通勤風景とADDEVA UrbanFlex"></div>
+      <div class="hero-left" role="img" aria-label="都市の通勤風景とADDEVA UrbanFlex" style="grid-area: 1 / 1 / 2 / 2;">
+        <picture class="hero-bg">
+          <!-- サブパス運用対策：先頭スラッシュ有りを優先、無ければ相対を使う -->
+          <source srcset="/assets/img/hero/hero_left_bg_station_21x9_v3.jpg">
+          <img src="assets/img/hero/hero_left_bg_station_21x9_v3.jpg" alt="" decoding="async" fetchpriority="high">
+        </picture>
+        <div class="overlay" aria-hidden="true"></div>
+      </div>
       <div class="hero-right">
         <div class="bgbox" style="--ratio: calc(100% * 9 / 21); background-image:url('assets/img/hero/hero_right_forest_21x9.jpg');" aria-label="林道で使用するADDEVA UrbanFlex"></div>
         <div class="cols bottom" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
@@ -232,7 +225,6 @@
     </div>
   </footer>
 
-  <!-- Bootstrap JS bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
