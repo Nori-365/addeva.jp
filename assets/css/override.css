@@ -1,0 +1,37 @@
+
+/* === ADDEVA Hotfix (light theme & layout) === */
+:root{
+  --bg:#ffffff; --bg-2:#f7f9fc; --fg:#121417;
+  --muted:#57606a; --brand:#121417; --line:#e5e7eb; --accent:#5b738a;
+}
+
+/* Force horizontal text & sane wrapping */
+html, body { background: var(--bg) !important; color: var(--fg) !important; }
+body, p, li, h1, h2, h3, h4, h5, h6, .lead {
+  writing-mode: horizontal-tb !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-break: strict;
+}
+
+/* Sections on light background */
+section { border-top:1px solid var(--line) !important; }
+.notice { background:#f9fafb !important; border-color: var(--line) !important; color:#111 !important; }
+
+/* Hero tweaks for light */
+.hero .copy h1 { color:#ffffff !important; }
+.hero .copy .lead { color:#eef3f9 !important; }
+.hero .pill { background: rgba(15,19,26,.75) !important; color:#e6ebf2 !important; border-color: rgba(255,255,255,.12) !important; }
+.hero .btn-ghost { border-color: rgba(255,255,255,.2) !important; color:#eaf0f6 !important; }
+.hero .btn-ghost:hover { background: rgba(19,23,34,.35) !important; }
+
+/* Right collage images: ensure square/ratio and remove inherited styles */
+.top-wide, .tile { display:block !important; width:100% !important; height:auto !important; object-fit:cover !important; border-radius:14px !important; }
+.right-wrap { background: var(--bg-2) !important; border-radius:12px !important; padding:14px !important; }
+.row.g-3 > [class*="col-"] { padding-left:.75rem; padding-right:.75rem; }
+
+/* Footer color on light */
+footer { color:#6b7280 !important; border-top:1px solid var(--line) !important; background:#fff !important; }
+
+/* Kill any global resets that cause surprises */
+* { letter-spacing: normal; }
