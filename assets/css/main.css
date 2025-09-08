@@ -1,64 +1,52 @@
 
-/* ADDEVA minimal styles (v3.1) */
-:root{
-  --bg:#ffffff; --bg-soft:#f7f9fc; --ink:#111;
-  --muted:#57606a; --line:#e5e7eb; --maxw:1120px;
-}
+/* ADDEVA minimal styles (v3.2) — Bootstrap以外のCSSはこれだけ */
+:root{ --bg:#fff; --bg-soft:#f7f9fc; --ink:#111; --line:#e5e7eb; --maxw:1120px; }
 html,body{height:100%}
-body{
-  margin:0; background:var(--bg); color:var(--ink);
-  font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-  line-height:1.65; letter-spacing:.02em;
-}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+  line-height:1.65;letter-spacing:.02em}
 .container-narrow{max-width:var(--maxw)}
-
 /* Header */
-.site-header.sticky-top{background:#fff; border-bottom:1px solid var(--line); backdrop-filter:saturate(140%) blur(6px)}
-.navbar-brand{font-weight:700; letter-spacing:.12em; color:var(--ink)}
+.site-header.sticky-top{background:#fff;border-bottom:1px solid var(--line);backdrop-filter:saturate(140%) blur(6px)}
+.navbar-brand{font-weight:700;letter-spacing:.12em;color:var(--ink)}
 .navbar-dark .navbar-nav .nav-link{color:var(--ink)}
 .navbar-dark .navbar-toggler{border-color:rgba(0,0,0,.25)}
-.navbar-dark .navbar-toggler-icon{
-  background-image:url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0,0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
+.navbar-dark .navbar-toggler-icon{background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0,0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")}
 /* HERO */
 .hero{padding:56px 0}
-.hero .col-left{position:relative; min-height:56svh}
-.hero .col-left .bg-wrap{position:absolute; inset:0; overflow:hidden; border-radius:12px}
-.hero .col-left .bg-wrap img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.02); z-index:0}
-/* Blue tint via ::after (collision-proof) */
-.hero .col-left .bg-wrap::after{
-  content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+.hero .col-left{position:relative;min-height:56svh}
+.hero .col-left .bg-wrap{position:absolute;inset:0;overflow:hidden;border-radius:12px}
+.hero .col-left .bg-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02);z-index:0}
+/* 青み：最優先で効かせる（強いセレクタ＋!important） */
+body .hero .col-left .bg-wrap::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(90deg,
-    rgba(0,0,0,.72) 0%,
-    rgba(0,0,0,.48) 52%,
-    rgba(28,82,190,.40) 70%,
-    rgba(28,82,190,.22) 86%,
+    rgba(0,0,0,.74) 0%,
+    rgba(0,0,0,.50) 52%,
+    rgba(28,82,190,.42) 70%,
+    rgba(28,82,190,.24) 86%,
     rgba(0,0,0,0) 100%) !important;
 }
-/* Keep overlay element but make it neutral (for legacy HTML) */
-.hero .overlay{position:absolute; inset:0; z-index:2; pointer-events:none; background:transparent !important}
-.hero .copy{
-  position:absolute; left:0; right:0; top:0; bottom:0; z-index:3;
-  display:flex; flex-direction:column; gap:12px;
-  max-width:720px; padding:clamp(24px,5vw,56px); color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.55);
-}
-.eyebrow{font-size:.92rem; letter-spacing:.18em; text-transform:uppercase; opacity:.9}
-.hero h1{margin:.2em 0 .4em; font-size:clamp(28px,5.2vw,44px); line-height:1.2}
-.hero .lead{font-size:clamp(15px,2.1vw,18px); opacity:.95}
-.pills{display:flex; gap:10px; flex-wrap:wrap}
-.pill{border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:8px 12px; font-size:.92rem; color:#fff; background:rgba(0,0,0,.62)}
-.btn-ghost{display:inline-flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.2); color:#fff; padding:10px 14px; border-radius:999px}
+/* 旧overlayが残っても透明にしておく */
+body .hero .overlay{position:absolute;inset:0;z-index:2;pointer-events:none;background:transparent !important}
+/* コピーを全高にして下寄せを可能に */
+.hero .copy{position:absolute;left:0;right:0;top:0;bottom:0;z-index:3;
+  display:flex;flex-direction:column;gap:12px;max-width:720px;
+  padding:clamp(24px,5vw,56px);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.eyebrow{font-size:.92rem;letter-spacing:.18em;text-transform:uppercase;opacity:.9}
+.hero h1{margin:.2em 0 .4em;font-size:clamp(28px,5.2vw,44px);line-height:1.2}
+.hero .lead{font-size:clamp(15px,2.1vw,18px);opacity:.95}
+.pills{display:flex;gap:10px;flex-wrap:wrap}
+.pill{border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;font-size:.92rem;color:#fff;background:rgba(0,0,0,.62)}
+.btn-ghost{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);color:#fff;padding:10px 14px;border-radius:999px}
 .btn-ghost:hover{background:rgba(19,23,34,.35)}
-.cta-cluster{margin-top:auto; display:flex; flex-direction:column; gap:16px}
-
+.cta-cluster{margin-top:auto;display:flex;flex-direction:column;gap:16px}
 /* Right collage */
-.right-wrap{background:var(--bg-soft); padding:14px; border-radius:12px; height:100%}
-.top-wide,.tile{display:block; width:100%; height:auto; object-fit:cover; border-radius:14px}
-
+.right-wrap{background:var(--bg-soft);padding:14px;border-radius:12px;height:100%}
+.top-wide,.tile{display:block;width:100%;height:auto;object-fit:cover;border-radius:14px}
 /* Sections */
-section.section{padding:64px 0; border-top:1px solid var(--line)}
-.section .kicker{font-size:.92rem; letter-spacing:.14em; text-transform:uppercase; color:#5b738a}
-.section h2{font-size:clamp(22px,4.2vw,32px); margin:0 0 .6em}
-.notice{background:#f9fafb; border:1px solid var(--line); padding:18px; border-radius:14px; font-size:.95rem}
-footer{border-top:1px solid var(--line); padding:26px 0 60px; color:#6b7280}
+section.section{padding:64px 0;border-top:1px solid var(--line)}
+.section .kicker{font-size:.92rem;letter-spacing:.14em;text-transform:uppercase;color:#5b738a}
+.section h2{font-size:clamp(22px,4.2vw,32px);margin:0 0 .6em}
+.notice{background:#f9fafb;border:1px solid var(--line);padding:18px;border-radius:14px;font-size:.95rem}
+footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
