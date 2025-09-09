@@ -84,3 +84,9 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
 /* （もっと薄くしたい場合のみ）
 .hero .col-left .copy .eyebrow{ line-height:1; }
 */
+
+/* 固定ヘッダーぶんの押し下げ（デスクトップ/モバイル） */
+body{ padding-top: 64px; }
+@media (max-width: 991.98px){
+  body{ padding-top: 56px; }
+}
