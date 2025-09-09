@@ -33,6 +33,18 @@
   <main>
 <!-- HERO (完全リセット版：既存CSSのみで表示) -->
 <section class="hero">
+    <style>
+    /* 眉ラベル：濃いめ・薄い高さ・小さめ角丸（フォントは触らない） */
+    .hero .col-left .copy .eyebrow{
+      display: inline-block;
+      color: #fff;
+      background: #1C52BE;     /* 不透明の濃いブルー */
+      padding: .10em .55em;    /* 高さを薄く */
+      border-radius: 4px;      /* 角を小さく */
+      -webkit-box-decoration-break: clone;
+              box-decoration-break: clone;
+    }
+  </style>
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
 
