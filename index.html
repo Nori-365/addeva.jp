@@ -76,6 +76,44 @@
         background-color:#F2F6F7;
         min-height: clamp(300px, 38vw, 520px);
       }
+    /* ヒーロー共通の可変パラメータ（お好みで数値だけ変えればOK） */
+    .hero{
+      /* 高さ（縦の確保）— 画面幅に応じて伸縮 */
+      --hero-h: clamp(340px, 40vw, 560px);
+      /* ズーム量（%）— 100%だと等倍、110〜125%で“寄り”に */
+      --bg-zoom: 115%;
+      /* 主体の横位置（%）— 0%左 / 50%中央 / 100%右。人物にあわせて微調整 */
+      --bg-focus-x: 62%;
+    }
+    
+    /* 左カード：背景の見せ方を“寄り”に戻す */
+    .hero .col-left .bg-wrap{
+      /* 以前の aspect-ratio をやめて、縦をしっかり確保 */
+      min-height: var(--hero-h);
+      /* 背景を拡大表示してトリミング（＝ズーム） */
+      background-size: var(--bg-zoom) auto !important;
+      background-position: var(--bg-focus-x) 50%;
+      background-repeat: no-repeat;
+      background-image: url("assets/img/hero/hero_left_bg_station_21x9_v4.jpg");
+      background-color: #000; /* 端が出たときの保険（見えない想定） */
+    }
+    
+    /* ティントはそのまま（重ね順だけ念押し） */
+    .hero .col-left .bg-wrap::after{
+      z-index: 1;
+    }
+    
+    /* テキストは全面に重ねる（回り込み防止） */
+    .hero .col-left{ position: relative; }
+    .hero .col-left .copy{
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: clamp(16px, 3.2vw, 40px);
+    }
+    
+    /* 右側の台座の高さも左と揃えておくとバランスが安定 */
+    .hero .right-tile{ min-height: var(--hero-h); }
     </style>
   
     <div class="container container-narrow">
