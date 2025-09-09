@@ -31,21 +31,28 @@
   </header>
 
   <main>
-  <!-- HERO -->
+ <!-- HERO -->
 <section class="hero">
   <style>
-    /* 左：画像上ティントは疑似要素1枚に統一 */
-    .hero .col-left .bg-wrap {
+    /* ===== 左：背景画像 = CSS 背景（高さ安定、重なり事故ゼロ） ===== */
+    .hero .col-left .bg-wrap{
       position: relative;
       overflow: hidden;
-      border-radius: 1rem; /* = rounded-4 相当（お好みで） */
+      border-radius: 1rem;               /* 左カードの角丸 */
+      /* 21:9 を維持して高さを保証（画像未ロードでも崩れない） */
+      aspect-ratio: 21 / 9;
+      /* 背景画像（ここを書き換えれば差し替えOK） */
+      background-image: url("assets/img/hero/hero_left_bg_station_21x9_v4.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
+    /* ティント：黒→青→透明（1枚だけ） */
     .hero .col-left .bg-wrap::after{
       content:"";
       position:absolute; inset:0;
       pointer-events:none;
       z-index:1;
-      /* 黒→青→透明 のレイヤー（読みやすさ + ブランド感） */
       background: linear-gradient(90deg,
         rgba(0,0,0,.78) 0%,
         rgba(0,0,0,.54) 45%,
@@ -53,21 +60,22 @@
         rgba(28,82,190,.18) 84%,
         rgba(0,0,0,0) 100%);
     }
-    /* テキストは常に上面に */
+    /* テキストを最上面に */
     .hero .copy{ position:relative; z-index:2; }
 
-    /* 「Flagship – …」に青い帯（行ごとに回り込む） */
+    /* ===== 「Flagship – …」青い帯（B案） ===== */
     .hero .copy .eyebrow{
-      display:inline;
-      color:#fff;
-      font-weight:600;
-      letter-spacing:.02em;
-      line-height:1.2;
+      display:inline; color:#fff; font-weight:600; letter-spacing:.02em; line-height:1.25;
       background: rgba(28,82,190,.22);
-      padding: .2rem .6rem;
-      border-radius: .5rem;
-      -webkit-box-decoration-break: clone;
-              box-decoration-break: clone;
+      padding:.25rem .6rem;
+      border-radius:.5rem;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+    }
+
+    /* ===== 右：カラム台座グレー + 画像中央 ===== */
+    .hero .right-tile{
+      background-color:#F2F6F7;
+      min-height: clamp(300px, 38vw, 520px);
     }
   </style>
 
@@ -76,10 +84,8 @@
 
       <!-- Left -->
       <div class="col-12 col-lg-7 col-left">
-        <div class="bg-wrap">
-          <img src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-               alt="都市の通勤風景とADDEVA UrbanFlex" class="w-100 d-block">
-        </div>
+        <!-- 画像はCSS背景で表示。余計な<img>や#tintは置かない -->
+        <div class="bg-wrap"></div>
 
         <div class="copy">
           <div>
@@ -101,9 +107,8 @@
         </div>
       </div>
 
-      <!-- Right：カラム全体をグレー台座に、画像は中央・切り抜きなし -->
-      <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
-           style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+      <!-- Right：カラム全体が台座。画像は中央・切り抜きなし -->
+      <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4 right-tile">
         <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
              alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
              class="img-fluid"
@@ -113,6 +118,7 @@
     </div>
   </div>
 </section>
+
 
 
     <!-- Other sections -->
