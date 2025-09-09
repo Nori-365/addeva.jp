@@ -91,12 +91,22 @@ body{ padding-top: 64px; }
   body{ padding-top: 56px; }
 }
 
-/* --- DEBUG: ヘッダーを確実に最前面に固定 --- */
-.site-header{
-  position: fixed !important; top:0; left:0; right:0;
-  z-index: 2147483000 !important;   /* 何が相手でも勝つ */
-  background:#fff; border-bottom:1px solid var(--line);
-  backdrop-filter: none;            /* 稀に描画が怪しくなるので一旦OFF */
-}
-body{ padding-top:64px !important; } /* ヘッダー分の押し下げ（見た目の余白） */
+/* ヘッダー（本番・fixed版） */
+:root{ --header-desktop:64px; --header-mobile:56px; }
 
+.site-header{
+  position: fixed; top: env(safe-area-inset-top, 0); left:0; right:0;
+  z-index: 1200;
+  background:#fff; border-bottom:1px solid var(--line);
+}
+
+body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
+@media (max-width: 991.98px){
+  body{ padding-top: calc(var(--header-mobile) + env(safe-area-inset-top, 0)); }
+}
+
+/* アンカーに飛んだ時にヘッダー下に隠れない対策（任意） */
+[id]{ scroll-margin-top: var(--header-desktop); }
+@media (max-width: 991.98px){
+  [id]{ scroll-margin-top: var(--header-mobile); }
+}
