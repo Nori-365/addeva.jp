@@ -31,56 +31,65 @@
   </header>
 
   <main>
-<!-- HERO -->
-<section class="hero">
-  <div class="container container-narrow">
-    <div class="row g-4 align-items-stretch">
-
-      <!-- Left: background image with copy overlay（元のまま） -->
-      <div class="col-12 col-lg-7 col-left">
-        <div class="bg-wrap">
-          <img src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-               alt="都市の通勤風景とADDEVA UrbanFlex" class="w-100 d-block">
-          <!-- tint はインラインのまま -->
-          <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
-               background:linear-gradient(90deg,
-                 rgba(0,0,0,.78) 0%,
-                 rgba(0,0,0,.54) 52%,
-                 rgba(28,82,190,.46) 70%,
-                 rgba(28,82,190,.28) 86%,
-                 rgba(0,0,0,0) 100%) !important;"></div>
-        </div>
-        <div class="copy">
-          <div>
-            <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
-            <h1>仕事も旅も、これ一つ。</h1>
-            <p class="lead">3WAY拡張マチでオンもオフも。15.6インチPC対応。</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container container-narrow">
+      <div class="row g-4 align-items-stretch">
+  
+        <!-- Left: background image with copy overlay（そのまま） -->
+        <div class="col-12 col-lg-7 col-left">
+          <div class="bg-wrap">
+            <!-- 背景 -->
+            <img
+              src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
+              alt="都市の通勤風景とADDEVA UrbanFlex"
+              class="w-100 d-block">
+            <!-- tint（インラインのまま）-->
+            <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
+                 background:linear-gradient(90deg,
+                   rgba(0,0,0,.78) 0%,
+                   rgba(0,0,0,.54) 52%,
+                   rgba(28,82,190,.46) 70%,
+                   rgba(28,82,190,.28) 86%,
+                   rgba(0,0,0,0) 100%) !important;"></div>
           </div>
-          <div class="cta-cluster">
-            <div class="pills" aria-label="補助バッジ">
-              <span class="pill">時短を叶える収納設計。</span>
-              <span class="pill">軽量防水設計。</span>
+  
+          <div class="copy">
+            <div>
+              <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
+              <h1>仕事も旅も、これ一つ。</h1>
+              <p class="lead">3WAY拡張マチでオンもオフも。15.6インチPC対応。</p>
             </div>
-            <div class="d-flex gap-2 mt-1 flex-wrap">
-              <a class="btn-ghost" href="#story">ブランドストーリー</a>
-              <a class="btn-ghost" href="#support">サポート</a>
-              <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳しく見る（BASE）</a>
+            <div class="cta-cluster">
+              <div class="pills" aria-label="補助バッジ">
+                <span class="pill">時短を叶える収納設計。</span>
+                <span class="pill">軽量防水設計。</span>
+              </div>
+              <div class="d-flex gap-2 mt-1 flex-wrap">
+                <a class="btn-ghost" href="#story">ブランドストーリー</a>
+                <a class="btn-ghost" href="#support">サポート</a>
+                <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳しく見る（BASE）</a>
+              </div>
             </div>
           </div>
         </div>
+  
+        <!-- Right: 背景を薄いグレーにして、画像は中央・トリミングなし -->
+        <div class="col-12 col-lg-5">
+          <!-- 右側タイル（正方形 + グレー背景 + 角丸）-->
+          <div class="ratio ratio-1x1 rounded-4"
+               style="background-color:#F2F6F7;">
+            <img
+              src="assets/img/hero/hero_right_bg_3way.jpg"
+              alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+              class="w-100 h-100"
+              style="object-fit:contain;object-position:center;">
+          </div>
+        </div>
+  
       </div>
-
-      <!-- Right: single composite image（Bootstrapのみ、フル幅） -->
-      <div class="col-12 col-lg-5">
-        <img src="assets/img/hero/hero_right_bg_3way.jpg"
-             alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
-             class="img-fluid d-block w-100 rounded-4">
-      </div>
-
     </div>
-  </div>
-</section>
-
+  </section>
 
     <!-- Other sections -->
     <section id="flagship" class="section">
