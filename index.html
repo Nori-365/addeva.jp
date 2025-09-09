@@ -32,12 +32,28 @@
 
   <main>
  <!-- HERO -->
-<!-- HERO (stable rollback) -->
 <section class="hero">
+  <!-- 最小限の追加スタイル（青い帯 & 右台座の高さ） -->
+  <style>
+    /* 「Flagship – …」の青い帯（行ごとに綺麗に回り込む） */
+    .hero .copy .eyebrow{
+      display:inline;
+      color:#fff;
+      font-weight:600;
+      letter-spacing:.02em;
+      line-height:1.25;
+      background: rgba(28,82,190,.22);
+      padding:.25rem .6rem;
+      border-radius:.5rem;
+      -webkit-box-decoration-break: clone;
+              box-decoration-break: clone;
+    }
+  </style>
+
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
 
-      <!-- Left: background image with copy overlay（元のまま） -->
+      <!-- Left: background image with copy overlay（元の構成のまま） -->
       <div class="col-12 col-lg-7 col-left">
         <div class="bg-wrap">
           <!-- 背景 -->
@@ -55,7 +71,6 @@
                  rgba(0,0,0,0) 100%) !important;"></div>
         </div>
 
-        <!-- ※ .copy は従来どおり（あなたのCSSで上に重なる想定） -->
         <div class="copy">
           <div>
             <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
@@ -76,7 +91,7 @@
         </div>
       </div>
 
-      <!-- Right：カラム自体がグレー台座。画像は中央・切り抜きなし -->
+      <!-- Right：カラム自体を薄グレー台座に。画像は中央・トリミングなし -->
       <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
            style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
         <img
@@ -89,6 +104,7 @@
     </div>
   </div>
 </section>
+
 
     <!-- Other sections -->
     <section id="flagship" class="section">
