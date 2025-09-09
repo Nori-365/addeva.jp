@@ -33,23 +33,52 @@
   <main>
   <!-- HERO -->
 <section class="hero">
+  <style>
+    /* 左：画像上ティントは疑似要素1枚に統一 */
+    .hero .col-left .bg-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem; /* = rounded-4 相当（お好みで） */
+    }
+    .hero .col-left .bg-wrap::after{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      z-index:1;
+      /* 黒→青→透明 のレイヤー（読みやすさ + ブランド感） */
+      background: linear-gradient(90deg,
+        rgba(0,0,0,.78) 0%,
+        rgba(0,0,0,.54) 45%,
+        rgba(28,82,190,.35) 70%,
+        rgba(28,82,190,.18) 84%,
+        rgba(0,0,0,0) 100%);
+    }
+    /* テキストは常に上面に */
+    .hero .copy{ position:relative; z-index:2; }
+
+    /* 「Flagship – …」に青い帯（行ごとに回り込む） */
+    .hero .copy .eyebrow{
+      display:inline;
+      color:#fff;
+      font-weight:600;
+      letter-spacing:.02em;
+      line-height:1.2;
+      background: rgba(28,82,190,.22);
+      padding: .2rem .6rem;
+      border-radius: .5rem;
+      -webkit-box-decoration-break: clone;
+              box-decoration-break: clone;
+    }
+  </style>
+
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
 
-      <!-- Left: 背景画像＋tint（元のまま） -->
+      <!-- Left -->
       <div class="col-12 col-lg-7 col-left">
         <div class="bg-wrap">
-          <img
-            src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-            alt="都市の通勤風景とADDEVA UrbanFlex"
-            class="w-100 d-block">
-          <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
-               background:linear-gradient(90deg,
-                 rgba(0,0,0,.78) 0%,
-                 rgba(0,0,0,.54) 52%,
-                 rgba(28,82,190,.46) 70%,
-                 rgba(28,82,190,.28) 86%,
-                 rgba(0,0,0,0) 100%) !important;"></div>
+          <img src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
+               alt="都市の通勤風景とADDEVA UrbanFlex" class="w-100 d-block">
         </div>
 
         <div class="copy">
@@ -72,14 +101,13 @@
         </div>
       </div>
 
-      <!-- Right: カラム自体にグレー背景。画像は中央・トリミングなし -->
+      <!-- Right：カラム全体をグレー台座に、画像は中央・切り抜きなし -->
       <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
-           style="background-color:#F2F6F7;">
-        <img
-          src="assets/img/hero/hero_right_bg_3way_v4.jpg"
-          alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
-          class="img-fluid"
-          style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
+           style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+        <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
+             alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+             class="img-fluid"
+             style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
       </div>
 
     </div>
