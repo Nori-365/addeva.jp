@@ -35,12 +35,16 @@
 <section class="hero">
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
+
       <!-- Left: background image with copy overlay -->
       <div class="col-12 col-lg-7 col-left">
-        <div class="bg-wrap">
-          <!-- v4 背景 -->
-          <img src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg" alt="都市の通勤風景とADDEVA UrbanFlex">
-          <!-- ★最強：実体のtint要素（inline style） -->
+        <div class="bg-wrap position-relative overflow-hidden rounded-4">
+          <!-- 背景 -->
+          <img
+            src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
+            alt="都市の通勤風景とADDEVA UrbanFlex"
+            class="w-100 d-block">
+          <!-- tint（インライン）-->
           <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
                background:linear-gradient(90deg,
                  rgba(0,0,0,.78) 0%,
@@ -49,6 +53,7 @@
                  rgba(28,82,190,.28) 86%,
                  rgba(0,0,0,0) 100%) !important;"></div>
         </div>
+
         <div class="copy">
           <div>
             <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
@@ -69,15 +74,16 @@
         </div>
       </div>
 
-      <!-- Right: single composite image (3way + Carry on) -->
+      <!-- Right: single composite image (Bootstrap only, full width) -->
       <div class="col-12 col-lg-5">
-        <div class="right-wrap">
+        <div class="right-wrap p-0 bg-transparent">
           <img
             src="assets/img/hero/hero_right_bg_3way.jpg"
-            class="top-wide"
-            alt="3way + Carry on イメージ（バックパック・ブリーフ・ショルダー／キャリーオン）">
+            alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+            class="img-fluid d-block w-100 rounded-4">
         </div>
       </div>
+
     </div>
   </div>
 </section>
