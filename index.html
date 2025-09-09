@@ -31,21 +31,8 @@
   </header>
 
   <main>
-<!-- HERO (revert to original font & styling; no blue badge) -->
+<!-- HERO (完全リセット版：既存CSSのみで表示) -->
 <section class="hero">
-  <!-- 眉（eyebrow）のスタイルを明示的に元へ：帯なし／フォント継承 -->
-  <style>
-    .hero .col-left .copy .eyebrow{
-      display: inline !important;
-      background: none !important;
-      padding: 0 !important;
-      border-radius: 0 !important;
-      color: inherit !important;
-      font: inherit !important;          /* family/size/weight/line-height を継承 */
-      letter-spacing: inherit !important;
-    }
-  </style>
-
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
 
@@ -87,7 +74,7 @@
         </div>
       </div>
 
-      <!-- Right：カラム自体を薄グレー台座に。画像は中央・トリミングなし（安定版） -->
+      <!-- Right：カラム自体を薄グレー台座に。画像は中央・トリミングなし -->
       <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
            style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
         <img
@@ -100,6 +87,7 @@
     </div>
   </div>
 </section>
+
 
 
     <!-- Other sections -->
