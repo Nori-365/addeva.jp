@@ -77,6 +77,24 @@
       background-color:#F2F6F7;
       min-height: clamp(300px, 38vw, 520px);
     }
+    /* 1) 左カラムを位置づけの基準にする */
+    .hero .col-left { position: relative; }
+    
+    /* 2) テキストブロックを絶対配置で重ねる（最上面） */
+    .hero .col-left .copy{
+      position: absolute;
+      inset: 0;           /* 上下左右ぜんぶ張り付け */
+      z-index: 2;         /* ティント(::after)より上 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;   /* 下寄せなら flex-end に */
+      align-items: flex-start;
+      padding: clamp(16px, 3.2vw, 40px);  /* 余白はお好みで */
+    }
+    
+    /* 参考：ティントは z-index:1 のまま */
+    .hero .col-left .bg-wrap::after { z-index: 1; }
+
   </style>
 
   <div class="container container-narrow">
