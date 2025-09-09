@@ -32,132 +32,63 @@
 
   <main>
  <!-- HERO -->
- <section class="hero">
-    <style>
-      /* 左：画像＝CSS背景、ティント＝::after、テキスト＝最上面 */
-      .hero .col-left .bg-wrap{
-        position: relative;
-        overflow: hidden;
-        border-radius: 1rem;                 /* 左カードの角丸 */
-        aspect-ratio: 21 / 9;                /* 高さを保証 */
-        background-image: url("assets/img/hero/hero_left_bg_station_21x9_v4.jpg");
-        background-size: cover !important;   /* 常にトリミング優先 */
-        background-position: 60% 50%;        /* ←主役の見せ方を調整（0%〜100%）*/
-        background-repeat: no-repeat;
-      }
-      .hero .col-left .bg-wrap::after{
-        content:"";
-        position:absolute; inset:0;
-        pointer-events:none;
-        z-index:1;
-        background: linear-gradient(90deg,
-          rgba(0,0,0,.78) 0%,
-          rgba(0,0,0,.54) 45%,
-          rgba(28,82,190,.35) 70%,
-          rgba(28,82,190,.18) 84%,
-          rgba(0,0,0,0) 100%);
-      }
-      /* テキストを絶対配置で全面に重ねる */
-      .hero .col-left .copy{
-        position: absolute; inset: 0; z-index: 2;
-        display: flex; flex-direction: column;
-        justify-content: center; align-items: flex-start;
-        padding: clamp(16px, 3.2vw, 40px);
-      }
-      /* 「Flagship – …」に青い帯 */
-      .hero .copy .eyebrow{
-        display:inline; color:#fff; font-weight:600; letter-spacing:.02em; line-height:1.25;
-        background: rgba(28,82,190,.22);
-        padding:.25rem .6rem; border-radius:.5rem;
-        -webkit-box-decoration-break: clone; box-decoration-break: clone;
-      }
-      /* 右：台座グレー＋画像中央 */
-      .hero .right-tile{
-        background-color:#F2F6F7;
-        min-height: clamp(300px, 38vw, 520px);
-      }
-    /* ヒーロー共通の可変パラメータ（お好みで数値だけ変えればOK） */
-    .hero{
-      /* 高さ（縦の確保）— 画面幅に応じて伸縮 */
-      --hero-h: clamp(340px, 40vw, 560px);
-      /* ズーム量（%）— 100%だと等倍、110〜125%で“寄り”に */
-      --bg-zoom: 115%;
-      /* 主体の横位置（%）— 0%左 / 50%中央 / 100%右。人物にあわせて微調整 */
-      --bg-focus-x: 62%;
-    }
-    
-    /* 左カード：背景の見せ方を“寄り”に戻す */
-    .hero .col-left .bg-wrap{
-      /* 以前の aspect-ratio をやめて、縦をしっかり確保 */
-      min-height: var(--hero-h);
-      /* 背景を拡大表示してトリミング（＝ズーム） */
-      background-size: var(--bg-zoom) auto !important;
-      background-position: var(--bg-focus-x) 50%;
-      background-repeat: no-repeat;
-      background-image: url("assets/img/hero/hero_left_bg_station_21x9_v4.jpg");
-      background-color: #000; /* 端が出たときの保険（見えない想定） */
-    }
-    
-    /* ティントはそのまま（重ね順だけ念押し） */
-    .hero .col-left .bg-wrap::after{
-      z-index: 1;
-    }
-    
-    /* テキストは全面に重ねる（回り込み防止） */
-    .hero .col-left{ position: relative; }
-    .hero .col-left .copy{
-      position: absolute; inset: 0; z-index: 2;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: flex-start;
-      padding: clamp(16px, 3.2vw, 40px);
-    }
-    
-    /* 右側の台座の高さも左と揃えておくとバランスが安定 */
-    .hero .right-tile{ min-height: var(--hero-h); }
-    </style>
-  
-    <div class="container container-narrow">
-      <div class="row g-4 align-items-stretch">
-  
-        <!-- Left -->
-        <div class="col-12 col-lg-7 col-left">
-          <div class="bg-wrap">
-            <!-- ★ copy を bg-wrap の中へ（ここが重要） -->
-            <div class="copy">
-              <div>
-                <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
-                <h1>仕事も旅も、これ一つ。</h1>
-                <p class="lead">3WAY拡張マチでオンもオフも。15.6インチPC対応。</p>
-              </div>
-              <div class="cta-cluster mt-3">
-                <div class="pills mb-2" aria-label="補助バッジ">
-                  <span class="pill">時短を叶える収納設計。</span>
-                  <span class="pill">軽量防水設計。</span>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn-ghost" href="#story">ブランドストーリー</a>
-                  <a class="btn-ghost" href="#support">サポート</a>
-                  <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳しく見る（BASE）</a>
-                </div>
-              </div>
+<!-- HERO (stable rollback) -->
+<section class="hero">
+  <div class="container container-narrow">
+    <div class="row g-4 align-items-stretch">
+
+      <!-- Left: background image with copy overlay（元のまま） -->
+      <div class="col-12 col-lg-7 col-left">
+        <div class="bg-wrap">
+          <!-- 背景 -->
+          <img
+            src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
+            alt="都市の通勤風景とADDEVA UrbanFlex"
+            class="w-100 d-block">
+          <!-- tint（インラインのまま）-->
+          <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
+               background:linear-gradient(90deg,
+                 rgba(0,0,0,.78) 0%,
+                 rgba(0,0,0,.54) 52%,
+                 rgba(28,82,190,.46) 70%,
+                 rgba(28,82,190,.28) 86%,
+                 rgba(0,0,0,0) 100%) !important;"></div>
+        </div>
+
+        <!-- ※ .copy は従来どおり（あなたのCSSで上に重なる想定） -->
+        <div class="copy">
+          <div>
+            <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
+            <h1>仕事も旅も、これ一つ。</h1>
+            <p class="lead">3WAY拡張マチでオンもオフも。15.6インチPC対応。</p>
+          </div>
+          <div class="cta-cluster">
+            <div class="pills" aria-label="補助バッジ">
+              <span class="pill">時短を叶える収納設計。</span>
+              <span class="pill">軽量防水設計。</span>
+            </div>
+            <div class="d-flex gap-2 mt-1 flex-wrap">
+              <a class="btn-ghost" href="#story">ブランドストーリー</a>
+              <a class="btn-ghost" href="#support">サポート</a>
+              <a class="btn-ghost" href="https://addeva.official.ec/" target="_blank" rel="noopener">詳しく見る（BASE）</a>
             </div>
           </div>
         </div>
-  
-        <!-- Right：カラム全体が台座。画像は中央・切り抜きなし -->
-        <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4 right-tile">
-          <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
-               alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
-               class="img-fluid"
-               style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
-        </div>
-  
       </div>
+
+      <!-- Right：カラム自体がグレー台座。画像は中央・切り抜きなし -->
+      <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
+           style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+        <img
+          src="assets/img/hero/hero_right_bg_3way_v4.jpg"
+          alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+          class="img-fluid"
+          style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
+      </div>
+
     </div>
-  </section>
-
-
-
+  </div>
+</section>
 
     <!-- Other sections -->
     <section id="flagship" class="section">
