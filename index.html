@@ -31,20 +31,16 @@
   </header>
 
   <main>
- <!-- HERO -->
+<!-- HERO -->
 <section class="hero">
-  <!-- 最小限の追加スタイル（青い帯 & 右台座の高さ） -->
+  <!-- 追加：eyebrow を不透明の青帯に（フォントは一切触らない） -->
   <style>
-    /* 「Flagship – …」の青い帯（行ごとに綺麗に回り込む） */
-    .hero .copy .eyebrow{
-      display:inline;
-      color:#fff;
-      font-weight:600;
-      letter-spacing:.02em;
-      line-height:1.25;
-      background: rgba(28,82,190,.22);
-      padding:.25rem .6rem;
-      border-radius:.5rem;
+    .hero .col-left .copy .eyebrow{
+      display: inline-block;
+      color: #fff;
+      background: #2A5CD6;      /* 不透明の青 */
+      padding: .25rem .6rem;
+      border-radius: .5rem;
       -webkit-box-decoration-break: clone;
               box-decoration-break: clone;
     }
@@ -104,6 +100,7 @@
     </div>
   </div>
 </section>
+
 
 
     <!-- Other sections -->
