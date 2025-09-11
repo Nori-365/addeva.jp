@@ -16,7 +16,6 @@
   <meta property="og:image" content="assets/img/og/urbanflex_og.jpg">
   <meta property="og:url" content="/urbanflex.html">
 
-  <!-- アンカー時にヘッダーと重ならない & サブナビ影 -->
   <style>
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 56px); }
     .subnav-shadow{ box-shadow: 0 2px 8px rgba(0,0,0,.06); }
@@ -41,26 +40,15 @@
   </nav>
 
   <main>
-    <!-- Top HERO（indexと同じ構成） -->
+    <!-- Top HERO（indexと同構成） -->
     <section class="hero">
       <div class="container container-narrow">
         <div class="row g-4 align-items-stretch">
-          <!-- Left: background image with copy overlay -->
           <div class="col-12 col-lg-7 col-left">
             <div class="bg-wrap">
-              <img
-                src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-                alt="都市の通勤風景とADDEVA UrbanFlex"
-                class="w-100 d-block">
-              <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
-                   background:linear-gradient(90deg,
-                     rgba(0,0,0,.78) 0%,
-                     rgba(0,0,0,.54) 52%,
-                     rgba(28,82,190,.46) 70%,
-                     rgba(28,82,190,.28) 86%,
-                     rgba(0,0,0,0) 100%) !important;"></div>
+              <img src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg" alt="都市の通勤風景とADDEVA UrbanFlex" class="w-100 d-block">
+              <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.54) 52%,rgba(28,82,190,.46) 70%,rgba(28,82,190,.28) 86%,rgba(0,0,0,0) 100%) !important;"></div>
             </div>
-
             <div class="copy">
               <div>
                 <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
@@ -73,17 +61,14 @@
               </div>
             </div>
           </div>
-
-          <!-- Right visual -->
-          <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
-               style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+          <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4" style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
             <img src="assets/img/hero/hero_right_bg_3way_v4.jpg" alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）" class="img-fluid" style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ブランドストーリー（既存文言は後で“引用◯”に差し替え） -->
+    <!-- ブランド -->
     <section id="brand" class="section">
       <div class="container container-narrow">
         <div class="kicker">BRAND STORY</div>
@@ -100,16 +85,16 @@
       </div>
     </section>
 
-    <!-- 共通特徴（PCは左画像×右テキスト／スマホは交互） -->
+    <!-- 共通特徴（PC=左画像×右テキスト／SP=交互） -->
     <section id="common" class="section">
       <div class="container container-narrow">
         <div class="kicker">Features</div>
         <h2>UrbanFlex の共通特徴（2R-18 / 3REX-40）</h2>
 
-        <!-- 1) AquaShield（SP：画像→テキスト） -->
+        <!-- 1) AquaShield -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-1 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/99.png" alt="“AquaShield” 防水軽量バックパック">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/8.png" alt="“AquaShield” 防水軽量バックパック">
           </div>
           <div class="col-12 col-md-6 order-2 order-md-2">
             <h3 class="h5 mb-2">“AquaShield” 防水軽量バックパック</h3>
@@ -121,7 +106,7 @@
         <!-- 2) Flexible room（SP：テキスト→画像） -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-2 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/98.png" alt="“Flexible room” 自在な収納空間">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/9.png" alt="“Flexible room” 自在な収納空間">
           </div>
           <div class="col-12 col-md-6 order-1 order-md-2">
             <h3 class="h5 mb-2">“Flexible room”</h3>
@@ -129,10 +114,10 @@
           </div>
         </div>
 
-        <!-- 3) Detach Pocket（SP：画像→テキスト） -->
+        <!-- 3) Detach Pocket -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-1 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/97.png" alt="“Detach Pocket” サコッシュに変形">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/13.png" alt="“Detach Pocket” サコッシュに変形">
           </div>
           <div class="col-12 col-md-6 order-2 order-md-2">
             <h3 class="h5 mb-2">“Detach Pocket”</h3>
@@ -140,10 +125,10 @@
           </div>
         </div>
 
-        <!-- 4) Smart Expandable Zip（3REX-40のみ／SP：テキスト→画像） -->
+        <!-- 4) Smart Expandable Zip（3REX-40のみ） -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-2 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/96.png" alt="“Smart Expandable Zip” スマートエキスパンダブルジッパー">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/14.png" alt="“Smart Expandable Zip” スマートエキスパンダブルジッパー">
           </div>
           <div class="col-12 col-md-6 order-1 order-md-2">
             <h3 class="h5 mb-2">“Smart Expandable Zip” スマートエキスパンダブルジッパー</h3>
@@ -152,10 +137,10 @@
           </div>
         </div>
 
-        <!-- 5) 3D Ergo Back Panel（SP：画像→テキスト） -->
+        <!-- 5) 3D Ergo Back Panel -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-1 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/95.png" alt="“3D Ergo Back Panel” 疲れを軽減させる背面設計">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/15.png" alt="“3D Ergo Back Panel” 疲れを軽減させる背面設計">
           </div>
           <div class="col-12 col-md-6 order-2 order-md-2">
             <h3 class="h5 mb-2">“3D Ergo Back Panel” 疲れを軽減させる背面設計</h3>
@@ -163,10 +148,10 @@
           </div>
         </div>
 
-        <!-- 6) Wet Safe Pocket（SP：テキスト→画像） -->
+        <!-- 6) Wet Safe Pocket -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-2 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/94.png" alt="“Wet Safe Pocket” 濡れた傘も入れられるペットボトルポケット">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/16.png" alt="“Wet Safe Pocket” 濡れた傘も入れられるペットボトルポケット">
           </div>
           <div class="col-12 col-md-6 order-1 order-md-2">
             <h3 class="h5 mb-2">“Wet Safe Pocket” 濡れた傘も入れられるペットボトルポケット</h3>
@@ -174,10 +159,10 @@
           </div>
         </div>
 
-        <!-- 7) Smart Access Strap（SP：画像→テキスト） -->
+        <!-- 7) Smart Access Strap -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-1 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/93.png" alt="“Smart Access Strap” ショルダーストラップポケット">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/17.png" alt="“Smart Access Strap” ショルダーストラップポケット">
           </div>
           <div class="col-12 col-md-6 order-2 order-md-2">
             <h3 class="h5 mb-2">“Smart Access Strap” ショルダーストラップポケット</h3>
@@ -185,10 +170,10 @@
           </div>
         </div>
 
-        <!-- 8) Immigration Access Pocket（SP：テキスト→画像） -->
+        <!-- 8) Immigration Access Pocket -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-2 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/92.png" alt="“Immigration Access Pocket” 空港利用を想定したスマート収納">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/18.png" alt="“Immigration Access Pocket” 空港利用を想定したスマート収納">
           </div>
           <div class="col-12 col-md-6 order-1 order-md-2">
             <h3 class="h5 mb-2">“Immigration Access Pocket” 空港利用を想定したスマート収納</h3>
@@ -196,10 +181,10 @@
           </div>
         </div>
 
-        <!-- 9) Rain Lock cable hole（SP：画像→テキスト） -->
+        <!-- 9) Rain Lock cable hole -->
         <div class="row g-4 align-items-center mb-4">
           <div class="col-12 col-md-6 order-1 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/91.png" alt="“Rain Lock cable hole” 防水ケーブルホール">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/19.png" alt="“Rain Lock cable hole” 防水ケーブルホール">
           </div>
           <div class="col-12 col-md-6 order-2 order-md-2">
             <h3 class="h5 mb-2">“Rain Lock cable hole” 防水ケーブルホール</h3>
@@ -207,10 +192,10 @@
           </div>
         </div>
 
-        <!-- 10) Garment Guard（SP：テキスト→画像） -->
+        <!-- 10) Garment Guard -->
         <div class="row g-4 align-items-center">
           <div class="col-12 col-md-6 order-2 order-md-1">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/90.png" alt="“Garment Guard” シワを防止する衣類収納スペース">
+            <img class="img-fluid rounded-3" src="assets/img/urbanflex/20.png" alt="“Garment Guard” シワを防止する衣類収納スペース">
           </div>
           <div class="col-12 col-md-6 order-1 order-md-2">
             <h3 class="h5 mb-2">“Garment Guard” シワを防止する衣類収納スペース</h3>
@@ -226,51 +211,21 @@
       <div class="container container-narrow">
         <div class="kicker">Compare</div>
         <h2>2サイズの違い</h2>
-
         <div class="table-responsive">
           <table class="table table-striped align-middle">
             <thead>
-              <tr>
-                <th style="width:14rem;">項目</th>
-                <th>2R-18</th>
-                <th>3REX-40</th>
-              </tr>
+              <tr><th style="width:14rem;">項目</th><th>2R-18</th><th>3REX-40</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <th>外形サイズ</th>
-                <td><span class="quote" data-quote="cmp-size-2r18">引用（2R-18サイズ）</span></td>
-                <td><span class="quote" data-quote="cmp-size-3rex40">引用（3REX-40サイズ）</span></td>
-              </tr>
-              <tr>
-                <th>容量</th>
-                <td><span class="quote" data-quote="cmp-vol-2r18">引用（2R-18容量）</span></td>
-                <td><span class="quote" data-quote="cmp-vol-3rex40">引用（3REX-40容量／拡張時）</span></td>
-              </tr>
-              <tr>
-                <th>ルーム構成</th>
-                <td><span class="quote" data-quote="cmp-room-2r18">引用（2ルームなど）</span></td>
-                <td><span class="quote" data-quote="cmp-room-3rex40">引用（3ルームなど）</span></td>
-              </tr>
-              <tr>
-                <th>拡張機能</th>
-                <td><span class="quote" data-quote="cmp-exp-2r18">引用（有無）</span></td>
-                <td><span class="quote" data-quote="cmp-exp-3rex40">引用（有無）</span></td>
-              </tr>
-              <tr>
-                <th>付属品</th>
-                <td><span class="quote" data-quote="cmp-acc-2r18">引用（付属品）</span></td>
-                <td><span class="quote" data-quote="cmp-acc-3rex40">引用（付属品）</span></td>
-              </tr>
-              <tr>
-                <th>想定シーン</th>
-                <td><span class="quote" data-quote="cmp-scene-2r18">引用（例：通勤〜日帰り）</span></td>
-                <td><span class="quote" data-quote="cmp-scene-3rex40">引用（例：1〜2泊）</span></td>
-              </tr>
+              <tr><th>外形サイズ</th><td><span class="quote" data-quote="cmp-size-2r18">引用（2R-18サイズ）</span></td><td><span class="quote" data-quote="cmp-size-3rex40">引用（3REX-40サイズ）</span></td></tr>
+              <tr><th>容量</th><td><span class="quote" data-quote="cmp-vol-2r18">引用（2R-18容量）</span></td><td><span class="quote" data-quote="cmp-vol-3rex40">引用（3REX-40容量／拡張時）</span></td></tr>
+              <tr><th>ルーム構成</th><td><span class="quote" data-quote="cmp-room-2r18">引用（2ルームなど）</span></td><td><span class="quote" data-quote="cmp-room-3rex40">引用（3ルームなど）</span></td></tr>
+              <tr><th>拡張機能</th><td><span class="quote" data-quote="cmp-exp-2r18">引用（有無）</span></td><td><span class="quote" data-quote="cmp-exp-3rex40">引用（有無）</span></td></tr>
+              <tr><th>付属品</th><td><span class="quote" data-quote="cmp-acc-2r18">引用（付属品）</span></td><td><span class="quote" data-quote="cmp-acc-3rex40">引用（付属品）</span></td></tr>
+              <tr><th>想定シーン</th><td><span class="quote" data-quote="cmp-scene-2r18">引用（例：通勤〜日帰り）</span></td><td><span class="quote" data-quote="cmp-scene-3rex40">引用（例：1〜2泊）</span></td></tr>
             </tbody>
           </table>
         </div>
-
       </div>
     </section>
 
@@ -281,12 +236,12 @@
         <h2>2R-18</h2>
         <div class="row g-4 align-items-center">
           <div class="col-12 col-lg-6 order-2 order-lg-1">
-            <!-- 画像は後で差し替え。仮のパス -->
+            <!-- ★ここに2R-18の画像4枚を配置 -->
             <div class="row row-cols-2 g-2">
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_01.jpg" alt="2R-18 イメージ1"></div>
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_02.jpg" alt="2R-18 イメージ2"></div>
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_03.jpg" alt="2R-18 イメージ3"></div>
-              <div class="col d-none d-md-block"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_04.jpg" alt="2R-18 イメージ4"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_01.jpg" alt="2R-18 正面/外観"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_02.jpg" alt="2R-18 内部レイアウト"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_03.jpg" alt="2R-18 着用イメージ"></div>
+              <div class="col d-none d-md-block"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_2r18_04.jpg" alt="2R-18 ディテール"></div>
             </div>
           </div>
           <div class="col-12 col-lg-6 order-1 order-lg-2">
@@ -311,12 +266,12 @@
         <h2>3REX-40</h2>
         <div class="row g-4 align-items-center">
           <div class="col-12 col-lg-6 order-2 order-lg-1">
-            <!-- 画像は後で差し替え。仮のパス -->
+            <!-- ★ここに3REX-40の画像4枚を配置 -->
             <div class="row row-cols-2 g-2">
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_before.jpg" alt="3REX-40 拡張前"></div>
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_after.jpg" alt="3REX-40 拡張後"></div>
-              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_open.jpg" alt="3REX-40 開口"></div>
-              <div class="col d-none d-md-block"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_04.jpg" alt="3REX-40 イメージ4"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_01.jpg" alt="3REX-40 正面/外観"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_02.jpg" alt="3REX-40 拡張前/後の比較"></div>
+              <div class="col"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_03.jpg" alt="3REX-40 3ルーム開口"></div>
+              <div class="col d-none d-md-block"><img class="img-fluid rounded-3" src="assets/img/urbanflex/urbanflex_3rex40_04.jpg" alt="3REX-40 着用/シーン"></div>
             </div>
           </div>
           <div class="col-12 col-lg-6 order-1 order-lg-2">
@@ -334,7 +289,7 @@
       </div>
     </section>
 
-    <!-- FAQ（返品系ナシ／本文は“引用”で後入れ） -->
+    <!-- FAQ（返品系ナシ） -->
     <section id="faq" class="section">
       <div class="container container-narrow">
         <div class="kicker">FAQ</div>
@@ -351,15 +306,12 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- 共通フッター -->
   <div data-include="footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- インクルードローダー（header/footer 読み込み & 年号更新） -->
   <script>
     (function () {
       async function includeFragments() {
@@ -371,15 +323,12 @@
             if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
             const html = await resp.text();
             el.outerHTML = html;
-          } catch (e) {
-            console.error('Include failed:', file, e);
-          }
+          } catch (e) { console.error('Include failed:', file, e); }
         }));
       }
       document.addEventListener('DOMContentLoaded', async () => {
         await includeFragments();
-        const y = document.getElementById('y');
-        if (y) y.textContent = new Date().getFullYear();
+        const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
       });
     })();
   </script>
