@@ -11,28 +11,11 @@
   <link rel="stylesheet" href="assets/css/main.css?v=3.5">
 </head>
 <body>
-  <header class="site-header fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container container-narrow">
-        <a class="navbar-brand" href="#">ADDEVA®</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="メニュー">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="https://addeva.official.ec/" target="_blank" rel="noopener">製品ラインナップ</a></li>
-            <li class="nav-item"><a class="nav-link" href="#company">会社情報</a></li>
-            <li class="nav-item"><a class="nav-link" href="#story">ブランドストーリー</a></li>
-            <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">お問い合わせ</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="header.html" aria-busy="true"></div>
 
   <main>
-    <!-- HERO（HTML内の <style> は撤去。青帯/ナビ色は main.css v3.5 に移植済み） -->
+    <!-- HERO -->
     <section class="hero">
       <div class="container container-narrow">
         <div class="row g-4 align-items-stretch">
@@ -45,7 +28,7 @@
                 src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
                 alt="都市の通勤風景とADDEVA UrbanFlex"
                 class="w-100 d-block">
-              <!-- tint（この属性スタイルはこのままでOK）-->
+              <!-- tint -->
               <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
                    background:linear-gradient(90deg,
                      rgba(0,0,0,.78) 0%,
@@ -75,7 +58,7 @@
             </div>
           </div>
 
-          <!-- Right：カラム自体を薄グレー台座に。画像は中央・トリミングなし -->
+          <!-- Right -->
           <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
                style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
             <img src="assets/img/hero/hero_right_bg_3way_v4.jpg" alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）" class="img-fluid" style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
@@ -85,60 +68,7 @@
       </div>
     </section>
 
-    <!-- ▼▼▼ ここから追加：ファーストビュー直下のB2B 2枚カード ▼▼▼ -->
-    <section id="b2b" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">For Business</div>
-        <h2>法人向けサービス｜小ロット × OEM</h2>
-
-        <div class="row row-cols-1 row-cols-lg-2 g-4 mt-1">
-
-          <!-- Card A: 小ロット製造 × 国内一括仕入れ -->
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body p-4">
-                <h3 class="h4 mb-2">小ロット製造 × 国内一括仕入れ（500〜1000個）</h3>
-                <p class="mb-3">直接輸入ではなく、<strong>ADDEVAから国内購入</strong>する方式で、手続きとコストをスマートに。</p>
-                <ul class="mb-4">
-                  <li>請求は日本円・国内取引</li>
-                  <li>通関・貿易実務はADDEVA側で対応</li>
-                  <li>初期不良対応を国内で一本化</li>
-                  <li>FBA直納など納品形態の相談可</li>
-                </ul>
-                <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn btn-dark" href="#contact">まずは相談（法人）</a>
-                  <a class="btn btn-outline-dark" href="#" aria-disabled="true">詳しく見る（準備中）</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card B: OEM / ODM 生産 -->
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body p-4">
-                <h3 class="h4 mb-2">OEM / ODM 生産</h3>
-                <p class="mb-3">企画（日本）× 製造（ベトナム）。試作から量産、品質検査、納品まで一気通貫。</p>
-                <ul class="mb-4">
-                  <li>仕様設計・素材選定・金具／ロゴ入れ</li>
-                  <li>スケジュール例・検品フローの提示可</li>
-                  <li>品質保証ポリシーに沿った対応</li>
-                  <li>用途に応じた梱包／出荷形態</li>
-                </ul>
-                <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn btn-dark" href="#contact">OEMを相談する</a>
-                  <a class="btn btn-outline-dark" href="#" aria-disabled="true">詳しく見る（準備中）</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /.row -->
-      </div>
-    </section>
-    <!-- ▲▲▲ 追加ここまで ▲▲▲ -->
-
-    <!-- Other sections -->
+    <!-- UrbanFlexという選択（=製品の理由セクション） -->
     <section id="flagship" class="section">
       <div class="container container-narrow">
         <div class="kicker">合理性をデザインする</div>
@@ -161,33 +91,84 @@
       </div>
     </section>
 
-<section id="story" class="section section-story">
-  <div class="container container-narrow">
-    <div class="kicker">BRAND STORY</div>
-    <h2>ADDEVA –「常に付加価値のある商品を作り続ける」</h2>
-    <div class="row">
-      <div class="col-12 col-md-2">
-        <img src="assets/img/addeva_logo.png" style="max-width:150px";><br/>
-      </div>
-      <div class="col-12 col-md-10">
-        <p>ADDEVAの名前の由来は、「Added Value（付加価値）」という言葉にあります。私たちは、単なる商品提供に留まらず、日常をより豊かにする製品を創り出すことを目指しています。</p>
-        <p>ーユーザーと共に歩みたいー<br/>私たちの使命は、ユーザーのニーズに応じた「付加価値」を提供することです。ADDEVAの製品は、単なるバッグとしてではなく、ユーザーのライフスタイルに寄り添うパートナーでありたいと考えています。</p>
-      </div>
-    </div>
+    <!-- ▼ B2B：2枚カード（“UrbanFlexの下”に配置） -->
+    <section id="b2b" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">For Business</div>
+        <h2>法人向けサービス｜小ロット × OEM</h2>
 
-    <div class="col-12 col-md-12">
-      <h3 class="h5 mt-4 mb-2">ユーザーが商品開発に関われるブランドに</h3>
-      <blockquote class="q">
-        <p class="mb-0">
-          インターネットの進化により、ユーザーと開発者が簡単にコミュニケーションを取れる時代となりました。ADDDEVAは、ユーザー様が、実際にご使用したご意見やご提案を投稿したり、アイデアを出して商品開発にご参加いただけるようなシステムを準備中です。
-        </p>
-      </blockquote>
-  </div>
-    
-  </div>
-</section>
+        <div class="row row-cols-1 row-cols-lg-2 g-4 mt-1">
 
-    
+          <!-- Card A -->
+          <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-body p-4">
+                <h3 class="h4 mb-2">小ロット製造 × 国内一括仕入れ（500〜1000個）</h3>
+                <p class="mb-3">直接輸入ではなく、<strong>ADDEVAから国内購入</strong>する方式で、手続きとコストをスマートに。</p>
+                <ul class="mb-4">
+                  <li>請求は日本円・国内取引</li>
+                  <li>通関・貿易実務はADDEVA側で対応</li>
+                  <li>初期不良対応を国内で一本化</li>
+                  <li>FBA直納など納品形態の相談可</li>
+                </ul>
+                <div class="d-flex gap-2 flex-wrap">
+                  <a class="btn btn-dark" href="#contact">まずは相談（法人）</a>
+                  <a class="btn btn-outline-dark" href="#" aria-disabled="true">詳しく見る（準備中）</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card B -->
+          <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+              <div class="card-body p-4">
+                <h3 class="h4 mb-2">OEM / ODM 生産</h3>
+                <p class="mb-3">企画（日本）× 製造（ベトナム）。試作から量産、品質検査、納品まで一気通貫。</p>
+                <ul class="mb-4">
+                  <li>仕様設計・素材選定・金具／ロゴ入れ</li>
+                  <li>スケジュール例・検品フローの提示可</li>
+                  <li>品質保証ポリシーに沿った対応</li>
+                  <li>用途に応じた梱包／出荷形態</li>
+                </ul>
+                <div class="d-flex gap-2 flex-wrap">
+                  <a class="btn btn-dark" href="#contact">OEMを相談する</a>
+                  <a class="btn btn-outline-dark" href="#" aria-disabled="true">詳しく見る（準備中）</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.row -->
+      </div>
+    </section>
+
+    <!-- 以降は現状どおり -->
+    <section id="story" class="section section-story">
+      <div class="container container-narrow">
+        <div class="kicker">BRAND STORY</div>
+        <h2>ADDEVA –「常に付加価値のある商品を作り続ける」</h2>
+        <div class="row">
+          <div class="col-12 col-md-2">
+            <img src="assets/img/addeva_logo.png" style="max-width:150px"><br/>
+          </div>
+          <div class="col-12 col-md-10">
+            <p>ADDEVAの名前の由来は、「Added Value（付加価値）」という言葉にあります。私たちは、単なる商品提供に留まらず、日常をより豊かにする製品を創り出しています。</p>
+            <p>ーユーザーと共に歩みたいー<br/>私たちの使命は、ユーザーのニーズに応じた「付加価値」を提供することです。ADDEVAの製品は、単なるバッグとしてではなく、ユーザーのライフスタイルに寄り添うパートナーでありたいと考えています。</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-12">
+          <h3 class="h5 mt-4 mb-2">ユーザーが商品開発に関われるブランドに</h3>
+          <blockquote class="q">
+            <p class="mb-0">
+              インターネットの進化により、ユーザーと開発者が簡単にコミュニケーションを取れる時代となりました。ADDDEVAは、ユーザー様が、実際にご使用したご意見やご提案を投稿したり、アイデアを出して商品開発にご参加いただけるようなシステムを準備中です。
+            </p>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
     <section id="support" class="section">
       <div class="container container-narrow">
         <div class="kicker">サポート</div>
@@ -247,14 +228,36 @@
     </section>
   </main>
 
-  <footer>
-    <div class="container container-narrow">
-      <p>ご購入はAmazonで。</p>
-      <p class="mt-2">© <span id="y"></span> ADDEVA®</p>
-    </div>
-  </footer>
+  <!-- ▼ 共通フッターを読み込み -->
+  <div data-include="footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+
+  <!-- ▼ 超軽量インクルードローダー（サーバ設定不要） -->
+  <script>
+    (function () {
+      async function includeFragments() {
+        const nodes = document.querySelectorAll('[data-include]');
+        await Promise.all([...nodes].map(async (el) => {
+          const file = el.getAttribute('data-include');
+          try {
+            const resp = await fetch(file, { cache: 'no-cache' });
+            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+            const html = await resp.text();
+            // プレースホルダーごと置換
+            el.outerHTML = html;
+          } catch (e) {
+            console.error('Include failed:', file, e);
+          }
+        }));
+      }
+      document.addEventListener('DOMContentLoaded', async () => {
+        await includeFragments();
+        // 年号はフッター挿入後に設定
+        const y = document.getElementById('y');
+        if (y) y.textContent = new Date().getFullYear();
+      });
+    })();
+  </script>
 </body>
 </html>
