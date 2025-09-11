@@ -2,65 +2,400 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>FAQ | ADDEVA</title>
-  <meta name="description" content="ADDEVA | 付加価値のある鞄で、毎日の通勤と旅行をスマートに。">
-  <meta property="og:title" content="FAQ | ADDEVA">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ | ADDEVA® 公式</title>
+  <meta name="description" content="株式会社ADDEVAのFAQ。法人向けサービス（小ロット×OEM）と、ADDEVA UrbanFlex製品に関するよくある質問。">
+  <link rel="icon" href="favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/ogp.jpg?v=40">
-  <link rel="stylesheet" href="assets/styles.css?v=40">
-  
-<style id="nav-inline">
-@media (max-width:960px){
-  header.site-header details.nav-mobile[open] .drawer{display:block!important}
-  header.site-header details.nav-mobile[open] .primary-nav{position:fixed!important;inset:56px 0 0 0!important;display:block!important;background:#fff!important;z-index:1000!important;overflow:auto!important;padding:16px!important}
-}
-</style>
-
+  <meta property="og:title" content="FAQ | ADDEVA">
+  <meta property="og:description" content="法人向けサービス／UrbanFlex のよくある質問まとめ。">
+  <meta property="og:image" content="assets/img/og/faq_og.jpg">
+  <meta property="og:url" content="/faq.html">
+  <style>
+    section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 24px); }
+    .page-hero{padding: 64px 0 24px;}
+    .accordion-button:focus{ box-shadow: none; }
+    .muted{color: var(--bs-secondary-color, #6c757d);}
+  </style>
 </head>
 <body>
-  <header class="site-header container">
-    <a class="brand" href="index.html">ADDEVA</a>
-    <details class="nav-mobile">
-      <summary aria-label="メニュー"><span></span><span></span><span></span></summary>
-      <div class="drawer">
-        <nav class="primary-nav" aria-label="モバイルメニュー">
-          <a href="index.html">Home</a>
-          <a href="product/urbanflex-2r18.html">2R-18</a>
-          <a href="product/urbanflex-3rex40.html">3REX-40</a>
-          <a href="story.html">Story</a>
-          <a href="faq.html">FAQ</a>
-          <a href="contact.html">Contact</a>
-          <a href="policies.html">Policies</a>
-          <a href="https://addeva.official.ec/" target="_blank" rel="noopener">Shop</a>
-        </nav>
-      </div>
-    </details>
-    <nav class="nav-desktop" aria-label="デスクトップメニュー">
-      <a href="index.html">Home</a>
-      <a href="product/urbanflex-2r18.html">2R-18</a>
-      <a href="product/urbanflex-3rex40.html">3REX-40</a>
-      <a href="story.html">Story</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact</a>
-      <a href="policies.html">Policies</a>
-      <a href="https://addeva.official.ec/" target="_blank" rel="noopener">Shop</a>
-    </nav>
-  </header>
-  
-<main class="container">
-  <h1>FAQ</h1>
-  <h2>発送はどのくらい？</h2>
-  <p>通常、1〜2営業日以内に発送します（在庫や注文状況により変動）。</p>
-  <h2>返品はできますか？</h2>
-  <p>初期不良の場合は返品を承ります（詳細はBASEショップのポリシーをご確認ください）。</p>
-  <h2>お手入れは？</h2>
-  <p>柔らかい布で拭き取り、必要に応じて中性洗剤をご利用ください。</p>
-</main>
+  <!-- 共通ヘッダー -->
+  <div data-include="header.html" aria-busy="true"></div>
 
-  <footer class="container">
-    <p>© 2025 ADDEVA</p>
-  </footer>
-  <script src="assets/main.js?v=40"></script>
+  <main>
+    <!-- ページ見出し -->
+    <section class="page-hero">
+      <div class="container container-narrow">
+        <div class="kicker">FAQ</div>
+        <h1 class="h2 mb-0">よくあるご質問</h1>
+        <p class="muted mt-2 small">※ 回答はダイジェストです。詳細はお問い合わせください。</p>
+      </div>
+    </section>
+
+    <!-- 1) 会社・サービスFAQ -->
+    <section id="faq-b2b" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">FOR BUSINESS</div>
+        <h2 class="h3">株式会社ADDEVAのサービスに関するFAQ</h2>
+        <p class="muted">小ロット製造×国内一括仕入れ（500〜1000個）／OEM・ODM生産に関するご質問</p>
+
+        <div class="accordion" id="accB2B">
+          <!-- Q1 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q1">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a1" aria-expanded="false" aria-controls="b2b-a1">
+                最小ロットはいくつから？色違いや仕様違いで内訳できますか？
+              </button>
+            </h3>
+            <div id="b2b-a1" class="accordion-collapse collapse" aria-labelledby="b2b-q1" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）目安は500〜1000個です。色/サイズ/仕様の内訳は合計数量次第で調整可能です。最適な内訳はご相談ください。
+              </div>
+            </div>
+          </div>
+          <!-- Q2 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a2" aria-expanded="false" aria-controls="b2b-a2">
+                500個未満でも試作・小ロットは対応可能ですか？
+              </button>
+            </h3>
+            <div id="b2b-a2" class="accordion-collapse collapse" aria-labelledby="b2b-q2" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）試作は少量から相談可です。量産に先立つ検証用途としてサンプル費用・型代が発生する場合があります。
+              </div>
+            </div>
+          </div>
+          <!-- Q3 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a3" aria-expanded="false" aria-controls="b2b-a3">
+                納期の目安は？（試作→量産→国内納品／FBA直送）
+              </button>
+            </h3>
+            <div id="b2b-a3" class="accordion-collapse collapse" aria-labelledby="b2b-q3" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）標準的には、試作2〜4週→量産6〜10週＋輸送リードタイムです。繁忙期・仕様次第で変動します。
+              </div>
+            </div>
+          </div>
+          <!-- Q4 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q4">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a4" aria-expanded="false" aria-controls="b2b-a4">
+                見積に必要な情報は何ですか？
+              </button>
+            </h3>
+            <div id="b2b-a4" class="accordion-collapse collapse" aria-labelledby="b2b-q4" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）用途、数量、希望納期、参考画像/図面、素材や機能の要望、ロゴ入れ有無、希望納入先（倉庫/FBA）など。
+              </div>
+            </div>
+          </div>
+          <!-- Q5 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q5">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a5" aria-expanded="false" aria-controls="b2b-a5">
+                取引通貨と支払条件は？国内取引ですか？
+              </button>
+            </h3>
+            <div id="b2b-a5" class="accordion-collapse collapse" aria-labelledby="b2b-q5" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）請求は日本円の国内取引を基本とします。支払条件はプロジェクトごとに取り決めます。
+              </div>
+            </div>
+          </div>
+          <!-- Q6 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q6">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a6" aria-expanded="false" aria-controls="b2b-a6">
+                輸入実務（通関・書類）は誰が対応しますか？直接輸入との違いは？
+              </button>
+            </h3>
+            <div id="b2b-a6" class="accordion-collapse collapse" aria-labelledby="b2b-q6" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）輸入・通関はADDEVA側で対応し、国内からのご購入形態になります。直接輸入に比べ手続きとコストを簡素化できます。
+              </div>
+            </div>
+          </div>
+          <!-- Q7 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q7">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a7" aria-expanded="false" aria-controls="b2b-a7">
+                品質保証や初期不良が出た場合の対応は？
+              </button>
+            </h3>
+            <div id="b2b-a7" class="accordion-collapse collapse" aria-labelledby="b2b-q7" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）国内で一元対応します。検査基準やAQL、水準検品/第三者検品の要否は事前に取り決めます。
+              </div>
+            </div>
+          </div>
+          <!-- Q8 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q8">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a8" aria-expanded="false" aria-controls="b2b-a8">
+                OEMとODMの違いは？ロゴ入れ・金具新規・型起こしは可能？
+              </button>
+            </h3>
+            <div id="b2b-a8" class="accordion-collapse collapse" aria-labelledby="b2b-q8" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）OEM＝ご指定仕様で生産、ODM＝仕様提案を含む開発です。ロゴ入れ/金具/型は条件により対応します。
+              </div>
+            </div>
+          </div>
+          <!-- Q9 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q9">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a9" aria-expanded="false" aria-controls="b2b-a9">
+                FBA直納や量販向けのラベリング・梱包要件に対応できますか？
+              </button>
+            </h3>
+            <div id="b2b-a9" class="accordion-collapse collapse" aria-labelledby="b2b-q9" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）FNSKU/配送ラベル、OPP、警告表示、外装サイズ/重量制限などの要件に対応可能です。
+              </div>
+            </div>
+          </div>
+          <!-- Q10 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q10">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a10" aria-expanded="false" aria-controls="b2b-a10">
+                見積り〜発注までの標準フローを教えてください。
+              </button>
+            </h3>
+            <div id="b2b-a10" class="accordion-collapse collapse" aria-labelledby="b2b-q10" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）仕様ヒアリング→概算見積→試作（必要時）→最終見積・条件合意→量産→国内納品/直納の順です。
+              </div>
+            </div>
+          </div>
+          <!-- Q11 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q11">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a11" aria-expanded="false" aria-controls="b2b-a11">
+                NDA（秘密保持契約）や知財の取り扱いは？
+              </button>
+            </h3>
+            <div id="b2b-a11" class="accordion-collapse collapse" aria-labelledby="b2b-q11" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）NDA締結のうえ進行可能です。意匠・商標・著作物の取り扱いは個別に取り決めます。
+              </div>
+            </div>
+          </div>
+          <!-- Q12 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="b2b-q12">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2b-a12" aria-expanded="false" aria-controls="b2b-a12">
+                環境配慮素材（リサイクル生地等）の採用は可能？
+              </button>
+            </h3>
+            <div id="b2b-a12" class="accordion-collapse collapse" aria-labelledby="b2b-q12" data-bs-parent="#accB2B">
+              <div class="accordion-body">
+                （仮回答）対応可能です。必要な証明（例：GRS）等の要件がある場合は事前に共有ください。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) UrbanFlex FAQ -->
+    <section id="faq-urbanflex" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">PRODUCT</div>
+        <h2 class="h3">UrbanFlexについてのFAQ</h2>
+        <p class="muted">2R-18 と 3REX-40 共通／相違点に関するご質問</p>
+
+        <div class="accordion" id="accUF">
+          <!-- U1 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q1">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a1" aria-expanded="false" aria-controls="uf-a1">
+                2R-18と3REX-40の主な違いは何ですか？
+              </button>
+            </h3>
+            <div id="uf-a1" class="accordion-collapse collapse" aria-labelledby="uf-q1" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）容量・ルーム構成・拡張機能が異なります。<strong>拡張ジッパーは3REX-40のみ</strong>。用途に合わせてお選びください。
+              </div>
+            </div>
+          </div>
+          <!-- U2 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a2" aria-expanded="false" aria-controls="uf-a2">
+                雨の日の使用は大丈夫？防水の範囲を教えてください。
+              </button>
+            </h3>
+            <div id="uf-a2" class="accordion-collapse collapse" aria-labelledby="uf-q2" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）軽い雨に配慮した素材・止水ファスナーを採用しています。長時間の強雨・浸水は想定外です。
+              </div>
+            </div>
+          </div>
+          <!-- U3 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a3" aria-expanded="false" aria-controls="uf-a3">
+                15.6インチのノートPCは入りますか？クッションは独立していますか？
+              </button>
+            </h3>
+            <div id="uf-a3" class="accordion-collapse collapse" aria-labelledby="uf-q3" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）15.6インチ相当を想定した独立PCスリーブを設けています。機種の外寸により適合が異なるため事前にご確認ください。
+              </div>
+            </div>
+          </div>
+          <!-- U4 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q4">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a4" aria-expanded="false" aria-controls="uf-a4">
+                機内持ち込みはできますか？（3REX-40の拡張時は？）
+              </button>
+            </h3>
+            <div id="uf-a4" class="accordion-collapse collapse" aria-labelledby="uf-q4" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）多くの航空会社の基準に配慮していますが、各社規定により異なります。<strong>3REX-40拡張時はサイズにご注意ください。</strong>
+              </div>
+            </div>
+          </div>
+          <!-- U5 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q5">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a5" aria-expanded="false" aria-controls="uf-a5">
+                ショルダーストラップのポケットにはどのサイズのスマホが入りますか？
+              </button>
+            </h3>
+            <div id="uf-a5" class="accordion-collapse collapse" aria-labelledby="uf-q5" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）6〜6.5インチ級を目安に設計しています。寸法は後日掲載します。
+              </div>
+            </div>
+          </div>
+          <!-- U6 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q6">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a6" aria-expanded="false" aria-controls="uf-a6">
+                濡れた折りたたみ傘やボトルはどこに入れますか？
+              </button>
+            </h3>
+            <div id="uf-a6" class="accordion-collapse collapse" aria-labelledby="uf-q6" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）側面の<strong>Wet Safe Pocket</strong>に収納できます。底部はメッシュで水が下に流れる構造です。
+              </div>
+            </div>
+          </div>
+          <!-- U7 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q7">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a7" aria-expanded="false" aria-controls="uf-a7">
+                「Detach Pocket」は全モデル共通ですか？どう使いますか？
+              </button>
+            </h3>
+            <div id="uf-a7" class="accordion-collapse collapse" aria-labelledby="uf-q7" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）取り外してサコッシュとして使用できます。付属/仕様はモデルにより異なる場合があります。
+              </div>
+            </div>
+          </div>
+          <!-- U8 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q8">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a8" aria-expanded="false" aria-controls="uf-a8">
+                3REX-40の拡張ジッパーはどのくらい容量が増えますか？
+              </button>
+            </h3>
+            <div id="uf-a8" class="accordion-collapse collapse" aria-labelledby="uf-q8" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）下部を中心にスマートに増やす構造です。増分容量の数値は後日掲載します。
+              </div>
+            </div>
+          </div>
+          <!-- U9 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q9">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a9" aria-expanded="false" aria-controls="uf-a9">
+                キャリーケースに固定できますか？（キャリーオン）
+              </button>
+            </h3>
+            <div id="uf-a9" class="accordion-collapse collapse" aria-labelledby="uf-q9" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）キャリーオンに対応します。固定方法や位置は製品画像をご参照ください。
+              </div>
+            </div>
+          </div>
+          <!-- U10 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q10">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a10" aria-expanded="false" aria-controls="uf-a10">
+                お手入れ方法は？洗濯機で洗えますか？
+              </button>
+            </h3>
+            <div id="uf-a10" class="accordion-collapse collapse" aria-labelledby="uf-q10" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）中性洗剤を含ませたやわらかい布で拭き取り、陰干ししてください。洗濯機・乾燥機は推奨しません。
+              </div>
+            </div>
+          </div>
+          <!-- U11 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q11">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a11" aria-expanded="false" aria-controls="uf-a11">
+                重量・素材・付属品の詳細はどこで確認できますか？
+              </button>
+            </h3>
+            <div id="uf-a11" class="accordion-collapse collapse" aria-labelledby="uf-q11" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）仕様の完全版は展示ストア（BASE）に集約しています。<a href="https://addeva.official.ec/" target="_blank" rel="noopener">こちら</a>をご確認ください。
+              </div>
+            </div>
+          </div>
+          <!-- U12 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q12">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a12" aria-expanded="false" aria-controls="uf-a12">
+                返品・修理の窓口は？
+              </button>
+            </h3>
+            <div id="uf-a12" class="accordion-collapse collapse" aria-labelledby="uf-q12" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                （仮回答）返品・修理・交換のガイドはサポートページに統合予定です。準備中のため、当面は<a href="mailto:info@addeva.jp">info@addeva.jp</a>にご連絡ください。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 共通フッター -->
+  <div data-include="footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- インクルードローダー -->
+  <script>
+    (function () {
+      async function includeFragments() {
+        const nodes = document.querySelectorAll('[data-include]');
+        await Promise.all([...nodes].map(async (el) => {
+          const file = el.getAttribute('data-include');
+          try {
+            const resp = await fetch(file, { cache: 'no-cache' });
+            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+            const html = await resp.text();
+            el.outerHTML = html;
+          } catch (e) { console.error('Include failed:', file, e); }
+        }));
+      }
+      document.addEventListener('DOMContentLoaded', async () => {
+        await includeFragments();
+        const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+      });
+    })();
+  </script>
 </body>
 </html>
