@@ -39,8 +39,12 @@ body{
   letter-spacing:.12em;
 }
 .site-header .navbar-brand .brand-reg{
-  font-size:.58em; line-height:1;
-  position:relative; top:-.12em; opacity:.85;
+  font-size:.54em;
+  line-height:1;
+  position:relative;
+  top:-.34em;        /* ← ここで上げる。-0.28〜-0.40emの範囲でお好みに */
+  margin-left:.06em; /* ADDEVAとの間隔を少しだけ確保 */
+  opacity:.9;
 }
 
 /* 固定ヘッダー */
