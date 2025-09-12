@@ -32,18 +32,25 @@ body{
 }
 
 /* ===== ブランドサイズ最適化（行の高さは据え置き） ===== */
+/* 親は字間ゼロ、隙間ゼロ */
 .site-header .navbar-brand{
-  display:inline-flex; align-items:flex-end; gap:.0rem; /* ← ADDEVAとRマークとの距離*/
-  line-height:1; padding-block:.25rem; /* 高さは増やさない */
+  display:inline-flex; align-items:flex-end;
+  gap:0;
+  line-height:1; padding-block:.25rem;
   font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
+  letter-spacing:0;                   /* ← ここを 0 に */
+}
+/* ADDEVA のみ字間を付与 */
+.site-header .navbar-brand .brand-text{
   letter-spacing:.12em;
 }
-/* ® を上寄せで持ち上げる（flexの下寄せを上書き） */
+/* ® は上寄せ＋さらに左へ寄せる */
 .site-header .navbar-brand .brand-reg{
   font-size:.56em;
-  align-self:flex-start;            /* ← 上寄せ */
-  transform: translateY(-0.20em);   /* ← 上方向に移動（±調整可） */
-  margin-left:.06em;
+  align-self:flex-start;
+  transform: translateY(-0.22em);
+  margin-left:-.08em;                 /* ← 近づける。-0.04〜-0.12emで微調整 */
+  letter-spacing:0;
   opacity:.9;
 }
 
