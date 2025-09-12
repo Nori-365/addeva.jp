@@ -5,7 +5,9 @@
   --ink:#111;
   --line:#e5e7eb;
   --maxw:1120px;
-  --brand:#1547B5;          /* ← 青帯の基準色（濃さを調整したい時はここだけ変えればOK） */
+  --brand:#1547B5;          /* ← 青帯の基準色（濃さはここで調整） */
+  --header-desktop:64px;
+  --header-mobile:56px;
 }
 
 html,body{height:100%}
@@ -17,21 +19,45 @@ body{
 .container-narrow{max-width:var(--maxw)}
 
 /* Header */
-.site-header.sticky-top{
-  background:#fff;border-bottom:1px solid var(--line);
-  backdrop-filter:saturate(140%) blur(6px)
-}
 .navbar-brand{font-weight:700;letter-spacing:.12em;color:var(--ink)}
 .navbar-dark .navbar-nav .nav-link{color:var(--ink)}
 .navbar-dark .navbar-toggler{border-color:rgba(0,0,0,.25)}
 .navbar-dark .navbar-toggler-icon{
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0,0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")
 }
-
 /* ブランドロゴの色を固定（hoverで白く消えないように） */
 .site-header .navbar.navbar-dark{
   --bs-navbar-brand-color: var(--ink);
   --bs-navbar-brand-hover-color: var(--ink);
+}
+
+/* ===== ブランドサイズ最適化（行の高さは据え置き） ===== */
+.site-header .navbar-brand{
+  display:inline-flex; align-items:flex-end; gap:.15rem;
+  line-height:1; padding-block:.25rem; /* 高さは増やさない */
+  font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
+  letter-spacing:.12em;
+}
+.site-header .navbar-brand .brand-reg{
+  font-size:.58em; line-height:1;
+  position:relative; top:-.12em; opacity:.85;
+}
+
+/* 固定ヘッダー */
+.site-header{
+  position: fixed; top: env(safe-area-inset-top, 0); left:0; right:0;
+  z-index:1200;
+  background:#fff; border-bottom:1px solid var(--line);
+}
+/* 押し下げ（重複を整理してこの定義だけ使用） */
+body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
+@media (max-width: 991.98px){
+  body{ padding-top: calc(var(--header-mobile) + env(safe-area-inset-top, 0)); }
+}
+/* アンカーでヘッダーに隠れない対策 */
+[id]{ scroll-margin-top: var(--header-desktop); }
+@media (max-width: 991.98px){
+  [id]{ scroll-margin-top: var(--header-mobile); }
 }
 
 /* HERO */
@@ -72,41 +98,11 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
 
 /* ===== 追加：ヒーローの青帯（フォントは一切変更しない） ===== */
 .hero .col-left .copy .eyebrow{
-  /* フォント関連（family/weight/line-height/letter-spacing）は .eyebrow のまま使う */
   display:inline-block;
   color:#fff;
-  background:var(--brand);     /* 例：#1547B5 #1949B0 #1342A6 で微調整可 */
-  padding:.06em .48em;         /* 高さを薄く。さらに薄くしたい場合は .04em へ */
-  border-radius:3px;           /* 角小さめ。四角寄りにするなら 2–3px */
+  background:var(--brand);
+  padding:.06em .48em;
+  border-radius:3px;
   -webkit-box-decoration-break:clone;
           box-decoration-break:clone;
-}
-/* （もっと薄くしたい場合のみ）
-.hero .col-left .copy .eyebrow{ line-height:1; }
-*/
-
-/* 固定ヘッダーぶんの押し下げ（デスクトップ/モバイル） */
-body{ padding-top: 64px; }
-@media (max-width: 991.98px){
-  body{ padding-top: 56px; }
-}
-
-/* ヘッダー（本番・fixed版） */
-:root{ --header-desktop:64px; --header-mobile:56px; }
-
-.site-header{
-  position: fixed; top: env(safe-area-inset-top, 0); left:0; right:0;
-  z-index: 1200;
-  background:#fff; border-bottom:1px solid var(--line);
-}
-
-body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
-@media (max-width: 991.98px){
-  body{ padding-top: calc(var(--header-mobile) + env(safe-area-inset-top, 0)); }
-}
-
-/* アンカーに飛んだ時にヘッダー下に隠れない対策（任意） */
-[id]{ scroll-margin-top: var(--header-desktop); }
-@media (max-width: 991.98px){
-  [id]{ scroll-margin-top: var(--header-mobile); }
 }
