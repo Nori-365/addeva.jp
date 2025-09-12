@@ -45,11 +45,12 @@ body{
   letter-spacing:.12em;
 }
 /* ® は上寄せ＋さらに左へ寄せる */
+/* ® の左右＆上下位置をまとめて微調整（確実に動かす） */
 .site-header .navbar-brand .brand-reg{
   font-size:.56em;
-  align-self:flex-start;
-  transform: translateY(-0.22em);
-  margin-left:-.02em;                 /* ← 近づける。-0.04〜-0.12emで微調整 */
+  align-self:flex-start;                 /* 上寄せ */
+  transform: translate(-0.10em, -0.22em);/* ← 左に0.10em、上に0.22em（数値はお好みで） */
+  margin-left:0;                         /* 余計な間隔はゼロに */
   letter-spacing:0;
   opacity:.9;
 }
