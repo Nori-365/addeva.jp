@@ -44,12 +44,11 @@ body{
 .site-header .navbar-brand .brand-text{
   letter-spacing:.12em;
 }
-/* ® は上寄せ＋さらに左へ寄せる */
-/* ® の左右＆上下位置をまとめて微調整（確実に動かす） */
+/* ® は上寄せ＋さらに左へ寄せる（基本） */
 .site-header .navbar-brand .brand-reg{
   font-size:.56em;
   align-self:flex-start;                 /* 上寄せ */
-  transform: translate(-0.20em, -0.22em);/* ← 左に0.20em、上に0.22em（数値はお好みで） */
+  transform: translate(-0.20em, -0.22em);/* ← 左/上 微調整 */
   margin-left:0;                         /* 余計な間隔はゼロに */
   letter-spacing:0;
   opacity:.9;
@@ -117,4 +116,14 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
   border-radius:3px;
   -webkit-box-decoration-break:clone;
           box-decoration-break:clone;
+}
+
+/* === Brand mark final (最後に1本だけ置く) ================== */
+.site-header .navbar .navbar-brand .brand-reg{
+  font-size:.56em;
+  align-self:flex-start;                 /* 上寄せ */
+  transform: translate(-6px, -0.20em);   /* ← 左右・上下はここで最終調整 */
+  margin-left:0;
+  letter-spacing:0;
+  opacity:.9;
 }
