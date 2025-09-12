@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="assets/css/main.css?v=3.5">
   <meta property="og:type" content="website">
   <meta property="og:title" content="お問い合わせ | ADDEVA">
-  <meta property="og:description" content="お問い合わせは info@addeva.jp へ。返信まで最大3日いただく場合があります。">
+  <meta property="og:description" content="お問い合わせはADDEVA「お問い合わせ窓口 contact@addeva.jp 」へ。返信まで最大3日いただく場合があります。">
   <meta property="og:url" content="/contact.html">
   <style>
     .page-hero{padding:64px 0 24px;}
@@ -37,11 +37,11 @@
 
         <div class="mt-3">
           <a class="btn btn-dark"
-             href="mailto:info@addeva.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%88ADDEVA%EF%BC%89">
+             href="mailto:contact@addeva.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%88ADDEVA%EF%BC%89">
             メールアプリを開く
           </a>
           <p class="mt-2 mb-0">
-            送信先：<a href="mailto:info@addeva.jp">info@addeva.jp</a>
+            送信先：<a href="mailto:contact@addeva.jp">contact@addeva.jp</a>
             <button id="copyBtn" class="btn btn-sm btn-outline-secondary ms-2">コピー</button>
             <span id="copied" class="text-success small ms-2" style="display:none;">コピーしました</span>
           </p>
@@ -70,7 +70,7 @@
       const ok = document.getElementById('copied');
       btn?.addEventListener('click', async () => {
         try {
-          await navigator.clipboard.writeText('info@addeva.jp');
+          await navigator.clipboard.writeText('contact@addeva.jp');
           ok.style.display = 'inline';
           setTimeout(()=> ok.style.display='none', 1800);
         } catch(e) {}
