@@ -42,7 +42,7 @@ body{
   font-size:.54em;
   line-height:1;
   position:relative;
-  top:-.34em;        /* ← ここで上げる。-0.28〜-0.40emの範囲でお好みに */
+  top:-.40em;        /* ← ここで上げる。-0.28〜-0.40emの範囲でお好みに */
   margin-left:.06em; /* ADDEVAとの間隔を少しだけ確保 */
   opacity:.9;
 }
