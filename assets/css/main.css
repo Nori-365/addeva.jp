@@ -33,7 +33,7 @@ body{
 
 /* ===== ブランドサイズ最適化（行の高さは据え置き） ===== */
 .site-header .navbar-brand{
-  display:inline-flex; align-items:flex-end; gap:.15rem;
+  display:inline-flex; align-items:flex-end; gap:.0rem; /* ← ADDEVAとRマークとの距離*/
   line-height:1; padding-block:.25rem; /* 高さは増やさない */
   font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
   letter-spacing:.12em;
@@ -42,7 +42,7 @@ body{
 .site-header .navbar-brand .brand-reg{
   font-size:.56em;
   align-self:flex-start;            /* ← 上寄せ */
-  transform: translateY(-0.26em);   /* ← 上方向に移動（±調整可） */
+  transform: translateY(-0.20em);   /* ← 上方向に移動（±調整可） */
   margin-left:.06em;
   opacity:.9;
 }
