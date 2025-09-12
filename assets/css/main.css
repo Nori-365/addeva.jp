@@ -38,12 +38,12 @@ body{
   font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
   letter-spacing:.12em;
 }
+/* ® を上寄せで持ち上げる（flexの下寄せを上書き） */
 .site-header .navbar-brand .brand-reg{
-  font-size:.54em;
-  line-height:1;
-  position:relative;
-  top:-.40em;        /* ← ここで上げる。-0.28〜-0.40emの範囲でお好みに */
-  margin-left:.06em; /* ADDEVAとの間隔を少しだけ確保 */
+  font-size:.56em;
+  align-self:flex-start;            /* ← 上寄せ */
+  transform: translateY(-0.26em);   /* ← 上方向に移動（±調整可） */
+  margin-left:.06em;
   opacity:.9;
 }
 
