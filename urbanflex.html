@@ -19,7 +19,7 @@
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.6">
 
   <!-- Open Graph -->
   <meta property="og:type" content="product">
@@ -32,7 +32,7 @@
   <meta property="og:image" content="https://addeva.jp/assets/img/og/ogp_top.jpg">
 
   <style>
-    /* セクション内アンカーのオフセット調整（固定ヘッダー分） */
+    /* セクション内アンカーのオフセット（固定ヘッダー分） */
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 56px); }
     .subnav-shadow{ box-shadow: 0 2px 8px rgba(0,0,0,.06); }
   </style>
@@ -105,14 +105,14 @@
       </div>
     </section>
 
-    <!-- 共通特徴（PC/SPとも 左=画像／右=テキストで統一） -->
+    <!-- 共通特徴（PC/SPとも 左=画像／右=テキストで統一／SPのみカード化） -->
     <section id="common" class="section">
       <div class="container container-narrow">
         <div class="kicker">Features</div>
         <h2>UrbanFlex の共通特徴（2R-18 / 3REX-40）</h2>
 
         <!-- 1) AquaShield -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/8.png" alt="“AquaShield” 防水軽量バックパック">
           </div>
@@ -124,7 +124,7 @@
         </div>
 
         <!-- 2) Flexible room -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/9.png" alt="“Flexible room” 自在な収納空間">
           </div>
@@ -135,7 +135,7 @@
         </div>
 
         <!-- 3) Detach Pocket -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/13.png" alt="“Detach Pocket” サコッシュに変形">
           </div>
@@ -146,7 +146,7 @@
         </div>
 
         <!-- 4) Smart Expandable Zip（3REX-40のみ） -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/14.png" alt="“Smart Expandable Zip” スマートエキスパンダブルジッパー">
           </div>
@@ -158,7 +158,7 @@
         </div>
 
         <!-- 5) 3D Ergo Back Panel -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/15.png" alt="“3D Ergo Back Panel” 疲れを軽減させる背面設計">
           </div>
@@ -169,7 +169,7 @@
         </div>
 
         <!-- 6) Wet Safe Pocket -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/16.png" alt="“Wet Safe Pocket” 濡れた傘も入れられるペットボトルポケット">
           </div>
@@ -180,7 +180,7 @@
         </div>
 
         <!-- 7) Smart Access Strap -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/17.png" alt="“Smart Access Strap” ショルダーストラップポケット">
           </div>
@@ -191,7 +191,7 @@
         </div>
 
         <!-- 8) Immigration Access Pocket -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/18.png" alt="“Immigration Access Pocket” 空港利用を想定したスマート収納">
           </div>
@@ -202,7 +202,7 @@
         </div>
 
         <!-- 9) Rain Lock cable hole -->
-        <div class="row g-4 align-items-start mb-4">
+        <div class="row g-4 align-items-start mb-4 feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/19.png" alt="“Rain Lock cable hole” 防水ケーブルホール">
           </div>
@@ -213,7 +213,7 @@
         </div>
 
         <!-- 10) Garment Guard -->
-        <div class="row g-4 align-items-start">
+        <div class="row g-4 align-items-start feature">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/20.png" alt="“Garment Guard” シワを防止する衣類収納スペース">
           </div>
@@ -249,7 +249,7 @@
       </div>
     </section>
 
-    <!-- 2R-18 セクション（本文は“引用”で後入れ） -->
+    <!-- 2R-18 -->
     <section id="size-2r18" class="section">
       <div class="container container-narrow">
         <div class="kicker">Model</div>
@@ -280,7 +280,7 @@
       </div>
     </section>
 
-    <!-- 3REX-40 セクション（本文は“引用”で後入れ） -->
+    <!-- 3REX-40 -->
     <section id="size-3rex40" class="section">
       <div class="container container-narrow">
         <div class="kicker">Model</div>
@@ -311,7 +311,7 @@
       </div>
     </section>
 
-    <!-- FAQ（返品系ナシ） -->
+    <!-- FAQ -->
     <section id="faq" class="section">
       <div class="container container-narrow">
         <div class="kicker">FAQ</div>
