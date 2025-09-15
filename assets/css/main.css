@@ -1,4 +1,4 @@
-/* ADDEVA minimal styles (v3.5): Bootstrap以外はこの1枚のみ */
+/* ADDEVA minimal styles (v3.6): Bootstrap以外はこの1枚のみ */
 :root{
   --bg:#fff;
   --bg-soft:#f7f9fc;
@@ -69,6 +69,21 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 [id]{ scroll-margin-top: var(--header-desktop); }
 @media (max-width: 991.98px){
   [id]{ scroll-margin-top: var(--header-mobile); }
+}
+
+/* === スマホの“無意味な1行”対策（margin-collapse防止） === */
+/* main直下の先頭要素の上マージンを必ずゼロにする */
+:where(main, #main, .site-main) > *:first-child{ margin-top:0 !important; }
+/* Bootstrapの .mt-* が付いていても潰す */
+:where(main, #main, .site-main) > :first-child[class*="mt-"]{ margin-top:0 !important; }
+/* よく使うナビ要素（サブメニュー/パンくず等）の余白も詰める */
+:where(main, #main, .site-main) > :is(nav,.nav,.subnav,.page-tabs,.breadcrumb,.local-nav):first-child{
+  margin-top:0 !important;
+  padding-top:.25rem; /* 最小限の見た目余白だけ */
+}
+/* セクション先頭の上パディングをSPで少し軽く */
+@media (max-width: 575.98px){
+  section.section:first-of-type{ padding-top:36px; } /* 元:64px → 36px */
 }
 
 /* HERO */
