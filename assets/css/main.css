@@ -142,3 +142,22 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
   letter-spacing:0;
   opacity:.9;
 }
+
+/* ===== 追加：共通特徴をSPだけカード化（md以上はフラット） ===== */
+#common .feature{
+  border:1px solid var(--line);
+  border-radius:.75rem;
+  padding:12px;
+  background:#fff;
+}
+#common .feature + .feature{ margin-top:.5rem; }
+
+@media (min-width:768px){
+  #common .feature{
+    border:0;
+    border-radius:0;
+    padding:0;
+    background:transparent;
+  }
+  #common .feature + .feature{ margin-top:0; }
+}
