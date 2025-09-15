@@ -87,7 +87,7 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 
 /* HERO */
-.hero{padding:56px 0}
+.hero{padding:16px 0}
 .hero .col-left{position:relative;min-height:56svh}
 .hero .col-left .bg-wrap{position:absolute;inset:0;overflow:hidden;border-radius:12px}
 .hero .col-left .bg-wrap img{
