@@ -1,17 +1,46 @@
-/* assets/css/pages/urbanflex.css */
+/* ===============================
+   UrbanFlex page only (v1.0)
+   スコープ: .uf-hero 以下のみ
+   =============================== */
 
-/* UrbanFlexヒーローだけに作用（画像ファイル名でスコープ） */
-.hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{
-  padding-top: clamp(36px, 6vw, 72px);
-}
-.hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy > div{
-  transform: translateY(6px); /* 上げるなら負値、下げるなら正値 */
+/* 画像の“微スケールぼけ”を解除し、フォーカス位置を最適化 */
+.uf-hero .bg-wrap .uf-bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover;
+  object-position:35% 50%;      /* 被写体をやや左寄せ */
+  transform:none !important;    /* main.cssのscale(1.02)を無効化 */
+  filter:contrast(1.06) saturate(1.04); /* ごく控えめにシャープ感 */
+  z-index:0;
 }
 
-/* 端末別の微調整（任意） */
+/* UrbanFlex用のティント（左の黒味は薄め） */
+.uf-hero .uf-tint{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(
+    90deg,
+    rgba(0,0,0,.42) 0%,
+    rgba(0,0,0,.22) 32%,
+    rgba(28,82,190,.14) 56%,
+    rgba(28,82,190,.06) 78%,
+    rgba(0,0,0,0) 100%
+  );
+  border-radius:12px; /* bg-wrapが角丸のため合わせる（念のため） */
+}
+
+/* 縦位置の微調整（Topの.heroには効かない） */
+.uf-hero .copy{
+  padding-top:clamp(36px, 6vw, 72px); /* 好みで調整 */
+}
+
+/* “数pxだけ”の最終ナッジ（必要なければ削除OK） */
+.uf-hero .copy > div{
+  transform:translateY(6px);    /* 上げる: 負値 / 下げる: 正値 */
+}
+
+/* SP/PCでの個別調整（任意） */
 @media (max-width: 575.98px){
-  .hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{ padding-top:28px; }
+  .uf-hero .copy{ padding-top:28px; }
 }
 @media (min-width: 992px){
-  .hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{ padding-top:72px; }
+  .uf-hero .copy{ padding-top:72px; }
 }
