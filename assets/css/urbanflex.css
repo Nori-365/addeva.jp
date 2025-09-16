@@ -46,7 +46,7 @@
 
 /* 見出しのみ微調整（眉は動かさない） */
 .uf-hero .uf-title{
-  transform: translateY(20px);  /* 下げたいほど数値を大きく */
+  transform: translateY(12px);  /* 下げたいほど数値を大きく */
 }
 
 /* 下グループ（リード＋ボタン）を最下に寄せる */
