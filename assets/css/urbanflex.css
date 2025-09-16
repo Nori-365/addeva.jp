@@ -1,13 +1,13 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.2)
+   assets/css/urbanflex.css  (v1.3)
    Scope: .uf-hero 以下のみ
    目的:
-   - 眉「Flagship – ADDEVA UrbanFlex」の高さは既定に維持
+   - 眉（Flagship…）の位置は .copy の padding-top で制御
+   - 下グループは .copy の padding-bottom で“画面下に寄せる”
    - タイトルだけ少し下げる
-   - リード＋ボタンのグループをさらに下へ
    =============================== */
 
-/* 背景画像をクリアに表示（main.cssのscaleを打ち消し） */
+/* 背景画像をクリアに（main.cssのscale打消し） */
 .uf-hero .bg-wrap .uf-bg{
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover;
@@ -17,7 +17,7 @@
   z-index:0;
 }
 
-/* オーバーレイ（左の黒味は薄め） */
+/* オーバーレイ（左を少し濃いめで可読性UP） */
 .uf-hero .uf-tint{
   position:absolute; inset:0; z-index:1; pointer-events:none;
   background:linear-gradient(
@@ -31,29 +31,40 @@
   border-radius:12px;
 }
 
-/* 眉（eyebrow）の位置は main.css の既定値のまま。ここで padding-top は変更しない */
+/* === 配置の核：眉の高さ & 下グループ位置 ================== */
 .uf-hero .copy{
-  /* 既定: absolute + flex + gap は main.css 側で定義済み */
-  gap:12px; /* 念のため明示。数値は既定と同じ */
+  /* 眉（Flagship…）の高さ → ここを調整（下げたいほど大きく） */
+  padding-top: clamp(32px, 6vw, 72px);
+
+  /* 下グループ（リード+ボタン）を画面下に寄せる → ここを小さくすると更に下へ寄る */
+  padding-bottom: clamp(10px, 2vw, 16px);
+
+  /* 上下を両端配置にして、.uf-sub を常に下側へ */
+  display:flex; flex-direction:column; justify-content:space-between;
+  gap:12px;
 }
 
-/* タイトルだけ“少し”下げる（眉は動かない） */
+/* タイトルだけ微下げ（眉は動かさない） */
 .uf-hero .uf-title{
-  transform: translateY(10px); /* 6〜14pxで調整可（+で下げる） */
+  transform: translateY(8px);   /* 6〜14px で好みに調整。+で下へ */
 }
 
-/* 下グループ（リード＋ボタン）をもっと下へ */
+/* 下グループ：margin-top:auto は不要（親が space-between のため） */
 .uf-hero .uf-sub{
-  margin-top:auto;                         /* ← 下寄せの核 */
   display:flex; flex-direction:column; gap:.5rem;
-  padding-bottom: clamp(44px, 7vw, 96px);  /* ← さらに下げる。数値で調整 */
 }
 
-/* 端末別の微調整 */
+/* 端末別の微調整（任意） */
 @media (max-width: 575.98px){
-  .uf-hero .uf-title{ transform: translateY(8px); }
-  .uf-hero .uf-sub{ padding-bottom: clamp(24px, 10vw, 56px); }
+  .uf-hero .copy{
+    padding-top: 28px;          /* SPの眉位置 */
+    padding-bottom: 14px;       /* SPの下寄せ距離（小さいほど下へ） */
+  }
+  .uf-hero .uf-title{ transform: translateY(6px); }
 }
 @media (min-width: 992px){
-  .uf-hero .uf-sub{ padding-bottom: 96px; } /* PCはしっかり下げる */
+  .uf-hero .copy{
+    padding-top: 72px;          /* PCの眉位置 */
+    padding-bottom: 12px;       /* PCの下寄せ距離（もっと下なら 8〜10px） */
+  }
 }
