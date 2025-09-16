@@ -1,0 +1,17 @@
+/* assets/css/pages/urbanflex.css */
+
+/* UrbanFlexヒーローだけに作用（画像ファイル名でスコープ） */
+.hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{
+  padding-top: clamp(36px, 6vw, 72px);
+}
+.hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy > div{
+  transform: translateY(6px); /* 上げるなら負値、下げるなら正値 */
+}
+
+/* 端末別の微調整（任意） */
+@media (max-width: 575.98px){
+  .hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{ padding-top:28px; }
+}
+@media (min-width: 992px){
+  .hero:has(.bg-wrap > img[src*="urbanflex_top"]) .copy{ padding-top:72px; }
+}
