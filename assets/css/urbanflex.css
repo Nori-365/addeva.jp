@@ -1,11 +1,12 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.4)
+   assets/css/urbanflex.css  (v1.4d)
    Scope: .uf-hero 以下のみ
    - 眉は Top と同じ高さに維持（56px上限）
-   - 下グループは最下に寄せる（margin-top:auto）
+   - 下グループは最下寄せ＋少し上げて見せる
    - タイトルだけ微下げ
    =============================== */
 
+/* 背景画像をクリアに（main.css の scale を打消し） */
 .uf-hero .bg-wrap .uf-bg{
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover;
@@ -15,6 +16,7 @@
   z-index:0;
 }
 
+/* オーバーレイ（可読性確保） */
 .uf-hero .uf-tint{
   position:absolute; inset:0; z-index:1; pointer-events:none;
   background:linear-gradient(
@@ -28,32 +30,39 @@
   border-radius:12px;
 }
 
-/* 眉の高さ＝Topと同じ（min 24px, pref 5vw, max 56px） */
+/* 配置：眉の高さと下セットの余白を決定 */
 .uf-hero .copy{
+  /* 眉の高さ：Top と同じ基準（min 24px / pref 5vw / max 56px） */
   padding-top: clamp(24px, 5vw, 56px);
-  /* 下グループの“下寄せ度合い”はここで決まる（小さいほど下へ） */
-  padding-bottom: clamp(8px, 1.6vw, 14px);
 
-  display:flex; 
-  flex-direction:column; 
+  /* 下セット（リード＋ボタン）との離れ：数値を大きくすると“少し上”に見える */
+  padding-bottom: clamp(18px, 2.4vw, 28px);
+
+  display:flex;
+  flex-direction:column;
   justify-content:flex-start;   /* 上は固定 */
   gap:12px;
 }
 
-/* タイトルだけ微下げ（眉は動かない） */
-.uf-hero .uf-title{ transform: translateY(8px); }
+/* 見出しのみ微調整（眉は動かさない） */
+.uf-hero .uf-title{
+  transform: translateY(12px);  /* 下げたいほど数値を大きく */
+}
 
-/* 下グループを最下に吸着 */
+/* 下グループ（リード＋ボタン）を最下に寄せる */
 .uf-hero .uf-sub{
   margin-top:auto;
   display:flex; flex-direction:column; gap:.5rem;
+  /* さらに数pxだけ上げたい時は以下の1行を有効化
+     transform: translateY(-6px);
+  */
 }
 
-/* SPの微調整だけ必要ならここで（PC側の上書きはしない） */
+/* スマホ微調整 */
 @media (max-width: 575.98px){
   .uf-hero .copy{
     padding-top: 28px;
-    padding-bottom: 14px;
+    padding-bottom: 20px; /* SPはやや上げ目 */
   }
   .uf-hero .uf-title{ transform: translateY(6px); }
 }
