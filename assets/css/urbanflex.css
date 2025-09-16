@@ -1,6 +1,10 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.1)
-   スコープ: .uf-hero 以下のみ
+   assets/css/urbanflex.css  (v1.2)
+   Scope: .uf-hero 以下のみ
+   目的:
+   - 眉「Flagship – ADDEVA UrbanFlex」の高さは既定に維持
+   - タイトルだけ少し下げる
+   - リード＋ボタンのグループをさらに下へ
    =============================== */
 
 /* 背景画像をクリアに表示（main.cssのscaleを打ち消し） */
@@ -13,13 +17,13 @@
   z-index:0;
 }
 
-/* オーバーレイをやや薄めに */
+/* オーバーレイ（左の黒味は薄め） */
 .uf-hero .uf-tint{
   position:absolute; inset:0; z-index:1; pointer-events:none;
   background:linear-gradient(
     90deg,
-    rgba(0,0,0,.42) 0%,
-    rgba(0,0,0,.22) 32%,
+    rgba(0,0,0,.46) 0%,
+    rgba(0,0,0,.24) 30%,
     rgba(28,82,190,.14) 56%,
     rgba(28,82,190,.06) 78%,
     rgba(0,0,0,0) 100%
@@ -27,28 +31,29 @@
   border-radius:12px;
 }
 
-/* タイトルを“あとちょっとだけ”下げる */
-.uf-hero .uf-title{
-  transform: translateY(8px); /* 2〜12pxで微調整可（+で下げる） */
-}
-
-/* リード文＋ボタンのグループを下部へそろえる */
+/* 眉（eyebrow）の位置は main.css の既定値のまま。ここで padding-top は変更しない */
 .uf-hero .copy{
-  /* 既存のflex指定はmain.cssにあるが、明示しておく */
-  display:flex; flex-direction:column; gap:12px;
-  padding-top:clamp(36px, 6vw, 72px); /* 好みで上下の当たりを調整 */
-}
-.uf-hero .uf-sub{
-  margin-top:auto;              /* ← これで下寄せ */
-  display:flex; flex-direction:column; gap:.5rem;
-  padding-bottom:clamp(12px, 2.2vw, 20px);
+  /* 既定: absolute + flex + gap は main.css 側で定義済み */
+  gap:12px; /* 念のため明示。数値は既定と同じ */
 }
 
-/* 端末別の細かい当たり */
+/* タイトルだけ“少し”下げる（眉は動かない） */
+.uf-hero .uf-title{
+  transform: translateY(10px); /* 6〜14pxで調整可（+で下げる） */
+}
+
+/* 下グループ（リード＋ボタン）をもっと下へ */
+.uf-hero .uf-sub{
+  margin-top:auto;                         /* ← 下寄せの核 */
+  display:flex; flex-direction:column; gap:.5rem;
+  padding-bottom: clamp(44px, 7vw, 96px);  /* ← さらに下げる。数値で調整 */
+}
+
+/* 端末別の微調整 */
 @media (max-width: 575.98px){
-  .uf-hero .copy{ padding-top:28px; }
-  .uf-hero .uf-title{ transform: translateY(6px); }
+  .uf-hero .uf-title{ transform: translateY(8px); }
+  .uf-hero .uf-sub{ padding-bottom: clamp(24px, 10vw, 56px); }
 }
 @media (min-width: 992px){
-  .uf-hero .copy{ padding-top:72px; }
+  .uf-hero .uf-sub{ padding-bottom: 96px; } /* PCはしっかり下げる */
 }
