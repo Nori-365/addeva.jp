@@ -33,14 +33,16 @@
 
 /* === 配置の核：眉の高さ & 下グループ位置 ================== */
 .uf-hero .copy{
-  /* 眉（Flagship…）の高さ → ここを調整（下げたいほど大きく） */
-  padding-top: clamp(32px, 6vw, 72px);
+  /* 眉の高さ：Topと同じ値に（＝元の位置） */
+  padding-top: clamp(24px, 5vw, 56px);
 
-  /* 下グループ（リード+ボタン）を画面下に寄せる → ここを小さくすると更に下へ寄る */
-  padding-bottom: clamp(10px, 2vw, 16px);
+  /* 下グループの位置：小さいほど“より下”に寄る */
+  padding-bottom: clamp(8px, 1.6vw, 14px);
 
-  /* 上下を両端配置にして、.uf-sub を常に下側へ */
-  display:flex; flex-direction:column; justify-content:space-between;
+  /* 上は固定、下はautoで押し下げる */
+  display:flex; 
+  flex-direction:column; 
+  justify-content:flex-start;   /* ← space-between を使わない */
   gap:12px;
 }
 
@@ -51,7 +53,7 @@
 
 /* 下グループ：margin-top:auto は不要（親が space-between のため） */
 .uf-hero .uf-sub{
-  display:flex; flex-direction:column; gap:.5rem;
+  display:flex; flex-direction:column; gap:.10rem;
 }
 
 /* 端末別の微調整（任意） */
