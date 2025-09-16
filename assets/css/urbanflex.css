@@ -53,7 +53,7 @@
 
 /* 下グループ：margin-top:auto は不要（親が space-between のため） */
 .uf-hero .uf-sub{
-  display:flex; flex-direction:column; gap:.10rem;
+  display:flex; flex-direction:column; gap:.6rem;
 }
 
 /* 端末別の微調整（任意） */
