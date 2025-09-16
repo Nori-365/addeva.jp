@@ -81,46 +81,33 @@
 <section class="hero">
   <div class="container container-narrow">
     <div class="row g-4 align-items-stretch">
+      <!-- 左：背景画像＋コピー -->
       <div class="col-12 col-lg-7 col-left">
         <div class="bg-wrap">
-          <!-- 高解像度配信 + スケール無効化 + フォーカス位置調整 -->
-          <picture>
-            <!-- あれば AVIF / WebP を用意。無ければこの2行は削除可 -->
-            <source type="image/avif"
-              srcset="
-                assets/img/urbanflex/urbanflex_top.avif 1x,
-                assets/img/urbanflex/urbanflex_top@2x.avif 2x,
-                assets/img/urbanflex/urbanflex_top@3x.avif 3x">
-            <source type="image/webp"
-              srcset="
-                assets/img/urbanflex/urbanflex_top.webp 1x,
-                assets/img/urbanflex/urbanflex_top@2x.webp 2x,
-                assets/img/urbanflex/urbanflex_top@3x.webp 3x">
-            <img src="assets/img/urbanflex/urbanflex_top.png" alt="都市の通勤風景とADDEVA UrbanFlex"
-              loading="eager" decoding="async" fetchpriority="high"
-              sizes="(min-width: 992px) 58vw, 92vw"
-              style="
-                transform: none;                 /* ← ぼけの原因の微スケールをOFF */
-                object-fit: cover;
-                object-position: 35% 50%;       /* ← 被写体をやや左寄せに見せる */
-                filter: contrast(1.06) saturate(1.04); /* ごく控えめにシャープな印象 */
-              "
-              width="1600" height="1000">
-          </picture>
-
-          <!-- オーバーレイ弱め（左の黒ベタをかなり軽く） -->
-          <div id="tint"
+          <!-- 単独<img>に戻す／拡張子.pngを指定（キャッシュ対策の?v付き） -->
+          <img
+            src="assets/img/urbanflex/urbanflex_top.png?v=refresh1"
+            alt="都市の通勤風景とADDEVA UrbanFlex"
+            loading="eager" decoding="async" fetchpriority="high"
+            sizes="(min-width: 992px) 58vw, 92vw"
             style="
-              position:absolute; inset:0; z-index:1; pointer-events:none;
-              background:linear-gradient(
-                90deg,
-                rgba(0,0,0,.42) 0%,
-                rgba(0,0,0,.22) 32%,
-                rgba(28,82,190,.14) 56%,
-                rgba(28,82,190,.06) 78%,
-                rgba(0,0,0,0) 100%
-              ) !important;
-            "></div>
+              position:absolute; inset:0; width:100%; height:100%;
+              object-fit:cover; object-position:35% 50%;
+              transform:none !important;
+              filter:contrast(1.06) saturate(1.04);
+              z-index:0;
+            ">
+          <!-- オーバーレイ：やや薄め -->
+          <div id="tint" style="
+            position:absolute; inset:0; z-index:1; pointer-events:none;
+            background:linear-gradient(
+              90deg,
+              rgba(0,0,0,.42) 0%,
+              rgba(0,0,0,.22) 32%,
+              rgba(28,82,190,.14) 56%,
+              rgba(28,82,190,.06) 78%,
+              rgba(0,0,0,0) 100%
+            ) !important;"></div>
         </div>
 
         <div class="copy">
@@ -136,16 +123,19 @@
         </div>
       </div>
 
+      <!-- 右：コラージュ画像 -->
       <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
            style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
-        <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
-             alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
-             class="img-fluid"
-             style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
+        <img
+          src="assets/img/hero/hero_right_bg_3way_v4.jpg"
+          alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+          class="img-fluid"
+          style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
       </div>
     </div>
   </div>
 </section>
+
 
     <!-- 共通特徴（PC/SPとも 左=画像／右=テキストで統一／SPのみカード化） -->
     <section id="common" class="section">
