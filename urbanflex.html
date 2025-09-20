@@ -174,66 +174,65 @@
             </p>
           </div>
         </div>
-              
-<!-- X) Smart Pockets － “①の上手く行く版”＋二重丸回避（丸は::beforeで描画、本文に丸数字は書かない） -->
-<style>
-  /* Smart Pockets 番号バッジ：小さめ＆オレンジに調整 */
-  :root { --uf-accent: #F27A1A; } /* 画像の線に近いオレンジ。必要なら微調整 */
-
-  .uf-circled { list-style: none; padding-left: 0; margin-bottom: .5rem; }
-  .uf-circled li{
-    position: relative;
-    padding-left: 1.9em;   /* バッジの分だけ左に余白 */
-    margin-bottom: .35rem;
-  }
-  .uf-circled li::before{
-    content: attr(data-num);                 /* 1,2,3… を受け取って表示 */
-    position: absolute; left: 0; top: .15em; /* 上下位置を少し下げて行間に合わせる */
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 1.35em; height: 1.35em;           /* ← 小さめサイズに */
-    border-radius: 50%;
-    border: 2px solid var(--uf-accent);      /* オレンジの円 */
-    color: var(--uf-accent);                 /* 数字もオレンジ */
-    font-weight: 700; line-height: 1; font-size: .85em;
-    background: transparent;                 /* 塗り無し（画像と同じ雰囲気） */
-  }
-
-  /* モバイルはさらに一段小さく */
-  @media (max-width: 576px){
-    .uf-circled li{ padding-left: 1.8em; }
-    .uf-circled li::before{
-      width: 1.25em; height: 1.25em; font-size: .8em; top: .2em;
-    }
-  }
-</style>
-
-
-<div class="row g-4 align-items-start mb-4 feature">
-  <div class="col-12 col-md-6">
-    <img class="img-fluid rounded-3"
-         src="assets/img/urbanflex/UF_smart_pokets.png"
-         alt="“Smart Pockets” 時短を叶える収納設計">
-  </div>
-  <div class="col-12 col-md-6">
-    <h3 class="h5 mb-2">“Smart Pockets”<br/> 時短を叶える収納設計</h3>
-    <p class="mb-2">
-      よく使う物に“最短動線”でアクセスできるよう、UrbanFlexは細部まで工夫した収納を随所に配置。
-      電車内・移動中・出張時など、シーンごとに最適な取り出しやすさを追求しました。
-    </p>
-
-    <!-- 画像の番号に合わせて data-num を固定（本文に丸数字は入れない） -->
-    <ol class="uf-circled mb-0">
-      <li data-num="1"><b>ショルダーストラップポケット</b>：スマホ用ポケットと交通カードポケットを装備。外観と機能の両立にこだわりました。<span class="small text-body-secondary">※一時的な保管にご利用ください。</span> <a href="#smart-access-strap">詳細はこちら</a></li>
-      <li data-num="2"><b>隠しポケット</b>：PCルーム中央に、財布やパスポートを入れられる隠しポケットを装備。背面ではなくPCルーム側に配置することで、中身が背面に当たりにくい設計。横持ちでもリュック使用でも、スムーズに出し入れできます。</li>
-      <li data-num="3"><b>水筒（ペットボトル）ポケット</b>：下部をメッシュにすることで、濡れた折りたたみ傘でも収納しやすくしました。</li>
-      <li data-num="4"><b>フロント上部ポケット</b>：内部にメッシュポケット。自転車や職場のキーなど、毎日使う小物を整理して保管できます。</li>
-      <li data-num="5"><b>フロント下部ポケット</b>：内部にスマートフォン用ポケットを2つ装備。斜め配置で、横持ち時でも取り出しやすい工夫を施しています。</li>
-      <li data-num="6"><b>フロント大ポケット</b>：雑誌やノートが入る大型サイズ。毎日使う鍵を取り付けられるストラップフックと専用ポケットを装備し、取り出しやすく、他の荷物を傷付けにくい構造。大型キー／ホルダーでも安心です。</li>
-    </ol>
-
-    <p class="small text-body-secondary mt-2 mb-0">※モデルにより一部仕様が異なる場合があります。</p>
-  </div>
-</div>
+                      
+        <!-- X) Smart Pockets － “①の上手く行く版”＋二重丸回避（丸は::beforeで描画、本文に丸数字は書かない） -->
+        <style>
+          /* Smart Pockets 番号バッジ：小さめ＆オレンジに調整 */
+          :root { --uf-accent: #F27A1A; } /* 画像の線に近いオレンジ。必要なら微調整 */
+        
+          .uf-circled { list-style: none; padding-left: 0; margin-bottom: .5rem; }
+          .uf-circled li{
+            position: relative;
+            padding-left: 1.9em;   /* バッジの分だけ左に余白 */
+            margin-bottom: .35rem;
+          }
+          .uf-circled li::before{
+            content: attr(data-num);                 /* 1,2,3… を受け取って表示 */
+            position: absolute; left: 0; top: .15em; /* 上下位置を少し下げて行間に合わせる */
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.35em; height: 1.35em;           /* ← 小さめサイズに */
+            border-radius: 50%;
+            border: 2px solid var(--uf-accent);      /* オレンジの円 */
+            color: var(--uf-accent);                 /* 数字もオレンジ */
+            font-weight: 700; line-height: 1; font-size: .85em;
+            background: transparent;                 /* 塗り無し（画像と同じ雰囲気） */
+          }
+        
+          /* モバイルはさらに一段小さく */
+          @media (max-width: 576px){
+            .uf-circled li{ padding-left: 1.8em; }
+            .uf-circled li::before{
+              width: 1.25em; height: 1.25em; font-size: .8em; top: .2em;
+            }
+          }
+        </style>
+            
+        <div class="row g-4 align-items-start mb-4 feature">
+          <div class="col-12 col-md-6">
+            <img class="img-fluid rounded-3"
+                 src="assets/img/urbanflex/UF_smart_pokets.png"
+                 alt="“Smart Pockets” 時短を叶える収納設計">
+          </div>
+          <div class="col-12 col-md-6">
+            <h3 class="h5 mb-2">“Smart Pockets”<br/> 時短を叶える収納設計</h3>
+            <p class="mb-2">
+              よく使う物に“最短動線”でアクセスできるよう、UrbanFlexは細部まで工夫した収納を随所に配置。
+              電車内・移動中・出張時など、シーンごとに最適な取り出しやすさを追求しました。
+            </p><br/>
+        
+            <!-- 画像の番号に合わせて data-num を固定（本文に丸数字は入れない） -->
+            <ol class="uf-circled mb-0">
+              <li data-num="1"><b>ショルダーストラップポケット</b>：スマホとカードサイズのポケットを装備。<a href="#smart-access-strap">詳細はこちら</a></li>
+              <li data-num="2"><b>隠しポケット</b>：PCルーム中央に、大き目の財布やパスポートケースが入れられる隠しポケットを装備。横持ちでもリュック使用でも、スムーズに出し入れ出来るだけではなく、セキュリティー的にも安心です。<br/>背面ではなくPCルーム側に配置することで、中身が背面に当たりにくい設計になっています。</li>
+              <li data-num="3"><b>水筒（ペットボトル）ポケット</b>：水筒や濡れた折りたたみ傘の収納に。<a href="#wet-safe-pocket">詳細はこちら</a></li></li>
+              <li data-num="4"><b>フロント上部ポケット</b>：自転車や車のキーなど、毎日使う小物を整理して保管できます。</li>
+              <li data-num="5"><b>フロント下部ポケット</b>：内部にスマートフォン用ポケットを2つ装備。斜め配置で、横持ち時でも取り出しやすい工夫を施しています。</li>
+              <li data-num="6"><b>フロント大ポケット</b>：雑誌やノートが入る大型サイズ。毎日使う鍵を取り付けられるストラップフックと専用ポケットを装備し。</li>
+            </ol>
+        
+            <p class="small text-body-secondary mt-2 mb-0">※モデルにより一部仕様が異なる場合があります。</p>
+          </div>
+        </div>
 
 
         <!-- 4) Smart Expandable Zip（3REX-40のみ） -->
@@ -282,7 +281,7 @@
         </div>
 
         <!-- 6) Wet Safe Pocket -->
-        <div class="row g-4 align-items-start mb-4 feature">
+        <div class="row g-4 align-items-start mb-4 feature" id="wet-safe-pocket">
           <div class="col-12 col-md-6">
             <img class="img-fluid rounded-3" src="assets/img/urbanflex/16.png" alt="“Wet Safe Pocket” 濡れた傘も入れられるペットボトルポケット">
           </div>
@@ -306,8 +305,8 @@
             <p class="mb-0">
               リュックのショルダーストラップに、スマホと交通カードサイズのポケットを搭載。<br/>
               混雑した電車内でスマホが収納できず、「ここにポケットがあったらいいのに」と思ったことはありませんか？ADDEVAは、まさにそこにポケットを作りました。<br/>
-              伸縮素材を部分的に使用し、ポケットが目立たない設計になっています。<br/>
-              ポケットのない服装で出かけた日や、歩きながら連絡を待っているときなどにも重宝します。携帯電話を湾曲から守る構造になっているので、安心して収納できます。
+              開発では、外観と機能の両立にポイントを置き、部分的に伸縮素材を使用することで、ポケットが目立たない設計になっています。<br/>
+              ポケットのない服装で出かけた日、歩きながら連絡を待っているときなどに重宝します。<br/>携帯電話を湾曲から守る構造になっているので、安心して収納できます。
             </p>
             <p class="small text-danger mb-0">※カードポケットに、スキミング防止機能はございません。<br>スキミング防止カードケースのご利用を推奨しています。</p>
           </div>
