@@ -175,54 +175,52 @@
           </div>
         </div>
               
-        <!-- X) Smart Pockets -->
-        <style>
-          /* 最小限：デフォ番号を消して余白だけ整える */
-          .uf-plain { list-style: none; padding-left: 0; margin-bottom: .5rem; }
-          .uf-plain li { margin-bottom: .35rem; }
-        </style>
-        
-        <div class="row g-4 align-items-start mb-4 feature">
-          <div class="col-12 col-md-6">
-            <img class="img-fluid rounded-3"
-                 src="assets/img/urbanflex/UF_smart_pokets.png"
-                 alt="“Smart Pockets” 時短を叶える収納設計">
-          </div>
-          <div class="col-12 col-md-6">
-            <h3 class="h5 mb-2">“Smart Pockets”<br/> 時短を叶える収納設計</h3>
-            <p class="mb-2">
-              よく使う物に“最短動線”でアクセスできるよう、UrbanFlexは細部まで工夫した収納を随所に配置。
-              電車内・移動中・出張時など、シーンごとに最適な取り出しやすさを追求しました。
-            </p>
-        
-            <!-- 丸数字はテキストとして直書き -->
-            <ol class="uf-plain mb-0">
-              <li>① <b>ショルダーストラップ・スマホ＆カード</b>：混雑時でも片手でサッと出し入れ。</li>
-              <li>② <b>クイックアクセス上部ポケット</b>：頻出小物を上から直感的に。</li>
-              <li>③ <b>ボトル／折りたたみ傘ポケット</b>：底部メッシュ設計で濡れ対策。</li>
-              <li>④ <b>メッシュオーガナイザー</b>：視認性が高く、細かいガジェットを整理。</li>
-              <li>⑤ <b>フロント縦ジップ／サイドポケット</b>：背負ったままでも届く即時アクセス。</li>
-              <li>⑥ <b>キーリーシュ付きポケット</b>：鍵を固定して迷子防止、ワンタッチ取り出し。</li>
-            </ol>
-        
-            <p class="small text-body-secondary mt-2 mb-0">※モデルにより一部仕様が異なる場合があります。</p>
-          </div>
-        </div>
-      
-        <!-- 3) Detach Pocket -->
-        <div class="row g-4 align-items-start mb-4 feature">
-          <div class="col-12 col-md-6">
-            <img class="img-fluid rounded-3" src="assets/img/urbanflex/13.png" alt="“Detach Pocket” サコッシュに変形">
-          </div>
-          <div class="col-12 col-md-6">
-            <h3 class="h5 mb-2">“Detach Pocket”</h3>
-            <p>
-              開発者が、どうしても実現したかった機能で、 ”メガネをさっと取り出せるところに収納しておきたい”　を叶えたのがこのポケットです。<br/>
-              リュック上部の空間を効率よく活用し、取り出しやすく、負荷がかからない場所なので、ソフトケースに収納したメガネでも、安心して収納できます。<br/>
-              さらに、取り外してサコッシュバッグとして利用できるので、カフェや、買い物、小旅行での散策など、幅広いシーンで重宝すること間違いなしです。
-            </p>           
-          </div>
-        </div>
+<!-- X) Smart Pockets － “①の上手く行く版”＋二重丸回避（丸は::beforeで描画、本文に丸数字は書かない） -->
+<style>
+  /* 丸数字バッジを ::before で描く（本文側には数字を書かない） */
+  .uf-circled { list-style: none; padding-left: 0; margin-bottom: .5rem; }
+  .uf-circled li {
+    position: relative;
+    padding-left: 2.1em;          /* バッジぶんの左余白 */
+    margin-bottom: .35rem;
+  }
+  .uf-circled li::before {
+    content: attr(data-num);      /* 1,2,3… を受け取って表示 */
+    position: absolute; left: 0; top: .05em;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6em; height: 1.6em; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.25);
+    font-weight: 700; line-height: 1;
+  }
+</style>
+
+<div class="row g-4 align-items-start mb-4 feature">
+  <div class="col-12 col-md-6">
+    <img class="img-fluid rounded-3"
+         src="assets/img/urbanflex/UF_smart_pokets.png"
+         alt="“Smart Pockets” 時短を叶える収納設計">
+  </div>
+  <div class="col-12 col-md-6">
+    <h3 class="h5 mb-2">“Smart Pockets”<br/> 時短を叶える収納設計</h3>
+    <p class="mb-2">
+      よく使う物に“最短動線”でアクセスできるよう、UrbanFlexは細部まで工夫した収納を随所に配置。
+      電車内・移動中・出張時など、シーンごとに最適な取り出しやすさを追求しました。
+    </p>
+
+    <!-- 画像の番号に合わせて data-num を固定（本文に丸数字は入れない） -->
+    <ol class="uf-circled mb-0">
+      <li data-num="1"><b>ショルダーストラップポケット</b>：スマホ用ポケットと交通カードポケットを装備。外観と機能の両立にこだわりました。<span class="small text-body-secondary">※一時的な保管にご利用ください。</span> <a href="#smart-access-strap">詳細はこちら</a></li>
+      <li data-num="2"><b>隠しポケット</b>：PCルーム中央に、財布やパスポートを入れられる隠しポケットを装備。背面ではなくPCルーム側に配置することで、中身が背面に当たりにくい設計。横持ちでもリュック使用でも、スムーズに出し入れできます。</li>
+      <li data-num="3"><b>水筒（ペットボトル）ポケット</b>：下部をメッシュにすることで、濡れた折りたたみ傘でも収納しやすくしました。</li>
+      <li data-num="4"><b>フロント上部ポケット</b>：内部にメッシュポケット。自転車や職場のキーなど、毎日使う小物を整理して保管できます。</li>
+      <li data-num="5"><b>フロント下部ポケット</b>：内部にスマートフォン用ポケットを2つ装備。斜め配置で、横持ち時でも取り出しやすい工夫を施しています。</li>
+      <li data-num="6"><b>フロント大ポケット</b>：雑誌やノートが入る大型サイズ。毎日使う鍵を取り付けられるストラップフックと専用ポケットを装備し、取り出しやすく、他の荷物を傷付けにくい構造。大型キー／ホルダーでも安心です。</li>
+    </ol>
+
+    <p class="small text-body-secondary mt-2 mb-0">※モデルにより一部仕様が異なる場合があります。</p>
+  </div>
+</div>
+
 
         <!-- 4) Smart Expandable Zip（3REX-40のみ） -->
         <div class="row g-4 align-items-start mb-4 feature">
