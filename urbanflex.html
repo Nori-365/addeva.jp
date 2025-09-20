@@ -177,22 +177,36 @@
               
 <!-- X) Smart Pockets － “①の上手く行く版”＋二重丸回避（丸は::beforeで描画、本文に丸数字は書かない） -->
 <style>
-  /* 丸数字バッジを ::before で描く（本文側には数字を書かない） */
+  /* Smart Pockets 番号バッジ：小さめ＆オレンジに調整 */
+  :root { --uf-accent: #F27A1A; } /* 画像の線に近いオレンジ。必要なら微調整 */
+
   .uf-circled { list-style: none; padding-left: 0; margin-bottom: .5rem; }
-  .uf-circled li {
+  .uf-circled li{
     position: relative;
-    padding-left: 2.1em;          /* バッジぶんの左余白 */
+    padding-left: 1.9em;   /* バッジの分だけ左に余白 */
     margin-bottom: .35rem;
   }
-  .uf-circled li::before {
-    content: attr(data-num);      /* 1,2,3… を受け取って表示 */
-    position: absolute; left: 0; top: .05em;
+  .uf-circled li::before{
+    content: attr(data-num);                 /* 1,2,3… を受け取って表示 */
+    position: absolute; left: 0; top: .15em; /* 上下位置を少し下げて行間に合わせる */
     display: inline-flex; align-items: center; justify-content: center;
-    width: 1.6em; height: 1.6em; border-radius: 50%;
-    border: 1px solid rgba(0,0,0,.25);
-    font-weight: 700; line-height: 1;
+    width: 1.35em; height: 1.35em;           /* ← 小さめサイズに */
+    border-radius: 50%;
+    border: 2px solid var(--uf-accent);      /* オレンジの円 */
+    color: var(--uf-accent);                 /* 数字もオレンジ */
+    font-weight: 700; line-height: 1; font-size: .85em;
+    background: transparent;                 /* 塗り無し（画像と同じ雰囲気） */
+  }
+
+  /* モバイルはさらに一段小さく */
+  @media (max-width: 576px){
+    .uf-circled li{ padding-left: 1.8em; }
+    .uf-circled li::before{
+      width: 1.25em; height: 1.25em; font-size: .8em; top: .2em;
+    }
   }
 </style>
+
 
 <div class="row g-4 align-items-start mb-4 feature">
   <div class="col-12 col-md-6">
