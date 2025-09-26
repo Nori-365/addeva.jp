@@ -1,4 +1,4 @@
-/* ADDEVA minimal styles (v3.6): Bootstrap以外はこの1枚のみ */
+/* ADDEVA minimal styles (v3.7): Bootstrap以外はこの1枚のみ */
 :root{
   --bg:#fff;
   --bg-soft:#f7f9fc;
@@ -31,36 +31,27 @@ body{
   --bs-navbar-brand-hover-color: var(--ink);
 }
 
-/* ===== ブランドサイズ最適化（行の高さは据え置き） ===== */
-/* 親は字間ゼロ、隙間ゼロ */
+/* ===== ブランドサイズ最適化 ===== */
 .site-header .navbar-brand{
   display:inline-flex; align-items:flex-end;
   gap:0;
   line-height:1; padding-block:.25rem;
   font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
-  letter-spacing:0;                   /* ← ここを 0 に */
+  letter-spacing:0;
 }
-/* ADDEVA のみ字間を付与 */
-.site-header .navbar-brand .brand-text{
-  letter-spacing:.12em;
-}
-/* ® は上寄せ＋さらに左へ寄せる（基本） */
+.site-header .navbar-brand .brand-text{ letter-spacing:.12em; }
 .site-header .navbar-brand .brand-reg{
   font-size:.56em;
-  align-self:flex-start;                 /* 上寄せ */
-  transform: translate(-0.20em, -0.22em);/* ← 左/上 微調整 */
-  margin-left:0;                         /* 余計な間隔はゼロに */
-  letter-spacing:0;
-  opacity:.9;
+  align-self:flex-start;
+  transform: translate(-0.20em, -0.22em);
+  margin-left:0; letter-spacing:0; opacity:.9;
 }
 
 /* 固定ヘッダー */
 .site-header{
   position: fixed; top: env(safe-area-inset-top, 0); left:0; right:0;
-  z-index:1200;
-  background:#fff; border-bottom:1px solid var(--line);
+  z-index:1200; background:#fff; border-bottom:1px solid var(--line);
 }
-/* 押し下げ（重複を整理してこの定義だけ使用） */
 body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 @media (max-width: 991.98px){
   body{ padding-top: calc(var(--header-mobile) + env(safe-area-inset-top, 0)); }
@@ -71,15 +62,14 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   [id]{ scroll-margin-top: var(--header-mobile); }
 }
 
-/* === スマホの“無意味な1行”対策（margin-collapse防止） === */
+/* === スマホの“無意味な1行”対策 === */
 :where(main, #main, .site-main) > *:first-child{ margin-top:0 !important; }
 :where(main, #main, .site-main) > :first-child[class*="mt-"]{ margin-top:0 !important; }
 :where(main, #main, .site-main) > :is(nav,.nav,.subnav,.page-tabs,.breadcrumb,.local-nav):first-child{
-  margin-top:0 !important;
-  padding-top:.25rem;
+  margin-top:0 !important; padding-top:.25rem;
 }
 @media (max-width: 575.98px){
-  section.section:first-of-type{ padding-top:36px; } /* 元:64px → 36px */
+  section.section:first-of-type{ padding-top:36px; }
 }
 
 /* =========================
@@ -92,13 +82,20 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;transform:scale(1.02);z-index:0
 }
-/* Copy block */
+
+/* Copy block（共通） */
 .hero .copy{
   position:absolute;left:0;right:0;top:0;bottom:0;z-index:3;
   display:flex;flex-direction:column;gap:12px;max-width:720px;
   padding:clamp(24px,5vw,56px);color:#fff;
-  text-shadow:0 2px 8px rgba(0,0,0,.55)
+  text-shadow:0 2px 8px rgba(0,0,0,.55);
+  pointer-events:none; /* 矢印クリックを妨げない */
 }
+.hero .copy a,
+.hero .copy button,
+.hero .copy .btn-ghost,
+.hero .copy .pill{ pointer-events:auto; }
+
 .eyebrow{font-size:.92rem;letter-spacing:.18em;text-transform:uppercase;opacity:.9}
 .hero h1{margin:.2em 0 .4em;font-size:clamp(28px,5.2vw,44px);line-height:1.2}
 .hero .lead{font-size:clamp(15px,2.1vw,18px);opacity:.95}
@@ -108,7 +105,7 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 .btn-ghost:hover{background:rgba(19,23,34,.35)}
 .cta-cluster{margin-top:auto;display:flex;flex-direction:column;gap:16px}
 
-/* Tint（左右スライドで共通利用） */
+/* Tint（UrbanFlexなどで使用。BSC20は未使用） */
 .hero .tint{
   position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(90deg,
@@ -120,22 +117,46 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   border-radius:12px;
 }
 
-/* 右側のビジュアル枠（既存） */
+/* 右側のビジュアル枠（共通） */
 .right-wrap{background:var(--bg-soft);padding:14px;border-radius:12px;height:100%}
 .top-wide,.tile{display:block;width:100%;height:auto;object-fit:cover;border-radius:14px}
 
-/* Carousel indicators 視認性UP */
-#heroCarousel .carousel-indicators{margin-bottom:.5rem}
+/* Carousel indicators をバー型に変更（クリックでジャンプ可） */
+#heroCarousel .carousel-indicators{ margin-bottom:.75rem; }
 #heroCarousel .carousel-indicators [data-bs-target]{
-  width:10px;height:10px;border-radius:50%;background:#fff;opacity:.6
+  width:28px;height:4px;border-radius:2px;background:#fff;opacity:.55;margin:0 4px;
 }
-#heroCarousel .carousel-indicators .active{opacity:1}
+#heroCarousel .carousel-indicators .active{ opacity:1; }
 
-/* 画像の縦比が違っても崩れにくく（高さジャンプ防止） */
+/* 矢印（常時表示＆前面） */
+#heroCarousel .carousel-control-prev,
+#heroCarousel .carousel-control-next{
+  z-index:6; opacity:1;
+}
+
+/* 高さジャンプ防止（両スライド共通） */
 #heroCarousel .carousel-item{
   padding-block: clamp(8px, 1.5vw, 16px);
   min-height: clamp(360px, 56svh, 640px);
 }
+/* === BSC-20：1:1 表示用ユーティリティ ===================== */
+.sq-wrap{
+  width:100%;
+  aspect-ratio:1/1;            /* 正方形を保証 */
+  border-radius:12px;
+  overflow:hidden;
+  background:#f2f6f7;          /* 透過画像でも馴染む下地 */
+}
+.sq-img{
+  width:100%; height:100%;
+  object-fit:cover;             /* 正方形内にきっちりフィット */
+  display:block;
+}
+/* 左右の高さバランスが崩れにくいよう、行に stretch 指定 */
+@media (min-width: 992px){
+  .hero .row.align-items-stretch{ align-items: stretch !important; }
+}
+
 
 /* Sections */
 section.section{padding:48px 0;border-top:1px solid var(--line)}
@@ -144,42 +165,26 @@ section.section{padding:48px 0;border-top:1px solid var(--line)}
 .notice{background:#f9fafb;border:1px solid var(--line);padding:18px;border-radius:14px;font-size:.95rem}
 footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
 
-/* ===== 追加：ヒーローの青帯（フォントは一切変更しない） ===== */
+/* ===== ヒーローの青帯（フォントは変えない） ===== */
 .hero .col-left .copy .eyebrow{
-  display:inline-block;
-  color:#fff;
-  background:var(--brand);
-  padding:.06em .48em;
-  border-radius:3px;
-  -webkit-box-decoration-break:clone;
-          box-decoration-break:clone;
+  display:inline-block; color:#fff; background:var(--brand);
+  padding:.06em .48em; border-radius:3px;
+  -webkit-box-decoration-break:clone; box-decoration-break:clone;
 }
 
-/* === Brand mark final (最後に1本だけ置く) ================== */
+/* === Brand mark final ================== */
 .site-header .navbar .navbar-brand .brand-reg{
-  font-size:.56em;
-  align-self:flex-start;                 /* 上寄せ */
-  transform: translate(-6px, -0.20em);   /* ← 左右・上下はここで最終調整 */
-  margin-left:0;
-  letter-spacing:0;
-  opacity:.9;
+  font-size:.56em; align-self:flex-start;
+  transform: translate(-6px, -0.20em);
+  margin-left:0; letter-spacing:0; opacity:.9;
 }
 
-/* ===== 追加：共通特徴をSPだけカード化（md以上はフラット） ===== */
+/* ===== 共通特徴をSPだけカード化（md以上はフラット） ===== */
 #common .feature{
-  border:1px solid var(--line);
-  border-radius:.75rem;
-  padding:12px;
-  background:#fff;
+  border:1px solid var(--line); border-radius:.75rem; padding:12px; background:#fff;
 }
 #common .feature + .feature{ margin-top:.5rem; }
-
 @media (min-width:768px){
-  #common .feature{
-    border:0;
-    border-radius:0;
-    padding:0;
-    background:transparent;
-  }
+  #common .feature{ border:0; border-radius:0; padding:0; background:transparent; }
   #common .feature + .feature{ margin-top:0; }
 }
