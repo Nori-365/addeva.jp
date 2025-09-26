@@ -241,3 +241,34 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
   #common .feature{ border:0; border-radius:0; padding:0; background:transparent; }
   #common .feature + .feature{ margin-top:0; }
 }
+
+/* ===== BSC-20 ヒーロー：黒ボックス＋ロゴ（画像上オーバーレイ） ===== */
+.bsc-badge{
+  display:inline-block;
+  color:#fff;
+  background: rgba(0,0,0,.42);          /* 濃さは .38–.48 で微調整可 */
+  border-radius:12px;
+  padding:12px 18px;
+  max-width: min(92%, 520px);
+  margin-top: clamp(8px, 2.0vw, 18px);
+  box-shadow: 0 6px 24px rgba(0,0,0,.22);
+  backdrop-filter: blur(1.5px);
+}
+.bsc-lead{
+  font-size: clamp(14px, 1.8vw, 16px);
+  line-height: 1.6;
+  margin: 0 0 6px 0;
+}
+.bsc-logo{
+  display:block;
+  width: clamp(160px, 28vw, 300px);
+  height:auto;
+  margin: 6px 0 6px 0;
+}
+.bsc-series{
+  font-size: clamp(12px, 1.6vw, 14px);
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: lining-nums;
+}
+
