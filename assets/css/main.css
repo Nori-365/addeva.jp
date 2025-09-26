@@ -182,14 +182,16 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   min-height: clamp(360px, 56svh, 640px);
 }
 
-/* === BSC-20：1:1 表示用ユーティリティ ===================== */
+/* === BSC-20：可変比率（等高）ユーティリティ ================= */
 .sq-wrap{
   width:100%;
-  aspect-ratio:1/1;
+  height:100%;                                 /* ← 1:1を廃止して高さ基準に */
+  min-height: clamp(300px, 38vw, 520px);       /* ← PCでの見映えを担保（必要なら調整可） */
   border-radius:12px;
   overflow:hidden;
   background:transparent;
 }
+
 /* === 等高化（左右の見かけ高さを完全一致） ================== */
 .sq-col{
   display:flex;
