@@ -125,7 +125,7 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 #heroCarousel .carousel-indicators{ margin-bottom:.75rem; }
 #heroCarousel .carousel-indicators [data-bs-target]{
   width:42px;                  /* ← 長さ 1.5 倍（28 → 42） */
-  height:2px;                  /* ← 高さ 1/2（4 → 2） */
+  height:4px;                  /* ← 高さ 1/2（4 → 2） */
   border-radius:1px;
   background:#fff;
   opacity:.55;
