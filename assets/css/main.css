@@ -72,21 +72,19 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 
 /* === スマホの“無意味な1行”対策（margin-collapse防止） === */
-/* main直下の先頭要素の上マージンを必ずゼロにする */
 :where(main, #main, .site-main) > *:first-child{ margin-top:0 !important; }
-/* Bootstrapの .mt-* が付いていても潰す */
 :where(main, #main, .site-main) > :first-child[class*="mt-"]{ margin-top:0 !important; }
-/* よく使うナビ要素（サブメニュー/パンくず等）の余白も詰める */
 :where(main, #main, .site-main) > :is(nav,.nav,.subnav,.page-tabs,.breadcrumb,.local-nav):first-child{
   margin-top:0 !important;
-  padding-top:.25rem; /* 最小限の見た目余白だけ */
+  padding-top:.25rem;
 }
-/* セクション先頭の上パディングをSPで少し軽く */
 @media (max-width: 575.98px){
   section.section:first-of-type{ padding-top:36px; } /* 元:64px → 36px */
 }
 
-/* HERO */
+/* =========================
+   HERO（Carousel対応）
+   ========================= */
 .hero{padding:16px 0}
 .hero .col-left{position:relative;min-height:56svh}
 .hero .col-left .bg-wrap{position:absolute;inset:0;overflow:hidden;border-radius:12px}
@@ -94,7 +92,6 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;transform:scale(1.02);z-index:0
 }
-
 /* Copy block */
 .hero .copy{
   position:absolute;left:0;right:0;top:0;bottom:0;z-index:3;
@@ -111,9 +108,31 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 .btn-ghost:hover{background:rgba(19,23,34,.35)}
 .cta-cluster{margin-top:auto;display:flex;flex-direction:column;gap:16px}
 
-/* Right collage（既存） */
+/* Tint（左右スライドで共通利用） */
+.hero .tint{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,.78) 0%,
+    rgba(0,0,0,.54) 52%,
+    rgba(28,82,190,.46) 70%,
+    rgba(28,82,190,.28) 86%,
+    rgba(0,0,0,0) 100%);
+  border-radius:12px;
+}
+
+/* 右側のビジュアル枠（既存） */
 .right-wrap{background:var(--bg-soft);padding:14px;border-radius:12px;height:100%}
 .top-wide,.tile{display:block;width:100%;height:auto;object-fit:cover;border-radius:14px}
+
+/* Carousel indicators 視認性UP */
+#heroCarousel .carousel-indicators{margin-bottom:.5rem}
+#heroCarousel .carousel-indicators [data-bs-target]{
+  width:10px;height:10px;border-radius:50%;background:#fff;opacity:.6
+}
+#heroCarousel .carousel-indicators .active{opacity:1}
+
+/* 画像の縦比が違っても崩れにくく */
+#heroCarousel .carousel-item{ padding-block: clamp(8px, 1.5vw, 16px); }
 
 /* Sections */
 section.section{padding:48px 0;border-top:1px solid var(--line)}
