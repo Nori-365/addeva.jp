@@ -147,6 +147,17 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   overflow:hidden;
   background:transparent;       /* ← グレー下地を撤去（jpgでも透過でもOK） */
 }
+/* === 等高化（左右の見かけ高さを完全一致） ================== */
+.sq-col{
+  display:flex;                /* カラム自体をフレックスに */
+  align-items:stretch;         /* 子を等高に */
+}
+.sq-col > .sq-wrap{
+  flex:1 1 auto;               /* 可視枠が高さ基準になる */
+}
+
+/* 念のため：カラム側の角丸や余白は使わず、見た目枠はsq-wrapに統一 */
+.sq-col{ border-radius:0 !important; }
 
 .sq-img{
   width:100%; height:100%;
