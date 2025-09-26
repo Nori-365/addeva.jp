@@ -6,7 +6,7 @@
 
   <!-- Primary SEO -->
   <title>ADDEVA（アデバ）公式｜付加価値をデザインしたビジネスリュック、バッグの販売</title>
-  <meta name="description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」をプロデュース。">
+  <meta name="description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」と、軽量ソフトキャリー「Beatas BSC-20」を正規取扱。">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://addeva.jp/">
@@ -15,81 +15,148 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Robots (recommended) -->
+  <!-- Robots -->
   <meta name="robots" content="index,follow,max-image-preview:large">
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.6">
 
-  <!-- Open Graph (recommended) -->
+  <!-- Open Graph -->
   <meta property="og:site_name" content="ADDEVA">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://addeva.jp/">
   <meta property="og:title" content="ADDEVA（アデバ）公式｜付加価値をデザインしたビジネスリュック、バッグの販売">
-  <meta property="og:description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」をプロデュース。">
+  <meta property="og:description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」と、軽量ソフトキャリー「Beatas BSC-20」を正規取扱。">
   <meta property="og:image" content="https://addeva.jp/assets/img/og/ogp_top.jpg">
   <meta property="og:locale" content="ja_JP">
 </head>
-  
+
 <body>
   <!-- ▼ 共通ヘッダーを読み込み -->
-  <div data-include="header.html" aria-busy="true"></div>
+  <div data-include="header.html" class="site-header" aria-busy="true"></div>
 
   <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container container-narrow">
-        <div class="row g-4 align-items-stretch">
+    <!-- =========================
+         HERO：2スライド（UrbanFlex ⇄ BSC-20）
+         ========================= -->
+    <section id="hero" class="hero">
+      <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <!-- indicators -->
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="UrbanFlex"></button>
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Beatas BSC-20"></button>
+        </div>
 
-          <!-- Left: background image with copy overlay -->
-          <div class="col-12 col-lg-7 col-left">
-            <div class="bg-wrap">
-              <!-- 背景 -->
-              <img
-                src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-                alt="都市の通勤風景とADDEVA UrbanFlex"
-                class="w-100 d-block">
-              <!-- tint -->
-              <div id="tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;
-                   background:linear-gradient(90deg,
-                     rgba(0,0,0,.78) 0%,
-                     rgba(0,0,0,.54) 52%,
-                     rgba(28,82,190,.46) 70%,
-                     rgba(28,82,190,.28) 86%,
-                     rgba(0,0,0,0) 100%) !important;"></div>
-            </div>
+        <div class="carousel-inner">
 
-            <div class="copy">
-              <div>
-                <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
-                <h1>仕事も旅も、これ一つ。</h1>
-                <p class="lead">3WAY拡張マチでオンもオフも。17インチPC対応。</p>
-              </div>
-              <div class="cta-cluster">
-                <div class="pills" aria-label="補助バッジ">
-                  <span class="pill">時短を叶える収納設計。</span>
-                  <span class="pill">軽量防水設計。</span>
+          <!-- Slide 1: UrbanFlex（既存ヒーローを踏襲） -->
+          <div class="carousel-item active">
+            <div class="container container-narrow">
+              <div class="row g-4 align-items-stretch">
+
+                <!-- Left: background image with copy overlay -->
+                <div class="col-12 col-lg-7 col-left position-relative">
+                  <div class="bg-wrap">
+                    <!-- 背景 -->
+                    <img
+                      src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
+                      alt="都市の通勤風景とADDEVA UrbanFlex"
+                      class="w-100 d-block" loading="eager">
+                    <!-- tint -->
+                    <div class="tint"></div>
+                  </div>
+
+                  <div class="copy">
+                    <div>
+                      <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
+                      <h1>仕事も旅も、これ一つ。</h1>
+                      <p class="lead">3WAY拡張マチでオンもオフも。17インチPC対応。</p>
+                    </div>
+                    <div class="cta-cluster">
+                      <div class="pills" aria-label="補助バッジ">
+                        <span class="pill">時短を叶える収納設計。</span>
+                        <span class="pill">軽量防水設計。</span>
+                      </div>
+                      <div class="d-flex gap-2 mt-1 flex-wrap">
+                        <a class="btn-ghost" href="#story">ブランドストーリー</a>
+                        <a class="btn-ghost" href="urbanflex.html">詳しく見る</a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="d-flex gap-2 mt-1 flex-wrap">
-                  <a class="btn-ghost" href="#story">ブランドストーリー</a>
-                  <a class="btn-ghost" href="urbanflex.html">詳しく見る</a>
+
+                <!-- Right -->
+                <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
+                     style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+                  <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
+                       alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
+                       class="img-fluid" style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;" loading="lazy">
                 </div>
+
               </div>
             </div>
           </div>
 
-          <!-- Right -->
-          <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
-               style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
-            <img src="assets/img/hero/hero_right_bg_3way_v4.jpg" alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）" class="img-fluid" style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;">
+          <!-- Slide 2: Beatas BSC-20 -->
+          <div class="carousel-item">
+            <div class="container container-narrow">
+              <div class="row g-4 align-items-stretch">
+
+                <!-- Left: 背景KV（1920x800） -->
+                <div class="col-12 col-lg-7 col-left position-relative">
+                  <div class="bg-wrap">
+                    <img
+                      src="assets/img/bsc-20_topslide.png"
+                      alt="Beatas BSC-20 軽量ソフトキャリー"
+                      class="w-100 d-block" loading="lazy">
+                    <div class="tint"></div>
+                  </div>
+
+                  <div class="copy">
+                    <div>
+                      <div class="eyebrow">Travel – Beatas BSC-20</div>
+                      <h1>軽くて、強い。旅がはかどる。</h1>
+                      <p class="lead">撥水生地 × 360°ダブルキャスター × TSAロック。機内持込サイズあり。</p>
+                    </div>
+                    <div class="cta-cluster">
+                      <div class="pills" aria-label="補助バッジ">
+                        <span class="pill">整理しやすい多ポケット</span>
+                        <span class="pill">拡張機能で容量アップ</span>
+                      </div>
+                      <div class="d-flex gap-2 mt-1 flex-wrap">
+                        <a class="btn-ghost" href="/bsc20/">シリーズを見る</a>
+                        <a class="btn-ghost" href="/bsc20/#compare">サイズ比較</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right（仮：ロゴ。商品イメージに差し替え可能） -->
+                <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
+                     style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
+                  <img src="assets/img/addeva_logo.png"
+                       alt="ADDEVA / Beatas"
+                       class="img-fluid" style="max-width:70%; max-height:100%; object-fit:contain; object-position:center;" loading="lazy">
+                </div>
+
+              </div>
+            </div>
           </div>
 
         </div>
+
+        <!-- controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="前のスライド">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="次のスライド">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
       </div>
     </section>
 
-    <!-- UrbanFlexという選択（=製品の理由セクション） -->
+    <!-- ===== UrbanFlexという選択（=製品の理由セクション） ===== -->
     <section id="flagship" class="section">
       <div class="container container-narrow">
         <div class="kicker">合理性をデザインする</div>
@@ -119,14 +186,13 @@
       </div>
     </section>
 
-    <!-- ▼ B2B：2枚カード（“UrbanFlexの下”に配置） -->
+    <!-- ===== B2Bカード ===== -->
     <section id="b2b" class="section">
       <div class="container container-narrow">
         <div class="kicker">For Business</div>
         <h2>法人向けサービス｜小ロット × OEM</h2>
 
         <div class="row row-cols-1 row-cols-lg-2 g-4 mt-1">
-
           <!-- Card A -->
           <div class="col">
             <div class="card h-100 shadow-sm border-0">
@@ -171,22 +237,19 @@
       </div>
     </section>
 
-    <!-- ブランドストーリー -->
+    <!-- ===== ブランドストーリー ===== -->
     <section id="story" class="section">
       <div class="container container-narrow">
         <div class="kicker">BRAND STORY</div>
         <h2 class="h3">私達について</h2>
-    
+
         <div class="row g-4 align-items-start">
-          <!-- 左：テキスト（SPでも先に出る） -->
           <div class="col-12 col-md-6">
             <p>
               10年以上にわたりベトナムで日本向けの鞄づくりに携わってきた経験を活かし、日本人管理のもと現地で生産・検品を実施。ベトナム直送に近い体制で中間コストを抑え、高品質な商品をお求めやすい価格でお届けします。<br/>
               また、ADDEVAは、ユーザー様より直接いただいた感想やアイデアを、迅速に取り入れ、皆様に愛されるブランドにする取り組み行っています。（Webサイト準備中）<a class="btn btn-outline-dark" href="/company.html" aria-disabled="true">詳しく見る</a>
             </p>
           </div>
-    
-          <!-- 右：挿絵（SPでは下に回る） -->
           <div class="col-12 col-md-6">
             <img src="assets/img/company/meeting.jpg" alt="ミーティングの様子（ブランドの考え方を形に）" class="img-fluid rounded-3">
           </div>
@@ -194,7 +257,7 @@
       </div>
     </section>
 
-    <!-- ブランドポリシー -->
+    <!-- ===== ブランドポリシー ===== -->
     <section id="policy" class="section">
       <div class="container container-narrow">
         <div class="kicker">BRAND POLICY</div>
@@ -210,7 +273,8 @@
         </div><br/>
       </div>
     </section>
-    
+
+  </main>
 
   <!-- ▼ 共通フッターを読み込み -->
   <div data-include="footer.html" aria-busy="true"></div>
@@ -228,8 +292,7 @@
             const resp = await fetch(file, { cache: 'no-cache' });
             if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
             const html = await resp.text();
-            // プレースホルダーごと置換
-            el.outerHTML = html;
+            el.outerHTML = html; // プレースホルダーごと置換
           } catch (e) {
             console.error('Include failed:', file, e);
           }
