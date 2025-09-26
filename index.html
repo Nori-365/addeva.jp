@@ -20,7 +20,7 @@
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.6">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.7">
 
   <!-- Open Graph -->
   <meta property="og:site_name" content="ADDEVA">
@@ -42,7 +42,7 @@
          ========================= -->
     <section id="hero" class="hero">
       <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
-        <!-- indicators -->
+        <!-- indicators（バー型） -->
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="UrbanFlex"></button>
           <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Beatas BSC-20"></button>
@@ -50,7 +50,7 @@
 
         <div class="carousel-inner">
 
-          <!-- Slide 1: UrbanFlex（既存ヒーローを踏襲） -->
+          <!-- Slide 1: UrbanFlex（2カラム：既存踏襲） -->
           <div class="carousel-item active">
             <div class="container container-narrow">
               <div class="row g-4 align-items-stretch">
@@ -58,12 +58,11 @@
                 <!-- Left: background image with copy overlay -->
                 <div class="col-12 col-lg-7 col-left position-relative">
                   <div class="bg-wrap">
-                    <!-- 背景 -->
                     <img
                       src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
                       alt="都市の通勤風景とADDEVA UrbanFlex"
                       class="w-100 d-block" loading="eager">
-                    <!-- tint -->
+                    <!-- tint（UrbanFlexは従来どおり適用） -->
                     <div class="tint"></div>
                   </div>
 
@@ -97,48 +96,59 @@
               </div>
             </div>
           </div>
-          
-          <!-- Slide 2: Beatas BSC-20 -->
-          <div class="carousel-item">
-            <div class="container container-narrow">
-              <div class="row g-4 align-items-stretch">
-          
-                <!-- 1カラム（container幅いっぱい） -->
-                <div class="col-12 col-left position-relative">
-                  <div class="bg-wrap">
-                    <img
-                      src="assets/img/bsc-20_topslide.png"
-                      alt="Beatas BSC-20 軽量ソフトキャリー"
-                      class="w-100 d-block" loading="lazy">
-                    <div class="tint"></div>
-                  </div>
-          
-                  <div class="copy">
-                    <div>
-                      <div class="eyebrow">Travel – Beatas BSC-20</div>
-                      <h1>軽くて、強い。旅がはかどる。</h1>
-                      <p class="lead">撥水生地 × 360°ダブルキャスター × TSAロック。機内持込サイズあり。</p>
-                    </div>
-                    <div class="cta-cluster">
-                      <div class="pills" aria-label="補助バッジ">
-                        <span class="pill">整理しやすい多ポケット</span>
-                        <span class="pill">拡張機能で容量アップ</span>
-                      </div>
-                      <div class="d-flex gap-2 mt-1 flex-wrap">
-                        <a class="btn-ghost" href="/bsc20/">シリーズを見る</a>
-                        <a class="btn-ghost" href="/bsc20/#compare">サイズ比較</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-          
-              </div><!-- /.row -->
+
+<!-- Slide 2: Beatas BSC-20（2カラム：1:1表示／グラデ無し） -->
+<div class="carousel-item">
+  <div class="container container-narrow">
+    <div class="row g-4 align-items-stretch">
+
+      <!-- Left：1:1（1000x1000） -->
+      <div class="col-12 col-lg-7 position-relative">
+        <div class="sq-wrap">
+          <img
+            src="assets/img/bsc-20_topslide_left.png"
+            alt="Beatas BSC-20 軽量ソフトキャリー（左ビジュアル）"
+            class="sq-img" loading="lazy">
+        </div>
+
+        <div class="copy">
+          <div>
+            <div class="eyebrow">Travel – Beatas BSC-20</div>
+            <h1>軽くて、強い。旅がはかどる。</h1>
+            <p class="lead">撥水生地 × 360°ダブルキャスター × TSAロック。機内持込サイズあり。</p>
+          </div>
+          <div class="cta-cluster">
+            <div class="pills" aria-label="補助バッジ">
+              <span class="pill">整理しやすい多ポケット</span>
+              <span class="pill">拡張機能で容量アップ</span>
+            </div>
+            <div class="d-flex gap-2 mt-1 flex-wrap">
+              <a class="btn-ghost" href="/bsc20/">シリーズを見る</a>
+              <a class="btn-ghost" href="/bsc20/#compare">サイズ比較</a>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Right：1:1（1000x1000） -->
+      <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4"
+           style="background-color:#F2F6F7;">
+        <div class="sq-wrap">
+          <img
+            src="assets/img/bsc-20_topslide_right.png"
+            alt="Beatas BSC-20 シリーズ（右ビジュアル）"
+            class="sq-img" loading="lazy">
+        </div>
+      </div>
+
+    </div><!-- /.row -->
+  </div>
+</div>
+
 
         </div>
 
-        <!-- controls -->
+        <!-- controls（常時表示／スマホでも押せる） -->
         <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="前のスライド">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         </button>
@@ -273,7 +283,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- ▼ 超軽量インクルードローダー（サーバ設定不要） -->
+  <!-- ▼ 超軽量インクルードローダー -->
   <script>
     (function () {
       async function includeFragments() {
@@ -284,7 +294,7 @@
             const resp = await fetch(file, { cache: 'no-cache' });
             if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
             const html = await resp.text();
-            el.outerHTML = html; // プレースホルダーごと置換
+            el.outerHTML = html;
           } catch (e) {
             console.error('Include failed:', file, e);
           }
@@ -292,7 +302,6 @@
       }
       document.addEventListener('DOMContentLoaded', async () => {
         await includeFragments();
-        // 年号はフッター挿入後に設定
         const y = document.getElementById('y');
         if (y) y.textContent = new Date().getFullYear();
       });
