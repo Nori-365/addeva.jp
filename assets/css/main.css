@@ -278,3 +278,23 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
   font-variant-numeric: lining-nums;
 }
 
+/* === PC時のみ、黒ボックス/ロゴ/テキストを少しだけ縮小（上端位置は維持） === */
+@media (min-width: 992px){
+  .bsc-badge{
+    padding: 10px 16px;              /* ほんの少しタイトに */
+    max-width: min(86%, 520px);      /* 横幅も控えめに */
+    transform: scale(.90);           /* 全体を 90% に縮小 */
+    transform-origin: top center;    /* ← 上端位置と中央揃えを維持 */
+  }
+  .bsc-lead{
+    font-size: clamp(13px, 1.4vw, 15px);
+    margin-bottom: 4px;
+  }
+  .bsc-logo{
+    width: clamp(180px, 28vw, 300px); /* ロゴも控えめに（最小幅を少し下げる） */
+    margin: 4px auto;
+  }
+  .bsc-series{
+    font-size: clamp(11px, 1.2vw, 13px);
+  }
+}
