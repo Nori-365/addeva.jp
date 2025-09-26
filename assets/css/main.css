@@ -131,8 +131,11 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 #heroCarousel .carousel-indicators .active{opacity:1}
 
-/* 画像の縦比が違っても崩れにくく */
-#heroCarousel .carousel-item{ padding-block: clamp(8px, 1.5vw, 16px); }
+/* 画像の縦比が違っても崩れにくく（高さジャンプ防止） */
+#heroCarousel .carousel-item{
+  padding-block: clamp(8px, 1.5vw, 16px);
+  min-height: clamp(360px, 56svh, 640px);
+}
 
 /* Sections */
 section.section{padding:48px 0;border-top:1px solid var(--line)}
