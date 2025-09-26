@@ -1,4 +1,4 @@
-/* ADDEVA minimal styles (v3.7): Bootstrap以外はこの1枚のみ */
+/* ADDEVA minimal styles (v3.8): Bootstrap以外はこの1枚のみ */
 :root{
   --bg:#fff;
   --bg-soft:#f7f9fc;
@@ -128,10 +128,42 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 #heroCarousel .carousel-indicators .active{ opacity:1; }
 
-/* 矢印（常時表示＆前面） */
+/* 矢印（常時表示・視認性UP） */
 #heroCarousel .carousel-control-prev,
 #heroCarousel .carousel-control-next{
-  z-index:6; opacity:1;
+  z-index:10;
+  opacity:1;
+  width:auto;
+  padding:0 .25rem;
+}
+
+/* デフォルトは左右端から12px（SP～中画面） */
+#heroCarousel .carousel-control-prev{ left:12px; }
+#heroCarousel .carousel-control-next{ right:12px; }
+
+/* XL（PCの広い画面）では“container内端”に揃える */
+@media (min-width: 1200px){
+  #heroCarousel .carousel-control-prev{
+    left: calc((100vw - var(--maxw)) / 2 + 12px);
+  }
+  #heroCarousel .carousel-control-next{
+    right: calc((100vw - var(--maxw)) / 2 + 12px);
+  }
+}
+
+/* アイコンを白い矢印＋半透明丸で視認性UP */
+#heroCarousel .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next-icon{
+  width:44px; height:44px;
+  border-radius:999px;
+  background-color:rgba(0,0,0,.42);
+  background-size:60% 60%;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+  backdrop-filter: blur(2px);
+}
+#heroCarousel .carousel-control-prev:hover .carousel-control-prev-icon,
+#heroCarousel .carousel-control-next:hover .carousel-control-next-icon{
+  background-color:rgba(0,0,0,.55);
 }
 
 /* 高さジャンプ防止（両スライド共通） */
@@ -139,36 +171,35 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   padding-block: clamp(8px, 1.5vw, 16px);
   min-height: clamp(360px, 56svh, 640px);
 }
+
 /* === BSC-20：1:1 表示用ユーティリティ ===================== */
 .sq-wrap{
   width:100%;
   aspect-ratio:1/1;
   border-radius:12px;
   overflow:hidden;
-  background:transparent;       /* ← グレー下地を撤去（jpgでも透過でもOK） */
+  background:transparent;
 }
 /* === 等高化（左右の見かけ高さを完全一致） ================== */
 .sq-col{
-  display:flex;                /* カラム自体をフレックスに */
-  align-items:stretch;         /* 子を等高に */
+  display:flex;
+  align-items:stretch;
 }
 .sq-col > .sq-wrap{
-  flex:1 1 auto;               /* 可視枠が高さ基準になる */
+  flex:1 1 auto;
 }
-
-/* 念のため：カラム側の角丸や余白は使わず、見た目枠はsq-wrapに統一 */
+/* 念のため：カラム側の角丸/余白は使わず、見た目枠はsq-wrapに統一 */
 .sq-col{ border-radius:0 !important; }
 
 .sq-img{
   width:100%; height:100%;
-  object-fit:cover;             /* 正方形内にきっちりフィット */
+  object-fit:cover;
   display:block;
 }
-/* 左右の高さバランスが崩れにくいよう、行に stretch 指定 */
+/* 行の等高化を強制 */
 @media (min-width: 992px){
   .hero .row.align-items-stretch{ align-items: stretch !important; }
 }
-
 
 /* Sections */
 section.section{padding:48px 0;border-top:1px solid var(--line)}
