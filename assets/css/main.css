@@ -124,9 +124,19 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 /* Carousel indicators をバー型に変更（クリックでジャンプ可） */
 #heroCarousel .carousel-indicators{ margin-bottom:.75rem; }
 #heroCarousel .carousel-indicators [data-bs-target]{
-  width:28px;height:4px;border-radius:2px;background:#fff;opacity:.55;margin:0 4px;
+  width:42px;                  /* ← 長さ 1.5 倍（28 → 42） */
+  height:2px;                  /* ← 高さ 1/2（4 → 2） */
+  border-radius:1px;
+  background:#fff;
+  opacity:.55;
+  margin:0 4px;
+
+  /* 見た目は細いけどタップしやすくする工夫 */
+  padding:6px 0;               /* 当たり判定を上下に拡大 */
+  background-clip:content-box; /* パディング分は透明にして細く見せる */
 }
 #heroCarousel .carousel-indicators .active{ opacity:1; }
+
 
 /* 矢印（常時表示・視認性UP） */
 #heroCarousel .carousel-control-prev,
