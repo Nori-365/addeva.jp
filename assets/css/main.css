@@ -142,11 +142,12 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 /* === BSC-20：1:1 表示用ユーティリティ ===================== */
 .sq-wrap{
   width:100%;
-  aspect-ratio:1/1;            /* 正方形を保証 */
+  aspect-ratio:1/1;
   border-radius:12px;
   overflow:hidden;
-  background:#f2f6f7;          /* 透過画像でも馴染む下地 */
+  background:transparent;       /* ← グレー下地を撤去（jpgでも透過でもOK） */
 }
+
 .sq-img{
   width:100%; height:100%;
   object-fit:cover;             /* 正方形内にきっちりフィット */
