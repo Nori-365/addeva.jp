@@ -246,25 +246,29 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
 .bsc-badge{
   display:inline-block;
   color:#fff;
-  background: rgba(0,0,0,.42);          /* 濃さは .38–.48 で微調整可 */
+  background: rgba(0,0,0,.42);
   border-radius:12px;
   padding:12px 18px;
-  max-width: min(92%, 520px);
+  max-width: min(92%, 560px);            /* 少しだけ上限拡大 */
   margin-top: clamp(8px, 2.0vw, 18px);
+  margin-inline: auto;                   /* ← 横方向を中央寄せ */
   box-shadow: 0 6px 24px rgba(0,0,0,.22);
   backdrop-filter: blur(1.5px);
 }
+
 .bsc-lead{
   font-size: clamp(14px, 1.8vw, 16px);
   line-height: 1.6;
   margin: 0 0 6px 0;
 }
+
 .bsc-logo{
   display:block;
-  width: clamp(160px, 28vw, 300px);
+  width: clamp(200px, 40vw, 320px);  /* ← 最小値UP、画面に応じて拡大 */
   height:auto;
-  margin: 6px 0 6px 0;
+  margin: 6px auto;                  /* ← 横センター配置 */
 }
+
 .bsc-series{
   font-size: clamp(12px, 1.6vw, 14px);
   margin: 0;
