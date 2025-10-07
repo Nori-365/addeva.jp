@@ -1,0 +1,20 @@
+<!-- ===================================================================
+  ADDEVA 共通 <head> 追加: Google Analytics 4 ほか
+  このファイルは各ページの <head> にクライアントサイドで読み込まれます。
+  ※直接 <head> に展開される想定なので <html>/<head> タグは不要です
+=================================================================== -->
+
+<!-- Google tag (gtag.js) – GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NB1CETQNJY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NB1CETQNJY');
+</script>
+
+<!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
+<!-- 例）
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="theme-color" content="#000000">
+-->
