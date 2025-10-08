@@ -35,6 +35,10 @@
     .pg-thumb { cursor: pointer; }
     .pg-thumb[aria-selected="true"] { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
 
+    /* 表示モード切替（cover/contain） */
+    .pg-cover   { object-fit: cover; }
+    .pg-contain { object-fit: contain; background:#fff; }
+
     /* セクション・テキスト */
     .section { padding: 3rem 0; }
     .kicker { font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color: var(--bs-secondary-color); }
@@ -66,7 +70,7 @@
           <div class="col-12 col-lg-7 pg-gallery">
             <figure aria-label="製品ギャラリー" class="mb-2">
               <div class="main ratio ratio-4x3">
-                <img id="pgMain" class="w-100 h-100 object-fit-cover"
+                <img id="pgMain" class="w-100 h-100 pg-cover"
                      src="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg"
                      alt="PCオーガナイザーにノートPCを差し込んだ側面からの様子">
               </div>
@@ -81,13 +85,14 @@
                   <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
                        src="/assets/img/urbanflex/pc_organizer/pc_organizer02.jpg"
                        data-full="/assets/img/urbanflex/pc_organizer/pc_organizer02.jpg"
-                       alt="15インチノートPCとのサイズ感比較（撮影例）">
+                       alt="15.6インチノートPCとのサイズ感比較（撮影例）">
                 </div>
                 <div class="t ratio ratio-4x3">
                   <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
                        src="/assets/img/urbanflex/pc_organizer/pc_organizer03.jpg"
                        data-full="/assets/img/urbanflex/pc_organizer/pc_organizer03.jpg"
-                       alt="全面レイアウト・ポケット配置">
+                       data-fit="contain"
+                       alt="全面レイアウト・ポケット配置（全体表示）">
                 </div>
                 <div class="t ratio ratio-4x3">
                   <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
@@ -96,7 +101,7 @@
                        alt="着脱式ポーチと小物の利用例">
                 </div>
               </div>
-              <figcaption class="text-body-secondary small mt-1">※PC本体や小物は付属しません。2枚目はサイズ感の参考例です。</figcaption>
+              <figcaption class="text-body-secondary small mt-1">※PC本体や小物は付属しません。2枚目は<strong>15.6インチ</strong>のサイズ感参考例です。</figcaption>
             </figure>
           </div>
 
@@ -174,7 +179,7 @@
           </div>
           <div class="row g-0">
             <div class="col-12 col-md-3 p-3 label">対応</div>
-            <div class="col-12 col-md-9 p-3">15インチクラスのノートPC運用に最適（写真は15インチ機のサイズ比較例）</div>
+            <div class="col-12 col-md-9 p-3">15インチクラスのノートPC運用に最適（写真は15.6インチ機のサイズ比較例）</div>
           </div>
           <div class="row g-0">
             <div class="col-12 col-md-3 p-3 label">付属</div>
@@ -204,7 +209,7 @@
         <h2 class="h4">ご購入前の注意</h2>
         <div class="notice">
           <ul class="mb-0">
-            <li>掲載画像2枚目はサイズ感の参考例です（15インチノートPC）。</li>
+            <li>掲載画像2枚目はサイズ感の参考例です（15.6インチノートPC）。</li>
             <li>面ファスナーは強粘着タイプです。衣類やデリケート素材への引っ掛かりにご注意ください。</li>
           </ul>
         </div>
@@ -291,8 +296,13 @@
         thumbs.forEach(th=>{
           const full = th.getAttribute('data-full') || th.src;
           const alt  = th.getAttribute('alt') || '';
+          const fit  = th.getAttribute('data-fit'); // 'contain' のときだけ切替
           const select = () => {
             main.src = full; main.alt = alt;
+            // 表示モード切替
+            main.classList.toggle('pg-cover',   fit !== 'contain');
+            main.classList.toggle('pg-contain', fit === 'contain');
+            // 選択状態
             document.querySelectorAll('.pg-thumb[aria-selected="true"]').forEach(e=>e.setAttribute('aria-selected','false'));
             th.setAttribute('aria-selected','true');
           };
