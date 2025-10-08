@@ -39,6 +39,9 @@
     .pg-cover   { object-fit: cover; }
     .pg-contain { object-fit: contain; background:#fff; }
 
+    /* ← 追加：サムネでも data-fit="contain" のときは上下を切らない */
+    .pg-thumb[data-fit="contain"]{ object-fit: contain !important; background:#fff; }
+
     /* セクション・テキスト */
     .section { padding: 3rem 0; }
     .kicker { font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color: var(--bs-secondary-color); }
