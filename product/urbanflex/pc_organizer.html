@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <!-- 共通Head読込 -->
+  <!-- 共通Head読込（運用どおり） -->
   <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
 
   <meta charset="utf-8" />
@@ -28,23 +28,33 @@
   <link rel="stylesheet" href="/assets/css/main.css?v=3.6">
 
   <style>
+    /* ギャラリー */
     .pg-gallery .main { border-radius: .75rem; overflow: hidden; }
     .pg-thumbs { display: grid; grid-template-columns: repeat(4,1fr); gap: .5rem; }
-    .pg-thumbs .t { border: 1px solid rgba(0,0,0,.075); border-radius: .5rem; overflow: hidden; }
+    .pg-thumbs .t { border: 1px solid rgba(0,0,0,.08); border-radius: .5rem; overflow: hidden; background:#fff; }
+    .pg-thumb { cursor: pointer; }
+    .pg-thumb[aria-selected="true"] { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+
+    /* セクション・テキスト */
     .section { padding: 3rem 0; }
     .kicker { font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color: var(--bs-secondary-color); }
+    .hero-copy .title { margin: 0 0 .5rem; }
+    .hero-copy .lead { color: var(--bs-secondary-color); }
+
+    /* 仕様表 */
     .specs { border:1px solid rgba(0,0,0,.08); border-radius:.75rem; overflow:hidden; }
     .specs .row + .row { border-top:1px solid rgba(0,0,0,.06); }
     .specs .label { background: var(--bs-body-bg); color: var(--bs-secondary-color); font-weight:600; }
+
+    /* 注意 */
     .notice { border-left:4px solid #54b2a9; background:#f5fbfa; padding:1rem 1.25rem; border-radius:.5rem; }
-    .hero-copy .title { margin: 0 0 .5rem; }
-    .hero-copy .lead { color: var(--bs-secondary-color); }
+
     @media (max-width: 992px){ .pg-gallery .main { margin-bottom: .75rem; } }
   </style>
 </head>
 <body>
-  <!-- 共通ヘッダー -->
-  <div data-include="/includes/header.html" aria-busy="true"></div>
+  <!-- 共通ヘッダー（※パスは /header.html） -->
+  <div data-include="/header.html" aria-busy="true"></div>
 
   <main>
 
@@ -56,36 +66,53 @@
           <div class="col-12 col-lg-7 pg-gallery">
             <figure aria-label="製品ギャラリー" class="mb-2">
               <div class="main ratio ratio-4x3">
-                <img class="w-100 h-100 object-fit-cover" src="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg" alt="PCオーガナイザーにノートPCを差し込んだ側面からの様子">
+                <img id="pgMain" class="w-100 h-100 object-fit-cover"
+                     src="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg"
+                     alt="PCオーガナイザーにノートPCを差し込んだ側面からの様子">
               </div>
               <div class="pg-thumbs mt-2">
-                <div class="t ratio ratio-4x3"><img class="w-100 h-100 object-fit-cover" src="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg" alt="側面からの斜めカット"></div>
-                <div class="t ratio ratio-4x3"><img class="w-100 h-100 object-fit-cover" src="/assets/img/urbanflex/pc_organizer/pc_organizer02.jpg" alt="15インチノートPCとのサイズ感比較（撮影例）"></div>
-                <div class="t ratio ratio-4x3"><img class="w-100 h-100 object-fit-cover" src="/assets/img/urbanflex/pc_organizer/pc_organizer03.jpg" alt="全面レイアウト・ポケット配置"></div>
-                <div class="t ratio ratio-4x3"><img class="w-100 h-100 object-fit-cover" src="/assets/img/urbanflex/pc_organizer/pc_organizer04.jpg" alt="着脱式ポーチと小物の利用例"></div>
+                <div class="t ratio ratio-4x3">
+                  <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0" aria-selected="true"
+                       src="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg"
+                       data-full="/assets/img/urbanflex/pc_organizer/pc_organizer01.jpg"
+                       alt="側面からの斜めカット">
+                </div>
+                <div class="t ratio ratio-4x3">
+                  <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
+                       src="/assets/img/urbanflex/pc_organizer/pc_organizer02.jpg"
+                       data-full="/assets/img/urbanflex/pc_organizer/pc_organizer02.jpg"
+                       alt="15インチノートPCとのサイズ感比較（撮影例）">
+                </div>
+                <div class="t ratio ratio-4x3">
+                  <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
+                       src="/assets/img/urbanflex/pc_organizer/pc_organizer03.jpg"
+                       data-full="/assets/img/urbanflex/pc_organizer/pc_organizer03.jpg"
+                       alt="全面レイアウト・ポケット配置">
+                </div>
+                <div class="t ratio ratio-4x3">
+                  <img class="w-100 h-100 object-fit-cover pg-thumb" role="button" tabindex="0"
+                       src="/assets/img/urbanflex/pc_organizer/pc_organizer04.jpg"
+                       data-full="/assets/img/urbanflex/pc_organizer/pc_organizer04.jpg"
+                       alt="着脱式ポーチと小物の利用例">
+                </div>
               </div>
               <figcaption class="text-body-secondary small mt-1">※PC本体や小物は付属しません。2枚目はサイズ感の参考例です。</figcaption>
             </figure>
           </div>
 
-          <!-- 右：コピー -->
+          <!-- 右：コピー（中間CTAは置かない） -->
           <div class="col-12 col-lg-5 d-flex">
-            <div class="hero-copy d-flex flex-column justify-content-between">
+            <div class="hero-copy d-flex flex-column justify-content-center">
               <div>
                 <div class="kicker">ADDEVA Accessory</div>
                 <h1 class="h2 title">ADDEVA PCオーガナイザー</h1>
                 <p class="lead">PCまわりを“ひとかたまり”で。3Wayバッグでも上から・横から、どちらからでも素早く取り出せる整理パネル。</p>
-                <ul class="mb-3">
+                <ul class="mb-0">
                   <li>着脱式スクエアポーチ：ACアダプターやマウスをまとめて収納、面ファスナーでワンタッチ脱着</li>
                   <li>多機能メッシュポケット：視認性が高く、ケーブル・バッテリーを区分管理</li>
                   <li>セット運用設計：PC＋周辺機器をまとめて移動、バッグの入れ替えもラク</li>
                   <li>トラベル最適：バッテリー搭載機器を一括管理、空港の保安検査がスムーズ</li>
                 </ul>
-              </div>
-              <div class="d-flex gap-2 flex-wrap">
-                <a class="btn btn-dark" href="#purchase">購入へ進む</a>
-                <a class="btn btn-outline-dark" href="#details">仕様を詳しく見る</a>
-                <a class="btn btn-outline-secondary" href="/product/urbanflex/">UrbanFlexを見る</a>
               </div>
             </div>
           </div>
@@ -184,12 +211,44 @@
       </div>
     </section>
 
+    <!-- 販売サイトまとめ（Amazon / BASE） -->
+    <section class="section" id="buy">
+      <div class="container container-narrow">
+        <div class="kicker">Where to buy</div>
+        <h2 class="h4">販売サイト</h2>
+
+        <div class="row g-3">
+          <!-- Amazon -->
+          <div class="col-12 col-md-6">
+            <div class="border rounded-3 p-3 h-100">
+              <h3 class="h6 mb-1">Amazon（FBA）</h3>
+              <p class="mb-2 small text-body-secondary">在庫はAmazon倉庫から出荷。最短で翌日お届け。</p>
+              <a class="btn btn-dark w-100" href="#" target="_blank" rel="noopener" aria-disabled="true">Amazonで購入</a>
+              <!-- TODO: 商品ページURLが確定したら href を差し替え -->
+            </div>
+          </div>
+          <!-- BASE -->
+          <div class="col-12 col-md-6">
+            <div class="border rounded-3 p-3 h-100">
+              <h3 class="h6 mb-1">BASE 公式ストア</h3>
+              <p class="mb-2 small text-body-secondary">週1回の出荷ですが、そのぶんお得な価格でご提供。</p>
+              <a class="btn btn-outline-dark w-100" href="https://addeva.official.ec/" target="_blank" rel="noopener">BASEで購入</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="small text-body-secondary mt-2 mb-0">
+          ※在庫・価格は販売サイトにより異なります。お急ぎの方はAmazon、価格重視の方はBASEがおすすめです。
+        </p>
+      </div>
+    </section>
+
   </main>
 
-  <!-- 共通フッター -->
-  <div data-include="/includes/footer.html" aria-busy="true"></div>
+  <!-- 共通フッター（※パスは /footer.html） -->
+  <div data-include="/footer.html" aria-busy="true"></div>
 
-  <!-- 構造化データ（画像URLは実URLに差し替え済み） -->
+  <!-- 構造化データ -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -210,6 +269,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     (function () {
+      // インクルード
       async function includeFragments() {
         const nodes = document.querySelectorAll('[data-include]');
         await Promise.all([...nodes].map(async (el) => {
@@ -222,7 +282,32 @@
           } catch (e) { console.error('Include failed:', file, e); }
         }));
       }
-      document.addEventListener('DOMContentLoaded', includeFragments);
+
+      // サムネ→メイン切替（クリック/Enter/Space/ホバー）
+      function bindThumbs(){
+        const main = document.getElementById('pgMain');
+        if(!main) return;
+        const thumbs = document.querySelectorAll('.pg-thumb');
+        thumbs.forEach(th=>{
+          const full = th.getAttribute('data-full') || th.src;
+          const alt  = th.getAttribute('alt') || '';
+          const select = () => {
+            main.src = full; main.alt = alt;
+            document.querySelectorAll('.pg-thumb[aria-selected="true"]').forEach(e=>e.setAttribute('aria-selected','false'));
+            th.setAttribute('aria-selected','true');
+          };
+          th.addEventListener('click', select);
+          th.addEventListener('mouseenter', select);
+          th.addEventListener('keydown', e=>{
+            if(e.key==='Enter' || e.key===' '){ e.preventDefault(); select(); }
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', async ()=>{
+        await includeFragments();
+        bindThumbs();
+      });
     })();
   </script>
 </body>
