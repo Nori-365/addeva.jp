@@ -146,7 +146,7 @@
       async function fetchProducts() {
           try {
               // ADDEVA.apiFetch を使用。パスはNginxでFastAPIにプロキシされるもの。
-              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'GET' });
+              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} }); // POSTメソッドと空のボディ
               
               products.forEach(product => {
                   const option = document.createElement('option');
