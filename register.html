@@ -1,40 +1,34 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
   <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Primary SEO -->
-  <title>ADDEVA（アデバ）公式｜付加価値をデザインしたビジネスリュック、バッグの販売</title>
-  <meta name="description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」と、軽量ソフトキャリー「Beatas BSC-20」を正規取扱。">
+  <title>製品保証登録・アフターサービス｜ADDEVA（アデバ）公式</title>
+  <meta name="description" content="ADDEVA製品の保証を有効化するためのご登録ページです。Amazon購入情報をご入力ください。">
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://addeva.jp/">
+  <link rel="canonical" href="https://addeva.jp/register.html">
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
   <!-- Robots -->
-  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="robots" content="noindex,nofollow">
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.7">
-  <!-- Bootstrap Icons を使用しているため、必要に応じてここで読み込むか、head-common.html に組み込んでください -->
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.7">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-
-  <!-- Open Graph -->
-  <meta property="og:site_name" content="ADDEVA">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://addeva.jp/">
-  <meta property="og:title" content="ADDEVA（アデバ）公式｜付加価値をデザインしたビジネスリュック、バッグの販売">
-  <meta property="og:description" content="機能性と合理性を突き詰めたビジネスリュック「ADDEVA UrbanFlex」と、軽量ソフトキャリー「Beatas BSC-20」を正規取扱。">
-  <meta property="og:image" content="https://addeva.jp/assets/img/og/ogp_top.jpg">
-  <meta property="og:locale" content="ja_JP">
+  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
+  <!-- .envで設定したAPIキーをここに埋め込んでください -->
+  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 </head>
 
 <body>
@@ -42,289 +36,187 @@
   <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
 
   <main>
-    <!-- =========================
-         HERO：2スライド（UrbanFlex ⇄ BSC-20）
-         ========================= -->
-    <section id="hero" class="hero">
-      <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
-        <!-- indicators（バー型） -->
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="UrbanFlex"></button>
-          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Beatas BSC-20"></button>
-        </div>
+    <section class="section py-5">
+      <div class="container container-narrow">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item active" aria-current="page">製品保証登録</li>
+          </ol>
+        </nav>
 
-        <div class="carousel-inner">
+        <h1 class="mb-4">製品保証登録・アフターサービス</h1>
+        <p class="lead mb-5">ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。</p>
 
-          <!-- Slide 1: UrbanFlex（2カラム：既存踏襲） -->
-          <div class="carousel-item active">
-            <div class="container container-narrow">
-              <div class="row g-4 align-items-stretch">
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert"></div>
 
-                <!-- Left: background image with copy overlay -->
-                <div class="col-12 col-lg-7 col-left position-relative">
-                  <div class="bg-wrap">
-                    <img
-                      src="assets/img/hero/hero_left_bg_station_21x9_v4.jpg"
-                      alt="都市の通勤風景とADDEVA UrbanFlex"
-                      class="w-100 d-block" loading="eager">
-                    <!-- tint（UrbanFlexは従来どおり適用） -->
-                    <div class="tint"></div>
-                  </div>
+        <div class="card shadow-sm p-4 mb-5">
+          <form id="registrationForm" method="POST" action=""> <!-- actionはJSで制御 -->
+            <!-- メールアドレス -->
+            <div class="mb-3">
+              <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" required placeholder="メールアドレスをご入力ください">
+              <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
+            </div>
 
-                  <div class="copy">
-                    <div>
-                      <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
-                      <h1>仕事も旅も、これ一つ。</h1>
-                      <p class="lead">3WAY拡張マチでオンもオフも。17インチPC対応。</p>
-                    </div>
-                    <div class="cta-cluster">
-                      <div class="pills" aria-label="補助バッジ">
-                        <span class="pill">時短を叶える収納設計。</span>
-                        <span class="pill">軽量防水設計。</span>
-                      </div>
-                      <div class="d-flex gap-2 mt-1 flex-wrap">
-                        <a class="btn-ghost" href="#story">ブランドストーリー</a>
-                        <a class="btn-ghost" href="/product/urbanflex/">詳しく見る</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <!-- 商品選択 -->
+            <div class="mb-3">
+              <label for="productCode" class="form-label">ご購入商品 <span class="text-danger">*</span></label>
+              <select class="form-select" id="productCode" name="productCode" required>
+                <option value="">商品を選択してください</option>
+                <!-- 商品リストはJavaScriptで動的に読み込まれます -->
+              </select>
+              <div class="form-text">ご購入されたADDEVA製品を選択してください。</div>
+            </div>
 
-                <!-- Right（→ クリックで UrbanFlex 詳細へ） -->
-                <div class="col-12 col-lg-5 d-flex align-items-center justify-content-center p-3 rounded-4 position-relative"
-                     style="background-color:#F2F6F7; min-height: clamp(300px, 38vw, 520px);">
-                  <img src="assets/img/hero/hero_right_bg_3way_v4.jpg"
-                       alt="3way + Carry on イメージ（バックパック／ブリーフ／キャリーオン）"
-                       class="img-fluid" style="max-width:100%; max-height:100%; object-fit:contain; object-position:center;" loading="lazy">
-                  <a href="/product/urbanflex/" class="stretched-link" aria-label="ADDEVA UrbanFlex の詳細ページへ"></a>
-                </div>
+            <!-- 購入日 -->
+            <div class="mb-3">
+              <label for="purchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" required>
+              <div class="form-text">Amazonでのご注文日をご入力ください。</div>
+            </div>
 
+            <!-- 購入サイト (Amazon固定) -->
+            <div class="mb-3">
+              <label for="purchaseSite" class="form-label">購入サイト</label>
+              <input type="text" class="form-control" id="purchaseSite" name="purchaseSite" value="Amazon" readonly>
+              <div class="form-text">現在、Amazonでのご購入が保証登録の対象となります。</div>
+            </div>
+
+            <!-- 注文番号 -->
+            <div class="mb-4">
+              <label for="orderNumber" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="orderNumber" name="orderNumber" required placeholder="例: 123-1234567-1234567">
+              <div id="orderNumberFeedback" class="invalid-feedback">
+                Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
               </div>
+              <div class="form-text">半角数字とハイフンで構成されるAmazonの注文番号をご入力ください。</div>
             </div>
-          </div>
 
-          <!-- Slide 2: Beatas BSC-20（2カラム：1:1表示／グラデ無し｜PCは6:6） -->
-          <div class="carousel-item">
-            <div class="container container-narrow">
-              <div class="row g-4 align-items-stretch">
-          
-                <!-- Left：1:1（等高化クラスを付与） -->
-                <div class="col-12 col-lg-6 position-relative sq-col">
-                  <div class="sq-wrap">
-                    <img
-                      src="assets/img/items/bsc20/bsc-20_topslide_left930.jpg"
-                      alt="Beatas BSC-20 軽量ソフトキャリー（左ビジュアル）"
-                      class="sq-img" loading="lazy">
-                  </div>
-          
-                  <!-- オーバーレイ内容（黒ボックス＋ロゴ＋シリーズ行） -->
-                  <div class="copy">
-                    <div class="bsc-badge">
-                      <div class="bsc-lead">ビジネスには頼れるパートナーが必要だ。</div>
-                      <img class="bsc-logo" src="assets/img/items/bsc20/beatas_logo_white.png" alt="Beatasロゴ">
-                      <div class="bsc-series">Business Series BSC-20</div>
-                    </div>
-          
-                    <div class="cta-cluster">
-                      <div class="pills" aria-label="補助バッジ">
-                        <span class="pill">防水/撥水生地</span>
-                        <span class="pill">360°ダブルキャスター</span>
-                      </div>
-                      <div class="d-flex gap-2 mt-1 flex-wrap">
-                        <a class="btn-ghost" href="/product/bsc20/">シリーズを見る</a>
-                        <a class="btn-ghost" href="/product/bsc20/#compare">サイズ比較</a>
-                      </div>
-                    </div>
-                  </div>
-                </div><!-- /Left -->
-          
-                <!-- Right：1:1（→ クリックで BSC-20 ランディングへ） -->
-                <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center p-0 sq-col position-relative">
-                  <div class="sq-wrap">
-                    <img
-                      src="assets/img/items/bsc20/bsc-20_topslide_right930.jpg"
-                      alt="Beatas BSC-20 シリーズ（右ビジュアル）"
-                      class="sq-img" loading="lazy">
-                  </div>
-                  <a href="/product/bsc20/" class="stretched-link" aria-label="Beatas BSC-20 シリーズページへ"></a>
-                </div>
-          
-              </div><!-- /.row -->
-            </div>
-          </div>
-
+            <button type="submit" class="btn btn-primary btn-lg w-100">保証を登録する</button>
+          </form>
         </div>
 
-        <!-- controls（常時表示／スマホでも押せる） -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" aria-label="前のスライド">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" aria-label="次のスライド">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
+        <p class="text-muted small text-center">ご登録いただいた個人情報は、当社の<a href="/privacy-policy/" target="_blank">プライバシーポリシー</a>に基づき厳重に管理いたします。</p>
+
       </div>
     </section>
-    <!-- /#hero -->
-
-    <!-- =========================
-         ADDITIONAL: Amazon購入者向け案内バナー (addeva.jp/register.html へリンク)
-         ========================= -->
-    <section id="amazon-guide-banner" class="section py-4 py-md-5 bg-light">
-      <div class="container container-narrow text-center">
-        <a href="/register.html" class="d-block text-decoration-none p-3 p-md-4 rounded-3 shadow-sm" style="background-color: #fff; border: 2px solid #007bff; color: #333;">
-          <h2 class="h4 mb-2" style="color: #007bff;">AmazonでADDEVA UrbanFlexをご購入のお客様へ</h2>
-          <p class="lead mb-0">安心の6ヶ月保証と充実したアフターサポートについて、詳細はこちらでご案内しています。</p>
-          <span class="btn btn-outline-primary mt-3 d-none d-md-inline-block">詳細を見る <i class="bi bi-chevron-right ms-2"></i></span>
-          <span class="btn btn-outline-primary mt-3 d-inline-block d-md-none">詳細を見る <i class="bi bi-chevron-right ms-2"></i></span>
-        </a>
-      </div>
-    </section>
-    <!-- /#amazon-guide-banner -->
-
-    <!-- ===== UrbanFlexという選択（=製品の理由セクション） ===== -->
-    <section id="flagship" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">合理性をデザインする</div>
-        <h2>ADDEVA UrbanFlex という選択</h2>
-        <div class="row g-4">
-          <div class="col-12 col-md-6">
-            <p>ブリーフケースとしての利用より、リュックとしての利用時間が長い方の為に、設計しました。</p>
-            <p>機能性と合理性を突き詰めると、“一つで完結” に辿り着く。軽量・防水で、通勤、顧客訪問、出張や小旅行まで、切り替え不要で使える3WAYビジネスリュック。</p>
-            <ul class="mb-0">
-              <li>3WAY（バックパック／ブリーフ／ショルダー）+ carry on</li>
-              <li>PC 17&quot;対応</li>
-              <li>アジャスタブル仕切りで荷室を最適化</li>
-              <li>止水ファスナーで雨でも安心</li>
-              <li>サコッシュバッグとして使えるデタッチャブルポケット</li>
-              <li>２サイズ(2Room/3Roomエキスパンダブル)をラインナップ</li>
-            </ul>
-          </div>
-          <div class="col-12 col-md-6">
-            <br/>
-            <p><a class="btn btn-dark" href="/product/urbanflex/">詳説を見る</a></p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== B2Bカード ===== -->
-    <section id="b2b" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">For Business</div>
-        <h2>法人向けサービス｜小ロット × OEM</h2>
-
-        <div class="row row-cols-1 row-cols-lg-2 g-4 mt-1">
-          <!-- Card A -->
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body p-4">
-                <h3 class="h4 mb-2">小ロット製造 × 国内一括仕入れ</h3>
-                <p class="mb-3">LCL直接輸入ではなく、<strong>当社が輸入者（インポーター）となり、組み合せてフルコンテナで輸入</strong>する方式で、コストと手続きをスマートに。</p>
-                <ul class="mb-4">
-                  <li>請求は、ADDEVAから国内購入日本円・国内取引</li>
-                  <li>通関・貿易実務はADDEVA側で対応</li>
-                  <li>日本人スタッフが現地で検品するので安心</li>
-                  <li>FBA直納など納品形態の相談可</li>
-                </ul>
-                <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn btn-dark" href="/contact.html">まずは相談（法人）</a>
-                  <a class="btn btn-outline-dark" href="/b2b.html" aria-disabled="true">詳しく見る</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card B -->
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body p-4">
-                <h3 class="h4 mb-2">OEM / ODM 生産</h3>
-                <p class="mb-3"><strong>500個から1000個</strong>も対応します。製造（ベトナム）。試作から量産、品質検査、納品まで一気通貫。</p>
-                <ul class="mb-4">
-                  <li>仕様設計・素材選定・金具／ロゴ入れ</li>
-                  <li>スケジュール例・検品フローの提示可</li>
-                  <li>品質保証ポリシーに沿った対応</li>
-                  <li>用途に応じた梱包／出荷形態</li>
-                </ul>
-                <div class="d-flex gap-2 flex-wrap">
-                  <a class="btn btn-dark" href="/contact.html">OEMを相談する</a>
-                  <a class="btn btn-outline-dark" href="/b2b.html" aria-disabled="true">詳しく見る</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /.row -->
-      </div>
-    </section>
-
-    <!-- ===== ブランドストーリー ===== -->
-    <section id="story" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">BRAND STORY</div>
-        <h2 class="h3">私達について</h2>
-
-        <div class="row g-4 align-items-start">
-          <div class="col-12 col-md-6">
-            <p>
-              10年以上にわたりベトナムで日本向けの鞄づくりに携わってきた経験を活かし、日本人管理のもと現地で生産・検品を実施。ベトナム直送に近い体制で中間コストを抑え、高品質な商品をお求めやすい価格でお届けします。<br/>
-              また、ADDEVAは、ユーザー様より直接いただいた感想やアイデアを、迅速に取り入れ、皆様に愛されるブランドにする取り組み行っています。（Webサイト準備中）<a class="btn btn-outline-dark" href="/company.html" aria-disabled="true">詳しく見る</a>
-            </p>
-          </div>
-          <div class="col-12 col-md-6">
-            <img src="assets/img/company/meeting.jpg" alt="ミーティングの様子（ブランドの考え方を形に）" class="img-fluid rounded-3">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== ブランドポリシー ===== -->
-    <section id="policy" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">BRAND POLICY</div>
-        <h2 class="h3">ADDEVA –「常に付加価値のある商品を作り続ける」</h2>
-        <div class="row g-4 align-items-start">
-          <div class="col-12 col-md-2">
-            <img src="assets/img/addeva_logo.png" alt="ADDEVA ロゴ" style="max-width:150px">
-          </div>
-          <div class="col-12 col-md-10">
-            <p>ADDEVA(アデバ)の名前の由来は、「Added Value（付加価値）」という言葉にあります。私たちは、単なる商品提供に留まらず、日常をより豊かにする製品を創り出すことを社名に誓いました。</p>
-            <p>ーユーザーと共に歩みたいー<br>私たちの使命は、ユーザーのニーズに応じた「付加価値」を提供することです。ADDEVAの製品は、単なるバッグとしてではなく、ユーザーのライフスタイルに寄り添うパートナーでありたいと考えています。</p><a class="btn btn-outline-dark" href="/company.html" aria-disabled="true">詳しく見る</a>
-          </div>
-        </div><br/>
-      </div>
-    </section>
-
   </main>
 
   <!-- ▼ 共通フッターを読み込み -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- ▼ 超軽量インクルードローダー -->
+  <!-- addeva.jp 専用 common.js を読み込み -->
+  <script defer src="/common.js"></script>
+  
   <script>
-    (function () {
-      async function includeFragments() {
-        const nodes = document.querySelectorAll('[data-include]');
-        await Promise.all([...nodes].map(async (el) => {
-          const file = el.getAttribute('data-include');
-          try {
-            const resp = await fetch(file, { cache: 'no-cache' });
-            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
-            const html = await resp.text();
-            el.outerHTML = html;
-          } catch (e) {
-            console.error('Include failed:', file, e);
-          }
-        }));
+    // ADDEVAオブジェクトがロードされた後に実行されるように待機
+    function waitForADDEVA(callback) {
+      if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function') {
+        callback();
+      } else {
+        setTimeout(() => waitForADDEVA(callback), 50); // 50msごとにチェック
       }
-      document.addEventListener('DOMContentLoaded', async () => {
-        await includeFragments();
-        const y = document.getElementById('y');
-        if (y) y.textContent = new Date().getFullYear();
+    }
+
+    waitForADDEVA(async () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('purchaseDate').setAttribute('max', today);
+
+      const orderNumberInput = document.getElementById('orderNumber');
+      const amazonOrderPattern = /^\d{3}-\d{7}-\d{7}$/;
+
+      orderNumberInput.addEventListener('input', function() {
+        if (amazonOrderPattern.test(this.value)) {
+          this.classList.remove('is-invalid');
+          this.classList.add('is-valid');
+        } else {
+          this.classList.add('is-invalid');
+          this.classList.remove('is-valid');
+        }
       });
-    })();
+
+      const registrationForm = document.getElementById('registrationForm');
+      const messageArea = document.getElementById('messageArea');
+      const productCodeSelect = document.getElementById('productCode');
+
+      // ==== 商品リストをAPIから動的に取得する処理 ====
+      async function fetchProducts() {
+          try {
+              // ADDEVA.apiFetch を使用。パスはNginxでFastAPIにプロキシされるもの。
+              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'GET' });
+              
+              products.forEach(product => {
+                  const option = document.createElement('option');
+                  option.value = product.product_code;
+                  option.textContent = product.product_name;
+                  productCodeSelect.appendChild(option);
+              });
+          } catch (error) {
+              console.error('商品リストの取得に失敗しました:', error);
+              // ADDEVA.apiFetch はエラー時に Error オブジェクトを投げる
+              let errorMessage = error.message || '商品リストの読み込みに失敗しました。';
+              messageArea.textContent = errorMessage;
+              messageArea.classList.remove('d-none', 'alert-success');
+              messageArea.classList.add('alert-danger');
+          }
+      }
+      fetchProducts(); // ページ読み込み時に商品リストをフェッチ
+
+      // ==== フォーム送信処理 ====
+      registrationForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        // クライアント側での最終バリデーション
+        if (!amazonOrderPattern.test(orderNumberInput.value)) {
+            messageArea.textContent = 'Amazon注文番号の形式をご確認ください。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            orderNumberInput.focus();
+            return;
+        }
+        if (productCodeSelect.value === "") {
+            messageArea.textContent = 'ご購入商品を選択してください。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            productCodeSelect.focus();
+            return;
+        }
+
+        const formData = new FormData(registrationForm);
+        const data = Object.fromEntries(formData.entries()); // JSONに変換
+
+        messageArea.classList.add('d-none'); // メッセージを一旦非表示に
+
+        try {
+          // ADDEVA.apiFetch を使用。ボディは自動でJSON化される。
+          const result = await ADDEVA.apiFetch('/api/addeva/register', {
+            method: 'POST',
+            body: data,
+          });
+
+          // 成功レスポンスの処理 (FastAPIはJSONで "message" を返す想定)
+          messageArea.textContent = result.message || '保証登録が完了しました。ありがとうございます！';
+          messageArea.classList.remove('alert-danger');
+          messageArea.classList.add('alert-success');
+          registrationForm.reset(); // フォームをクリア
+          orderNumberInput.classList.remove('is-valid'); // バリデーション状態をリセット
+          productCodeSelect.value = ""; // 商品選択もリセット
+          
+        } catch (error) {
+          console.error('API Error:', error);
+          // ADDEVA.apiFetch が投げたエラーオブジェクトからメッセージを取得
+          messageArea.textContent = error.message; // common.jsでdetailを抽出済み
+          messageArea.classList.remove('alert-success');
+          messageArea.classList.add('alert-danger');
+        } finally {
+          messageArea.classList.remove('d-none');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
   </script>
 </body>
 </html>
