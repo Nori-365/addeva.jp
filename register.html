@@ -59,9 +59,32 @@
               <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
             </div>
 
+            <hr class="my-4">
+
+            <!-- 注文番号 (トップレベル) -->
+            <div class="mb-3">
+              <label for="masterOrderNumber" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="masterOrderNumber" name="masterOrderNumber" required placeholder="例: 123-1234567-1234567">
+              <div id="masterOrderNumberFeedback" class="invalid-feedback">
+                Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
+              </div>
+              <div class="form-text text-danger">
+                ※ 1つの注文番号につき、一度の登録でお願いいたします。異なる注文番号の商品は、分けてご登録ください。
+              </div>
+            </div>
+
+            <!-- 購入日 (トップレベル) -->
+            <div class="mb-4">
+              <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required max="<%= TODAY_ISO %>">
+              <div class="form-text">Amazonでのご注文日をご入力ください。</div>
+            </div>
+
+            <hr class="my-4">
+
             <!-- 複数商品入力エリアのコンテナ -->
             <div id="productEntriesContainer" class="mb-4 border p-3 rounded bg-light">
-              <h5 class="mb-3">購入商品情報</h5>
+              <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
               <!-- ここに動的な商品入力ブロックが追加されます -->
             </div>
             
@@ -98,10 +121,17 @@
 
     waitForADDEVA(async () => {
       const TODAY_ISO = new Date().toISOString().split('T')[0]; // 購入日の最大値
+
       const registrationForm = document.getElementById('registrationForm');
       const messageArea = document.getElementById('messageArea');
       const productEntriesContainer = document.getElementById('productEntriesContainer');
       const addProductButton = document.getElementById('addProductButton');
+
+      const emailInput = document.getElementById('email');
+      const masterOrderNumberInput = document.getElementById('masterOrderNumber');
+      const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
+      const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
+
       const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; // Amazon注文番号の正規表現
       let availableProducts = []; // APIから取得した商品リストを保持
 
@@ -138,65 +168,28 @@
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
           </div>
-          <div class="mb-3">
-            <label for="purchaseDate_${index}" class="form-label">購入日 <span class="text-danger">*</span></label>
-            <input type="date" class="form-control purchase-date-input" id="purchaseDate_${index}" name="products[${index}][purchaseDate]" required max="${TODAY_ISO}" value="${initialData.purchaseDate || ''}">
-          </div>
-          <div class="mb-3">
-            <label for="orderNumber_${index}" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
-            <input type="text" class="form-control order-number-input" id="orderNumber_${index}" name="products[${index}][orderNumber]" required placeholder="例: 123-1234567-1234567" value="${initialData.orderNumber || ''}">
-            <div class="invalid-feedback order-number-feedback">
-              Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
-            </div>
-          </div>
+          <!-- 購入日と注文番号はトップレベルから引き継ぐため、個別の入力欄は削除 -->
         `;
 
-        // 初期値のセット
+        // 初期値のセット (もしあれば)
         if (initialData.productCode) {
             entryDiv.querySelector('.product-code-select').value = initialData.productCode;
         }
-        if (initialData.orderNumber && AMAZON_ORDER_PATTERN.test(initialData.orderNumber)) {
-            entryDiv.querySelector('.order-number-input').classList.add('is-valid');
-        } else if (initialData.orderNumber) { // 形式が間違っている初期値の場合
-            entryDiv.querySelector('.order-number-input').classList.add('is-invalid');
-        }
-
 
         // 削除ボタンのイベントリスナー
         if (index > 0) {
           entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
             entryDiv.remove();
-            // 削除後、残った商品のインデックスを整理（FastAPIが[0],[1],[2]と期待するため）
-            // これにより name="products[${index}]..." のindexが連続するようにする
+            // 削除後、残った商品のインデックスを整理
             productEntriesContainer.querySelectorAll('.product-entry').forEach((el, newIdx) => {
               el.setAttribute('data-index', newIdx);
               el.querySelector('h6').textContent = `商品 ${newIdx + 1}`;
               el.querySelector('.product-code-select').name = `products[${newIdx}][productCode]`;
-              el.querySelector('.product-code-select').id = `productCode_${newIdx}`; // idも更新
+              el.querySelector('.product-code-select').id = `productCode_${newIdx}`;
               el.querySelector('label[for^="productCode_"]').setAttribute('for', `productCode_${newIdx}`);
-
-              el.querySelector('.purchase-date-input').name = `products[${newIdx}][purchaseDate]`;
-              el.querySelector('.purchase-date-input').id = `purchaseDate_${newIdx}`; // idも更新
-              el.querySelector('label[for^="purchaseDate_"]').setAttribute('for', `purchaseDate_${newIdx}`);
-
-              el.querySelector('.order-number-input').name = `products[${newIdx}][orderNumber]`;
-              el.querySelector('.order-number-input').id = `orderNumber_${newIdx}`; // idも更新
-              el.querySelector('label[for^="orderNumber_"]').setAttribute('for', `orderNumber_${newIdx}`);
             });
           });
         }
-
-        // 注文番号のリアルタイムバリデーションを追加
-        const orderNumberInput = entryDiv.querySelector('.order-number-input');
-        orderNumberInput.addEventListener('input', function() {
-          if (AMAZON_ORDER_PATTERN.test(this.value)) {
-            this.classList.remove('is-invalid');
-            this.classList.add('is-valid');
-          } else {
-            this.classList.add('is-invalid');
-            this.classList.remove('is-valid');
-          }
-        });
 
         productEntriesContainer.appendChild(entryDiv);
       }
@@ -208,6 +201,7 @@
         for (let i = 0; i < 5; i++) {
           createProductEntry(i);
         }
+        masterPurchaseDateInput.setAttribute('max', TODAY_ISO); // 購入日の最大値を今日に設定
       } catch (error) {
         // 商品リスト取得でエラーがあれば、フォームは表示しないか、エラーメッセージを強調
         console.error("Initialization failed:", error);
@@ -217,6 +211,20 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return; // エラーがあればフォーム送信もブロック
       }
+
+      // トップレベル注文番号のリアルタイムバリデーション
+      masterOrderNumberInput.addEventListener('input', function() {
+        if (AMAZON_ORDER_PATTERN.test(this.value)) {
+          this.classList.remove('is-invalid');
+          this.classList.add('is-valid');
+          masterOrderNumberFeedback.style.display = 'none'; // フィードバックメッセージを非表示
+        } else {
+          this.classList.add('is-invalid');
+          this.classList.remove('is-valid');
+          masterOrderNumberFeedback.style.display = 'block'; // フィードバックメッセージを表示
+        }
+      });
+
 
       addProductButton.addEventListener('click', () => {
         const newIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
@@ -229,7 +237,7 @@
 
         messageArea.classList.add('d-none'); // メッセージを一旦非表示に
 
-        const emailInput = document.getElementById('email');
+        // トップレベルの必須項目チェック
         if (!emailInput.value) {
             messageArea.textContent = 'メールアドレスを入力してください。';
             messageArea.classList.remove('d-none', 'alert-success');
@@ -239,50 +247,72 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
+        if (!masterOrderNumberInput.value || !AMAZON_ORDER_PATTERN.test(masterOrderNumberInput.value)) {
+            messageArea.textContent = 'Amazon注文番号の形式が正しくありません。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            masterOrderNumberInput.focus();
+            masterOrderNumberInput.classList.add('is-invalid');
+            masterOrderNumberFeedback.style.display = 'block';
+            messageArea.classList.remove('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        } else {
+            masterOrderNumberInput.classList.remove('is-invalid');
+            masterOrderNumberInput.classList.add('is-valid');
+            masterOrderNumberFeedback.style.display = 'none';
+        }
+        if (!masterPurchaseDateInput.value) {
+            messageArea.textContent = '購入日を入力してください。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            masterPurchaseDateInput.focus();
+            messageArea.classList.remove('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
 
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
-        // 入力されている商品情報のみを収集
         const productsData = [];
-        let formIsValid = true;
+        let formIsValid = true; // 各商品情報のバリデーションフラグ
 
         productEntries.forEach((entry, index) => {
             const productCodeSelect = entry.querySelector('.product-code-select');
-            const purchaseDateInput = entry.querySelector('.purchase-date-input');
-            const orderNumberInput = entry.querySelector('.order-number-input');
             
-            // 全てのフィールドが空の場合、その行はスキップ
-            if (!productCodeSelect.value && !purchaseDateInput.value && !orderNumberInput.value) {
-                return; 
+            // 商品コードが入力されている行のみを対象とする
+            if (!productCodeSelect.value) {
+                // 他のフィールドも空ならスキップ、そうでなければエラー
+                if (entry.querySelector('input[type="date"]').value || entry.querySelector('input[type="text"]').value) {
+                     messageArea.textContent = `商品 ${index + 1} のご購入商品を選択してください。`;
+                     formIsValid = false;
+                }
+                return; // 商品コードが空の場合はこの行の処理をスキップ（後でまとめてチェック）
             }
 
-            // 1つでも入力されている場合は、全て必須チェック
-            if (!productCodeSelect.value) {
+            // 商品コードが入力されている場合は、必須チェック
+            if (!productCodeSelect.value) { // 二重チェックだが念のため
                 messageArea.textContent = `商品 ${index + 1} のご購入商品を選択してください。`;
                 formIsValid = false;
-            } else if (!purchaseDateInput.value) {
-                messageArea.textContent = `商品 ${index + 1} の購入日を入力してください。`;
-                formIsValid = false;
-            } else if (!orderNumberInput.value || !AMAZON_ORDER_PATTERN.test(orderNumberInput.value)) {
-                messageArea.textContent = `商品 ${index + 1} のAmazon注文番号の形式が正しくありません。`;
-                formIsValid = false;
             }
 
-            if (!formIsValid) { // バリデーション失敗した行があればここで終了
+            if (!formIsValid) {
                 messageArea.classList.remove('d-none', 'alert-success');
                 messageArea.classList.add('alert-danger');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                return; // forEach を中断する代わりに、外側の if (!formIsValid) で処理
+                return; 
             }
 
             productsData.push({
                 productCode: productCodeSelect.value,
-                purchaseDate: purchaseDateInput.value,
-                orderNumber: orderNumberInput.value,
+                // トップレベルの注文番号と購入日を各商品情報にセット
+                purchaseDate: masterPurchaseDateInput.value,
+                orderNumber: masterOrderNumberInput.value,
                 purchaseSite: "Amazon" // 固定値
             });
         });
         
-        // 全ての商品情報が空だった場合の最終チェック
+        // 有効な商品情報が一つも入力されていない場合の最終チェック
         if (productsData.length === 0) {
             messageArea.textContent = '少なくとも1つの商品情報を入力してください。';
             messageArea.classList.remove('d-none', 'alert-success');
@@ -299,7 +329,7 @@
 
         const submissionData = {
             email: emailInput.value,
-            products: productsData // 複数の商品情報をリストとして送信
+            products: productsData // 複数の商品情報（注文番号と購入日はセット済み）をリストとして送信
         };
 
         try {
@@ -316,6 +346,10 @@
           // フォームのリセットと初期状態への復元
           registrationForm.reset();
           emailInput.classList.remove('is-valid', 'is-invalid');
+          masterOrderNumberInput.classList.remove('is-valid', 'is-invalid');
+          masterOrderNumberFeedback.style.display = 'none';
+          masterPurchaseDateInput.classList.remove('is-valid', 'is-invalid');
+
           productEntriesContainer.innerHTML = ''; // 全ての入力ブロックを削除
           // 初期表示で5つの入力ブロックを再度生成
           for (let i = 0; i < 5; i++) {
