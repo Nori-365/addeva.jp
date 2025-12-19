@@ -78,6 +78,17 @@
       }
     }
 
+    // 日付フォーマットヘルパー関数 (YYYY/MM/DD 形式)
+    function formatJapaneseDate(isoDateString) {
+        if (!isoDateString) return 'N/A';
+        const date = new Date(isoDateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+    }
+
+
     waitForADDEVA(async () => {
       const customerContent = document.getElementById('customerContent');
       const messageArea = document.getElementById('messageArea');
@@ -213,10 +224,14 @@
           } else {
             purchases.forEach(p => {
               const row = purchasesTableBody.insertRow();
-              row.insertCell().textContent = p.purchaseDate || 'N/A';
+              // ↓↓↓↓↓↓ ここを修正 ↓↓↓↓↓↓
+              row.insertCell().textContent = formatJapaneseDate(p.purchaseDate) || 'N/A';
+              // ↑↑↑↑↑↑ ここを修正 ↑↑↑↑↑↑
               row.insertCell().textContent = p.productName || 'N/A';
               row.insertCell().textContent = p.orderNumber || 'N/A';
-              row.insertCell().textContent = p.warrantyEndDate || 'N/A';
+              // ↓↓↓↓↓↓ ここを修正 ↓↓↓↓↓↓
+              row.insertCell().textContent = formatJapaneseDate(p.warrantyEndDate) || 'N/A';
+              // ↑↑↑↑↑↑ ここを修正 ↑↑↑↑↑↑
               const supportCell = row.insertCell();
               supportCell.className = 'text-center';
               supportCell.innerHTML = `<button class="btn btn-sm btn-outline-info support-request-btn" data-purchase-id="${p.purchaseSequenceNumber}" data-product-name="${p.productName}">依頼</button>`;
