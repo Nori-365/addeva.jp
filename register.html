@@ -52,6 +52,13 @@
 
         <div class="card shadow-sm p-4 mb-5">
           <form id="registrationForm" method="POST" action="">
+            <!-- お客様ID (会員番号) -->
+            <div class="mb-4">
+              <label for="customerId" class="form-label">お客様ID (会員番号)</label>
+              <input type="text" class="form-control" id="customerId" name="customerId" readonly>
+              <div class="form-text" id="customerIdHelp"></div>
+            </div>
+
             <!-- メールアドレス -->
             <div class="mb-4">
               <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
@@ -139,11 +146,13 @@
       const productEntriesContainer = document.getElementById('productEntriesContainer');
       const addProductButton = document.getElementById('addProductButton');
 
+      const customerIdInput = document.getElementById('customerId');
+      const customerIdHelp = document.getElementById('customerIdHelp');
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
       const confirmPasswordInput = document.getElementById('confirmPassword');
       const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
-      const passwordFields = document.getElementById('passwordFields'); // パスワード入力欄全体
+      const passwordFields = document.getElementById('passwordFields');
 
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
@@ -152,50 +161,67 @@
       const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; // Amazon注文番号の正規表現
       let availableProducts = []; // APIから取得した商品リストを保持
 
-      // ==== ページモードの判別とUI調整 ====
-      const urlParams = new URLSearchParams(window.location.search);
-      const isEditMode = urlParams.get('mode') === 'edit';
-      const defaultEmail = urlParams.get('email') || '';
-      const defaultOrderNumber = urlParams.get('orderNumber') || '';
-      const defaultPurchaseDate = urlParams.get('purchaseDate') || '';
-      // 将来的にユーザーIDもデフォルト表示する場合
-      // const defaultCustomerId = urlParams.get('customerId') || ''; 
+      let isUserLoggedIn = false; // ユーザーがログイン済みかどうかを示すフラグ
+      let loggedInCustomerId = null;
+      let loggedInEmail = '';
 
-      if (isEditMode) {
-          // ログイン済み（サポートページから遷移）の場合
-          document.querySelector('h1').textContent = '商品情報追加・登録';
-          document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
+      // ==== ログイン状態の確認とUI調整 ====
+      async function checkLoginStatusAndSetupUI() {
+          const authToken = localStorage.getItem('addeva_auth_token'); // 認証トークンを取得
+          if (authToken) {
+              try {
+                  // 認証トークンを使ってユーザー情報をAPIから取得
+                  const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
+                  
+                  isUserLoggedIn = true;
+                  loggedInCustomerId = userInfo.customer_id;
+                  loggedInEmail = userInfo.email;
 
-          // メールアドレスをデフォルト表示し、編集不可
-          emailInput.value = defaultEmail;
-          emailInput.readOnly = true;
-          emailInput.classList.add('form-control-plaintext'); // Bootstrapのスタイル
+                  // UI調整：ログイン済みの場合
+                  document.querySelector('h1').textContent = '商品情報追加・登録';
+                  document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
 
-          // パスワード入力欄は非表示
-          passwordFields.style.display = 'none';
+                  customerIdInput.value = loggedInCustomerId;
+                  customerIdHelp.textContent = 'お客様IDは変更できません。';
 
-          // Amazon注文番号をデフォルト表示し、編集不可
-          masterOrderNumberInput.value = defaultOrderNumber;
-          masterOrderNumberInput.readOnly = true;
-          masterOrderNumberInput.classList.add('form-control-plaintext');
-          masterOrderNumberInput.classList.add('is-valid'); // 有効な状態として表示
-          masterOrderNumberFeedback.style.display = 'none'; // フィードバックも非表示
-          
-          // 購入日をデフォルト表示し、編集不可
-          masterPurchaseDateInput.value = defaultPurchaseDate;
-          masterPurchaseDateInput.readOnly = true;
-          masterPurchaseDateInput.classList.add('form-control-plaintext');
-          masterPurchaseDateInput.type = 'text'; // date入力のUIを無効化
-          
-          // トップレベルの必須アスタリスクを削除 (見た目上)
-          document.querySelector('label[for="email"] span').style.display = 'none';
-          document.querySelector('label[for="masterOrderNumber"] span').style.display = 'none';
-          document.querySelector('label[for="masterPurchaseDate"] span').style.display = 'none';
+                  emailInput.value = loggedInEmail;
+                  emailInput.readOnly = true;
+                  emailInput.classList.add('form-control-plaintext');
 
-      } else {
-          // 新規登録の場合（パスワード入力欄を表示し、メールアドレスと注文番号は入力可）
-          // 特に何もしない（デフォルトで表示されているため）
+                  passwordFields.style.display = 'none'; // パスワード欄は非表示
+
+                  // Amazon注文番号と購入日もreadonlyに
+                  masterOrderNumberInput.readOnly = true;
+                  masterOrderNumberInput.classList.add('form-control-plaintext');
+                  masterOrderNumberInput.classList.add('is-valid');
+                  masterOrderNumberFeedback.style.display = 'none';
+                  
+                  masterPurchaseDateInput.readOnly = true;
+                  masterPurchaseDateInput.classList.add('form-control-plaintext');
+                  masterPurchaseDateInput.type = 'text'; 
+                  
+                  // 必須アスタリスクを削除 (見た目上)
+                  document.querySelector('label[for="email"] span').style.display = 'none';
+                  document.querySelector('label[for="masterOrderNumber"] span').style.display = 'none';
+                  document.querySelector('label[for="masterPurchaseDate"] span').style.display = 'none';
+
+              } catch (error) {
+                  console.warn("ログイン済みユーザー情報の取得に失敗、またはトークンが無効です。新規登録モードで続行します。", error);
+                  // トークンが無効な場合はクリアして新規登録モードに
+                  localStorage.removeItem('addeva_auth_token');
+                  setupNewRegistrationUI();
+              }
+          } else {
+              // 新規登録モードの場合
+              setupNewRegistrationUI();
+          }
+      }
+
+      function setupNewRegistrationUI() {
+          customerIdInput.value = '＜新規＞';
+          customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
           masterPurchaseDateInput.setAttribute('max', TODAY_ISO); // 新規登録時にのみ最大日を設定
+          passwordFields.style.display = 'block'; // パスワード欄を表示
       }
 
 
@@ -203,14 +229,14 @@
       async function fetchProducts() {
           try {
               const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
-              availableProducts = products; // 取得した商品をグローバル変数に保存
+              availableProducts = products;
           } catch (error) {
-              console.error('商品リストの取得に失敗しました:', error);
+              console.error("商品リストの取得に失敗しました:", error);
               let errorMessage = error.message || '商品リストの読み込みに失敗しました。';
               messageArea.textContent = errorMessage;
               messageArea.classList.remove('d-none', 'alert-success');
               messageArea.classList.add('alert-danger');
-              throw error; // エラーを再スローしてフォーム表示を中止
+              throw error; 
           }
       }
 
@@ -232,19 +258,15 @@
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
           </div>
-          <!-- 購入日と注文番号はトップレベルから引き継ぐため、個別の入力欄は削除 -->
         `;
 
-        // 初期値のセット (もしあれば)
         if (initialData.productCode) {
             entryDiv.querySelector('.product-code-select').value = initialData.productCode;
         }
         
-        // 削除ボタンのイベントリスナー
         if (index > 0) {
           entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
             entryDiv.remove();
-            // 削除後、残った商品のインデックスを整理
             productEntriesContainer.querySelectorAll('.product-entry').forEach((el, newIdx) => {
               el.setAttribute('data-index', newIdx);
               el.querySelector('h6').textContent = `商品 ${newIdx + 1}`;
@@ -254,32 +276,31 @@
             });
           });
         }
-        // 個別の注文番号バリデーションは不要になったため削除
-
         productEntriesContainer.appendChild(entryDiv);
       }
 
       // ==== 初期化処理 ====
       try {
         await fetchProducts(); // まず商品リストを取得
+
+        // ログイン状態に応じてUIを設定（fetchProducts後に実行）
+        await checkLoginStatusAndSetupUI(); 
+
         // 初期表示で5つの入力ブロックを生成
         for (let i = 0; i < 5; i++) {
           createProductEntry(i);
         }
-        // masterPurchaseDateInput.setAttribute('max', TODAY_ISO); // mode=editでなければ上記で設定済み
-
       } catch (error) {
-        // 商品リスト取得でエラーがあれば、フォームは表示しないか、エラーメッセージを強調
         console.error("Initialization failed:", error);
         messageArea.textContent = `初期化に失敗しました。FastAPIとの接続を確認してください: ${error.message}`;
         messageArea.classList.remove('d-none', 'alert-success');
         messageArea.classList.add('alert-danger');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        return; // エラーがあればフォーム送信もブロック
+        return;
       }
 
-      // トップレベル注文番号のリアルタイムバリデーション (新規登録時のみ有効)
-      if (!isEditMode) {
+      // トップレベル注文番号のリアルタイムバリデーション (新規登録モードの場合のみ有効)
+      if (!isUserLoggedIn) { // isEditMode ではなく isUserLoggedIn で判定
         masterOrderNumberInput.addEventListener('input', function() {
           if (AMAZON_ORDER_PATTERN.test(this.value)) {
             this.classList.remove('is-invalid');
@@ -294,19 +315,27 @@
       }
 
 
-      // パスワード一致チェック
-      if (!isEditMode) {
+      // パスワード一致チェック (新規登録モードの場合のみ有効)
+      if (!isUserLoggedIn) { // isEditMode ではなく isUserLoggedIn で判定
         passwordInput.addEventListener('input', validatePasswords);
         confirmPasswordInput.addEventListener('input', validatePasswords);
       }
       function validatePasswords() {
+        if (passwordInput.value.length < 8) {
+            passwordInput.classList.add('is-invalid');
+            passwordMismatchFeedback.textContent = 'パスワードは8文字以上で入力してください。';
+            passwordMismatchFeedback.style.display = 'block';
+            return;
+        } else {
+            passwordInput.classList.remove('is-invalid');
+        }
+
         if (passwordInput.value === confirmPasswordInput.value) {
-          passwordInput.classList.remove('is-invalid');
           confirmPasswordInput.classList.remove('is-invalid');
           passwordMismatchFeedback.style.display = 'none';
         } else {
-          passwordInput.classList.add('is-invalid');
           confirmPasswordInput.classList.add('is-invalid');
+          passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
           passwordMismatchFeedback.style.display = 'block';
         }
       }
@@ -323,7 +352,7 @@
 
         messageArea.classList.add('d-none'); // メッセージを一旦非表示に
 
-        // トップレベルの必須項目チェック (モードによって一部スキップ)
+        // トップレベルの必須項目チェック
         if (!emailInput.value) {
             messageArea.textContent = 'メールアドレスを入力してください。';
             messageArea.classList.remove('d-none', 'alert-success');
@@ -334,8 +363,8 @@
             return;
         }
         
-        // 新規登録モードの場合のみパスワードチェック
-        if (!isEditMode) {
+        // ログイン済みモードと新規登録モードでバリデーションを分岐
+        if (!isUserLoggedIn) { // 新規登録モードの場合のパスワードと注文番号/購入日チェック
             if (!passwordInput.value || !confirmPasswordInput.value) {
                 messageArea.textContent = 'パスワードを入力してください。';
                 messageArea.classList.remove('d-none', 'alert-success');
@@ -353,6 +382,16 @@
                 passwordInput.classList.add('is-invalid');
                 confirmPasswordInput.classList.add('is-invalid');
                 passwordMismatchFeedback.style.display = 'block';
+                messageArea.classList.remove('d-none');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            if (passwordInput.value.length < 8) {
+                messageArea.textContent = 'パスワードは8文字以上で入力してください。';
+                messageArea.classList.remove('d-none', 'alert-success');
+                messageArea.classList.add('alert-danger');
+                passwordInput.focus();
+                passwordInput.classList.add('is-invalid');
                 messageArea.classList.remove('d-none');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
@@ -381,31 +420,37 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
             }
+        } else { // ログイン済みモードの場合 (メールアドレス、注文番号、購入日はreadonlyなのでここではチェックしない)
+            // masterOrderNumberInput と masterPurchaseDateInput は readonly なので、既に値が入っている前提
+            if (!masterOrderNumberInput.value || !masterPurchaseDateInput.value) {
+                messageArea.textContent = 'エラー: 注文番号または購入日が取得できませんでした。再度ログインし直してください。';
+                messageArea.classList.remove('d-none', 'alert-success');
+                messageArea.classList.add('alert-danger');
+                messageArea.classList.remove('d-none');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
         }
 
 
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
         const productsData = [];
-        let hasAtLeastOneProductSelected = false; // 少なくとも1つの商品が選択されたかを示すフラグ
+        let hasAtLeastOneProductSelected = false; 
 
         productEntries.forEach((entry) => {
             const productCodeSelect = entry.querySelector('.product-code-select');
             
-            // 商品コードが選択されている行のみを処理対象とする
             if (productCodeSelect.value) { 
                 hasAtLeastOneProductSelected = true;
                 productsData.push({
                     productCode: productCodeSelect.value,
-                    // 購入日と注文番号はトップレベルから引き継ぐ
                     purchaseDate: masterPurchaseDateInput.value,
                     orderNumber: masterOrderNumberInput.value,
-                    purchaseSite: "Amazon" // 固定値
+                    purchaseSite: "Amazon" 
                 });
             }
-            // 商品コードが選択されていない行は完全にスキップし、エラーとはしない
         });
         
-        // 最終チェック: 少なくとも1つの商品が選択されたか
         if (!hasAtLeastOneProductSelected) {
             messageArea.textContent = '少なくとも1つの商品情報を入力してください。';
             messageArea.classList.remove('d-none', 'alert-success');
@@ -417,27 +462,34 @@
         const submissionData = {
             email: emailInput.value,
             // 新規登録モードの場合のみパスワードを含める
-            ...(isEditMode ? {} : { password: passwordInput.value }),
-            masterOrderNumber: masterOrderNumberInput.value,    // トップレベルの注文番号
-            masterPurchaseDate: masterPurchaseDateInput.value,  // トップレベルの購入日
-            products: productsData // 複数の商品情報（注文番号と購入日はセット済み）をリストとして送信
+            ...(isUserLoggedIn ? {} : { password: passwordInput.value }),
+            // ログイン済みの場合のみ customerId を含める
+            ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : {}),
+            masterOrderNumber: masterOrderNumberInput.value,
+            masterPurchaseDate: masterPurchaseDateInput.value,
+            products: productsData 
         };
+        
+        // ログイン済みの場合、APIキーに加えて認証トークンをヘッダーに含める
+        const extraHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
 
         try {
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
-            body: submissionData, // 複数商品を含むデータを送信
+            body: submissionData,
+            extraHeaders: extraHeaders // 認証ヘッダーを追加
           });
 
           // 登録成功時のリダイレクト処理
           if (result && result.message) {
             const params = new URLSearchParams();
-            params.append('customerId', result.customerId); // FastAPIから返す顧客ID
-            params.append('email', submissionData.email);
-            // registeredProductsをFastAPIからJSON文字列として受け取り、URLエンコードして渡す
-            params.append('products', encodeURIComponent(JSON.stringify(result.registeredProducts))); 
+            // サポートページで「登録完了」メッセージを表示するためのフラグ
+            params.append('registered', 'true'); 
+            // 顧客IDとメールアドレスはサポートページでAPI経由で取得させるため、URLには含めない
+            // 登録された商品情報は通常、大量になる可能性があるためURLに含めない
 
-            window.location.href = `/confirmation.html?${params.toString()}`;
+            // サポートページへリダイレクト
+            window.location.href = `/customer_support.html?${params.toString()}`;
           } else {
              messageArea.textContent = result.detail || result.error || '保証登録に失敗しました。';
              messageArea.classList.remove('alert-success');
@@ -452,9 +504,6 @@
           messageArea.textContent = errorMessage;
           messageArea.classList.remove('alert-success');
           messageArea.classList.add('alert-danger');
-          messageArea.classList.remove('d-none');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } finally {
           messageArea.classList.remove('d-none');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
