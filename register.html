@@ -198,9 +198,9 @@
                   
                   masterPurchaseDateInput.readOnly = true;
                   masterPurchaseDateInput.classList.add('form-control-plaintext');
-                  masterPurchaseDateInput.type = 'text'; 
+                  masterPurchaseDateInput.type = 'text'; // date入力のUIを無効化
                   
-                  // 必須アスタリスクを削除 (見た目上)
+                  // トップレベルの必須アスタリスクを削除 (見た目上)
                   document.querySelector('label[for="email"] span').style.display = 'none';
                   document.querySelector('label[for="masterOrderNumber"] span').style.display = 'none';
                   document.querySelector('label[for="masterPurchaseDate"] span').style.display = 'none';
@@ -219,7 +219,7 @@
 
       function setupNewRegistrationUI() {
           customerIdInput.value = '＜新規＞';
-          customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
+          customerIdHelp.textContent = '新しいお客様IDは登録後に自動発行されます。';
           masterPurchaseDateInput.setAttribute('max', TODAY_ISO); // 新規登録時にのみ最大日を設定
           passwordFields.style.display = 'block'; // パスワード欄を表示
       }
@@ -258,6 +258,7 @@
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
           </div>
+          <!-- 購入日と注文番号はトップレベルから引き継ぐため、個別の入力欄は削除 -->
         `;
 
         if (initialData.productCode) {
@@ -461,35 +462,27 @@
 
         const submissionData = {
             email: emailInput.value,
-            // 新規登録モードの場合のみパスワードを含める
             ...(isUserLoggedIn ? {} : { password: passwordInput.value }),
-            // ログイン済みの場合のみ customerId を含める
             ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : {}),
             masterOrderNumber: masterOrderNumberInput.value,
             masterPurchaseDate: masterPurchaseDateInput.value,
             products: productsData 
         };
         
-        // ログイン済みの場合、APIキーに加えて認証トークンをヘッダーに含める
         const extraHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
 
         try {
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
             body: submissionData,
-            extraHeaders: extraHeaders // 認証ヘッダーを追加
+            extraHeaders: extraHeaders
           });
 
-          // 登録成功時のリダイレクト処理
           if (result && result.message) {
             const params = new URLSearchParams();
-            // サポートページで「登録完了」メッセージを表示するためのフラグ
-            params.append('registered', 'true'); 
-            // 顧客IDとメールアドレスはサポートページでAPI経由で取得させるため、URLには含めない
-            // 登録された商品情報は通常、大量になる可能性があるためURLに含めない
-
-            // サポートページへリダイレクト
-            window.location.href = `/customer_support.html?${params.toString()}`;
+            params.append('registered', 'true'); // 登録完了メッセージ表示用のフラグ
+            
+            window.location.href = `/customer.html?mode=support&${params.toString()}`;
           } else {
              messageArea.textContent = result.detail || result.error || '保証登録に失敗しました。';
              messageArea.classList.remove('alert-success');
@@ -504,6 +497,9 @@
           messageArea.textContent = errorMessage;
           messageArea.classList.remove('alert-success');
           messageArea.classList.add('alert-danger');
+          messageArea.classList.remove('d-none');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } finally {
           messageArea.classList.remove('d-none');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
