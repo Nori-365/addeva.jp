@@ -76,7 +76,7 @@
             <!-- 購入日 (トップレベル) -->
             <div class="mb-4">
               <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required max="<%= TODAY_ISO %>">
+              <input type="date" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required>
               <div class="form-text">Amazonでのご注文日をご入力ください。</div>
             </div>
 
@@ -175,7 +175,7 @@
         if (initialData.productCode) {
             entryDiv.querySelector('.product-code-select').value = initialData.productCode;
         }
-
+        
         // 削除ボタンのイベントリスナー
         if (index > 0) {
           entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
@@ -190,6 +190,7 @@
             });
           });
         }
+        // 個別の注文番号バリデーションは不要になったため削除
 
         productEntriesContainer.appendChild(entryDiv);
       }
@@ -275,45 +276,27 @@
 
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
         const productsData = [];
-        let formIsValid = true; // 各商品情報のバリデーションフラグ
+        let hasAtLeastOneProductSelected = false; // 少なくとも1つの商品が選択されたかを示すフラグ
 
-        productEntries.forEach((entry, index) => {
+        productEntries.forEach((entry) => {
             const productCodeSelect = entry.querySelector('.product-code-select');
             
-            // 商品コードが入力されている行のみを対象とする
-            if (!productCodeSelect.value) {
-                // 他のフィールドも空ならスキップ、そうでなければエラー
-                if (entry.querySelector('input[type="date"]').value || entry.querySelector('input[type="text"]').value) {
-                     messageArea.textContent = `商品 ${index + 1} のご購入商品を選択してください。`;
-                     formIsValid = false;
-                }
-                return; // 商品コードが空の場合はこの行の処理をスキップ（後でまとめてチェック）
+            // 商品コードが選択されている行のみを処理対象とする
+            if (productCodeSelect.value) { // もし商品コードが選択されていれば
+                hasAtLeastOneProductSelected = true;
+                productsData.push({
+                    productCode: productCodeSelect.value,
+                    // 購入日と注文番号はトップレベルから引き継ぐ
+                    purchaseDate: masterPurchaseDateInput.value,
+                    orderNumber: masterOrderNumberInput.value,
+                    purchaseSite: "Amazon" // 固定値
+                });
             }
-
-            // 商品コードが入力されている場合は、必須チェック
-            if (!productCodeSelect.value) { // 二重チェックだが念のため
-                messageArea.textContent = `商品 ${index + 1} のご購入商品を選択してください。`;
-                formIsValid = false;
-            }
-
-            if (!formIsValid) {
-                messageArea.classList.remove('d-none', 'alert-success');
-                messageArea.classList.add('alert-danger');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                return; 
-            }
-
-            productsData.push({
-                productCode: productCodeSelect.value,
-                // トップレベルの注文番号と購入日を各商品情報にセット
-                purchaseDate: masterPurchaseDateInput.value,
-                orderNumber: masterOrderNumberInput.value,
-                purchaseSite: "Amazon" // 固定値
-            });
+            // 商品コードが選択されていない行は完全にスキップし、エラーとはしない
         });
         
-        // 有効な商品情報が一つも入力されていない場合の最終チェック
-        if (productsData.length === 0) {
+        // 最終チェック: 少なくとも1つの商品が選択されたか
+        if (!hasAtLeastOneProductSelected) {
             messageArea.textContent = '少なくとも1つの商品情報を入力してください。';
             messageArea.classList.remove('d-none', 'alert-success');
             messageArea.classList.add('alert-danger');
@@ -321,14 +304,10 @@
             return;
         }
 
-
-        // 全体のバリデーションが通っていればAPI送信
-        if (!formIsValid) { // 既にエラーがあった場合
-            return;
-        }
-
         const submissionData = {
             email: emailInput.value,
+            masterOrderNumber: masterOrderNumberInput.value,    // トップレベルの注文番号
+            masterPurchaseDate: masterPurchaseDateInput.value,  // トップレベルの購入日
             products: productsData // 複数の商品情報（注文番号と購入日はセット済み）をリストとして送信
         };
 
