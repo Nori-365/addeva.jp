@@ -27,7 +27,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
-  <!-- .envで設定したAPIキーをここに埋め込んでください -->
   <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 </head>
 
@@ -52,47 +51,23 @@
         <div id="messageArea" class="alert d-none" role="alert"></div>
 
         <div class="card shadow-sm p-4 mb-5">
-          <form id="registrationForm" method="POST" action=""> <!-- actionはJSで制御 -->
+          <form id="registrationForm" method="POST" action="">
             <!-- メールアドレス -->
-            <div class="mb-3">
+            <div class="mb-4">
               <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
               <input type="email" class="form-control" id="email" name="email" required placeholder="メールアドレスをご入力ください">
               <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
             </div>
 
-            <!-- 商品選択 -->
-            <div class="mb-3">
-              <label for="productCode" class="form-label">ご購入商品 <span class="text-danger">*</span></label>
-              <select class="form-select" id="productCode" name="productCode" required>
-                <option value="">商品を選択してください</option>
-                <!-- 商品リストはJavaScriptで動的に読み込まれます -->
-              </select>
-              <div class="form-text">ご購入されたADDEVA製品を選択してください。</div>
+            <!-- 複数商品入力エリアのコンテナ -->
+            <div id="productEntriesContainer" class="mb-4 border p-3 rounded bg-light">
+              <h5 class="mb-3">購入商品情報</h5>
+              <!-- ここに動的な商品入力ブロックが追加されます -->
             </div>
-
-            <!-- 購入日 -->
-            <div class="mb-3">
-              <label for="purchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
-              <input type="date" class="form-control" id="purchaseDate" name="purchaseDate" required>
-              <div class="form-text">Amazonでのご注文日をご入力ください。</div>
-            </div>
-
-            <!-- 購入サイト (Amazon固定) -->
-            <div class="mb-3">
-              <label for="purchaseSite" class="form-label">購入サイト</label>
-              <input type="text" class="form-control" id="purchaseSite" name="purchaseSite" value="Amazon" readonly>
-              <div class="form-text">現在、Amazonでのご購入が保証登録の対象となります。</div>
-            </div>
-
-            <!-- 注文番号 -->
-            <div class="mb-4">
-              <label for="orderNumber" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="orderNumber" name="orderNumber" required placeholder="例: 123-1234567-1234567">
-              <div id="orderNumberFeedback" class="invalid-feedback">
-                Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
-              </div>
-              <div class="form-text">半角数字とハイフンで構成されるAmazonの注文番号をご入力ください。</div>
-            </div>
+            
+            <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4">
+              <i class="bi bi-plus-circle me-2"></i>別の商品を追加する
+            </button>
 
             <button type="submit" class="btn btn-primary btn-lg w-100">保証を登録する</button>
           </form>
@@ -122,93 +97,235 @@
     }
 
     waitForADDEVA(async () => {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('purchaseDate').setAttribute('max', today);
-
-      const orderNumberInput = document.getElementById('orderNumber');
-      const amazonOrderPattern = /^\d{3}-\d{7}-\d{7}$/;
-
-      orderNumberInput.addEventListener('input', function() {
-        if (amazonOrderPattern.test(this.value)) {
-          this.classList.remove('is-invalid');
-          this.classList.add('is-valid');
-        } else {
-          this.classList.add('is-invalid');
-          this.classList.remove('is-valid');
-        }
-      });
-
+      const TODAY_ISO = new Date().toISOString().split('T')[0]; // 購入日の最大値
       const registrationForm = document.getElementById('registrationForm');
       const messageArea = document.getElementById('messageArea');
-      const productCodeSelect = document.getElementById('productCode');
+      const productEntriesContainer = document.getElementById('productEntriesContainer');
+      const addProductButton = document.getElementById('addProductButton');
+      const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; // Amazon注文番号の正規表現
+      let availableProducts = []; // APIから取得した商品リストを保持
 
       // ==== 商品リストをAPIから動的に取得する処理 ====
       async function fetchProducts() {
           try {
-              // ADDEVA.apiFetch を使用。パスはNginxでFastAPIにプロキシされるもの。
-              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} }); // POSTメソッドと空のボディ
-              
-              products.forEach(product => {
-                  const option = document.createElement('option');
-                  option.value = product.product_code;
-                  option.textContent = product.product_name;
-                  productCodeSelect.appendChild(option);
-              });
+              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
+              availableProducts = products; // 取得した商品をグローバル変数に保存
           } catch (error) {
               console.error('商品リストの取得に失敗しました:', error);
-              // ADDEVA.apiFetch はエラー時に Error オブジェクトを投げる
               let errorMessage = error.message || '商品リストの読み込みに失敗しました。';
               messageArea.textContent = errorMessage;
               messageArea.classList.remove('d-none', 'alert-success');
               messageArea.classList.add('alert-danger');
+              throw error; // エラーを再スローしてフォーム表示を中止
           }
       }
-      fetchProducts(); // ページ読み込み時に商品リストをフェッチ
+
+      // ==== 動的な商品入力ブロックを生成する関数 ====
+      function createProductEntry(index, initialData = {}) {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = `product-entry mb-4 p-3 border rounded ${index > 0 ? 'mt-3 bg-white' : ''}`;
+        entryDiv.setAttribute('data-index', index);
+
+        entryDiv.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0 text-secondary">商品 ${index + 1}</h6>
+            ${index > 0 ? `<button type="button" class="btn btn-outline-danger btn-sm remove-product-btn">削除</button>` : ''}
+          </div>
+          <div class="mb-3">
+            <label for="productCode_${index}" class="form-label">ご購入商品 <span class="text-danger">*</span></label>
+            <select class="form-select product-code-select" id="productCode_${index}" name="products[${index}][productCode]" required>
+              <option value="">商品を選択してください</option>
+              ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="purchaseDate_${index}" class="form-label">購入日 <span class="text-danger">*</span></label>
+            <input type="date" class="form-control purchase-date-input" id="purchaseDate_${index}" name="products[${index}][purchaseDate]" required max="${TODAY_ISO}" value="${initialData.purchaseDate || ''}">
+          </div>
+          <div class="mb-3">
+            <label for="orderNumber_${index}" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
+            <input type="text" class="form-control order-number-input" id="orderNumber_${index}" name="products[${index}][orderNumber]" required placeholder="例: 123-1234567-1234567" value="${initialData.orderNumber || ''}">
+            <div class="invalid-feedback order-number-feedback">
+              Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
+            </div>
+          </div>
+        `;
+
+        // 初期値のセット
+        if (initialData.productCode) {
+            entryDiv.querySelector('.product-code-select').value = initialData.productCode;
+        }
+        if (initialData.orderNumber && AMAZON_ORDER_PATTERN.test(initialData.orderNumber)) {
+            entryDiv.querySelector('.order-number-input').classList.add('is-valid');
+        } else if (initialData.orderNumber) { // 形式が間違っている初期値の場合
+            entryDiv.querySelector('.order-number-input').classList.add('is-invalid');
+        }
+
+
+        // 削除ボタンのイベントリスナー
+        if (index > 0) {
+          entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
+            entryDiv.remove();
+            // 削除後、残った商品のインデックスを整理（FastAPIが[0],[1],[2]と期待するため）
+            // これにより name="products[${index}]..." のindexが連続するようにする
+            productEntriesContainer.querySelectorAll('.product-entry').forEach((el, newIdx) => {
+              el.setAttribute('data-index', newIdx);
+              el.querySelector('h6').textContent = `商品 ${newIdx + 1}`;
+              el.querySelector('.product-code-select').name = `products[${newIdx}][productCode]`;
+              el.querySelector('.product-code-select').id = `productCode_${newIdx}`; // idも更新
+              el.querySelector('label[for^="productCode_"]').setAttribute('for', `productCode_${newIdx}`);
+
+              el.querySelector('.purchase-date-input').name = `products[${newIdx}][purchaseDate]`;
+              el.querySelector('.purchase-date-input').id = `purchaseDate_${newIdx}`; // idも更新
+              el.querySelector('label[for^="purchaseDate_"]').setAttribute('for', `purchaseDate_${newIdx}`);
+
+              el.querySelector('.order-number-input').name = `products[${newIdx}][orderNumber]`;
+              el.querySelector('.order-number-input').id = `orderNumber_${newIdx}`; // idも更新
+              el.querySelector('label[for^="orderNumber_"]').setAttribute('for', `orderNumber_${newIdx}`);
+            });
+          });
+        }
+
+        // 注文番号のリアルタイムバリデーションを追加
+        const orderNumberInput = entryDiv.querySelector('.order-number-input');
+        orderNumberInput.addEventListener('input', function() {
+          if (AMAZON_ORDER_PATTERN.test(this.value)) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+          } else {
+            this.classList.add('is-invalid');
+            this.classList.remove('is-valid');
+          }
+        });
+
+        productEntriesContainer.appendChild(entryDiv);
+      }
+
+      // ==== 初期化処理 ====
+      try {
+        await fetchProducts(); // まず商品リストを取得
+        // 初期表示で5つの入力ブロックを生成
+        for (let i = 0; i < 5; i++) {
+          createProductEntry(i);
+        }
+      } catch (error) {
+        // 商品リスト取得でエラーがあれば、フォームは表示しないか、エラーメッセージを強調
+        console.error("Initialization failed:", error);
+        messageArea.textContent = `初期化に失敗しました。FastAPIとの接続を確認してください: ${error.message}`;
+        messageArea.classList.remove('d-none', 'alert-success');
+        messageArea.classList.add('alert-danger');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return; // エラーがあればフォーム送信もブロック
+      }
+
+      addProductButton.addEventListener('click', () => {
+        const newIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
+        createProductEntry(newIndex);
+      });
 
       // ==== フォーム送信処理 ====
       registrationForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        // クライアント側での最終バリデーション
-        if (!amazonOrderPattern.test(orderNumberInput.value)) {
-            messageArea.textContent = 'Amazon注文番号の形式をご確認ください。';
-            messageArea.classList.remove('d-none', 'alert-success');
-            messageArea.classList.add('alert-danger');
-            orderNumberInput.focus();
-            return;
-        }
-        if (productCodeSelect.value === "") {
-            messageArea.textContent = 'ご購入商品を選択してください。';
-            messageArea.classList.remove('d-none', 'alert-success');
-            messageArea.classList.add('alert-danger');
-            productCodeSelect.focus();
-            return;
-        }
-
-        const formData = new FormData(registrationForm);
-        const data = Object.fromEntries(formData.entries()); // JSONに変換
-
         messageArea.classList.add('d-none'); // メッセージを一旦非表示に
 
+        const emailInput = document.getElementById('email');
+        if (!emailInput.value) {
+            messageArea.textContent = 'メールアドレスを入力してください。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            emailInput.focus();
+            messageArea.classList.remove('d-none');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
+        // 入力されている商品情報のみを収集
+        const productsData = [];
+        let formIsValid = true;
+
+        productEntries.forEach((entry, index) => {
+            const productCodeSelect = entry.querySelector('.product-code-select');
+            const purchaseDateInput = entry.querySelector('.purchase-date-input');
+            const orderNumberInput = entry.querySelector('.order-number-input');
+            
+            // 全てのフィールドが空の場合、その行はスキップ
+            if (!productCodeSelect.value && !purchaseDateInput.value && !orderNumberInput.value) {
+                return; 
+            }
+
+            // 1つでも入力されている場合は、全て必須チェック
+            if (!productCodeSelect.value) {
+                messageArea.textContent = `商品 ${index + 1} のご購入商品を選択してください。`;
+                formIsValid = false;
+            } else if (!purchaseDateInput.value) {
+                messageArea.textContent = `商品 ${index + 1} の購入日を入力してください。`;
+                formIsValid = false;
+            } else if (!orderNumberInput.value || !AMAZON_ORDER_PATTERN.test(orderNumberInput.value)) {
+                messageArea.textContent = `商品 ${index + 1} のAmazon注文番号の形式が正しくありません。`;
+                formIsValid = false;
+            }
+
+            if (!formIsValid) { // バリデーション失敗した行があればここで終了
+                messageArea.classList.remove('d-none', 'alert-success');
+                messageArea.classList.add('alert-danger');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return; // forEach を中断する代わりに、外側の if (!formIsValid) で処理
+            }
+
+            productsData.push({
+                productCode: productCodeSelect.value,
+                purchaseDate: purchaseDateInput.value,
+                orderNumber: orderNumberInput.value,
+                purchaseSite: "Amazon" // 固定値
+            });
+        });
+        
+        // 全ての商品情報が空だった場合の最終チェック
+        if (productsData.length === 0) {
+            messageArea.textContent = '少なくとも1つの商品情報を入力してください。';
+            messageArea.classList.remove('d-none', 'alert-success');
+            messageArea.classList.add('alert-danger');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+
+        // 全体のバリデーションが通っていればAPI送信
+        if (!formIsValid) { // 既にエラーがあった場合
+            return;
+        }
+
+        const submissionData = {
+            email: emailInput.value,
+            products: productsData // 複数の商品情報をリストとして送信
+        };
+
         try {
-          // ADDEVA.apiFetch を使用。ボディは自動でJSON化される。
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
-            body: data,
+            body: submissionData, // 複数商品を含むデータを送信
           });
 
-          // 成功レスポンスの処理 (FastAPIはJSONで "message" を返す想定)
+          // 成功レスポンスの処理
           messageArea.textContent = result.message || '保証登録が完了しました。ありがとうございます！';
           messageArea.classList.remove('alert-danger');
           messageArea.classList.add('alert-success');
-          registrationForm.reset(); // フォームをクリア
-          orderNumberInput.classList.remove('is-valid'); // バリデーション状態をリセット
-          productCodeSelect.value = ""; // 商品選択もリセット
           
+          // フォームのリセットと初期状態への復元
+          registrationForm.reset();
+          emailInput.classList.remove('is-valid', 'is-invalid');
+          productEntriesContainer.innerHTML = ''; // 全ての入力ブロックを削除
+          // 初期表示で5つの入力ブロックを再度生成
+          for (let i = 0; i < 5; i++) {
+            createProductEntry(i);
+          }
+
         } catch (error) {
           console.error('API Error:', error);
-          // ADDEVA.apiFetch が投げたエラーオブジェクトからメッセージを取得
-          messageArea.textContent = error.message; // common.jsでdetailを抽出済み
+          let errorMessage = error.message || 'サーバーとの通信に失敗しました。しばらくしてから再度お試しください。';
+          messageArea.textContent = errorMessage;
           messageArea.classList.remove('alert-success');
           messageArea.classList.add('alert-danger');
         } finally {
