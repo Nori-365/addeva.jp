@@ -69,9 +69,7 @@
                 Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
               </div>
               <div class="form-text text-danger">
-                <!-- ↓↓↓↓↓↓ ここを修正しました ↓↓↓↓↓↓ -->
                 ※ 異なる注文番号の商品は、分けてご登録ください。同一商品を複数ご注文の場合は、複数行でご登録ください。
-                <!-- ↑↑↑↑↑↑ ここを修正しました ↑↑↑↑↑↑ -->
               </div>
             </div>
 
@@ -165,7 +163,7 @@
           </div>
           <div class="mb-3">
             <label for="productCode_${index}" class="form-label">ご購入商品 <span class="text-danger">*</span></label>
-            <select class="form-select product-code-select" id="productCode_${index}" name="products[${index}][productCode]" required>
+            <select class="form-select product-code-select" id="productCode_${index}" name="products[${index}][productCode]">
               <option value="">商品を選択してください</option>
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
