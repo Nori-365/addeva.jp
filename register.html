@@ -69,7 +69,9 @@
                 Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
               </div>
               <div class="form-text text-danger">
-                ※ 1つの注文番号につき、一度の登録でお願いいたします。異なる注文番号の商品は、分けてご登録ください。
+                <!-- ↓↓↓↓↓↓ ここを修正しました ↓↓↓↓↓↓ -->
+                ※ 異なる注文番号の商品は、分けてご登録ください。同一商品を複数ご注文の場合は、複数行でご登録ください。
+                <!-- ↑↑↑↑↑↑ ここを修正しました ↑↑↑↑↑↑ -->
               </div>
             </div>
 
@@ -282,7 +284,7 @@
             const productCodeSelect = entry.querySelector('.product-code-select');
             
             // 商品コードが選択されている行のみを処理対象とする
-            if (productCodeSelect.value) { // もし商品コードが選択されていれば
+            if (productCodeSelect.value) { 
                 hasAtLeastOneProductSelected = true;
                 productsData.push({
                     productCode: productCodeSelect.value,
