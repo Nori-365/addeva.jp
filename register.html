@@ -94,7 +94,6 @@
             <!-- 購入日 (トップレベル) -->
             <div class="mb-4">
               <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
-              <!-- id="masterPurchaseDateWrapper" を追加し、data-input, data-toggle を設定 -->
               <div class="input-group" id="masterPurchaseDateWrapper">
                 <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required placeholder="YYYY/MM/DD" data-input>
                 <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn" data-toggle>
@@ -175,7 +174,6 @@
       let loggedInCustomerId = null;
       let loggedInEmail = '';
 
-      // Flatpickrインスタンスを管理するための変数
       let fpInstance = null;
 
       function formatISODateToJapanese(isoDateString) {
@@ -199,7 +197,6 @@
           const authToken = localStorage.getItem('addeva_auth_token'); 
           if (authToken) {
               try {
-                  // ★修正: extraHeaders を headers に変更
                   const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { 
                       method: 'GET', 
                       headers: { 'Authorization': `Bearer ${authToken}` } 
@@ -227,7 +224,7 @@
                   masterPurchaseDateInput.classList.add('form-control-plaintext');
                   masterPurchaseDateCalendarBtn.style.display = 'none';
                   
-                  if(fpInstance) fpInstance.destroy(); // ログイン済みならカレンダー不要
+                  if(fpInstance) fpInstance.destroy();
 
               } catch (error) {
                   console.warn("ログイン状態の取得失敗:", error);
@@ -244,7 +241,6 @@
           customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
           passwordFields.style.display = 'block';
 
-          // Flatpickrの初期化 (wrapオプションでボタン連携を安定化)
           fpInstance = flatpickr("#masterPurchaseDateWrapper", {
               wrap: true, 
               locale: "ja",
@@ -343,11 +339,10 @@
           return true;
       }
 
-      // ==== 実行フロー ====
       try {
         await fetchProducts();
         await checkLoginStatusAndSetupUI(); 
-        for (let i = 0; i < 1; i++) { // 初期表示は1つにする（任意）
+        for (let i = 0; i < 1; i++) {
           createProductEntry(i);
         }
       } catch (error) {
@@ -366,7 +361,6 @@
             masterOrderNumberFeedback.style.display = 'block';
           }
         });
-        // 入力直接変更時のみバリデーション（カレンダー選択時はonCloseで実行される）
         masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
       }
 
@@ -379,6 +373,7 @@
       registrationForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         messageArea.classList.add('d-none');
+        messageArea.innerHTML = ''; // HTMLをクリア
 
         let isValid = true;
         if (!isUserLoggedIn) {
@@ -422,21 +417,26 @@
             products: productsData 
         };
         
-        // ★修正: extraHeaders を headers に変更
         const authHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
 
         try {
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
             body: submissionData,
-            headers: authHeaders // headers として渡す
+            headers: authHeaders
           });
 
           if (result && result.message) {
             window.location.href = `/customer.html?mode=support&registered=true`;
           }
         } catch (error) {
-          messageArea.textContent = error.message;
+          // ★修正箇所：特定のメッセージが含まれる場合にリンク付きHTMLに置換
+          let msg = error.message;
+          if (msg.includes('既に登録されています')) {
+              messageArea.innerHTML = 'このメールアドレスは既に登録されています。<a href="/customer.html?mode=login" class="alert-link">こちらからログイン</a>して商品を追加してください。';
+          } else {
+              messageArea.textContent = msg;
+          }
           messageArea.classList.remove('d-none', 'alert-success');
           messageArea.classList.add('alert-danger');
           window.scrollTo(0,0);
