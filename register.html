@@ -25,9 +25,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.7">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
-  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
+  <!-- Flatpickr の CSS を追加 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
@@ -95,12 +94,14 @@
             <!-- 購入日 (トップレベル) -->
             <div class="mb-4">
               <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
+              <!-- ↓↓↓↓↓↓ ここを修正しました (Input Group でカレンダーアイコンを追加) ↓↓↓↓↓↓ -->
               <div class="input-group">
                 <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required placeholder="YYYY/MM/DD">
                 <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn">
                     <i class="bi bi-calendar"></i>
                 </button>
               </div>
+              <!-- ↑↑↑↑↑↑ ここを修正しました ↑↑↑↑↑↑ -->
               <div class="form-text">Amazonでのご注文日を YYYY/MM/DD 形式でご入力ください。</div>
             </div>
 
@@ -166,7 +167,7 @@
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
       const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
-      const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn');
+      const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn'); // カレンダーボタン
 
       const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; 
       const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/; 
@@ -187,14 +188,16 @@
       }
 
       function formatJapaneseDateToISO(japaneseDateString) {
-          if (!japaneseDateString) return null;
-          if (!JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
+          if (!japaneseDateString) return null; // 空文字列はnull
+          if (!JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null; // 形式が違う
 
           const [year, month, day] = japaneseDateString.split('/');
+          // Dateオブジェクトの月は0始まりなので、-1する必要がある
           const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
           
+          // 無効な日付（例: 2月30日）ではないかチェック
           if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year) || dateObj.getMonth() != parseInt(month) - 1 || dateObj.getDate() != parseInt(day)) {
-            return null;
+            return null; // 無効な日付
           }
           return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
       }
@@ -221,7 +224,7 @@
                   emailInput.readOnly = true;
                   emailInput.classList.add('form-control-plaintext');
 
-                  passwordFields.style.display = 'none';
+                  passwordFields.style.display = 'none'; // パスワード欄は非表示
 
                   // Amazon注文番号と購入日もreadonlyに設定 (値は Fast API から取得する予定)
                   masterOrderNumberInput.readOnly = true;
@@ -232,7 +235,7 @@
                   masterPurchaseDateInput.readOnly = true;
                   masterPurchaseDateInput.classList.add('form-control-plaintext');
                   masterPurchaseDateInput.placeholder = '';
-                  masterPurchaseDateCalendarBtn.style.display = 'none';
+                  masterPurchaseDateCalendarBtn.style.display = 'none'; // 読み取り専用なのでカレンダーボタン非表示
                   
                   // トップレベルの必須アスタリスクを削除 (見た目上)
                   document.querySelector('label[for="email"] span').style.display = 'none';
@@ -241,7 +244,7 @@
 
                   // TODO: 既存の購入情報からmasterOrderNumberとmasterPurchaseDateを自動入力するAPIを実装した場合に有効化
                   // 例: const latestOrderInfo = await ADDEVA.apiFetch('/api/addeva/customer/latest-order', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
-                  // if (latestOrderInfo) {
+                  // if (latestOrderInfo && latestOrderInfo.orderNumber && latestOrderInfo.purchaseDate) {
                   //     masterOrderNumberInput.value = latestOrderInfo.orderNumber;
                   //     masterPurchaseDateInput.value = formatISODateToJapanese(latestOrderInfo.purchaseDate);
                   // }
@@ -263,6 +266,7 @@
           passwordFields.style.display = 'block';
 
           // 新規登録モードの場合にのみFlatpickrを初期化
+          // Flatpickrインスタンスを変数に保持
           const fp = flatpickr("#masterPurchaseDate", {
               locale: "ja", // 日本語ローカライズ
               dateFormat: "Y/m/d", // YYYY/MM/DD 形式
