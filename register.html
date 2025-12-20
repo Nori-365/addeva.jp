@@ -133,7 +133,7 @@
   <script defer src="/common.js"></script>
   <!-- Flatpickr の JavaScript を追加 -->
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script> <!-- 日本語ローカライズ -->
+  <script defer src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
   
   <script>
     function waitForADDEVA(callback) {
@@ -145,7 +145,7 @@
     }
 
     waitForADDEVA(async () => {
-      const TODAY_ISO = new Date().toISOString().split('T')[0]; 
+      const TODAY_ISO = new Date().toISOString().split('T')[0];
       const TODAY_DATE = new Date(TODAY_ISO);
 
       const registrationForm = document.getElementById('registrationForm');
@@ -166,106 +166,119 @@
       const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
       const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn');
 
-      const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; 
-      const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/; 
-      let availableProducts = []; 
+      const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/;
+      const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/;
+      let availableProducts = [];
 
-      let isUserLoggedIn = false; 
+      let isUserLoggedIn = false;
       let loggedInCustomerId = null;
       let loggedInEmail = '';
 
       let fpInstance = null;
 
-      function formatISODateToJapanese(isoDateString) {
-          if (!isoDateString) return '';
-          const date = new Date(isoDateString);
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          return `${year}/${month}/${day}`;
+      function showError(msg, asHtml=false) {
+        if (asHtml) {
+          messageArea.innerHTML = msg;
+        } else {
+          messageArea.textContent = msg;
+        }
+        messageArea.classList.remove('d-none', 'alert-success');
+        messageArea.classList.add('alert-danger');
+        window.scrollTo(0, 0);
+      }
+
+      function clearMessage() {
+        messageArea.classList.add('d-none');
+        messageArea.innerHTML = '';
+        messageArea.classList.remove('alert-danger', 'alert-success');
       }
 
       function formatJapaneseDateToISO(japaneseDateString) {
-          if (!japaneseDateString || !JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
-          const [year, month, day] = japaneseDateString.split('/');
-          const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-          if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year)) return null;
-          return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
+        if (!japaneseDateString || !JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
+        const [year, month, day] = japaneseDateString.split('/');
+        const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year)) return null;
+        return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
+      }
+
+      function ensureFlatpickr() {
+        if (fpInstance) return;
+        fpInstance = flatpickr("#masterPurchaseDateWrapper", {
+          wrap: true,
+          locale: "ja",
+          dateFormat: "Y/m/d",
+          maxDate: TODAY_ISO,
+          disableMobile: true,
+          onClose: function() {
+            validatePurchaseDate();
+          }
+        });
       }
 
       async function checkLoginStatusAndSetupUI() {
-          const authToken = localStorage.getItem('addeva_auth_token'); 
-          if (authToken) {
-              try {
-                  const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { 
-                      method: 'GET', 
-                      headers: { 'Authorization': `Bearer ${authToken}` } 
-                  });
-                  
-                  isUserLoggedIn = true;
-                  loggedInCustomerId = userInfo.customer_id;
-                  loggedInEmail = userInfo.email;
+        const authToken = localStorage.getItem(ADDEVA.LS.authToken);
 
-                  document.querySelector('h1').textContent = '商品情報追加・登録';
-                  document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
+        if (authToken) {
+          try {
+            const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', {
+              method: 'GET'
+            });
 
-                  customerIdInput.value = loggedInCustomerId;
-                  customerIdHelp.textContent = 'お客様IDは変更できません。';
-                  emailInput.value = loggedInEmail;
-                  emailInput.readOnly = true;
-                  emailInput.classList.add('form-control-plaintext');
-                  passwordFields.style.display = 'none';
+            isUserLoggedIn = true;
+            loggedInCustomerId = userInfo.customer_id;
+            loggedInEmail = userInfo.email;
 
-                  masterOrderNumberInput.readOnly = true;
-                  masterOrderNumberInput.classList.add('form-control-plaintext');
-                  masterOrderNumberInput.classList.add('is-valid');
-                  
-                  masterPurchaseDateInput.readOnly = true;
-                  masterPurchaseDateInput.classList.add('form-control-plaintext');
-                  masterPurchaseDateCalendarBtn.style.display = 'none';
-                  
-                  if(fpInstance) fpInstance.destroy();
+            document.querySelector('h1').textContent = '商品情報追加・登録';
+            document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
 
-              } catch (error) {
-                  console.warn("ログイン状態の取得失敗:", error);
-                  localStorage.removeItem('addeva_auth_token');
-                  setupNewRegistrationUI();
-              }
-          } else {
-              setupNewRegistrationUI();
+            customerIdInput.value = loggedInCustomerId;
+            customerIdHelp.textContent = 'お客様IDは変更できません。';
+
+            emailInput.value = loggedInEmail;
+            emailInput.readOnly = true;
+            emailInput.classList.add('form-control-plaintext');
+
+            passwordFields.style.display = 'none';
+
+            ensureFlatpickr();
+            return;
+          } catch (error) {
+            console.warn("ログイン状態の取得失敗:", error);
+            localStorage.removeItem(ADDEVA.LS.authToken);
           }
+        }
+
+        setupNewRegistrationUI();
       }
 
       function setupNewRegistrationUI() {
-          customerIdInput.value = '＜新規＞';
-          customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
-          passwordFields.style.display = 'block';
+        isUserLoggedIn = false;
+        loggedInCustomerId = null;
+        loggedInEmail = '';
 
-          fpInstance = flatpickr("#masterPurchaseDateWrapper", {
-              wrap: true, 
-              locale: "ja",
-              dateFormat: "Y/m/d",
-              maxDate: TODAY_ISO,
-              disableMobile: true,
-              onClose: function() {
-                validatePurchaseDate();
-              }
-          });
+        customerIdInput.value = '＜新規＞';
+        customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
+
+        emailInput.readOnly = false;
+        emailInput.classList.remove('form-control-plaintext');
+
+        passwordFields.style.display = 'block';
+
+        ensureFlatpickr();
       }
 
       async function fetchProducts() {
-          try {
-              const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
-              availableProducts = products;
-          } catch (error) {
-              console.error("商品リスト取得失敗:", error);
-              throw error; 
-          }
+        try {
+          const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
+          availableProducts = products;
+        } catch (error) {
+          console.error("商品リスト取得失敗:", error);
+          throw error;
+        }
       }
 
       function createProductEntry(index, initialData = {}) {
         const entryDiv = document.createElement('div');
-        // index > 0 のときだけ背景を白く、余白をつける（5行並んでも見やすく）
         entryDiv.className = `product-entry mb-3 p-3 border rounded ${index > 0 ? 'mt-2 bg-white' : 'bg-white'}`;
         entryDiv.setAttribute('data-index', index);
 
@@ -284,9 +297,9 @@
         `;
 
         if (initialData.productCode) {
-            entryDiv.querySelector('.product-code-select').value = initialData.productCode;
+          entryDiv.querySelector('.product-code-select').value = initialData.productCode;
         }
-        
+
         if (index > 0) {
           entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
             entryDiv.remove();
@@ -296,154 +309,198 @@
       }
 
       function validatePasswords() {
+        passwordInput.classList.remove('is-invalid');
+        confirmPasswordInput.classList.remove('is-invalid');
+        passwordMismatchFeedback.style.display = 'none';
+
         if (passwordInput.value.length < 8) {
-            passwordInput.classList.add('is-invalid');
-            passwordMismatchFeedback.textContent = 'パスワードは8文字以上で入力してください。';
-            passwordMismatchFeedback.style.display = 'block';
-            return false;
-        }
-        if (passwordInput.value === confirmPasswordInput.value) {
-          confirmPasswordInput.classList.remove('is-invalid');
-          passwordMismatchFeedback.style.display = 'none';
-          return true;
-        } else {
-          confirmPasswordInput.classList.add('is-invalid');
-          passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
+          passwordInput.classList.add('is-invalid');
+          passwordMismatchFeedback.textContent = 'パスワードは8文字以上で入力してください。';
           passwordMismatchFeedback.style.display = 'block';
+          return false;
+        }
+
+        if (passwordInput.value === confirmPasswordInput.value) {
+          return true;
+        }
+
+        confirmPasswordInput.classList.add('is-invalid');
+        passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
+        passwordMismatchFeedback.style.display = 'block';
+        return false;
+      }
+
+      function validateOrderNumber() {
+        const v = masterOrderNumberInput.value.trim();
+        masterOrderNumberInput.classList.remove('is-invalid', 'is-valid');
+
+        if (!v) return false;
+
+        if (AMAZON_ORDER_PATTERN.test(v)) {
+          masterOrderNumberInput.classList.add('is-valid');
+          masterOrderNumberFeedback.style.display = 'none';
+          return true;
+        }
+
+        masterOrderNumberInput.classList.add('is-invalid');
+        masterOrderNumberFeedback.style.display = 'block';
+        return false;
+      }
+
+      function validatePurchaseDate() {
+        const dateString = masterPurchaseDateInput.value.trim();
+        masterPurchaseDateInput.classList.remove('is-invalid', 'is-valid');
+
+        if (!dateString) return false;
+
+        if (!JAPANESE_DATE_PATTERN.test(dateString)) {
+          masterPurchaseDateInput.classList.add('is-invalid');
+          return false;
+        }
+
+        const isoDateString = formatJapaneseDateToISO(dateString);
+        if (!isoDateString) {
+          masterPurchaseDateInput.classList.add('is-invalid');
+          return false;
+        }
+
+        const inputDate = new Date(isoDateString);
+        if (inputDate > TODAY_DATE) {
+          masterPurchaseDateInput.classList.add('is-invalid');
+          return false;
+        }
+
+        masterPurchaseDateInput.classList.add('is-valid');
+        return true;
+      }
+
+      function collectProductsData() {
+        const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
+        const productsData = [];
+        productEntries.forEach((entry) => {
+          const code = entry.querySelector('.product-code-select').value;
+          if (code) {
+            productsData.push({
+              productCode: code,
+              purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
+              orderNumber: masterOrderNumberInput.value.trim(),
+              purchaseSite: "Amazon"
+            });
+          }
+        });
+        return productsData;
+      }
+
+      function storeAuthTokenFromResult(result) {
+        if (!result) return false;
+
+        const token = result.access_token || result.token || result.jwt || '';
+        if (!token || typeof token !== 'string') return false;
+
+        try {
+          localStorage.setItem(ADDEVA.LS.authToken, token);
+          return true;
+        } catch (e) {
+          console.error("Failed to store auth token:", e);
           return false;
         }
       }
 
-      function validatePurchaseDate() {
-          const dateString = masterPurchaseDateInput.value;
-          masterPurchaseDateInput.classList.remove('is-invalid', 'is-valid');
-
-          if (!dateString) return false; 
-
-          if (!JAPANESE_DATE_PATTERN.test(dateString)) {
-              masterPurchaseDateInput.classList.add('is-invalid');
-              return false;
-          }
-
-          const isoDateString = formatJapaneseDateToISO(dateString);
-          if (!isoDateString) {
-              masterPurchaseDateInput.classList.add('is-invalid');
-              return false;
-          }
-          const inputDate = new Date(isoDateString);
-          if (inputDate > TODAY_DATE) {
-              masterPurchaseDateInput.classList.add('is-invalid');
-              return false;
-          }
-          
-          masterPurchaseDateInput.classList.add('is-valid');
-          return true;
+      async function tryAutoLogin(email, password) {
+        if (!email || !password) return false;
+        const loginRes = await ADDEVA.apiFetch('/api/addeva/login', {
+          method: 'POST',
+          body: { email, password }
+        });
+        return storeAuthTokenFromResult(loginRes);
       }
 
-      // ==== 実行フロー ====
-      try {
+      async function init() {
         await fetchProducts();
-        await checkLoginStatusAndSetupUI(); 
-        // ★修正: 1 を 5 に戻しました。最初から5行表示されます。
+        await checkLoginStatusAndSetupUI();
+
         for (let i = 0; i < 5; i++) {
           createProductEntry(i);
         }
-      } catch (error) {
-        messageArea.textContent = `初期化エラー: ${error.message}`;
-        messageArea.classList.remove('d-none');
-        messageArea.classList.add('alert-danger');
-      }
 
-      if (!isUserLoggedIn) {
-        masterOrderNumberInput.addEventListener('input', function() {
-          if (AMAZON_ORDER_PATTERN.test(this.value)) {
-            this.classList.replace('is-invalid', 'is-valid') || this.classList.add('is-valid');
-            masterOrderNumberFeedback.style.display = 'none';
-          } else {
-            this.classList.add('is-invalid');
-            masterOrderNumberFeedback.style.display = 'block';
-          }
-        });
+        masterOrderNumberInput.addEventListener('input', validateOrderNumber);
         masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
-      }
 
-      addProductButton.addEventListener('click', () => {
-        const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
-        createProductEntry(nextIndex);
-      });
-
-      // ==== フォーム送信 ====
-      registrationForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        messageArea.classList.add('d-none');
-        messageArea.innerHTML = '';
-
-        let isValid = true;
-        if (!isUserLoggedIn) {
-            if (!validatePasswords() || !AMAZON_ORDER_PATTERN.test(masterOrderNumberInput.value) || !validatePurchaseDate()) {
-                isValid = false;
-            }
-        }
-
-        if (!isValid) {
-            messageArea.textContent = '入力内容に不備があります。赤枠の部分を確認してください。';
-            messageArea.classList.remove('d-none', 'alert-success');
-            messageArea.classList.add('alert-danger');
-            window.scrollTo(0,0);
-            return;
-        }
-
-        const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
-        const productsData = [];
-        productEntries.forEach((entry) => {
-            const code = entry.querySelector('.product-code-select').value;
-            if (code) {
-                productsData.push({
-                    productCode: code,
-                    purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
-                    orderNumber: masterOrderNumberInput.value,
-                    purchaseSite: "Amazon"
-                });
-            }
+        addProductButton.addEventListener('click', () => {
+          const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
+          createProductEntry(nextIndex);
         });
 
+        registrationForm.addEventListener('submit', onSubmit);
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearMessage();
+
+        let ok = true;
+
+        if (!emailInput.value.trim()) ok = false;
+        if (!validateOrderNumber()) ok = false;
+        if (!validatePurchaseDate()) ok = false;
+
+        if (!isUserLoggedIn) {
+          if (!validatePasswords()) ok = false;
+        }
+
+        const productsData = collectProductsData();
         if (productsData.length === 0) {
-            alert("商品を1つ以上選択してください。");
-            return;
+          alert("商品を1つ以上選択してください。");
+          return;
+        }
+
+        if (!ok) {
+          showError('入力内容に不備があります。赤枠の部分を確認してください。');
+          return;
         }
 
         const submissionData = {
-            email: emailInput.value,
-            ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : { password: passwordInput.value }),
-            masterOrderNumber: masterOrderNumberInput.value,
-            masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
-            products: productsData 
+          email: emailInput.value.trim(),
+          ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : { password: passwordInput.value }),
+          masterOrderNumber: masterOrderNumberInput.value.trim(),
+          masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value.trim()),
+          products: productsData
         };
-        
-        const authHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
 
         try {
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
-            body: submissionData,
-            headers: authHeaders
+            body: submissionData
           });
 
-          if (result && result.message) {
-            window.location.href = `/customer.html?mode=support&registered=true`;
+          const stored = storeAuthTokenFromResult(result);
+
+          if (!stored && !isUserLoggedIn) {
+            const loggedIn = await tryAutoLogin(emailInput.value.trim(), passwordInput.value);
+            if (!loggedIn) {
+              window.location.href = `/customer.html?mode=login&registered=true`;
+              return;
+            }
           }
+
+          window.location.href = `/customer.html?mode=support&registered=true`;
         } catch (error) {
-          let msg = error.message;
+          const msg = (error && error.message) ? error.message : '登録処理でエラーが発生しました。';
+
           if (msg.includes('既に登録されています')) {
-              messageArea.innerHTML = 'このメールアドレスは既に登録されています。<a href="/customer.html?mode=login" class="alert-link">こちらからログイン</a>して商品を追加してください。';
-          } else {
-              messageArea.textContent = msg;
+            showError('このメールアドレスは既に登録されています。<a href="/customer.html?mode=login" class="alert-link">こちらからログイン</a>して商品を追加してください。', true);
+            return;
           }
-          messageArea.classList.remove('d-none', 'alert-success');
-          messageArea.classList.add('alert-danger');
-          window.scrollTo(0,0);
+
+          showError(msg);
         }
-      });
+      }
+
+      try {
+        await init();
+      } catch (error) {
+        showError(`初期化エラー: ${error.message}`);
+      }
     });
   </script>
 </body>
