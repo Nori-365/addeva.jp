@@ -67,37 +67,69 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- addeva.jp 専用 common.js を読み込み -->
   <script defer src="/common.js"></script>
-  
+
   <script>
     // ADDEVAオブジェクトがロードされた後に実行されるように待機
     function waitForADDEVA(callback) {
-      if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function') {
+      if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function' && ADDEVA.LS && ADDEVA.LS.authToken) {
         callback();
       } else {
-        setTimeout(() => waitForADDEVA(callback), 50); // 50msごとにチェック
+        setTimeout(() => waitForADDEVA(callback), 50);
       }
     }
 
     // 日付フォーマットヘルパー関数 (YYYY/MM/DD 形式)
     function formatJapaneseDate(isoDateString) {
-        if (!isoDateString) return 'N/A';
-        const date = new Date(isoDateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}/${month}/${day}`;
+      if (!isoDateString) return 'N/A';
+      const d = new Date(isoDateString);
+      if (isNaN(d.getTime())) return 'N/A';
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}/${m}/${day}`;
     }
-
 
     waitForADDEVA(async () => {
       const customerContent = document.getElementById('customerContent');
       const messageArea = document.getElementById('messageArea');
+
       const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode') || 'support'; // デフォルトはサポートモード
+      const mode = urlParams.get('mode') || 'support';
 
       let loggedInCustomerId = null;
       let loggedInEmail = null;
-      let authToken = localStorage.getItem('addeva_auth_token');
+
+      function clearMessage() {
+        messageArea.classList.add('d-none');
+        messageArea.textContent = '';
+        messageArea.classList.remove('alert-danger', 'alert-success');
+      }
+
+      function showError(msg) {
+        messageArea.textContent = msg;
+        messageArea.classList.remove('d-none', 'alert-success');
+        messageArea.classList.add('alert-danger');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showSuccess(msg) {
+        messageArea.textContent = msg;
+        messageArea.classList.remove('d-none', 'alert-danger');
+        messageArea.classList.add('alert-success');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function getAuthToken() {
+        return localStorage.getItem(ADDEVA.LS.authToken) || '';
+      }
+
+      function setAuthToken(token) {
+        localStorage.setItem(ADDEVA.LS.authToken, token);
+      }
+
+      function clearAuthToken() {
+        localStorage.removeItem(ADDEVA.LS.authToken);
+      }
 
       // ==== UIレンダリング関数 ====
       function renderLoginUI() {
@@ -123,7 +155,8 @@
         const loginForm = document.getElementById('loginForm');
         loginForm.addEventListener('submit', async (event) => {
           event.preventDefault();
-          messageArea.classList.add('d-none');
+          clearMessage();
+
           const email = document.getElementById('loginEmail').value;
           const password = document.getElementById('loginPassword').value;
 
@@ -134,31 +167,22 @@
             });
 
             if (result && result.access_token) {
-              localStorage.setItem('addeva_auth_token', result.access_token);
+              setAuthToken(result.access_token);
+
               loggedInCustomerId = result.customer_id;
               loggedInEmail = result.email;
-              messageArea.textContent = result.message || 'ログインに成功しました。';
-              messageArea.classList.remove('alert-danger');
-              messageArea.classList.add('alert-success');
-              messageArea.classList.remove('d-none');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+
+              showSuccess(result.message || 'ログインに成功しました。');
 
               // ログイン成功後、サポートページへリダイレクト
               window.location.href = '/customer.html?mode=support';
-            } else {
-              messageArea.textContent = result.detail || result.error || 'ログインに失敗しました。';
-              messageArea.classList.remove('alert-success');
-              messageArea.classList.add('alert-danger');
-              messageArea.classList.remove('d-none');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return;
             }
+
+            showError((result && (result.detail || result.error)) ? (result.detail || result.error) : 'ログインに失敗しました。');
           } catch (error) {
             console.error('Login API Error:', error);
-            messageArea.textContent = error.message || 'サーバーとの通信に失敗しました。';
-            messageArea.classList.remove('alert-success');
-            messageArea.classList.add('alert-danger');
-            messageArea.classList.remove('d-none');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showError(error.message || 'サーバーとの通信に失敗しました。');
           }
         });
       }
@@ -199,7 +223,7 @@
           </div>
 
           <div class="d-flex flex-wrap gap-2 justify-content-center mt-5">
-            <a href="/register.html?mode=edit&customerId=${loggedInCustomerId}&email=${loggedInEmail}" class="btn btn-primary btn-lg">
+            <a href="/register.html?mode=edit&customerId=${encodeURIComponent(loggedInCustomerId)}&email=${encodeURIComponent(loggedInEmail)}" class="btn btn-primary btn-lg">
               <i class="bi bi-plus-circle me-2"></i>新しく購入した商品を登録する
             </a>
             <button id="logoutButton" class="btn btn-outline-secondary btn-lg">
@@ -214,88 +238,95 @@
         document.getElementById('displayCustomerId').textContent = loggedInCustomerId;
         document.getElementById('displayEmail').textContent = loggedInEmail;
 
-        // 購入履歴の取得と表示
+        // 購入履歴の取得と表示（common.js が Authorization を自動付与するので extraHeaders は不要）
         const purchasesTableBody = document.getElementById('purchasesTableBody');
         try {
-          const purchases = await ADDEVA.apiFetch('/api/addeva/customer/purchases', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
-          purchasesTableBody.innerHTML = ''; // ロード中のメッセージをクリア
-          if (purchases.length === 0) {
+          const purchases = await ADDEVA.apiFetch('/api/addeva/customer/purchases', { method: 'GET' });
+
+          purchasesTableBody.innerHTML = '';
+          if (!purchases || purchases.length === 0) {
             purchasesTableBody.innerHTML = '<tr><td colspan="5" class="text-muted">まだ購入履歴がありません。</td></tr>';
           } else {
             purchases.forEach(p => {
               const row = purchasesTableBody.insertRow();
-              // ↓↓↓↓↓↓ ここを修正 ↓↓↓↓↓↓
               row.insertCell().textContent = formatJapaneseDate(p.purchaseDate) || 'N/A';
-              // ↑↑↑↑↑↑ ここを修正 ↑↑↑↑↑↑
               row.insertCell().textContent = p.productName || 'N/A';
               row.insertCell().textContent = p.orderNumber || 'N/A';
-              // ↓↓↓↓↓↓ ここを修正 ↓↓↓↓↓↓
               row.insertCell().textContent = formatJapaneseDate(p.warrantyEndDate) || 'N/A';
-              // ↑↑↑↑↑↑ ここを修正 ↑↑↑↑↑↑
+
               const supportCell = row.insertCell();
               supportCell.className = 'text-center';
-              supportCell.innerHTML = `<button class="btn btn-sm btn-outline-info support-request-btn" data-purchase-id="${p.purchaseSequenceNumber}" data-product-name="${p.productName}">依頼</button>`;
+              supportCell.innerHTML = `<button class="btn btn-sm btn-outline-info support-request-btn" data-purchase-id="${p.purchaseSequenceNumber}" data-product-name="${(p.productName || '').replace(/"/g, '&quot;')}">依頼</button>`;
             });
+
             purchasesTableBody.querySelectorAll('.support-request-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    alert(`「${e.target.dataset.productName}」のサポートを依頼します (購入ID: ${e.target.dataset.purchaseId})`);
-                    window.location.href = `/contact.html?mode=support&purchaseId=${e.target.dataset.purchaseId}&email=${loggedInEmail}`;
-                });
+              button.addEventListener('click', (e) => {
+                const purchaseId = e.currentTarget.dataset.purchaseId;
+                const productName = e.currentTarget.dataset.productName || '';
+                alert(`「${productName}」のサポートを依頼します (購入ID: ${purchaseId})`);
+                window.location.href = `/contact.html?mode=support&purchaseId=${encodeURIComponent(purchaseId)}&email=${encodeURIComponent(loggedInEmail)}`;
+              });
             });
           }
         } catch (error) {
           console.error('購入履歴の取得に失敗しました:', error);
           purchasesTableBody.innerHTML = '<tr><td colspan="5" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
-          messageArea.textContent = error.message || '購入履歴の取得中にエラーが発生しました。';
-          messageArea.classList.remove('d-none', 'alert-success');
-          messageArea.classList.add('alert-danger');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          showError(error.message || '購入履歴の取得中にエラーが発生しました。');
         }
 
-        // ログアウトボタンのイベントリスナー
+        // ログアウトボタン
         document.getElementById('logoutButton').addEventListener('click', () => {
-          localStorage.removeItem('addeva_auth_token'); // トークンをクリア
-          window.location.href = '/customer.html?mode=login'; // ログインページへリダイレクト
+          clearAuthToken();
+          window.location.href = '/customer.html?mode=login';
         });
-        // サポートを依頼するボタン
+
+        // サポートを依頼するボタン（purchaseId無しの一般問い合わせ）
         document.getElementById('contactSupportButton').addEventListener('click', () => {
-             window.location.href = `/contact.html?mode=support&email=${loggedInEmail}`;
+          window.location.href = `/contact.html?mode=support&email=${encodeURIComponent(loggedInEmail)}`;
         });
       }
 
       // ==== メイン処理 ====
+      clearMessage();
+
+      const authToken = getAuthToken();
+
       if (mode === 'login') {
-        // ログインモードの場合、既に認証トークンがあればサポートページへ強制リダイレクト
+        // ログインモードでトークンがある場合はサポートへ
         if (authToken) {
           window.location.href = '/customer.html?mode=support';
           return;
         }
         renderLoginUI();
-      } else if (mode === 'support') {
-        // サポートモードの場合、認証トークンがなければログインページへリダイレクト
+        return;
+      }
+
+      if (mode === 'support') {
+        // サポートモードでトークンが無いならログインへ
         if (!authToken) {
           window.location.href = '/customer.html?mode=login';
           return;
         }
+
         try {
-          // トークンの有効性を確認し、顧客情報を取得
-          const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
+          // トークンの有効性を確認し、顧客情報を取得（common.js が Authorization 自動付与）
+          const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET' });
           loggedInCustomerId = userInfo.customer_id;
           loggedInEmail = userInfo.email;
-          renderSupportUI(); // 認証成功後、サポートUIを表示
+
+          await renderSupportUI();
+          return;
         } catch (error) {
           console.error('認証情報の検証に失敗しました:', error);
-          localStorage.removeItem('addeva_auth_token'); // 無効なトークンをクリア
-          messageArea.textContent = error.message || 'セッションが無効です。再度ログインしてください。';
-          messageArea.classList.remove('d-none', 'alert-success');
-          messageArea.classList.add('alert-danger');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          renderLoginUI(); // ログインUIを表示
+          clearAuthToken();
+          showError(error.message || 'セッションが無効です。再度ログインしてください。');
+          renderLoginUI();
+          return;
         }
-      } else {
-        // 未定義のモードの場合、ログインページへリダイレクト
-        window.location.href = '/customer.html?mode=login';
       }
+
+      // 未定義モードはログインへ
+      window.location.href = '/customer.html?mode=login';
     });
   </script>
 </body>
