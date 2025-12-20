@@ -32,7 +32,8 @@
 
 <body>
   <!-- ▼ 共通ヘッダーを読み込み -->
-  <div include-html="/includes/header.html" class="site-header" aria-busy="true"></div>
+  <!-- 修正: include-html ではなく data-include に統一 -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
 
   <main>
     <section class="section py-5">
@@ -62,7 +63,8 @@
   </main>
 
   <!-- ▼ 共通フッターを読み込み -->
-  <div include-html="/includes/footer.html" aria-busy="true"></div>
+  <!-- 修正: include-html ではなく data-include に統一 -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- addeva.jp 専用 common.js を読み込み -->
@@ -328,6 +330,28 @@
       // 未定義モードはログインへ
       window.location.href = '/customer.html?mode=login';
     });
+  </script>
+
+  <!-- ▼ includeエンジン（将来の不具合予防：data-include と include-html 両対応） -->
+  <script>
+    (async () => {
+      try {
+        const targets = document.querySelectorAll('[data-include],[include-html]');
+        for (const el of targets) {
+          const url = el.getAttribute('data-include') || el.getAttribute('include-html');
+          if (!url) continue;
+
+          const res = await fetch(url, { cache: 'no-cache' });
+          if (!res.ok) throw new Error(`include failed: ${url} (${res.status})`);
+
+          const buf = await res.arrayBuffer();
+          const html = new TextDecoder('utf-8').decode(buf);
+          el.outerHTML = html;
+        }
+      } catch (e) {
+        console.error('include loader error:', e);
+      }
+    })();
   </script>
 </body>
 </html>
