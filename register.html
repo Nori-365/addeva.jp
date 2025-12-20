@@ -50,7 +50,7 @@
         <div id="messageArea" class="alert d-none" role="alert"></div>
 
         <div class="card shadow-sm p-4 mb-5">
-          <form id="registrationForm" method="POST" action="">
+          <form id="registrationForm" method="POST" action="" novalidate>
             <!-- お客様ID (会員番号) -->
             <div class="mb-4">
               <label for="customerId" class="form-label">お客様ID (会員番号)</label>
@@ -94,14 +94,13 @@
             <!-- 購入日 (トップレベル) -->
             <div class="mb-4">
               <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
-              <!-- ↓↓↓↓↓↓ ここを修正しました (Input Group でカレンダーアイコンを追加) ↓↓↓↓↓↓ -->
-              <div class="input-group">
-                <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required placeholder="YYYY/MM/DD">
-                <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn">
+              <!-- id="masterPurchaseDateWrapper" を追加し、data-input, data-toggle を設定 -->
+              <div class="input-group" id="masterPurchaseDateWrapper">
+                <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required placeholder="YYYY/MM/DD" data-input>
+                <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn" data-toggle>
                     <i class="bi bi-calendar"></i>
                 </button>
               </div>
-              <!-- ↑↑↑↑↑↑ ここを修正しました ↑↑↑↑↑↑ -->
               <div class="form-text">Amazonでのご注文日を YYYY/MM/DD 形式でご入力ください。</div>
             </div>
 
@@ -138,12 +137,11 @@
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script> <!-- 日本語ローカライズ -->
   
   <script>
-    // ADDEVAオブジェクトがロードされた後に実行されるように待機
     function waitForADDEVA(callback) {
       if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function' && typeof flatpickr !== 'undefined') {
         callback();
       } else {
-        setTimeout(() => waitForADDEVA(callback), 50); // 50msごとにチェック
+        setTimeout(() => waitForADDEVA(callback), 50);
       }
     }
 
@@ -167,7 +165,7 @@
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
       const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
-      const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn'); // カレンダーボタン
+      const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn');
 
       const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/; 
       const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/; 
@@ -177,7 +175,9 @@
       let loggedInCustomerId = null;
       let loggedInEmail = '';
 
-      // ==== 日付フォーマットヘルパー関数 ====
+      // Flatpickrインスタンスを管理するための変数
+      let fpInstance = null;
+
       function formatISODateToJapanese(isoDateString) {
           if (!isoDateString) return '';
           const date = new Date(isoDateString);
@@ -188,70 +188,49 @@
       }
 
       function formatJapaneseDateToISO(japaneseDateString) {
-          if (!japaneseDateString) return null; // 空文字列はnull
-          if (!JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null; // 形式が違う
-
+          if (!japaneseDateString || !JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
           const [year, month, day] = japaneseDateString.split('/');
-          // Dateオブジェクトの月は0始まりなので、-1する必要がある
           const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-          
-          // 無効な日付（例: 2月30日）ではないかチェック
-          if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year) || dateObj.getMonth() != parseInt(month) - 1 || dateObj.getDate() != parseInt(day)) {
-            return null; // 無効な日付
-          }
+          if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year)) return null;
           return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
       }
 
-      // ==== ログイン状態の確認とUI調整 ====
       async function checkLoginStatusAndSetupUI() {
           const authToken = localStorage.getItem('addeva_auth_token'); 
           if (authToken) {
               try {
-                  const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
+                  // ★修正: extraHeaders を headers に変更
+                  const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { 
+                      method: 'GET', 
+                      headers: { 'Authorization': `Bearer ${authToken}` } 
+                  });
                   
                   isUserLoggedIn = true;
                   loggedInCustomerId = userInfo.customer_id;
                   loggedInEmail = userInfo.email;
 
-                  // UI調整：ログイン済みの場合
                   document.querySelector('h1').textContent = '商品情報追加・登録';
                   document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
 
                   customerIdInput.value = loggedInCustomerId;
                   customerIdHelp.textContent = 'お客様IDは変更できません。';
-
                   emailInput.value = loggedInEmail;
                   emailInput.readOnly = true;
                   emailInput.classList.add('form-control-plaintext');
+                  passwordFields.style.display = 'none';
 
-                  passwordFields.style.display = 'none'; // パスワード欄は非表示
-
-                  // Amazon注文番号と購入日もreadonlyに設定 (値は Fast API から取得する予定)
                   masterOrderNumberInput.readOnly = true;
                   masterOrderNumberInput.classList.add('form-control-plaintext');
                   masterOrderNumberInput.classList.add('is-valid');
-                  masterOrderNumberFeedback.style.display = 'none';
                   
                   masterPurchaseDateInput.readOnly = true;
                   masterPurchaseDateInput.classList.add('form-control-plaintext');
-                  masterPurchaseDateInput.placeholder = '';
-                  masterPurchaseDateCalendarBtn.style.display = 'none'; // 読み取り専用なのでカレンダーボタン非表示
+                  masterPurchaseDateCalendarBtn.style.display = 'none';
                   
-                  // トップレベルの必須アスタリスクを削除 (見た目上)
-                  document.querySelector('label[for="email"] span').style.display = 'none';
-                  document.querySelector('label[for="masterOrderNumber"] span').style.display = 'none';
-                  document.querySelector('label[for="masterPurchaseDate"] span').style.display = 'none';
-
-                  // TODO: 既存の購入情報からmasterOrderNumberとmasterPurchaseDateを自動入力するAPIを実装した場合に有効化
-                  // 例: const latestOrderInfo = await ADDEVA.apiFetch('/api/addeva/customer/latest-order', { method: 'GET', extraHeaders: { 'Authorization': `Bearer ${authToken}` } });
-                  // if (latestOrderInfo && latestOrderInfo.orderNumber && latestOrderInfo.purchaseDate) {
-                  //     masterOrderNumberInput.value = latestOrderInfo.orderNumber;
-                  //     masterPurchaseDateInput.value = formatISODateToJapanese(latestOrderInfo.purchaseDate);
-                  // }
-
+                  if(fpInstance) fpInstance.destroy(); // ログイン済みならカレンダー不要
 
               } catch (error) {
-                  console.warn("ログイン済みユーザー情報の取得に失敗、またはトークンが無効です。新規登録モードで続行します。", error);
+                  console.warn("ログイン状態の取得失敗:", error);
                   localStorage.removeItem('addeva_auth_token');
                   setupNewRegistrationUI();
               }
@@ -265,42 +244,29 @@
           customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
           passwordFields.style.display = 'block';
 
-          // 新規登録モードの場合にのみFlatpickrを初期化
-          // Flatpickrインスタンスを変数に保持
-          const fp = flatpickr("#masterPurchaseDate", {
-              locale: "ja", // 日本語ローカライズ
-              dateFormat: "Y/m/d", // YYYY/MM/DD 形式
-              maxDate: TODAY_ISO, // 未来の日付を選択不可に
-              altInput: false, 
-              disableMobile: true, // モバイルでもネイティブピッカーではなくFlatpickrを使う
-              onClose: function(selectedDates, dateStr, instance) {
-                // カレンダーを閉じた時にバリデーションを実行
+          // Flatpickrの初期化 (wrapオプションでボタン連携を安定化)
+          fpInstance = flatpickr("#masterPurchaseDateWrapper", {
+              wrap: true, 
+              locale: "ja",
+              dateFormat: "Y/m/d",
+              maxDate: TODAY_ISO,
+              disableMobile: true,
+              onClose: function() {
                 validatePurchaseDate();
               }
           });
-          // カレンダーボタンがクリックされたらFlatpickrを開く
-          masterPurchaseDateCalendarBtn.addEventListener('click', () => {
-              fp.open();
-          });
       }
 
-
-      // ==== 商品リストをAPIから動的に取得する処理 ====
       async function fetchProducts() {
           try {
               const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
               availableProducts = products;
           } catch (error) {
-              console.error("商品リストの取得に失敗しました:", error);
-              let errorMessage = error.message || '商品リストの読み込みに失敗しました。';
-              messageArea.textContent = errorMessage;
-              messageArea.classList.remove('d-none', 'alert-success');
-              messageArea.classList.add('alert-danger');
+              console.error("商品リスト取得失敗:", error);
               throw error; 
           }
       }
 
-      // ==== 動的な商品入力ブロックを生成する関数 ====
       function createProductEntry(index, initialData = {}) {
         const entryDiv = document.createElement('div');
         entryDiv.className = `product-entry mb-4 p-3 border rounded ${index > 0 ? 'mt-3 bg-white' : ''}`;
@@ -313,7 +279,7 @@
           </div>
           <div class="mb-3">
             <label for="productCode_${index}" class="form-label">ご購入商品 <span class="text-danger">*</span></label>
-            <select class="form-select product-code-select" id="productCode_${index}" name="products[${index}][productCode]">
+            <select class="form-select product-code-select" id="productCode_${index}" name="products[${index}][productCode]" required>
               <option value="">商品を選択してください</option>
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
@@ -327,95 +293,49 @@
         if (index > 0) {
           entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
             entryDiv.remove();
-            productEntriesContainer.querySelectorAll('.product-entry').forEach((el, newIdx) => {
-              el.setAttribute('data-index', newIdx);
-              el.querySelector('h6').textContent = `商品 ${newIdx + 1}`;
-              el.querySelector('.product-code-select').name = `products[${newIdx}][productCode]`;
-              el.querySelector('.product-code-select').id = `productCode_${newIdx}`;
-              el.querySelector('label[for^="productCode_"]').setAttribute('for', `productCode_${newIdx}`);
-            });
           });
         }
         productEntriesContainer.appendChild(entryDiv);
       }
 
-      // ==== 初期化処理 ====
-      try {
-        await fetchProducts();
-        await checkLoginStatusAndSetupUI(); 
-        for (let i = 0; i < 5; i++) { 
-          createProductEntry(i);
-        }
-      } catch (error) {
-        console.error("Initialization failed:", error);
-        messageArea.textContent = `初期化に失敗しました。FastAPIとの接続を確認してください: ${error.message}`;
-        messageArea.classList.remove('d-none', 'alert-success');
-        messageArea.classList.add('alert-danger');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
-      }
-
-      // ==== バリデーション関数群 ====
-      // パスワード一致チェック
       function validatePasswords() {
         if (passwordInput.value.length < 8) {
             passwordInput.classList.add('is-invalid');
-            confirmPasswordInput.classList.remove('is-valid'); 
             passwordMismatchFeedback.textContent = 'パスワードは8文字以上で入力してください。';
             passwordMismatchFeedback.style.display = 'block';
             return false;
-        } else {
-            passwordInput.classList.remove('is-invalid');
-            passwordInput.classList.add('is-valid');
         }
-
         if (passwordInput.value === confirmPasswordInput.value) {
           confirmPasswordInput.classList.remove('is-invalid');
-          confirmPasswordInput.classList.add('is-valid');
           passwordMismatchFeedback.style.display = 'none';
           return true;
         } else {
           confirmPasswordInput.classList.add('is-invalid');
-          confirmPasswordInput.classList.remove('is-valid');
           passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
           passwordMismatchFeedback.style.display = 'block';
           return false;
         }
       }
 
-      // 購入日バリデーション (YYYY/MM/DD 形式と未来日チェック)
       function validatePurchaseDate() {
           const dateString = masterPurchaseDateInput.value;
           masterPurchaseDateInput.classList.remove('is-invalid', 'is-valid');
-          masterPurchaseDateInput.setCustomValidity(''); // カスタムエラーメッセージをクリア
 
-          if (!dateString) {
-              masterPurchaseDateInput.classList.add('is-invalid');
-              masterPurchaseDateInput.setCustomValidity('購入日を入力してください。');
-              return false; 
-          }
+          if (!dateString) return false; 
 
           if (!JAPANESE_DATE_PATTERN.test(dateString)) {
               masterPurchaseDateInput.classList.add('is-invalid');
-              masterPurchaseDateInput.setCustomValidity('購入日を YYYY/MM/DD 形式で入力してください。');
               return false;
           }
 
           const isoDateString = formatJapaneseDateToISO(dateString);
-          if (!isoDateString) { // 無効な日付（例: 2月30日）
+          if (!isoDateString) {
               masterPurchaseDateInput.classList.add('is-invalid');
-              masterPurchaseDateInput.setCustomValidity('有効な日付を入力してください。');
               return false;
           }
           const inputDate = new Date(isoDateString);
-          
-          // 未来日チェック (JavaScriptの日付比較はUTCで考慮しないとバグの元)
-          const inputDateUTC = Date.UTC(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
-          const todayUTC = Date.UTC(TODAY_DATE.getFullYear(), TODAY_DATE.getMonth(), TODAY_DATE.getDate());
-
-          if (inputDateUTC > todayUTC) {
+          if (inputDate > TODAY_DATE) {
               masterPurchaseDateInput.classList.add('is-invalid');
-              masterPurchaseDateInput.setCustomValidity('購入日は未来の日付に設定できません。');
               return false;
           }
           
@@ -423,140 +343,103 @@
           return true;
       }
 
+      // ==== 実行フロー ====
+      try {
+        await fetchProducts();
+        await checkLoginStatusAndSetupUI(); 
+        for (let i = 0; i < 1; i++) { // 初期表示は1つにする（任意）
+          createProductEntry(i);
+        }
+      } catch (error) {
+        messageArea.textContent = `初期化エラー: ${error.message}`;
+        messageArea.classList.remove('d-none');
+        messageArea.classList.add('alert-danger');
+      }
 
-      // ==== イベントリスナーの登録 ====
       if (!isUserLoggedIn) {
         masterOrderNumberInput.addEventListener('input', function() {
           if (AMAZON_ORDER_PATTERN.test(this.value)) {
-            this.classList.remove('is-invalid');
-            this.classList.add('is-valid');
+            this.classList.replace('is-invalid', 'is-valid') || this.classList.add('is-valid');
             masterOrderNumberFeedback.style.display = 'none';
-            this.setCustomValidity('');
           } else {
             this.classList.add('is-invalid');
-            this.classList.remove('is-valid');
             masterOrderNumberFeedback.style.display = 'block';
-            this.setCustomValidity('Amazon注文番号の形式が正しくありません。（例: 123-1234567-1234567）');
           }
         });
-        masterPurchaseDateInput.addEventListener('change', validatePurchaseDate); // 日付入力フィールドの変更時にバリデーション
-        masterPurchaseDateInput.addEventListener('blur', validatePurchaseDate); // フォーカスが外れたときもバリデーション
-      } else { // ログイン済みモードでは、masterOrderNumberInputとmasterPurchaseDateInputはreadonlyなのでイベントリスナーは不要
-        masterOrderNumberInput.classList.add('is-valid');
-        masterPurchaseDateInput.classList.add('is-valid');
+        // 入力直接変更時のみバリデーション（カレンダー選択時はonCloseで実行される）
+        masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
       }
 
-
       addProductButton.addEventListener('click', () => {
-        const newIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
-        createProductEntry(newIndex);
+        const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
+        createProductEntry(nextIndex);
       });
 
-
-      // ==== フォーム送信処理 ====
+      // ==== フォーム送信 ====
       registrationForm.addEventListener('submit', async function(event) {
         event.preventDefault();
+        messageArea.classList.add('d-none');
 
-        messageArea.classList.add('d-none'); // メッセージを一旦非表示に
-
-        // トップレベルの必須項目チェック
-        let formOverallValid = true;
-
-        if (!emailInput.value) {
-            messageArea.textContent = 'メールアドレスを入力してください。'; formOverallValid = false; emailInput.focus();
-        } else if (!isUserLoggedIn) { // 新規登録モードの場合のパスワードと注文番号/購入日チェック
-            if (!validatePasswords()) {
-                messageArea.textContent = passwordMismatchFeedback.textContent; formOverallValid = false;
-                passwordInput.focus();
-            } else if (!masterOrderNumberInput.value || !AMAZON_ORDER_PATTERN.test(masterOrderNumberInput.value)) {
-                messageArea.textContent = 'Amazon注文番号の形式が正しくありません。'; formOverallValid = false;
-                masterOrderNumberInput.focus();
-                masterOrderNumberInput.classList.add('is-invalid'); masterOrderNumberFeedback.style.display = 'block';
-            } else if (!validatePurchaseDate()) { // 購入日バリデーション
-                 messageArea.textContent = masterPurchaseDateInput.validationMessage; formOverallValid = false;
-                 masterPurchaseDateInput.focus();
-            }
-        } else { // ログイン済みモードの場合 (readonlyフィールドは既に値が入っている前提)
-            if (!masterOrderNumberInput.value || !masterPurchaseDateInput.value) {
-                messageArea.textContent = 'エラー: 注文番号または購入日が取得できませんでした。再度ログインし直してください。'; formOverallValid = false;
+        let isValid = true;
+        if (!isUserLoggedIn) {
+            if (!validatePasswords() || !AMAZON_ORDER_PATTERN.test(masterOrderNumberInput.value) || !validatePurchaseDate()) {
+                isValid = false;
             }
         }
-        
-        if (!formOverallValid) {
+
+        if (!isValid) {
+            messageArea.textContent = '入力内容に不備があります。赤枠の部分を確認してください。';
             messageArea.classList.remove('d-none', 'alert-success');
             messageArea.classList.add('alert-danger');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0,0);
             return;
         }
 
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
         const productsData = [];
-        let hasAtLeastOneProductSelected = false; 
-
         productEntries.forEach((entry) => {
-            const productCodeSelect = entry.querySelector('.product-code-select');
-            
-            if (productCodeSelect.value) { 
-                hasAtLeastOneProductSelected = true;
+            const code = entry.querySelector('.product-code-select').value;
+            if (code) {
                 productsData.push({
-                    productCode: productCodeSelect.value,
-                    purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value), // ISO形式でAPIに送信
+                    productCode: code,
+                    purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
                     orderNumber: masterOrderNumberInput.value,
-                    purchaseSite: "Amazon" 
+                    purchaseSite: "Amazon"
                 });
             }
         });
-        
-        if (!hasAtLeastOneProductSelected) {
-            messageArea.textContent = '少なくとも1つの商品情報を入力してください。';
-            messageArea.classList.remove('d-none', 'alert-success');
-            messageArea.classList.add('alert-danger');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (productsData.length === 0) {
+            alert("商品を1つ以上選択してください。");
             return;
         }
 
         const submissionData = {
             email: emailInput.value,
-            ...(isUserLoggedIn ? {} : { password: passwordInput.value }),
-            ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : {}),
+            ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : { password: passwordInput.value }),
             masterOrderNumber: masterOrderNumberInput.value,
-            masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value), // ISO形式でAPIに送信
+            masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
             products: productsData 
         };
         
-        const extraHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
+        // ★修正: extraHeaders を headers に変更
+        const authHeaders = isUserLoggedIn ? { 'Authorization': `Bearer ${localStorage.getItem('addeva_auth_token')}` } : {};
 
         try {
           const result = await ADDEVA.apiFetch('/api/addeva/register', {
             method: 'POST',
             body: submissionData,
-            extraHeaders: extraHeaders
+            headers: authHeaders // headers として渡す
           });
 
           if (result && result.message) {
-            const params = new URLSearchParams();
-            params.append('registered', 'true'); 
-            
-            window.location.href = `/customer.html?mode=support&${params.toString()}`;
-          } else {
-             messageArea.textContent = result.detail || result.error || '保証登録に失敗しました。';
-             messageArea.classList.remove('alert-success');
-             messageArea.classList.add('alert-danger');
-             messageArea.classList.remove('d-none');
-             window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.location.href = `/customer.html?mode=support&registered=true`;
           }
-          
         } catch (error) {
-          console.error('API Error:', error);
-          let errorMessage = error.message || 'サーバーとの通信に失敗しました。しばらくしてから再度お試しください。';
-          messageArea.textContent = errorMessage;
-          messageArea.classList.remove('alert-success');
+          messageArea.textContent = error.message;
+          messageArea.classList.remove('d-none', 'alert-success');
           messageArea.classList.add('alert-danger');
-          messageArea.classList.remove('d-none');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } finally {
-          messageArea.classList.remove('d-none');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo(0,0);
         }
       });
     });
