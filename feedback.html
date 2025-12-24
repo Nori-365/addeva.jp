@@ -213,29 +213,18 @@
       box.textContent = '';
     }
 
-    function requireLoginOrRedirect() {
-      const t = localStorage.getItem((window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) || 'addeva_auth_token');
-      if (!t) {
-        const next = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.href = '/support/login.html?next=' + next;
-        return false;
-      }
-      return true;
-    }
-
-    function escapeHtml(s) {
-      return (s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    function escapeHtml(v) {
+      const s = (v === null || v === undefined) ? '' : String(v);
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     async function api(path, opts) {
       return await ADDEVA.apiFetch(path, opts);
-    }
-
-    function normalizeProductCode(v) {
-      v = (v || '').trim();
-      // URL に誤って "00100001" のようにクォート付きで入った場合も吸収する
-      v = v.replace(/^"+|"+$/g, '').replace(/^'+|'+$/g, '').trim();
-      return v;
     }
 
     async function loadProductInfo(productCode) {
@@ -516,9 +505,7 @@
     }
 
     async function init() {
-      if (!requireLoginOrRedirect()) return;
-
-      const productCode = normalizeProductCode(qs('product_code'));
+      const productCode = qs('product_code');
 
       document.getElementById('productName').textContent = '読み込み中...';
       document.getElementById('productCodeChip').textContent = productCode ? productCode : '-';
