@@ -30,14 +30,21 @@ ADDEVA.LS = {
 /* ---------- Auth helpers (JWT / redirect) ---------- */
 ADDEVA._redirectToLogin = function () {
   try {
-    const p = String(window.location.pathname || '');
-    if (p.includes('/support/login.html')) return; // loginページでは飛ばさない
+    const path = String(window.location.pathname || '');
+    const sp = new URLSearchParams(window.location.search || '');
+    const mode = (sp.get('mode') || '').trim();
+
+    // ログインページでは飛ばさない（無限ループ防止）
+    if (path.endsWith('/customer.html') && mode === 'login') return;
+
     const next = encodeURIComponent(
       (window.location.pathname || '/') +
       (window.location.search || '') +
       (window.location.hash || '')
     );
-    window.location.href = '/support/login.html?next=' + next;
+
+    // 正しいログインURLへ統一（ユーザー指定）
+    window.location.href = '/customer.html?mode=login&next=' + next;
   } catch (_) {
     // 何もしない
   }
