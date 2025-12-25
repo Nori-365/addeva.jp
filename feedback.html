@@ -263,7 +263,7 @@
       let html = '<option value="">部位を選択してください</option>';
       for (const [cat, items] of groups.entries()) {
         html += `<optgroup label="${escapeHtml(cat)}">`;
-        html += items.map(p => `<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_name_ja)}</option>`).join('');
+        html += items.map(p => `<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_code)}：${escapeHtml(p.part_name_ja)}</option>`).join('');
         html += `</optgroup>`;
       }
 
