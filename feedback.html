@@ -1,460 +1,346 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <!-- head-common.html をクライアントサイドで <head> に読み込む -->
-  <script>
-    (async (d, u) => {
-      try {
-        const r = await fetch(u, { cache: 'no-cache' });
-        const h = await r.text();
-        const tpl = d.createElement('template');
-        tpl.innerHTML = h;
-        [...tpl.content.childNodes].forEach(n => {
-          if (n.tagName === 'SCRIPT') {
-            const s = d.createElement('script');
-            [...n.attributes].forEach(a => s.setAttribute(a.name, a.value));
-            s.textContent = n.textContent;
-            d.head.appendChild(s);
-          } else {
-            d.head.appendChild(n);
-          }
-        });
-      } catch (e) {
-        console.error('head include failed:', u, e);
-      }
-    })(document, '/includes/head-common.html');
-  </script>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>フィードバックボード｜ADDEVA サポート</title>
 
+  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- common.js が初回にAPIキーを保存できるようにしておく（head-common が遅延するケース対策） -->
+  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
   <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 
-  <script defer src="/common.js"></script>
-
   <style>
-    .chip { display:inline-block; padding:2px 8px; border:1px solid rgba(255,255,255,.25); border-radius:999px; font-size:.85rem; }
-    .post-card { border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:14px; }
-    .vote-btn.active { outline:2px solid rgba(255,255,255,.45); }
-    .muted { opacity:.75; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .status-chip { border-color: rgba(255,255,255,.25); }
-    .status-new { opacity:.75; }
-    .status-approved { opacity:1; }
-    .divider-soft { border-top: 1px solid rgba(255,255,255,.10); }
+    /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
+    .post-card h3 { line-height: 1.35; }
+    .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
   </style>
 </head>
 
 <body>
-  <div data-include="/includes/header.html" aria-busy="true"></div>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
 
-  <main class="py-4">
-    <div class="container container-narrow">
-      <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-        <div>
-          <div class="kicker">Support / Feedback</div>
-          <h1 class="h3 mb-1">フィードバックボード</h1>
-          <div class="muted">
-            対象商品：<span id="productName" class="fw-semibold">-</span>
-            <span class="chip ms-2 mono" id="productCodeChip">-</span>
-          </div>
-          <div class="muted mt-2" style="font-size:.95rem;">
-            手順：部位を選ぶ → その部位の意見を先に読む → 必要なら投稿
-          </div>
+  <main>
+    <section class="section py-5">
+      <div class="container container-narrow">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
+            <li class="breadcrumb-item active" aria-current="page">フィードバックボード</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert"></div>
+
+        <!-- ページヘッダー情報 -->
+        <div class="mb-4">
+          <h1 class="mb-2">フィードバックボード</h1>
+          <p class="lead mb-1">
+            対象商品：<span id="productName" class="fw-bold text-primary">-</span>
+            <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
+          </p>
+          <p class="text-secondary">
+            製品改善のため、皆様のご意見をお聞かせください。<br>
+            手順：部位を選ぶ → その部位の意見を先に読む → 必要なら投票・投稿
+          </p>
         </div>
-        <div class="text-end">
-          <a href="/support/customer.html" class="btn btn-outline-light btn-sm">サポートページへ戻る</a>
-        </div>
-      </div>
 
-      <hr class="my-4 divider-soft">
+        <!-- コンテンツコンテナ -->
+        <div id="feedbackContent" class="card shadow-sm p-4">
 
-      <div id="alertBox" class="alert d-none" role="alert"></div>
-
-      <div class="card border-0 shadow-sm" style="border-radius:16px;">
-        <div class="card-body">
-          <h2 class="h5 mb-3">1. 部位を選ぶ</h2>
-
+          <!-- 1. 部位を選ぶ -->
+          <h2 class="h5 mb-3 border-bottom pb-2">1. 部位を選ぶ</h2>
           <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-8">
-              <label for="partSelect" class="form-label fw-semibold mb-1">部位</label>
+            <div class="col-12">
+              <label for="partSelect" class="form-label">部位</label>
               <select id="partSelect" class="form-select">
                 <option value="">読み込み中...</option>
               </select>
               <div class="form-text">まずは部位を選び、その部位の意見を先に確認してください。</div>
             </div>
-
-            <div class="col-12 col-md-4">
-              <button id="btnReloadPartPosts" class="btn btn-outline-light w-100">この部位の意見を更新</button>
-            </div>
           </div>
 
           <div id="newPartWrap" class="mt-4 d-none">
-            <div class="p-3" style="border:1px solid rgba(255,255,255,.12); border-radius:14px;">
-              <div class="fw-semibold mb-2">新しい部位を登録（その他）</div>
+            <div class="p-3 bg-light border rounded">
+              <p class="fw-bold mb-2">新しい部位を登録（その他）</p>
               <div class="row g-3">
                 <div class="col-12 col-md-5">
-                  <label for="newPartCode" class="form-label fw-semibold mb-1">部位コード（英語）</label>
-                  <input type="text" id="newPartCode" class="form-control mono" maxlength="32" placeholder="例: main_zipper / shoulder_strap">
+                  <label for="newPartCode" class="form-label">部位コード（英語）</label>
+                  <input type="text" id="newPartCode" class="form-control" maxlength="32" placeholder="例: main_zipper">
                   <div class="form-text">半角英小文字・数字・アンダースコアのみ（3〜32文字）。</div>
                 </div>
                 <div class="col-12 col-md-7">
-                  <label for="newPartNameJa" class="form-label fw-semibold mb-1">部位名（日本語）</label>
-                  <input type="text" id="newPartNameJa" class="form-control" maxlength="64" placeholder="例: メインファスナー / ショルダーベルト">
+                  <label for="newPartNameJa" class="form-label">部位名（日本語）</label>
+                  <input type="text" id="newPartNameJa" class="form-control" maxlength="64" placeholder="例: メインファスナー">
                 </div>
                 <div class="col-12">
-                  <button id="btnCreatePart" class="btn btn-dark">この部位を追加して選択する</button>
-                  <div class="form-text mt-2">追加後、この部位の意見一覧が表示され、投稿できるようになります。</div>
+                  <button id="btnCreatePart" class="btn btn-primary">この部位を追加して選択する</button>
                 </div>
               </div>
             </div>
           </div>
 
-        </div>
-      </div>
+          <hr class="my-4">
 
-      <hr class="my-4 divider-soft">
-
-      <div class="card border-0 shadow-sm" style="border-radius:16px;">
-        <div class="card-body">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <h2 class="h5 m-0">2. この部位の意見を先に読む</h2>
+          <!-- 2. この部位の意見を読む -->
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <h2 class="h5 m-0">2. この部位の意見を読む</h2>
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <select id="filterType" class="form-select form-select-sm" style="width:auto;">
-                <option value="">すべて</option>
+                <option value="">すべて表示</option>
                 <option value="improve">改善してほしいところ</option>
                 <option value="praise">良いと思ったところ</option>
               </select>
-              <button id="btnReload" class="btn btn-outline-light btn-sm">更新</button>
+              <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
+            </div>
+          </div>
+          <p class="text-secondary small">審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。</p>
+
+          <div class="vstack gap-3" id="partPostsWrap">
+            <div class="text-center p-4 bg-light rounded">
+              <p class="text-secondary mb-0">上に表示されたメニューから部位を選択してください。</p>
             </div>
           </div>
 
-          <div class="muted mt-2" style="font-size:.95rem;">
-            審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。
-          </div>
+          <hr class="my-4">
 
-          <div class="mt-3 vstack gap-3" id="partPostsWrap"></div>
-        </div>
-      </div>
-
-      <hr class="my-4 divider-soft">
-
-      <div class="card border-0 shadow-sm" style="border-radius:16px;">
-        <div class="card-body">
+          <!-- 3. この部位に意見を投稿する -->
           <h2 class="h5 mb-3">3. この部位に意見を投稿する</h2>
-
           <div class="row g-3">
             <div class="col-12 col-md-7">
-              <div class="mb-2 fw-semibold">投稿タイプ</div>
-              <div class="d-flex flex-wrap gap-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="postType" id="ptImprove" value="improve" checked>
-                  <label class="form-check-label" for="ptImprove">改善してほしいところ</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="postType" id="ptPraise" value="praise">
-                  <label class="form-check-label" for="ptPraise">良いと思ったところ</label>
-                </div>
+              <label class="form-label d-block mb-2">投稿タイプ</label>
+              <div class="btn-group w-100" role="group" aria-label="投稿タイプ選択">
+                <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb me-2"></i>改善してほしいところ</label>
+
+                <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
+                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up me-2"></i>良いと思ったところ</label>
               </div>
-              <div class="muted mt-2" style="font-size:.95rem;">
-                使っていない/分からない場合は、投票は「無投票」のままが正解です（無理に反対を入れないでください）。
-              </div>
+              <div class="form-text mt-2">使っていない/分からない場合は、投票は「無投票」のままが正解です（無理に反対を入れないでください）。</div>
             </div>
 
             <div class="col-12 col-md-5">
-              <label for="nickname" class="form-label fw-semibold mb-1">ニックネーム（任意）</label>
+              <label for="nickname" class="form-label">ニックネーム<span class="text-secondary small">（任意）</span></label>
               <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録されます（例：Ueda）">
               <div class="form-text">未登録の場合のみ保存されます。すでに登録済みの場合は無視されます。</div>
             </div>
 
             <div class="col-12">
-              <label for="title" class="form-label fw-semibold mb-1">タイトル</label>
+              <label for="title" class="form-label">タイトル</label>
               <input type="text" id="title" class="form-control" maxlength="120" placeholder="例：肩ひもの緩み止めが欲しい / ここが最高に便利だった">
             </div>
 
             <div class="col-12">
-              <label for="body" class="form-label fw-semibold mb-1">内容</label>
-              <textarea id="body" class="form-control" rows="6" placeholder="例：どういう状況で困ったか、どの動作で起きるか、期待する改善案など。"></textarea>
+              <label for="body" class="form-label">内容</label>
+              <textarea id="body" class="form-control" rows="6" placeholder="どういう状況で困ったか、どの動作で起きるか、期待する改善案などをご記入ください。"></textarea>
             </div>
 
             <div class="col-12">
-              <button id="btnSubmit" class="btn btn-dark">投稿する</button>
-              <div id="submitHint" class="form-text mt-2">部位を選ぶと投稿できます。</div>
+              <button id="btnSubmit" class="btn btn-primary btn-lg w-100">投稿する</button>
+              <div id="submitHint" class="form-text mt-2 text-center">部位を選ぶと投稿できます。</div>
             </div>
           </div>
-        </div>
-      </div>
 
-    </div>
+        </div> <!-- /#feedbackContent -->
+      </div>
+    </section>
   </main>
 
+  <!-- ▼ 共通フッターを読み込み -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/common.js"></script>
 
   <script>
-    // ===== Utils =====
-    function qs(name) {
-      const url = new URL(window.location.href);
-      return (url.searchParams.get(name) || '').trim();
-    }
+    // === ユーティリティ ===
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
 
-    function showAlert(kind, msg) {
-      const box = document.getElementById('alertBox');
+    const showAlert = (kind, msg) => {
+      const box = document.getElementById('messageArea');
       if (!box) return;
-      box.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning', 'alert-info');
-      box.classList.add('alert-' + kind);
+      box.className = `alert alert-${kind}`;
       box.textContent = msg;
-      try { box.scrollIntoView({ block: 'nearest' }); } catch (_) {}
-    }
+      box.classList.remove('d-none');
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+    };
 
-    function clearAlert() {
-      const box = document.getElementById('alertBox');
+    const clearAlert = () => {
+      const box = document.getElementById('messageArea');
       if (!box) return;
       box.classList.add('d-none');
       box.textContent = '';
-    }
+    };
 
-    function escapeHtml(v) {
-      const s = (v === null || v === undefined) ? '' : String(v);
-      return s
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+    const escapeHtml = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]);
 
-    async function api(path, opts) {
-      return await ADDEVA.apiFetch(path, opts);
-    }
+    const api = (path, opts) => ADDEVA.apiFetch(path, opts);
 
-    // ===== Page logic =====
-    async function loadProductInfo(productCode) {
-      const res = await api('/api/addeva/feedback/product_info', {
-        method: 'POST',
-        body: { productCode }
-      });
-
-      if (!res || typeof res !== 'object') {
-        throw new Error('商品情報の取得に失敗しました。');
-      }
-
-      const pn = document.getElementById('productName');
-      const pc = document.getElementById('productCodeChip');
-      if (pn) pn.textContent = res.product_name || '-';
-      if (pc) pc.textContent = res.product_code || productCode || '-';
-    }
-
-    function voteLabel(v) {
-      if (v === 'up') return '賛成';
-      if (v === 'down') return '反対';
-      if (v === 'neutral') return 'どちらでもない';
-      return '無投票';
-    }
-
-    function voteBtnClass(active) {
-      return 'btn btn-outline-light btn-sm vote-btn' + (active ? ' active' : '');
-    }
-
-    function statusLabel(s) {
-      if (s === 'new') return '審査中';
-      if (s === 'reviewing') return '検討中';
-      if (s === 'planned') return '対応予定';
-      if (s === 'shipped') return '対応済み';
-      if (s === 'rejected') return '否認';
-      return s || '';
-    }
-
-    function isApprovedStatus(s) {
-      return s === 'reviewing' || s === 'planned' || s === 'shipped';
-    }
+    // === 表示ラベル ===
+    const statusMap = { new: '審査中', reviewing: '検討中', planned: '対応予定', shipped: '対応済み', rejected: '否認' };
+    const statusLabel = s => statusMap[s] || s || '';
+    const isApprovedStatus = s => ['reviewing', 'planned', 'shipped'].includes(s);
 
     function renderPostCard(p) {
-      const devComment = (p.dev_comment || '').trim();
-      const devImgs = Array.isArray(p.dev_image_urls) ? p.dev_image_urls : [];
-
       const approved = isApprovedStatus(p.status);
-      const statusChip = `<span class="chip status-chip ${approved ? 'status-approved' : 'status-new'}">${escapeHtml(statusLabel(p.status))}</span>`;
+      const statusClass = approved ? 'text-bg-success' : 'text-bg-secondary';
+      const statusChip = `<span class="badge ${statusClass} fw-normal">${escapeHtml(statusLabel(p.status))}</span>`;
+      const typeChip = `<span class="badge text-bg-info fw-normal">${p.post_type === 'improve' ? '改善案' : '良い点'}</span>`;
 
-      const devBlock = (devComment || devImgs.length) ? `
-        <div class="mt-3">
-          <div class="fw-semibold">開発者コメント</div>
-          ${devComment ? `<div class="muted" style="white-space:pre-wrap;">${escapeHtml(devComment)}</div>` : ''}
-          ${devImgs.length ? `
-            <div class="d-flex flex-wrap gap-2 mt-2">
-              ${devImgs.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener"><img src="${escapeHtml(u)}" alt="dev" style="height:80px;border-radius:10px;border:1px solid rgba(255,255,255,.12);"></a>`).join('')}
-            </div>
-          ` : ''}
-        </div>
-      ` : '';
+      const voteButton = (voteType, label, count) => `
+        <button class="btn btn-sm btn-outline-secondary vote-btn ${p.my_vote === voteType ? 'active' : ''}"
+                data-act="vote" data-post="${p.post_id}" data-v="${voteType}" ${approved ? '' : 'disabled'}>
+          ${label} <span class="badge text-bg-light">${count}</span>
+        </button>`;
+
+      const devCommentBlock = (p.dev_comment || '').trim() ? `
+        <div class="mt-3 pt-3 border-top">
+          <p class="fw-bold mb-1"><i class="bi bi-chat-right-text me-2"></i>開発者コメント</p>
+          <p class="small text-secondary mb-0" style="white-space:pre-wrap;">${escapeHtml(p.dev_comment)}</p>
+        </div>` : '';
 
       return `
-        <div class="post-card">
-          <div class="d-flex align-items-start justify-content-between gap-3">
-            <div>
-              <div class="d-flex gap-2 align-items-center flex-wrap">
-                <div class="fw-semibold">${escapeHtml(p.title)}</div>
-                <span class="chip">${p.post_type === 'improve' ? '改善' : '良かった'}</span>
+        <div class="post-card border rounded p-3">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="flex-grow-1">
+              <div class="d-flex gap-2 align-items-center flex-wrap mb-1">
                 ${statusChip}
-                <span class="chip muted">投稿ID ${p.post_id}</span>
+                ${typeChip}
+                <h3 class="h6 mb-0">${escapeHtml(p.title)}</h3>
               </div>
-              <div class="muted mt-1" style="white-space:pre-wrap;">${escapeHtml(p.body)}</div>
-              <div class="muted mt-2" style="font-size:.95rem;">
-                作成：${escapeHtml(p.created_at || '')}
-                ${p.nickname ? ` / ニックネーム：${escapeHtml(p.nickname)}` : ''}
-              </div>
+              <p class="small text-secondary mb-2">
+                投稿ID: ${p.post_id}${p.nickname ? ` / ニックネーム: ${escapeHtml(p.nickname)}` : ''}
+              </p>
+              <p class="mb-0" style="white-space:pre-wrap;">${escapeHtml(p.body)}</p>
             </div>
 
-            <div class="text-end" style="min-width:260px;">
-              <div class="fw-semibold mb-2">投票</div>
-              <div class="d-flex justify-content-end gap-2 flex-wrap">
-                <button class="${voteBtnClass(p.my_vote === 'up')}" data-act="vote" data-post="${p.post_id}" data-v="up" ${approved ? '' : 'disabled'}>賛成 ${p.up_count}</button>
-                <button class="${voteBtnClass(p.my_vote === 'down')}" data-act="vote" data-post="${p.post_id}" data-v="down" ${approved ? '' : 'disabled'}>反対 ${p.down_count}</button>
-                <button class="${voteBtnClass(p.my_vote === 'neutral')}" data-act="vote" data-post="${p.post_id}" data-v="neutral" ${approved ? '' : 'disabled'}>どちらでもない ${p.neutral_count}</button>
+            <div class="text-end" style="min-width:220px;">
+              <div class="btn-group btn-group-sm" role="group">
+                ${voteButton('up', '賛成', p.up_count)}
+                ${voteButton('down', '反対', p.down_count)}
+                ${voteButton('neutral', 'どちらでもない', p.neutral_count)}
               </div>
-              <div class="muted mt-2" style="font-size:.92rem;">あなたの状態：${escapeHtml(voteLabel(p.my_vote))}</div>
-              ${approved ? `<div class="muted" style="font-size:.92rem;">同じボタンをもう一度押すと無投票に戻せます</div>` : `<div class="muted" style="font-size:.92rem;">審査中は投票できません</div>`}
+              <div class="form-text mt-1">${approved ? 'クリックで投票/取消' : '審査中は投票不可'}</div>
             </div>
           </div>
-          ${devBlock}
-        </div>
-      `;
+          ${devCommentBlock}
+        </div>`;
+    }
+
+    // === API連携 ===
+    async function loadProductInfo(productCode) {
+      const res = await api('/api/addeva/feedback/product_info', { method: 'POST', body: { productCode } });
+      document.getElementById('productName').textContent = res.product_name || '-';
+      document.getElementById('productCodeChip').textContent = res.product_code || productCode || '-';
     }
 
     async function loadParts(productCode) {
-      const res = await api('/api/addeva/feedback/parts/list', {
-        method: 'POST',
-        body: { productCode }
-      });
-
+      const res = await api('/api/addeva/feedback/parts/list', { method: 'POST', body: { productCode } });
       const sel = document.getElementById('partSelect');
       if (!Array.isArray(res)) {
-        sel.innerHTML = '<option value="">部位の取得に失敗しました</option>';
+        sel.innerHTML = '<option value="">部位の取得に失敗</option>';
         return;
       }
-
-      const opts = [];
-      opts.push('<option value="">部位を選択してください</option>');
-      res.forEach(p => {
-        opts.push(`<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_name_ja)}（${escapeHtml(p.part_code)}）</option>`);
-      });
-      opts.push('<option value="__new__">その他（新しい部位を登録）</option>');
-
-      sel.innerHTML = opts.join('');
+      sel.innerHTML = [
+        '<option value="">部位を選択してください</option>',
+        ...res.map(p => `<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_name_ja)}</option>`),
+        '<option value="__new__">その他（新しい部位を登録）</option>'
+      ].join('');
     }
 
-    function setNewPartMode(on) {
-      const wrap = document.getElementById('newPartWrap');
-      if (on) wrap.classList.remove('d-none');
-      else wrap.classList.add('d-none');
+    function setUIState(partCode) {
+      const isNew = partCode === '__new__';
+      const hasSelection = !!partCode && !isNew;
 
-      const btnSubmit = document.getElementById('btnSubmit');
-      const hint = document.getElementById('submitHint');
-      if (on) {
-        btnSubmit.disabled = true;
-        hint.textContent = '新しい部位を登録してから投稿できます。';
-      }
-    }
-
-    function setSubmitEnabled(enabled) {
-      const btnSubmit = document.getElementById('btnSubmit');
-      const hint = document.getElementById('submitHint');
-      btnSubmit.disabled = !enabled;
-      hint.textContent = enabled ? 'この部位について投稿できます。' : '部位を選ぶと投稿できます。';
-    }
-
-    function currentPartCode() {
-      const v = (document.getElementById('partSelect').value || '').trim();
-      if (!v || v === '__new__') return '';
-      return v;
+      document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
+      document.getElementById('btnSubmit').disabled = !hasSelection;
+      document.getElementById('submitHint').textContent = hasSelection ? '内容を入力して投稿してください。' : (isNew ? '新しい部位を登録してから投稿できます。' : '部位を選ぶと投稿できます。');
     }
 
     async function loadPartPosts() {
       clearAlert();
 
-      const productCode = qs('product_code');
-      const partCode = currentPartCode();
-      const filterType = (document.getElementById('filterType').value || '').trim();
-
       const wrap = document.getElementById('partPostsWrap');
+      const productCode = qs('product_code');
+      const partCode = document.getElementById('partSelect').value;
+      const filterType = document.getElementById('filterType').value;
+
       if (!productCode) {
-        wrap.innerHTML = '<div class="muted">product_code が指定されていません。</div>';
+        wrap.innerHTML = '<div class="alert alert-danger mb-0">商品コードが指定されていません。顧客ポータルから再度お試しください。</div>';
         return;
       }
+
       if (!partCode) {
-        wrap.innerHTML = '<div class="muted">部位を選択してください。</div>';
+        wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">部位を選択してください。</p></div>';
         return;
       }
 
-      const res = await api('/api/addeva/feedback/part_posts', {
-        method: 'POST',
-        body: { productCode, partCode, postType: filterType || null }
-      });
-
-      if (!Array.isArray(res) || res.length === 0) {
-        wrap.innerHTML = '<div class="muted">この部位の投稿はまだありません。</div>';
+      if (partCode === '__new__') {
+        wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">新しい部位を登録してください。</p></div>';
         return;
       }
 
-      wrap.innerHTML = res.map(renderPostCard).join('');
+      wrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
-      wrap.querySelectorAll('button[data-act="vote"]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const postId = Number(btn.getAttribute('data-post'));
-          const voteType = btn.getAttribute('data-v');
-          try {
-            await api('/api/addeva/feedback/vote', {
-              method: 'POST',
-              body: { postId, voteType }
-            });
-            await loadPartPosts();
-          } catch (e) {
-            showAlert('danger', e.message || '投票に失敗しました。');
-          }
+      try {
+        const posts = await api('/api/addeva/feedback/part_posts', {
+          method: 'POST',
+          body: { productCode, partCode, postType: filterType || null }
         });
-      });
+
+        if (!Array.isArray(posts) || posts.length === 0) {
+          wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">この部位の投稿はまだありません。</p></div>';
+          return;
+        }
+
+        wrap.innerHTML = posts.map(renderPostCard).join('');
+
+        wrap.querySelectorAll('.vote-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const postId = Number(btn.dataset.post);
+            const voteType = String(btn.dataset.v || '').trim();
+            try {
+              await api('/api/addeva/feedback/vote', { method: 'POST', body: { postId, voteType } });
+              await loadPartPosts();
+            } catch (e) {
+              showAlert('danger', e.message || '投票に失敗しました。');
+            }
+          });
+        });
+
+      } catch (e) {
+        wrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || '投稿の読み込みに失敗しました。'}</div>`;
+      }
     }
 
     async function createPart() {
       clearAlert();
-
       const productCode = qs('product_code');
-      const partCode = (document.getElementById('newPartCode').value || '').trim();
-      const partNameJa = (document.getElementById('newPartNameJa').value || '').trim();
+      const partCode = document.getElementById('newPartCode').value.trim();
+      const partNameJa = document.getElementById('newPartNameJa').value.trim();
 
-      if (!productCode) {
-        showAlert('danger', 'product_code が指定されていません。');
-        return;
-      }
-      if (!partCode) {
-        showAlert('warning', '部位コード（英語）を入力してください。');
-        return;
-      }
-      if (!partNameJa) {
-        showAlert('warning', '部位名（日本語）を入力してください。');
+      if (!partCode || !partNameJa) {
+        showAlert('warning', '部位コードと部位名を入力してください。');
         return;
       }
 
       try {
-        await api('/api/addeva/feedback/parts/create', {
-          method: 'POST',
-          body: { productCode, partCode, partNameJa }
-        });
-
+        await api('/api/addeva/feedback/parts/create', { method: 'POST', body: { productCode, partCode, partNameJa } });
         showAlert('success', '部位を追加しました。');
 
         await loadParts(productCode);
         document.getElementById('partSelect').value = partCode;
-        setNewPartMode(false);
-        setSubmitEnabled(true);
-
+        setUIState(partCode);
         await loadPartPosts();
 
       } catch (e) {
@@ -466,42 +352,24 @@
       clearAlert();
 
       const productCode = qs('product_code');
-      const partCode = currentPartCode();
-      const postType = (document.querySelector('input[name="postType"]:checked') || {}).value || 'improve';
-      const nickname = (document.getElementById('nickname').value || '').trim();
-      const title = (document.getElementById('title').value || '').trim();
-      const body = (document.getElementById('body').value || '').trim();
+      const partCode = document.getElementById('partSelect').value;
+      const title = document.getElementById('title').value.trim();
+      const body = document.getElementById('body').value.trim();
 
-      if (!productCode) {
-        showAlert('danger', 'product_code が指定されていません。');
-        return;
-      }
-      if (!partCode) {
-        showAlert('warning', '部位を選択してください。');
-        return;
-      }
-      if (!title) {
-        showAlert('warning', 'タイトルを入力してください。');
-        return;
-      }
-      if (!body) {
-        showAlert('warning', '内容を入力してください。');
-        return;
-      }
+      if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
+      if (!title || !body) { showAlert('warning', 'タイトルと内容を入力してください。'); return; }
+
+      const postData = {
+        productCode,
+        partCode,
+        title,
+        body,
+        postType: document.querySelector('input[name="postType"]:checked').value,
+        nickname: document.getElementById('nickname').value.trim() || null,
+      };
 
       try {
-        await api('/api/addeva/feedback/create', {
-          method: 'POST',
-          body: {
-            productCode,
-            partCode,
-            postType,
-            title,
-            body,
-            nickname: nickname || null
-          }
-        });
-
+        await api('/api/addeva/feedback/create', { method: 'POST', body: postData });
         showAlert('success', '投稿しました。ありがとうございます。審査後に公開されます。');
 
         document.getElementById('title').value = '';
@@ -517,54 +385,34 @@
     async function init() {
       const productCode = qs('product_code');
 
-      const pn = document.getElementById('productName');
-      const pc = document.getElementById('productCodeChip');
-      if (pn) pn.textContent = '読み込み中...';
-      if (pc) pc.textContent = productCode ? productCode : '-';
-
       if (!productCode) {
-        showAlert('danger', 'product_code が指定されていません。サポートページ（customer.html）から遷移してください。');
+        showAlert('danger', '商品コードが指定されていません。顧客ポータルから再度お試しください。');
         return;
       }
 
-      try {
-        await loadProductInfo(productCode);
-      } catch (e) {
-        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
-        return;
-      }
+      document.getElementById('productCodeChip').textContent = productCode;
 
-      document.getElementById('btnReload').addEventListener('click', loadPartPosts);
-      document.getElementById('btnReloadPartPosts').addEventListener('click', loadPartPosts);
-      document.getElementById('filterType').addEventListener('change', loadPartPosts);
-      document.getElementById('btnCreatePart').addEventListener('click', createPart);
-      document.getElementById('btnSubmit').addEventListener('click', submitPost);
-
-      document.getElementById('partSelect').addEventListener('change', async () => {
-        clearAlert();
-        const v = (document.getElementById('partSelect').value || '').trim();
-        if (!v) {
-          setNewPartMode(false);
-          setSubmitEnabled(false);
-          document.getElementById('partPostsWrap').innerHTML = '<div class="muted">部位を選択してください。</div>';
-          return;
-        }
-        if (v === '__new__') {
-          setNewPartMode(true);
-          document.getElementById('partPostsWrap').innerHTML = '<div class="muted">新しい部位を登録してください。</div>';
-          return;
-        }
-        setNewPartMode(false);
-        setSubmitEnabled(true);
+      document.getElementById('partSelect').addEventListener('change', async e => {
+        setUIState(e.target.value);
         await loadPartPosts();
       });
 
-      await loadParts(productCode);
-      setSubmitEnabled(false);
-      document.getElementById('partPostsWrap').innerHTML = '<div class="muted">部位を選択してください。</div>';
+      document.getElementById('filterType').addEventListener('change', loadPartPosts);
+      document.getElementById('btnReload').addEventListener('click', loadPartPosts);
+      document.getElementById('btnCreatePart').addEventListener('click', createPart);
+      document.getElementById('btnSubmit').addEventListener('click', submitPost);
+
+      try {
+        await loadProductInfo(productCode);
+        await loadParts(productCode);
+        setUIState('');
+
+      } catch (e) {
+        showAlert('danger', e.message || '初期化に失敗しました。');
+      }
     }
 
-    // common.js (ADDEVA.apiFetch) が読み込めなかった場合に、無言で "-" のままになるのを防ぐ
+    // ADDEVAオブジェクトの準備ができてから初期化を実行
     (function waitForADDEVA() {
       const START = Date.now();
       const TIMEOUT_MS = 7000;
@@ -591,22 +439,9 @@
     })();
   </script>
 
+  <!-- ▼ includeエンジン -->
   <script>
-    // ===== HTML include loader (header/footer) =====
-    (async () => {
-      try {
-        const targets = document.querySelectorAll('[data-include]');
-        for (const el of targets) {
-          const url = el.getAttribute('data-include');
-          if (!url) continue;
-          const r = await fetch(url, { cache: 'no-cache' });
-          if (!r.ok) throw new Error(`include failed: ${url} (${r.status})`);
-          el.outerHTML = await r.text();
-        }
-      } catch (e) {
-        console.error('include loader error:', e);
-      }
-    })();
+    (async()=>{try{const t=document.querySelectorAll('[data-include]');for(const e of t){const l=e.getAttribute('data-include');if(!l)continue;const o=await fetch(l,{cache:'no-cache'});if(!o.ok)throw new Error(`include failed: ${l} (${o.status})`);e.outerHTML=await o.text()}}catch(e){console.error('include loader error:',e)}})();
   </script>
 </body>
 </html>
