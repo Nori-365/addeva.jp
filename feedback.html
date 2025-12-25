@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <!-- head-common.html をクライアントサイドで <head> に読み込む -->
   <script>
     (async (d, u) => {
       try {
@@ -31,6 +32,9 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+
+  <!-- common.js が初回にAPIキーを保存できるようにしておく（head-common が遅延するケース対策） -->
+  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 
   <script defer src="/common.js"></script>
 
@@ -132,7 +136,7 @@
           </div>
 
           <div class="muted mt-2" style="font-size:.95rem;">
-            審査中の投稿も含めて同部位の意見を表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。
+            審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。
           </div>
 
           <div class="mt-3 vstack gap-3" id="partPostsWrap"></div>
@@ -165,7 +169,7 @@
 
             <div class="col-12 col-md-5">
               <label for="nickname" class="form-label fw-semibold mb-1">ニックネーム（任意）</label>
-              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録できます（例：Ueda）">
+              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録されます（例：Ueda）">
               <div class="form-text">未登録の場合のみ保存されます。すでに登録済みの場合は無視されます。</div>
             </div>
 
@@ -195,6 +199,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // ===== Utils =====
     function qs(name) {
       const url = new URL(window.location.href);
       return (url.searchParams.get(name) || '').trim();
@@ -202,13 +207,16 @@
 
     function showAlert(kind, msg) {
       const box = document.getElementById('alertBox');
+      if (!box) return;
       box.classList.remove('d-none', 'alert-success', 'alert-danger', 'alert-warning', 'alert-info');
       box.classList.add('alert-' + kind);
       box.textContent = msg;
+      try { box.scrollIntoView({ block: 'nearest' }); } catch (_) {}
     }
 
     function clearAlert() {
       const box = document.getElementById('alertBox');
+      if (!box) return;
       box.classList.add('d-none');
       box.textContent = '';
     }
@@ -227,8 +235,8 @@
       return await ADDEVA.apiFetch(path, opts);
     }
 
+    // ===== Page logic =====
     async function loadProductInfo(productCode) {
-      // product_name は URL からは受け取らず、DB から取得する
       const res = await api('/api/addeva/feedback/product_info', {
         method: 'POST',
         body: { productCode }
@@ -238,8 +246,10 @@
         throw new Error('商品情報の取得に失敗しました。');
       }
 
-      document.getElementById('productName').textContent = res.product_name || '-';
-      document.getElementById('productCodeChip').textContent = res.product_code || productCode || '-';
+      const pn = document.getElementById('productName');
+      const pc = document.getElementById('productCodeChip');
+      if (pn) pn.textContent = res.product_name || '-';
+      if (pc) pc.textContent = res.product_code || productCode || '-';
     }
 
     function voteLabel(v) {
@@ -273,17 +283,17 @@
       const approved = isApprovedStatus(p.status);
       const statusChip = `<span class="chip status-chip ${approved ? 'status-approved' : 'status-new'}">${escapeHtml(statusLabel(p.status))}</span>`;
 
-      const devBlock = `
+      const devBlock = (devComment || devImgs.length) ? `
         <div class="mt-3">
           <div class="fw-semibold">開発者コメント</div>
-          <div class="muted" style="white-space:pre-wrap;">${escapeHtml(devComment)}</div>
+          ${devComment ? `<div class="muted" style="white-space:pre-wrap;">${escapeHtml(devComment)}</div>` : ''}
           ${devImgs.length ? `
             <div class="d-flex flex-wrap gap-2 mt-2">
               ${devImgs.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener"><img src="${escapeHtml(u)}" alt="dev" style="height:80px;border-radius:10px;border:1px solid rgba(255,255,255,.12);"></a>`).join('')}
             </div>
           ` : ''}
         </div>
-      `;
+      ` : '';
 
       return `
         <div class="post-card">
@@ -507,8 +517,10 @@
     async function init() {
       const productCode = qs('product_code');
 
-      document.getElementById('productName').textContent = '読み込み中...';
-      document.getElementById('productCodeChip').textContent = productCode ? productCode : '-';
+      const pn = document.getElementById('productName');
+      const pc = document.getElementById('productCodeChip');
+      if (pn) pn.textContent = '読み込み中...';
+      if (pc) pc.textContent = productCode ? productCode : '-';
 
       if (!productCode) {
         showAlert('danger', 'product_code が指定されていません。サポートページ（customer.html）から遷移してください。');
@@ -552,7 +564,49 @@
       document.getElementById('partPostsWrap').innerHTML = '<div class="muted">部位を選択してください。</div>';
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    // common.js (ADDEVA.apiFetch) が読み込めなかった場合に、無言で "-" のままになるのを防ぐ
+    (function waitForADDEVA() {
+      const START = Date.now();
+      const TIMEOUT_MS = 7000;
+
+      function tick() {
+        if (typeof ADDEVA !== 'undefined' && ADDEVA && typeof ADDEVA.apiFetch === 'function') {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+          } else {
+            init();
+          }
+          return;
+        }
+
+        if (Date.now() - START > TIMEOUT_MS) {
+          showAlert('danger', 'common.js の読み込みが完了していないため、API通信を開始できません。/common.js が 404 になっていないか、キャッシュを消して再読み込みしてください。');
+          return;
+        }
+
+        setTimeout(tick, 50);
+      }
+
+      tick();
+    })();
+  </script>
+
+  <script>
+    // ===== HTML include loader (header/footer) =====
+    (async () => {
+      try {
+        const targets = document.querySelectorAll('[data-include]');
+        for (const el of targets) {
+          const url = el.getAttribute('data-include');
+          if (!url) continue;
+          const r = await fetch(url, { cache: 'no-cache' });
+          if (!r.ok) throw new Error(`include failed: ${url} (${r.status})`);
+          el.outerHTML = await r.text();
+        }
+      } catch (e) {
+        console.error('include loader error:', e);
+      }
+    })();
   </script>
 </body>
 </html>
