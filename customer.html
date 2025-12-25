@@ -23,7 +23,7 @@
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/main.css?v=3.7">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
@@ -32,8 +32,8 @@
 
 <body>
   <!-- ▼ 共通ヘッダーを読み込み -->
-  <!-- 修正: include-html ではなく data-include に統一 -->
   <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
   <main>
     <section class="section py-5">
       <div class="container container-narrow">
@@ -62,7 +62,6 @@
   </main>
 
   <!-- ▼ 共通フッターを読み込み -->
-  <!-- 修正: include-html ではなく data-include に統一 -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -90,12 +89,38 @@
       return `${y}/${m}/${day}`;
     }
 
+    // next の安全化（外部URLへのオープンリダイレクト防止）
+    function getSafeNextFromUrl(urlParams) {
+      const raw = (urlParams.get('next') || '').trim();
+      if (!raw) return '';
+      let decoded = '';
+      try { decoded = decodeURIComponent(raw); } catch (_) { decoded = raw; }
+      decoded = String(decoded || '').trim();
+
+      // ルール：同一サイト内の相対パスのみ許可（/ で始まる、ただし // は不可）
+      if (!decoded.startsWith('/')) return '';
+      if (decoded.startsWith('//')) return '';
+      if (decoded.includes('://')) return '';
+      return decoded;
+    }
+
+    function buildLoginUrl(nextPath) {
+      const base = '/customer.html?mode=login';
+      if (!nextPath) return base;
+      return base + '&next=' + encodeURIComponent(nextPath);
+    }
+
+    function currentFullPath() {
+      return (window.location.pathname || '/') + (window.location.search || '') + (window.location.hash || '');
+    }
+
     waitForADDEVA(async () => {
       const customerContent = document.getElementById('customerContent');
       const messageArea = document.getElementById('messageArea');
 
       const urlParams = new URLSearchParams(window.location.search);
-      const mode = urlParams.get('mode') || 'support';
+      const mode = (urlParams.get('mode') || 'support').trim().toLowerCase();
+      const safeNext = getSafeNextFromUrl(urlParams);
 
       let loggedInCustomerId = null;
       let loggedInEmail = null;
@@ -130,6 +155,15 @@
 
       function clearAuthToken() {
         localStorage.removeItem(ADDEVA.LS.authToken);
+      }
+
+      function redirectAfterLogin() {
+        // next があればそこへ、無ければ通常のサポートへ
+        if (safeNext) {
+          window.location.href = safeNext;
+          return;
+        }
+        window.location.href = '/customer.html?mode=support';
       }
 
       // ==== UIレンダリング関数 ====
@@ -175,8 +209,8 @@
 
               showSuccess(result.message || 'ログインに成功しました。');
 
-              // ログイン成功後、サポートページへリダイレクト
-              window.location.href = '/customer.html?mode=support';
+              // ここが重要：ログイン後は next へ戻す（無ければ support）
+              redirectAfterLogin();
               return;
             }
 
@@ -239,7 +273,6 @@
         document.getElementById('displayCustomerId').textContent = loggedInCustomerId;
         document.getElementById('displayEmail').textContent = loggedInEmail;
 
-        // 購入履歴の取得と表示（common.js が Authorization を自動付与するので extraHeaders は不要）
         const purchasesTableBody = document.getElementById('purchasesTableBody');
         try {
           const purchases = await ADDEVA.apiFetch('/api/addeva/customer/purchases', { method: 'GET' });
@@ -275,13 +308,11 @@
           showError(error.message || '購入履歴の取得中にエラーが発生しました。');
         }
 
-        // ログアウトボタン
         document.getElementById('logoutButton').addEventListener('click', () => {
           clearAuthToken();
           window.location.href = '/customer.html?mode=login';
         });
 
-        // サポートを依頼するボタン（purchaseId無しの一般問い合わせ）
         document.getElementById('contactSupportButton').addEventListener('click', () => {
           window.location.href = `/contact.html?mode=support&email=${encodeURIComponent(loggedInEmail)}`;
         });
@@ -293,9 +324,9 @@
       const authToken = getAuthToken();
 
       if (mode === 'login') {
-        // ログインモードでトークンがある場合はサポートへ
+        // 既にトークンがあるなら next or support へ
         if (authToken) {
-          window.location.href = '/customer.html?mode=support';
+          redirectAfterLogin();
           return;
         }
         renderLoginUI();
@@ -303,14 +334,14 @@
       }
 
       if (mode === 'support') {
-        // サポートモードでトークンが無いならログインへ
+        // サポートモードでトークンが無いなら、loginへ（nextつき）
         if (!authToken) {
-          window.location.href = '/customer.html?mode=login';
+          window.location.href = buildLoginUrl(currentFullPath());
           return;
         }
 
         try {
-          // トークンの有効性を確認し、顧客情報を取得（common.js が Authorization 自動付与）
+          // トークンの有効性を確認し、顧客情報を取得
           const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET' });
           loggedInCustomerId = userInfo.customer_id;
           loggedInEmail = userInfo.email;
@@ -320,14 +351,15 @@
         } catch (error) {
           console.error('認証情報の検証に失敗しました:', error);
           clearAuthToken();
-          showError(error.message || 'セッションが無効です。再度ログインしてください。');
-          renderLoginUI();
+
+          // ここが重要：再ログイン後に戻せるよう next を付けて loginへ
+          window.location.href = buildLoginUrl(currentFullPath());
           return;
         }
       }
 
-      // 未定義モードはログインへ
-      window.location.href = '/customer.html?mode=login';
+      // 未定義モードはログインへ（nextつき）
+      window.location.href = buildLoginUrl(currentFullPath());
     });
   </script>
 
