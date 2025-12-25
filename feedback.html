@@ -251,11 +251,25 @@
         sel.innerHTML = '<option value="">部位の取得に失敗</option>';
         return;
       }
-      sel.innerHTML = [
-        '<option value="">部位を選択してください</option>',
-        ...res.map(p => `<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_name_ja)}</option>`),
-        '<option value="__new__">その他（新しい部位を登録）</option>'
-      ].join('');
+
+      // category_name でグルーピング（未指定は「その他」扱い）
+      const groups = new Map();
+      for (const p of res) {
+        const cat = String(p.category_name || '').trim() || 'その他';
+        if (!groups.has(cat)) groups.set(cat, []);
+        groups.get(cat).push(p);
+      }
+
+      let html = '<option value="">部位を選択してください</option>';
+      for (const [cat, items] of groups.entries()) {
+        html += `<optgroup label="${escapeHtml(cat)}">`;
+        html += items.map(p => `<option value="${escapeHtml(p.part_code)}">${escapeHtml(p.part_name_ja)}</option>`).join('');
+        html += `</optgroup>`;
+      }
+
+      // 追加（ユーザー定義部位）
+      html += '<option value="__new__">その他（新しい部位を登録）</option>';
+      sel.innerHTML = html;
     }
 
     function setUIState(partCode) {
