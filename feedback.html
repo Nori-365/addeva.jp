@@ -21,7 +21,6 @@
     /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
     .post-card h3 { line-height: 1.35; }
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
-    /* 成功/エラーメッセージを、スクロール後も見える位置に固定（固定ヘッダー下） */
 
     /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
@@ -48,7 +47,8 @@
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div id="messageText" class="flex-grow-1"></div>
             <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
-          </div>      </div>
+          </div>
+        </div>
 
         <!-- Debug: Alert trace (inspectable) -->
         <pre id="debugAlertTrace" class="d-none small text-secondary mt-2"
@@ -141,9 +141,9 @@
             </div>
 
             <div class="col-12 col-md-5">
-              <label for="nickname" class="form-label">ニックネーム<span class="text-secondary small">（任意）</span></label>
-              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録されます（例：Taro）">
-              <div class="form-text">未登録の場合のみ保存されます。すでに登録済みの場合は無視されます。</div>
+              <label for="nickname" class="form-label">ニックネーム <span class="text-danger">*</span></label>
+              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="例：Taro" required>
+              <div class="form-text">必須です。いつでも変更できます（変更すると、過去投稿の表示名も同じニックネームに統一されます）。</div>
             </div>
 
             <div class="col-12">
@@ -175,7 +175,12 @@
 
   <script>
     // === ユーティリティ ===
-    const qs = name => new URL(window.location.href).searchParams.get(name) || '';    const bindMessageClose = () => {
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+
+    // ニックネーム（フロント側の控え。APIで取得できない場合のフォールバック用途）
+    const NICK_CACHE_KEY = 'addeva_nickname_cache';
+
+    const bindMessageClose = () => {
       const btn = document.getElementById('messageCloseBtn');
       if (!btn) return;
       if (btn.dataset.bound === '1') return;
@@ -192,8 +197,9 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "\n");
-};
+        d.textContent += (line + "
+");
+      };
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
         const text = document.getElementById('messageText');
@@ -217,19 +223,21 @@
       box.className = `alert alert-${kind} shadow-sm`;
       box.classList.remove('d-none');
 
-      const text = document.getElementById('messageText');      if (text) text.textContent = msg;
+      const text = document.getElementById('messageText');
+      if (text) text.textContent = msg;
 
       // Debug: showAlertが実行された時点でのメッセージ内容を強制的に記録
       try { dbg.snapshot('showAlert', { kind: String(kind), msgParam: String(msg ?? '') }); } catch (_) {}
 
       bindMessageClose();
 
-      // メッセージは確実に上部で見せる（固定ヘッダー配下の #messageArea を想定）
-      // ※投稿成功時に「元の位置に戻す」スクロールをするとメッセージを見逃すため、成功時も上へ誘導します。
+      // メッセージは確実に上部で見せる
       if (kind === 'danger' || kind === 'warning' || kind === 'success') {
         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
       }
-    };    const clearAlert = () => {
+    };
+
+    const clearAlert = () => {
       const box = document.getElementById('messageArea');
       if (!box) return;
 
@@ -299,6 +307,72 @@
         </div>`;
     }
 
+    // === ニックネーム（初期表示） ===
+    function getNicknameEl() {
+      return document.getElementById('nickname');
+    }
+
+    function getNicknameValue() {
+      const el = getNicknameEl();
+      return el ? String(el.value || '').trim() : '';
+    }
+
+    function setNicknameValue(v) {
+      const el = getNicknameEl();
+      if (!el) return;
+      el.value = String(v || '').trim();
+    }
+
+    function cacheNickname(v) {
+      try {
+        const val = String(v || '').trim();
+        if (!val) {
+          localStorage.removeItem(NICK_CACHE_KEY);
+        } else {
+          localStorage.setItem(NICK_CACHE_KEY, val);
+        }
+      } catch (_) {}
+    }
+
+    function loadNicknameFromCacheIfEmpty() {
+      try {
+        const el = getNicknameEl();
+        if (!el) return;
+        const cur = String(el.value || '').trim();
+        if (cur) return;
+        const cached = String(localStorage.getItem(NICK_CACHE_KEY) || '').trim();
+        if (cached) el.value = cached;
+      } catch (_) {}
+    }
+
+    async function tryLoadNicknameFromApi() {
+      // 既存環境に「自分の顧客情報」を返すAPIがある場合はそれを使う。
+      // 無い場合でもページが壊れないように、エラーは握りつぶす。
+      const candidates = [
+        { path: '/api/addeva/customer/me', method: 'GET' },
+        { path: '/api/addeva/customer/me', method: 'POST', body: {} },
+        { path: '/api/addeva/customers/me', method: 'GET' },
+        { path: '/api/addeva/customers/me', method: 'POST', body: {} },
+        { path: '/api/addeva/customer/profile', method: 'GET' },
+        { path: '/api/addeva/customer/profile', method: 'POST', body: {} },
+      ];
+
+      for (const c of candidates) {
+        try {
+          const res = await api(c.path, { method: c.method, body: c.body ?? null });
+          const nick = (res && (res.nickname ?? (res.customer && res.customer.nickname) ?? (res.data && res.data.nickname))) || '';
+          const v = String(nick || '').trim();
+          if (v) {
+            setNicknameValue(v);
+            cacheNickname(v);
+            return;
+          }
+        } catch (_) {
+          // ignore
+        }
+      }
+    }
+
     // === API連携 ===
     async function loadProductInfo(productCode) {
       const res = await api('/api/addeva/feedback/product_info', { method: 'POST', body: { productCode } });
@@ -337,14 +411,31 @@
     function setUIState(partCode) {
       const isNew = partCode === '__new__';
       const hasSelection = !!partCode && !isNew;
+      const nickOk = !!getNicknameValue();
 
       document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
-      document.getElementById('btnSubmit').disabled = !hasSelection;
-      document.getElementById('submitHint').textContent = hasSelection ? '内容を入力して投稿してください。' : (isNew ? '新しい部位を登録してから投稿できます。' : '部位を選ぶと投稿できます。');
+
+      const btnSubmit = document.getElementById('btnSubmit');
+      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk);
+
+      const hint = document.getElementById('submitHint');
+      if (hint) {
+        if (isNew) {
+          hint.textContent = '新しい部位を登録してから投稿できます。';
+        } else if (!hasSelection) {
+          hint.textContent = '部位を選ぶと投稿できます。';
+        } else if (!nickOk) {
+          hint.textContent = 'ニックネームを入力すると投稿できます。';
+        } else {
+          hint.textContent = '内容を入力して投稿してください。';
+        }
+      }
     }
 
     async function loadPartPosts(opts = {}) {
-      const keepAlert = !!opts.keepAlert;      if (!keepAlert) clearAlert();
+      const keepAlert = !!opts.keepAlert;
+      if (!keepAlert) clearAlert();
+
       // Debug: 一覧再読込が成功メッセージを消していないかを判定するためのトレース
       try { dbg.snapshot('loadPartPosts.begin', { keepAlert }); } catch (_) {}
 
@@ -379,7 +470,9 @@
         if (!Array.isArray(posts) || posts.length === 0) {
           wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">この部位の投稿はまだありません。</p></div>';
           return;
-        }        wrap.innerHTML = posts.map(renderPostCard).join('');
+        }
+
+        wrap.innerHTML = posts.map(renderPostCard).join('');
         try { dbg.snapshot('loadPartPosts.rendered', { keepAlert, renderedCount: Array.isArray(posts) ? posts.length : null }); } catch (_) {}
 
         wrap.querySelectorAll('.vote-btn').forEach(btn => {
@@ -434,8 +527,10 @@
       const partCode = document.getElementById('partSelect').value;
       const title = document.getElementById('title').value.trim();
       const body = document.getElementById('body').value.trim();
+      const nickname = getNicknameValue();
 
       if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
+      if (!nickname) { showAlert('warning', 'ニックネームを入力してください。'); return; }
       if (!title || !body) { showAlert('warning', 'タイトルと内容を入力してください。'); return; }
 
       const postData = {
@@ -444,13 +539,17 @@
         title,
         body,
         postType: document.querySelector('input[name="postType"]:checked').value,
-        nickname: document.getElementById('nickname').value.trim() || null,
+        nickname,
       };
+
+      // フォールバック用に手元にも保持（初期表示でAPIが無い場合でもユーザー体験を落とさない）
+      cacheNickname(nickname);
 
       try {
         await api('/api/addeva/feedback/create', { method: 'POST', body: postData });
         showAlert('success', '投稿しました。ありがとうございます。審査後に公開されます。');
-        // Debug: 成功メッセージ直後の状態を強制ログ（ここでmessageTextが空なら、showAlert時点で空）
+
+        // Debug: 成功メッセージ直後の状態を強制ログ
         try { dbg.snapshot('submitPost.afterShowAlert'); } catch (_) {}
 
         document.getElementById('title').value = '';
@@ -491,7 +590,22 @@
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
 
+      const nickEl = getNicknameEl();
+      if (nickEl) {
+        nickEl.addEventListener('input', () => {
+          cacheNickname(getNicknameValue());
+          const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
+          setUIState(pc);
+        });
+      }
+
       try {
+        // 1) まずは手元キャッシュで埋める（APIが無い場合のフォールバック）
+        loadNicknameFromCacheIfEmpty();
+
+        // 2) 可能ならサーバ側の現在値で上書き
+        await tryLoadNicknameFromApi();
+
         await loadProductInfo(productCode);
         await loadParts(productCode);
         setUIState('');
