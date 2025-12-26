@@ -24,6 +24,9 @@
 
     /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
+
+    /* 重要注意（ダークレッド） */
+    .text-darkred { color: #8B0000 !important; }
   </style>
 </head>
 
@@ -132,12 +135,12 @@
             <div class="col-12 col-md-7">
               <label class="form-label d-block mb-2">意見タイプ</label>
               <div class="btn-group w-100" role="group" aria-label="意見タイプ選択">
-                <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off" checked>
+                <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off">
                 <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい点</label>
                 <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
                 <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up"></i> 良かった点</label>
               </div>
-              <div class="form-text mt-2">意見を追加する際には、上記のどちらのご意見かを必ず選択してください。</div>
+              <div class="form-text mt-2 fw-semibold text-darkred">意見を追加する際には、上記のどちらのご意見かを必ず選択してください。</div>
             </div>
 
             <div class="col-12 col-md-5">
@@ -424,11 +427,12 @@
       const isNew = partCode === '__new__';
       const hasSelection = !!partCode && !isNew;
       const nickOk = !!getNicknameValue();
+      const typeOk = !!document.querySelector('input[name="postType"]:checked');
 
       document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
 
       const btnSubmit = document.getElementById('btnSubmit');
-      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk);
+      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk);
 
       const hint = document.getElementById('submitHint');
       if (hint) {
@@ -436,6 +440,8 @@
           hint.textContent = '新しい部位を登録してから投稿できます。';
         } else if (!hasSelection) {
           hint.textContent = '部位を選ぶと投稿できます。';
+        } else if (!typeOk) {
+          hint.textContent = '意見タイプを選択すると投稿できます。';
         } else if (!nickOk) {
           hint.textContent = 'ニックネームを入力すると投稿できます。';
         } else {
@@ -540,8 +546,10 @@
       const title = document.getElementById('title').value.trim();
       const body = document.getElementById('body').value.trim();
       const nickname = getNicknameValue();
+      const ptEl = document.querySelector('input[name="postType"]:checked');
 
       if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
+      if (!ptEl) { showAlert('warning', '意見タイプを選択してください。'); return; }
       if (!nickname) { showAlert('warning', 'ニックネームを入力してください。'); return; }
       if (!title || !body) { showAlert('warning', 'タイトルと内容を入力してください。'); return; }
 
@@ -550,7 +558,7 @@
         partCode,
         title,
         body,
-        postType: document.querySelector('input[name="postType"]:checked').value,
+        postType: String(ptEl.value || '').trim(),
         nickname,
       };
 
@@ -601,6 +609,14 @@
       document.getElementById('btnReload').addEventListener('click', loadPartPosts);
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
+
+      // 意見タイプを選んだら投稿可否を再判定
+      document.querySelectorAll('input[name="postType"]').forEach(el => {
+        el.addEventListener('change', () => {
+          const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
+          setUIState(pc);
+        });
+      });
 
       const nickEl = getNicknameEl();
       if (nickEl) {
