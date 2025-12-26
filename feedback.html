@@ -343,7 +343,6 @@
         if (cached) el.value = cached;
       } catch (_) {}
     }
-
     async function tryLoadNicknameFromApi() {
       // 既存環境差分を吸収しつつ、不要な404/405ログを極力出さないため、
       // まず /api/addeva/customer/me を「POST優先」で叩き、405のときだけGETにフォールバックします。
@@ -377,11 +376,6 @@
         }
       } catch (_) {
         // ignore
-      }
-    }
-        } catch (_) {
-          // ignore
-        }
       }
     }
 
