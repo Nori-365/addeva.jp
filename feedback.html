@@ -344,14 +344,13 @@
       } catch (_) {}
     }
     async function tryLoadNicknameFromApi() {
-      // 既存環境差分を吸収しつつ、不要な404/405ログを極力出さないため、
-      // まず /api/addeva/customer/me を「POST優先」で叩き、405のときだけGETにフォールバックします。
+      // 方針：ニックネーム取得はPOST固定（GETは使わない）
+      // 理由：あなたの運用経験に合わせて、GET起因の失敗を避けるため
       const parseNick = (res) => {
         const nick = (res && (res.nickname ?? (res.customer && res.customer.nickname) ?? (res.data && res.data.nickname))) || '';
         return String(nick || '').trim();
       };
 
-      // 1) POST（FastAPI側でPOSTのみ許可の環境があるため）
       try {
         const res = await api('/api/addeva/customer/me', { method: 'POST', body: {} });
         const v = parseNick(res);
@@ -359,23 +358,8 @@
           setNicknameValue(v);
           cacheNickname(v);
         }
-        return;
-      } catch (e) {
-        const msg = String((e && e.message) || '');
-        // 405(Method Not Allowed) の場合のみGETを試す
-        if (!/Method Not Allowed/i.test(msg)) return;
-      }
-
-      // 2) GETフォールバック（環境によってはGET実装の可能性がある）
-      try {
-        const res = await api('/api/addeva/customer/me', { method: 'GET' });
-        const v = parseNick(res);
-        if (v) {
-          setNicknameValue(v);
-          cacheNickname(v);
-        }
       } catch (_) {
-        // ignore
+        // ignore（未ログイン/権限/未実装などは初期表示を空のままにする）
       }
     }
 
