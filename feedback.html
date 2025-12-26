@@ -21,6 +21,12 @@
     /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
     .post-card h3 { line-height: 1.35; }
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
+
+    /* 成功/エラーメッセージを、スクロール後も見える位置に固定（固定ヘッダー下） */
+    $1
+
+    /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
+    #messageArea, #partPostsWrap { overflow-anchor: none; }
   </style>
 </head>
 
@@ -40,7 +46,15 @@
         </nav>
 
         <!-- メッセージ表示エリア -->
-        <div id="messageArea" class="alert d-none" role="alert"></div>
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div id="messageText" class="flex-grow-1"></div>
+            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>      </div>
+
+        <!-- Debug: Alert trace (inspectable) -->
+        <pre id="debugAlertTrace" class="d-none small text-secondary mt-2"
+             style="white-space:pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"></pre>
 
         <!-- ページヘッダー情報 -->
         <div class="mb-4">
@@ -98,8 +112,8 @@
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <select id="filterType" class="form-select form-select-sm" style="width:auto;">
                 <option value="">すべて表示</option>
-                <option value="improve">改善してほしいところ</option>
-                <option value="praise">良いと思ったところ</option>
+                <option value="improve">改善してほしい</option>
+                <option value="praise">良いと思った</option>
               </select>
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
@@ -121,17 +135,17 @@
               <label class="form-label d-block mb-2">投稿タイプ</label>
               <div class="btn-group w-100" role="group" aria-label="投稿タイプ選択">
                 <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb me-2"></i>改善してほしいところ</label>
+                $1改善してほしい$2
 
                 <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
-                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up me-2"></i>良いと思ったところ</label>
+                $1良いと思った$2
               </div>
               <div class="form-text mt-2">使っていない/分からない場合は、投票は「無投票」のままが正解です（無理に反対を入れないでください）。</div>
             </div>
 
             <div class="col-12 col-md-5">
               <label for="nickname" class="form-label">ニックネーム<span class="text-secondary small">（任意）</span></label>
-              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録されます（例：Ueda）">
+              <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="初回投稿時のみ登録されます（例：Taro）">
               <div class="form-text">未登録の場合のみ保存されます。すでに登録済みの場合は無視されます。</div>
             </div>
 
@@ -164,22 +178,74 @@
 
   <script>
     // === ユーティリティ ===
-    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';    const bindMessageClose = () => {
+      const btn = document.getElementById('messageCloseBtn');
+      if (!btn) return;
+      if (btn.dataset.bound === '1') return;
+      btn.addEventListener('click', clearAlert);
+      btn.dataset.bound = '1';
+    };
+
+    // === Debug trace (alert) ===
+    // ・URLに ?debug=1 を付けると画面上にも表示します（付けなくてもDOM上には残ります）
+    const dbg = (() => {
+      const enabled = (qs('debug') === '1');
+      const el = () => document.getElementById('debugAlertTrace');
+      const write = (line) => {
+        const d = el();
+        if (!d) return;
+        if (enabled) d.classList.remove('d-none');
+        d.textContent += (line + "
+");
+      };
+      const snapshot = (tag, extra = {}) => {
+        const box = document.getElementById('messageArea');
+        const text = document.getElementById('messageText');
+        const payload = {
+          tag,
+          time: new Date().toISOString(),
+          boxClass: box ? String(box.className || '') : null,
+          hidden: box ? !!box.classList.contains('d-none') : null,
+          messageText: text ? String(text.textContent || '') : null,
+          ...extra,
+        };
+        write('DEBUG: ' + JSON.stringify(payload));
+      };
+      return { enabled, write, snapshot };
+    })();
 
     const showAlert = (kind, msg) => {
       const box = document.getElementById('messageArea');
       if (!box) return;
-      box.className = `alert alert-${kind}`;
-      box.textContent = msg;
-      box.classList.remove('d-none');
-      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
-    };
 
-    const clearAlert = () => {
+      box.className = `alert alert-${kind} shadow-sm`;
+      box.classList.remove('d-none');
+
+      const text = document.getElementById('messageText');      if (text) text.textContent = msg;
+
+      // Debug: showAlertが実行された時点でのメッセージ内容を強制的に記録
+      try { dbg.snapshot('showAlert', { kind: String(kind), msgParam: String(msg ?? '') }); } catch (_) {}
+
+      bindMessageClose();
+
+      // メッセージは確実に上部で見せる（固定ヘッダー配下の #messageArea を想定）
+      // ※投稿成功時に「元の位置に戻す」スクロールをするとメッセージを見逃すため、成功時も上へ誘導します。
+      if (kind === 'danger' || kind === 'warning' || kind === 'success') {
+        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
+      }
+    };    const clearAlert = () => {
       const box = document.getElementById('messageArea');
       if (!box) return;
+
+      // Debug: clearAlertが走ったかどうかを記録（before/after）
+      try { dbg.snapshot('clearAlert.before'); } catch (_) {}
+
       box.classList.add('d-none');
-      box.textContent = '';
+      const text = document.getElementById('messageText');
+      if (text) text.textContent = '';
+      bindMessageClose();
+
+      try { dbg.snapshot('clearAlert.after'); } catch (_) {}
     };
 
     const escapeHtml = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]);
@@ -282,8 +348,9 @@
     }
 
     async function loadPartPosts(opts = {}) {
-      const keepAlert = !!opts.keepAlert;
-      if (!keepAlert) clearAlert();
+      const keepAlert = !!opts.keepAlert;      if (!keepAlert) clearAlert();
+      // Debug: 一覧再読込が成功メッセージを消していないかを判定するためのトレース
+      try { dbg.snapshot('loadPartPosts.begin', { keepAlert }); } catch (_) {}
 
       const wrap = document.getElementById('partPostsWrap');
       const productCode = qs('product_code');
@@ -316,9 +383,8 @@
         if (!Array.isArray(posts) || posts.length === 0) {
           wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">この部位の投稿はまだありません。</p></div>';
           return;
-        }
-
-        wrap.innerHTML = posts.map(renderPostCard).join('');
+        }        wrap.innerHTML = posts.map(renderPostCard).join('');
+        try { dbg.snapshot('loadPartPosts.rendered', { keepAlert, renderedCount: Array.isArray(posts) ? posts.length : null }); } catch (_) {}
 
         wrap.querySelectorAll('.vote-btn').forEach(btn => {
           btn.addEventListener('click', async () => {
@@ -361,7 +427,6 @@
         setUIState(partCode);
 
         await loadPartPosts({ keepAlert: true });
-
       } catch (e) {
         showAlert('danger', e.message || '部位の追加に失敗しました。');
       }
@@ -369,7 +434,6 @@
 
     async function submitPost() {
       clearAlert();
-
       const productCode = qs('product_code');
       const partCode = document.getElementById('partSelect').value;
       const title = document.getElementById('title').value.trim();
@@ -390,6 +454,8 @@
       try {
         await api('/api/addeva/feedback/create', { method: 'POST', body: postData });
         showAlert('success', '投稿しました。ありがとうございます。審査後に公開されます。');
+        // Debug: 成功メッセージ直後の状態を強制ログ（ここでmessageTextが空なら、showAlert時点で空）
+        try { dbg.snapshot('submitPost.afterShowAlert'); } catch (_) {}
 
         document.getElementById('title').value = '';
         document.getElementById('body').value = '';
@@ -403,12 +469,6 @@
         if (filterEl) filterEl.value = '';
 
         await loadPartPosts({ keepAlert: true });
-
-        // ②の一覧へスクロール（投稿が反映されたことをすぐ確認できる）
-        const postsWrap = document.getElementById('partPostsWrap');
-        if (postsWrap && typeof postsWrap.scrollIntoView === 'function') {
-          postsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
 
       } catch (e) {
         showAlert('danger', e.message || '投稿に失敗しました。');
