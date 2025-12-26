@@ -21,9 +21,7 @@
     /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
     .post-card h3 { line-height: 1.35; }
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
-
     /* 成功/エラーメッセージを、スクロール後も見える位置に固定（固定ヘッダー下） */
-    $1
 
     /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
@@ -135,10 +133,9 @@
               <label class="form-label d-block mb-2">投稿タイプ</label>
               <div class="btn-group w-100" role="group" aria-label="投稿タイプ選択">
                 <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off" checked>
-                $1改善してほしい$2
-
+                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい</label>
                 <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
-                $1良いと思った$2
+                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up"></i> 良いと思った</label>
               </div>
               <div class="form-text mt-2">使っていない/分からない場合は、投票は「無投票」のままが正解です（無理に反対を入れないでください）。</div>
             </div>
@@ -195,9 +192,8 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "
-");
-      };
+        d.textContent += (line + "\n");
+};
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
         const text = document.getElementById('messageText');
