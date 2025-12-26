@@ -63,7 +63,7 @@
           </p>
           <p class="text-secondary">
             製品改善のため、皆様のご意見をお聞かせください。<br>
-            手順：部位を選ぶ → その部位の意見を先に読む → 必要なら投票・投稿
+            手順：部位を選ぶ → その部位の意見を先に読む → 必要なら投票・意見を追加
           </p>
         </div>
 
@@ -110,8 +110,8 @@
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <select id="filterType" class="form-select form-select-sm" style="width:auto;">
                 <option value="">すべて表示</option>
-                <option value="improve">改善してほしい</option>
-                <option value="praise">良いと思った</option>
+                <option value="improve">改善してほしい点</option>
+                <option value="praise">良かった点</option>
               </select>
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
@@ -127,23 +127,23 @@
           <hr class="my-4">
 
           <!-- 3. この部位に意見を投稿する -->
-          <h2 class="h5 mb-3">3. この部位に意見を投稿する</h2>
+          <h2 class="h5 mb-3">3. この部位に意見を追加する</h2>
           <div class="row g-3">
             <div class="col-12 col-md-7">
-              <label class="form-label d-block mb-2">投稿タイプ</label>
-              <div class="btn-group w-100" role="group" aria-label="投稿タイプ選択">
+              <label class="form-label d-block mb-2">意見タイプ</label>
+              <div class="btn-group w-100" role="group" aria-label="意見タイプ選択">
                 <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい</label>
+                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい点</label>
                 <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
-                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up"></i> 良いと思った</label>
+                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up"></i> 良かった点</label>
               </div>
-              <div class="form-text mt-2">使っていない/分からない場合は、投票は「無投票」のままが正解です（無理に反対を入れないでください）。</div>
+              <div class="form-text mt-2">意見を追加する際には、上記のどちらのご意見かを必ず選択してください。</div>
             </div>
 
             <div class="col-12 col-md-5">
               <label for="nickname" class="form-label">ニックネーム <span class="text-danger">*</span></label>
               <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="例：Taro" required>
-              <div class="form-text">必須です。いつでも変更できます（変更すると、過去投稿の表示名も同じニックネームに統一されます）。</div>
+              <div class="form-text">投稿にニックネームは必須です。ニックネームを変更して投稿すると、あなたの過去の投稿のニックネームも変わります。尚ニックネームの変更のみは、ここから行えません。</div>
             </div>
 
             <div class="col-12">
@@ -264,7 +264,7 @@
       const approved = isApprovedStatus(p.status);
       const statusClass = approved ? 'text-bg-success' : 'text-bg-secondary';
       const statusChip = `<span class="badge ${statusClass} fw-normal">${escapeHtml(statusLabel(p.status))}</span>`;
-      const typeChip = `<span class="badge text-bg-info fw-normal">${p.post_type === 'improve' ? '改善案' : '良い点'}</span>`;
+      const typeChip = `<span class="badge text-bg-info fw-normal">${p.post_type === 'improve' ? '改善してほしい点' : '良かった点'}</span>`;
 
       const voteButton = (voteType, label, count) => `
         <button class="btn btn-sm btn-outline-secondary vote-btn ${p.my_vote === voteType ? 'active' : ''}"
@@ -344,22 +344,44 @@
       } catch (_) {}
     }
     async function tryLoadNicknameFromApi() {
-      // 方針：ニックネーム取得はPOST固定（GETは使わない）
-      // 理由：あなたの運用経験に合わせて、GET起因の失敗を避けるため
+      // 方針：POST優先。ただしサーバ側がPOSTを許可していない場合(405)はGETにフォールバック。
+      // 重要：ここだけは common.js(ADDEVA.apiFetch) を使わず fetch 直叩きにして、
+      // 405時に console.error を大量発生させないようにします。
+
       const parseNick = (res) => {
         const nick = (res && (res.nickname ?? (res.customer && res.customer.nickname) ?? (res.data && res.data.nickname))) || '';
         return String(nick || '').trim();
       };
 
+      const headers = { 'Content-Type': 'application/json' };
       try {
-        const res = await api('/api/addeva/customer/me', { method: 'POST', body: {} });
-        const v = parseNick(res);
+        const apiKey = localStorage.getItem(ADDEVA.LS.apiKey) || '';
+        const authToken = localStorage.getItem(ADDEVA.LS.authToken) || '';
+        if (apiKey) headers['x-api-key'] = apiKey;
+        if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+      } catch (_) {}
+
+      const url = '/api/addeva/customer/me';
+
+      try {
+        // 1) POST優先
+        let r = await fetch(url, { method: 'POST', headers, body: '{}' });
+
+        // 2) POSTが許可されていなければGETへ
+        if (r && r.status === 405) {
+          r = await fetch(url, { method: 'GET', headers });
+        }
+
+        if (!r || !r.ok) return;
+
+        const j = await r.json().catch(() => null);
+        const v = parseNick(j);
         if (v) {
           setNicknameValue(v);
           cacheNickname(v);
         }
       } catch (_) {
-        // ignore（未ログイン/権限/未実装などは初期表示を空のままにする）
+        // ignore
       }
     }
 
