@@ -129,7 +129,7 @@
 
           <hr class="my-4">
 
-          <!-- 3. この部位に意見を投稿する -->
+          <!-- 3. この部位に意見を追加する -->
           <h2 class="h5 mb-3">3. この部位に意見を追加する</h2>
           <div class="row g-3">
             <div class="col-12 col-md-7">
@@ -160,7 +160,7 @@
             </div>
 
             <div class="col-12">
-              <button id="btnSubmit" class="btn btn-primary btn-lg w-100">投稿する</button>
+              <button id="btnSubmit" class="btn btn-primary btn-lg w-100">意見を追加する</button>
               <div id="submitHint" class="form-text mt-2 text-center">部位を選ぶと投稿できます。</div>
             </div>
           </div>
@@ -428,11 +428,13 @@
       const hasSelection = !!partCode && !isNew;
       const nickOk = !!getNicknameValue();
       const typeOk = !!document.querySelector('input[name="postType"]:checked');
+      const titleOk = !!String(document.getElementById('title')?.value || '').trim();
+      const bodyOk  = !!String(document.getElementById('body')?.value  || '').trim();
 
       document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
 
       const btnSubmit = document.getElementById('btnSubmit');
-      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk);
+      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk && titleOk && bodyOk);
 
       const hint = document.getElementById('submitHint');
       if (hint) {
@@ -442,10 +444,14 @@
           hint.textContent = '部位を選ぶと投稿できます。';
         } else if (!typeOk) {
           hint.textContent = '意見タイプを選択すると投稿できます。';
+        } else if (!typeOk) {
+          hint.textContent = '意見タイプを選択すると投稿できます。';
         } else if (!nickOk) {
           hint.textContent = 'ニックネームを入力すると投稿できます。';
+        } else if (!titleOk || !bodyOk) {
+          hint.textContent = 'タイトルと内容を入力すると投稿できます。';
         } else {
-          hint.textContent = '内容を入力して投稿してください。';
+          hint.textContent = '内容を確認して送信してください。';
         }
       }
     }
@@ -609,6 +615,16 @@
       document.getElementById('btnReload').addEventListener('click', loadPartPosts);
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
+
+      // タイトル/内容の入力で投稿可否を再判定
+      ['title', 'body'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+          const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
+          setUIState(pc);
+        });
+      });
 
       // 意見タイプを選んだら投稿可否を再判定
       document.querySelectorAll('input[name="postType"]').forEach(el => {
