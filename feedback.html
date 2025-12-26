@@ -281,8 +281,9 @@
       document.getElementById('submitHint').textContent = hasSelection ? '内容を入力して投稿してください。' : (isNew ? '新しい部位を登録してから投稿できます。' : '部位を選ぶと投稿できます。');
     }
 
-    async function loadPartPosts() {
-      clearAlert();
+    async function loadPartPosts(opts = {}) {
+      const keepAlert = !!opts.keepAlert;
+      if (!keepAlert) clearAlert();
 
       const wrap = document.getElementById('partPostsWrap');
       const productCode = qs('product_code');
@@ -353,9 +354,13 @@
         showAlert('success', '部位を追加しました。');
 
         await loadParts(productCode);
-        document.getElementById('partSelect').value = partCode;
+
+        // 追加した部位を選択状態にする
+        const sel = document.getElementById('partSelect');
+        if (sel) sel.value = partCode;
         setUIState(partCode);
-        await loadPartPosts();
+
+        await loadPartPosts({ keepAlert: true });
 
       } catch (e) {
         showAlert('danger', e.message || '部位の追加に失敗しました。');
@@ -389,7 +394,21 @@
         document.getElementById('title').value = '';
         document.getElementById('body').value = '';
 
-        await loadPartPosts();
+        // 念のため選択状態を固定
+        document.getElementById('partSelect').value = partCode;
+        setUIState(partCode);
+
+        // フィルターで見えなくなるのを防ぐ（投稿直後は一度「すべて表示」に戻す）
+        const filterEl = document.getElementById('filterType');
+        if (filterEl) filterEl.value = '';
+
+        await loadPartPosts({ keepAlert: true });
+
+        // ②の一覧へスクロール（投稿が反映されたことをすぐ確認できる）
+        const postsWrap = document.getElementById('partPostsWrap');
+        if (postsWrap && typeof postsWrap.scrollIntoView === 'function') {
+          postsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
       } catch (e) {
         showAlert('danger', e.message || '投稿に失敗しました。');
