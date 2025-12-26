@@ -197,8 +197,7 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "
-");
+        d.textContent += (line + "\\n");
       };
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
