@@ -438,20 +438,27 @@
 
       const hint = document.getElementById('submitHint');
       if (hint) {
+        // 送信可否の理由を分かりやすく表示
         if (isNew) {
-          hint.textContent = '新しい部位を登録してから投稿できます。';
+          hint.textContent = '新しい部位を登録してから意見を追加できます。';
+          hint.className = 'form-text mt-2 text-center';
         } else if (!hasSelection) {
-          hint.textContent = '部位を選ぶと投稿できます。';
-        } else if (!typeOk) {
-          hint.textContent = '意見タイプを選択すると投稿できます。';
-        } else if (!typeOk) {
-          hint.textContent = '意見タイプを選択すると投稿できます。';
-        } else if (!nickOk) {
-          hint.textContent = 'ニックネームを入力すると投稿できます。';
-        } else if (!titleOk || !bodyOk) {
-          hint.textContent = 'タイトルと内容を入力すると投稿できます。';
+          hint.textContent = '部位を選ぶと意見を追加できます。';
+          hint.className = 'form-text mt-2 text-center';
         } else {
-          hint.textContent = '内容を確認して送信してください。';
+          const missing = [];
+          if (!typeOk) missing.push('意見タイプ');
+          if (!nickOk) missing.push('ニックネーム');
+          if (!titleOk) missing.push('タイトル');
+          if (!bodyOk) missing.push('内容');
+
+          if (missing.length > 0) {
+            hint.textContent = '未入力項目：' + missing.join('、');
+            hint.className = 'form-text mt-2 text-center fw-semibold text-darkred';
+          } else {
+            hint.textContent = '送信できます。';
+            hint.className = 'form-text mt-2 text-center';
+          }
         }
       }
     }
