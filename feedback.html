@@ -573,8 +573,10 @@
 
       const wrap = document.getElementById('partPostsWrap');
       const productCode = qs('product_code');
-      const partCode = document.getElementById('partSelect').value;
-      const filterType = document.getElementById('filterType').value;
+      const partCode = document.getElementById('partSelect')?.value || '';
+      const filterType = document.getElementById('filterType')?.value || '';
+
+      if (!wrap) return;
 
       if (!productCode) {
         wrap.innerHTML = '<div class="alert alert-danger mb-0">商品コードが指定されていません。顧客ポータルから再度お試しください。</div>';
@@ -609,28 +611,33 @@
         wrap.innerHTML = _renderOrder.map(id => renderPostCard(_postMap.get(id))).join('');
         try { dbg.snapshot('loadPartPosts.rendered', { keepAlert, renderedCount: Array.isArray(posts) ? posts.length : null }); } catch (_) {}
 
+        // 投票（賛成/反対）
         wrap.querySelectorAll('.vote-btn').forEach(btn => {
           btn.addEventListener('click', async () => {
             const postId = Number(btn.dataset.post);
             const voteType = String(btn.dataset.v || '').trim();
+
             try {
               _setVotingDisabled(postId, true);
-              await api('/api/addeva/feedback/vote', { method: 'POST', body: { postId, voteType } });
+
+              const res = await api('/api/addeva/feedback/vote', {
+                method: 'POST',
+                body: { postId, voteType }
+              });
 
               // 並び順は固定のまま、該当投稿の表示だけ更新
-              _applyVoteOptimistic(postId, voteType);
+              const p = _postMap.get(Number(postId));
+              if (p && res) {
+                p.my_vote = (res.myVote ?? null);
+                p.up_count = Number(res.upCount ?? p.up_count ?? 0);
+                p.down_count = Number(res.downCount ?? p.down_count ?? 0);
+              }
               _updatePostDom(postId);
 
             } catch (e) {
               showAlert('danger', e.message || '投票に失敗しました。');
             } finally {
               _setVotingDisabled(postId, false);
-            }
-          });
-        });
-              await loadPartPosts();
-            } catch (e) {
-              showAlert('danger', e.message || '投票に失敗しました。');
             }
           });
         });
