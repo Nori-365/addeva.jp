@@ -266,6 +266,105 @@
     const statusLabel = s => statusMap[s] || s || '';
     const isApprovedStatus = s => ['reviewing', 'planned', 'shipped'].includes(s);
 
+    // === 表示順固定（ロード/更新時に確定）===
+    // ・初回表示/「更新」/フィルタ変更/部位変更のタイミングで、賛成(up)が多い順に並べ替え
+    // ・投票時は並び順を変えず、該当投稿のDOMだけを更新
+    let _ctxKey = '';
+    let _renderOrder = [];          // post_id の配列
+    let _postMap = new Map();       // post_id -> post object
+
+    const _makeCtxKey = () => {
+      const productCode = qs('product_code');
+      const partCode = document.getElementById('partSelect')?.value || '';
+      const filterType = document.getElementById('filterType')?.value || '';
+      return [productCode, partCode, filterType].join('|');
+    };
+
+    const _sortForInitialOrder = (posts) => {
+      // 賛成(up)が多い順（同数なら投稿IDの小さい順で安定化）
+      return [...posts].sort((a, b) => {
+        const au = Number(a.up_count || 0);
+        const bu = Number(b.up_count || 0);
+        if (bu !== au) return bu - au;
+        const ai = Number(a.post_id || 0);
+        const bi = Number(b.post_id || 0);
+        return ai - bi;
+      });
+    };
+
+    const _ensureOrder = (posts, forceReorder = false) => {
+      const key = _makeCtxKey();
+      const need = forceReorder || key !== _ctxKey || _renderOrder.length === 0;
+      _ctxKey = key;
+
+      _postMap = new Map();
+      for (const p of posts) _postMap.set(Number(p.post_id), p);
+
+      if (need) {
+        const sorted = _sortForInitialOrder(posts);
+        _renderOrder = sorted.map(p => Number(p.post_id));
+        return;
+      }
+
+      // 既存orderに無いものが増えた場合は末尾へ（投稿直後など）
+      for (const p of posts) {
+        const id = Number(p.post_id);
+        if (!_renderOrder.includes(id)) _renderOrder.push(id);
+      }
+      // 消えたものを除去
+      _renderOrder = _renderOrder.filter(id => _postMap.has(id));
+    };
+
+    const _updatePostDom = (postId) => {
+      const p = _postMap.get(Number(postId));
+      if (!p) return;
+
+      const card = document.querySelector(`.post-card[data-post-card="${Number(postId)}"]`);
+      if (!card) return;
+
+      const btnUp = card.querySelector(`.vote-btn[data-v="up"]`);
+      const btnDown = card.querySelector(`.vote-btn[data-v="down"]`);
+
+      if (btnUp) {
+        const b = btnUp.querySelector('span.badge');
+        if (b) b.textContent = String(p.up_count ?? 0);
+        btnUp.classList.toggle('active', p.my_vote === 'up');
+      }
+      if (btnDown) {
+        const b = btnDown.querySelector('span.badge');
+        if (b) b.textContent = String(p.down_count ?? 0);
+        btnDown.classList.toggle('active', p.my_vote === 'down');
+      }
+    };
+
+    const _setVotingDisabled = (postId, disabled) => {
+      const card = document.querySelector(`.post-card[data-post-card="${Number(postId)}"]`);
+      if (!card) return;
+      card.querySelectorAll('.vote-btn').forEach(b => { b.disabled = !!disabled; });
+    };
+
+    const _applyVoteOptimistic = (postId, voteType) => {
+      const p = _postMap.get(Number(postId));
+      if (!p) return;
+
+      const prev = (p.my_vote || null);
+      let next = voteType;
+
+      // 同じボタン＝取消
+      if (prev === voteType) next = null;
+
+      // remove prev
+      if (prev === 'up') p.up_count = Math.max(0, Number(p.up_count || 0) - 1);
+      if (prev === 'down') p.down_count = Math.max(0, Number(p.down_count || 0) - 1);
+
+      // add next
+      if (next === 'up') p.up_count = Number(p.up_count || 0) + 1;
+      if (next === 'down') p.down_count = Number(p.down_count || 0) + 1;
+
+      p.my_vote = next;
+    };
+
+
     function renderPostCard(p) {
       const approved = isApprovedStatus(p.status);
       const statusClass = approved ? 'text-bg-success' : 'text-bg-secondary';
@@ -285,7 +384,7 @@
         </div>` : '';
 
       return `
-        <div class="post-card border rounded p-3">
+        <div class="post-card border rounded p-3" data-post-card="${p.post_id}">
           <div class="d-flex justify-content-between align-items-start gap-3">
             <div class="flex-grow-1">
               <div class="d-flex gap-2 align-items-center flex-wrap mb-1">
@@ -505,7 +604,9 @@
           return;
         }
 
-        wrap.innerHTML = posts.map(renderPostCard).join('');
+        _ensureOrder(posts, !!opts.forceReorder);
+
+        wrap.innerHTML = _renderOrder.map(id => renderPostCard(_postMap.get(id))).join('');
         try { dbg.snapshot('loadPartPosts.rendered', { keepAlert, renderedCount: Array.isArray(posts) ? posts.length : null }); } catch (_) {}
 
         wrap.querySelectorAll('.vote-btn').forEach(btn => {
@@ -513,7 +614,20 @@
             const postId = Number(btn.dataset.post);
             const voteType = String(btn.dataset.v || '').trim();
             try {
+              _setVotingDisabled(postId, true);
               await api('/api/addeva/feedback/vote', { method: 'POST', body: { postId, voteType } });
+
+              // 並び順は固定のまま、該当投稿の表示だけ更新
+              _applyVoteOptimistic(postId, voteType);
+              _updatePostDom(postId);
+
+            } catch (e) {
+              showAlert('danger', e.message || '投票に失敗しました。');
+            } finally {
+              _setVotingDisabled(postId, false);
+            }
+          });
+        });
               await loadPartPosts();
             } catch (e) {
               showAlert('danger', e.message || '投票に失敗しました。');
@@ -548,7 +662,7 @@
         if (sel) sel.value = partCode;
         setUIState(partCode);
 
-        await loadPartPosts({ keepAlert: true });
+        await loadPartPosts({ keepAlert: true, forceReorder: true });
       } catch (e) {
         showAlert('danger', e.message || '部位の追加に失敗しました。');
       }
@@ -628,11 +742,11 @@
 
       document.getElementById('partSelect').addEventListener('change', async e => {
         setUIState(e.target.value);
-        await loadPartPosts();
+        await loadPartPosts({ forceReorder: true });
       });
 
-      document.getElementById('filterType').addEventListener('change', loadPartPosts);
-      document.getElementById('btnReload').addEventListener('click', loadPartPosts);
+      document.getElementById('filterType').addEventListener('change', () => loadPartPosts({ forceReorder: true }));
+      document.getElementById('btnReload').addEventListener('click', () => loadPartPosts({ forceReorder: true }));
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
 
