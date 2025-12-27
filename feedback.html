@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>フィードバック（投票と意見の追加）｜ADDEVA サポート</title>
+  <title>FeedBack（投票と意見の追加）｜ADDEVA サポート</title>
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,12 +21,27 @@
     /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
     .post-card h3 { line-height: 1.35; }
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
+    /* 投稿カード：上段(左/右) + 下段(本文)の2段構成（Grid） */
+    .post-card-top{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: .5rem 1rem;
+      align-items: start;
+    }
+    .post-card-top-left{ min-width: 0; }
+    .post-card-top-right{ justify-self: end; }
 
-    /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
+/* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
 
     /* 重要注意（ダークレッド） */
     .text-darkred { color: #8B0000 !important; }
+
+    /* スマホ微調整 */
+    @media (max-width: 575.98px) {
+      .post-card-top { gap: .5rem !important; }
+      .post-card-top-right .form-text { font-size: .75rem; }
+    }
   </style>
 </head>
 
@@ -41,8 +56,8 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
             <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
-            <li class="breadcrumb-item"><a id="breadcrumbBoardLink" href="/feedback_board.html">フィードバックボード</a></li>
-            <li class="breadcrumb-item active" aria-current="page">投票と意見の追加</li>
+            <li class="breadcrumb-item"><a id="breadcrumbBoardLink" href="/feedback_board.html">FeedBackボード</a></li>
+            <li class="breadcrumb-item active" aria-current="page">FeedBack（投票と意見の追加）</li>
           </ol>
         </nav>
 
@@ -60,9 +75,9 @@
 
         <!-- ページヘッダー情報 -->
         <div class="mb-4">
-          <h1 class="mb-2">フィードバック（投票と意見の追加）</h1>
+          <h1 class="mb-2">FeedBack（投票と意見の追加）</h1>
           <p class="lead mb-1">
-            対象商品：<span id="productName" class="fw-bold text-primary">-</span>
+            <span class="d-none d-sm-inline">対象商品：</span><span class="d-inline d-sm-none">対象：</span> <span id="productName" class="fw-bold text-primary">-</span>
             <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
           </p>
           <p class="text-secondary">
@@ -120,7 +135,7 @@
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
           </div>
-          <p class="text-secondary small">審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。投票は任意です。気になる意見だけ「賛成」または「反対」を押してください（投票しないままで問題ありません）。</p>
+          <p class="text-secondary small">審査中のご意見は、ご本人のみ表示されます。わからない意見には、無投票でお願いします。</p>
 
           <div class="vstack gap-3" id="partPostsWrap">
             <div class="text-center p-4 bg-light rounded">
@@ -383,30 +398,36 @@
           <p class="small text-secondary mb-0" style="white-space:pre-wrap;">${escapeHtml(p.dev_comment)}</p>
         </div>` : '';
 
+      const title = String(p.title || '').trim() || '(無題)';
+      const nickLine = (p.nickname || '').trim()
+        ? `<p class="small text-secondary mb-2">ニックネーム: ${escapeHtml(p.nickname)}</p>`
+        : '';
+
       return `
         <div class="post-card border rounded p-3" data-post-card="${p.post_id}">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div class="flex-grow-1">
-              <div class="d-flex gap-2 align-items-center flex-wrap mb-1">
+          <div class="post-card-top">
+            <div class="post-card-top-left">
+              <div class="d-flex gap-2 align-items-center flex-wrap">
                 ${statusChip}
                 ${typeChip}
-                <h3 class="h6 mb-0">${escapeHtml(p.title)}</h3>
               </div>
-              <p class="small text-secondary mb-2">
-                投稿ID: ${p.post_id}${p.nickname ? ` / ニックネーム: ${escapeHtml(p.nickname)}` : ''}
-              </p>
-              <p class="mb-0" style="white-space:pre-wrap;">${escapeHtml(p.body)}</p>
             </div>
 
-            <div class="text-end" style="min-width:220px;">
-              <div class="btn-group btn-group-sm" role="group" aria-label="投票（任意）">
+            <div class="post-card-top-right text-end">
+              <div class="btn-group btn-group-sm" role="group" aria-label="投票">
                 ${voteButton('up', '賛成', p.up_count)}
                 ${voteButton('down', '反対', p.down_count)}
               </div>
-              <div class="form-text mt-1">${approved ? 'クリックで投票/取消（投票は任意）' : '審査中は投票不可'}</div>
+              <div class="form-text mt-1">${approved ? 'クリックで投票/取消' : '審査中は投票不可'}</div>
             </div>
           </div>
-          ${devCommentBlock}
+
+          <div class="post-card-bottom mt-2">
+            ${nickLine}
+            <h3 class="h6 mb-2">${escapeHtml(title)}</h3>
+            <p class="mb-0" style="white-space:pre-wrap;">${escapeHtml(p.body)}</p>
+            ${devCommentBlock}
+          </div>
         </div>`;
     }
 
