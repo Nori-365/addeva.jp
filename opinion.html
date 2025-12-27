@@ -1,178 +1,137 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
-  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>投票（意見一覧）｜ADDEVA</title>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>投票ページ｜ADDEVA フィードバック</title>
-
-  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
+  <!-- common.js が初回に localStorage へ保存します -->
   <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 
   <style>
-    /* Chromeのスクロールアンカー対策 */
-    #messageArea { overflow-anchor: none; }
-
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
-
-    .post-item {
-      border: 1px solid rgba(0,0,0,.12);
-      border-radius: .75rem;
-      padding: 1rem;
-      background: #fff;
-    }
-
-    .post-title { line-height: 1.35; }
-
-    .text-darkred { color: #8B0000 !important; }
-
-    /* モーダル内の長文も読みやすく */
-    .modal-body .post-item { border-radius: .75rem; }
+    .note-warn { color: #8B0000; }
   </style>
 </head>
-
 <body>
-  <!-- ▼ 共通ヘッダーを読み込み -->
-  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
 
-  <main>
-    <section class="section py-5">
-      <div class="container container-narrow">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-            <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
-            <li class="breadcrumb-item active" aria-current="page">投票ページ</li>
-          </ol>
-        </nav>
+  <!-- header include -->
+  <div data-include="/header.html"></div>
 
-        <!-- メッセージ表示エリア -->
-        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
-          <div class="d-flex align-items-start justify-content-between gap-3">
-            <div id="messageText" class="flex-grow-1"></div>
-            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+  <main class="py-4">
+    <div class="container container-narrow">
+
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small mb-0">
+          <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+          <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
+          <li class="breadcrumb-item active" aria-current="page">投票（意見一覧）</li>
+        </ol>
+      </nav>
+
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div>
+          <h1 class="h3 mb-1">投票（意見一覧）</h1>
+          <div class="text-secondary small">
+            対象商品：<span id="productName" class="fw-semibold">-</span>
+            <span class="ms-2">商品コード：<span id="productCodeLabel">-</span></span>
           </div>
+          <div class="text-secondary small">表示順は読み込み（または更新）時に確定し、投票しても次の更新まで変わりません。</div>
         </div>
 
-        <!-- ページヘッダー情報 -->
-        <div class="mb-4">
-          <h1 class="mb-2">投票ページ</h1>
-          <p class="lead mb-1">
-            対象商品：<span id="productName" class="fw-bold text-primary">-</span>
-            <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
-          </p>
-          <p class="text-secondary">
-            まずは皆さんの意見に投票してください。該当する意見が無ければ、意見を追加できます。
-          </p>
-        </div>
-
-        <div class="d-flex flex-wrap gap-2 mb-4">
-          <a id="btnAddOpinion" class="btn btn-primary" href="#">
-            <i class="bi bi-plus-circle me-1"></i> 新しい意見を追加する
+        <div class="d-flex gap-2">
+          <a id="btnAddOpinion" class="btn btn-primary btn-sm" href="#">
+            <i class="bi bi-plus-lg"></i> 意見を追加する
           </a>
-          <button id="btnReload" class="btn btn-outline-secondary" type="button">
-            <i class="bi bi-arrow-clockwise me-1"></i> 更新
+          <button id="btnReload" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-clockwise"></i> 更新
           </button>
         </div>
-
-        <div class="row g-4">
-          <div class="col-12 col-lg-6">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
-                  <h2 class="h5 m-0"><i class="bi bi-lightbulb me-2"></i>改善してほしい点（上位）</h2>
-                  <button class="btn btn-sm btn-outline-primary" type="button" data-act="openAll" data-type="improve">
-                    全部見る
-                  </button>
-                </div>
-                <p class="text-secondary small mb-3">投票数の多い順に表示します（承認済み投稿のみ）。</p>
-                <div id="topImprove" class="vstack gap-3">
-                  <div class="text-center p-4 bg-light rounded">
-                    <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-6">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
-                  <h2 class="h5 m-0"><i class="bi bi-hand-thumbs-up me-2"></i>良かった点（上位）</h2>
-                  <button class="btn btn-sm btn-outline-primary" type="button" data-act="openAll" data-type="praise">
-                    全部見る
-                  </button>
-                </div>
-                <p class="text-secondary small mb-3">投票数の多い順に表示します（承認済み投稿のみ）。</p>
-                <div id="topPraise" class="vstack gap-3">
-                  <div class="text-center p-4 bg-light rounded">
-                    <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <div class="p-3 bg-light border rounded">
-            <div class="d-flex gap-2 align-items-start">
-              <i class="bi bi-info-circle mt-1"></i>
-              <div>
-                <div class="fw-semibold">投票のルール</div>
-                <div class="small text-secondary">
-                  投票は「賛成 / 反対 / どちらでもない」の3択です。同じボタンをもう一度押すと無投票に戻ります。分からない場合は「無投票」のままで問題ありません。
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
-    </section>
+
+      <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+        <div class="d-flex align-items-start justify-content-between gap-3">
+          <div id="messageText" class="flex-grow-1"></div>
+          <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-lg-6">
+          <div class="card shadow-sm p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <div class="fw-semibold">改善してほしい点（上位）</div>
+                <div class="text-secondary small">総投票数が多い順。全件は「すべて見る」で確認できます。</div>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" data-open-all="improve">すべて見る</button>
+            </div>
+            <div id="summaryImproveWrap" class="vstack gap-2"></div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+          <div class="card shadow-sm p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div>
+                <div class="fw-semibold">良かった点（上位）</div>
+                <div class="text-secondary small">総投票数が多い順。全件は「すべて見る」で確認できます。</div>
+              </div>
+              <button class="btn btn-outline-primary btn-sm" data-open-all="praise">すべて見る</button>
+            </div>
+            <div id="summaryPraiseWrap" class="vstack gap-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3 text-secondary small">
+        注：審査中（new）の意見は投票できません。投票はいつでも変更できます（賛成/反対/どちらでもない）。
+      </div>
+
+    </div>
   </main>
 
-  <!-- ▼ 共通フッターを読み込み -->
-  <div data-include="/includes/footer.html" aria-busy="true"></div>
+  <!-- footer include -->
+  <div data-include="/footer.html"></div>
 
-  <!-- ▼ 一覧モーダル（全部見る） -->
+  <!-- All posts modal -->
   <div class="modal fade" id="allModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="allModalTitle">一覧</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+          <h5 class="modal-title">意見一覧（すべて）</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-            <div class="small text-secondary" id="allModalSub">-</div>
-            <div class="d-flex gap-2 align-items-center">
-              <select id="allSort" class="form-select form-select-sm" style="width:auto;">
-                <option value="popular">人気順（総投票数）</option>
-                <option value="new">新着順</option>
+
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <label class="small text-secondary" for="typeSelect">種類</label>
+              <select id="typeSelect" class="form-select form-select-sm" style="width:auto;">
+                <option value="improve">改善してほしい点</option>
+                <option value="praise">良かった点</option>
               </select>
-              <button class="btn btn-sm btn-outline-secondary" id="btnAllReload" type="button"><i class="bi bi-arrow-clockwise"></i></button>
+
+              <label class="small text-secondary ms-2" for="sortSelect">並び順</label>
+              <select id="sortSelect" class="form-select form-select-sm" style="width:auto;">
+                <option value="top">投票数が多い順</option>
+                <option value="new">新しい順</option>
+              </select>
+
+              <span class="small text-secondary ms-2">（投票しても、次の更新までは表示順は変わりません）</span>
             </div>
+
+            <button id="btnAllReload" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-arrow-clockwise"></i> 更新
+            </button>
           </div>
 
-          <div id="allList" class="vstack gap-3">
-            <div class="text-center p-4 bg-light rounded">
-              <div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>
-            </div>
-          </div>
+          <div id="allWrap" class="vstack gap-2"></div>
 
-          <div class="d-grid mt-3">
-            <button id="btnAllMore" class="btn btn-outline-primary" type="button">さらに読み込む</button>
-          </div>
         </div>
       </div>
     </div>
@@ -182,9 +141,27 @@
   <script defer src="/common.js"></script>
 
   <script>
-    // === ユーティリティ ===
-    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+    const qs = (name) => new URL(window.location.href).searchParams.get(name) || '';
 
+    /* -------------------- include (header/footer) -------------------- */
+    async function includeFragments() {
+      const nodes = Array.from(document.querySelectorAll('[data-include]'));
+      await Promise.all(nodes.map(async (el) => {
+        const url = String(el.getAttribute('data-include') || '').trim();
+        if (!url) return;
+        try {
+          const res = await fetch(url, { cache: 'no-cache' });
+          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+          const html = await res.text();
+          el.innerHTML = html;
+        } catch (e) {
+          // include は UI の補助なので、致命傷にしない
+          console.warn('include failed:', url, e);
+        }
+      }));
+    }
+
+    /* -------------------- alert helpers -------------------- */
     const bindMessageClose = () => {
       const btn = document.getElementById('messageCloseBtn');
       if (!btn) return;
@@ -204,8 +181,7 @@
       if (text) text.textContent = msg;
 
       bindMessageClose();
-
-      try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (_) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const clearAlert = () => {
@@ -217,19 +193,27 @@
       bindMessageClose();
     };
 
-    const escapeHtml = v => String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]);
+    /* -------------------- utils -------------------- */
+    const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g, (m) => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+    })[m]);
 
     const api = (path, opts) => ADDEVA.apiFetch(path, opts);
 
-    // === 表示ラベル ===
     const statusMap = { new: '審査中', reviewing: '検討中', planned: '対応予定', shipped: '対応済み', rejected: '否認' };
-    const statusLabel = s => statusMap[s] || s || '';
+    const statusLabel = (s) => statusMap[s] || s || '';
+    const isApprovedStatus = (s) => ['reviewing', 'planned', 'shipped'].includes(s);
 
+    function totalVotes(p) {
+      return Number(p.up_count || 0) + Number(p.down_count || 0) + Number(p.neutral_count || 0);
+    }
+
+    /* -------------------- render -------------------- */
     function voteButtons(p, disabled) {
       const btn = (voteType, label, count) => `
         <button class="btn btn-sm btn-outline-secondary vote-btn ${p.my_vote === voteType ? 'active' : ''}"
-                data-act="vote" data-post="${p.post_id}" data-v="${voteType}" ${disabled ? 'disabled' : ''}>
-          ${label} <span class="badge text-bg-light">${count}</span>
+                data-post="${p.post_id}" data-v="${voteType}" ${disabled ? 'disabled' : ''}>
+          ${label} <span class="badge text-bg-light" data-count="${voteType}">${count}</span>
         </button>`;
 
       return `
@@ -241,240 +225,274 @@
     }
 
     function renderPostItem(p, inModal = false) {
-      const typeLabel = (p.post_type === 'improve') ? '改善してほしい点' : '良かった点';
-      const st = statusLabel(p.status);
-      const total = (p.total_votes != null) ? ` / 総投票数: ${p.total_votes}` : '';
+      const partName = String(p.part_name_ja || '').trim();
+      const partCode = String(p.part_code || '').trim();
+      const part = (partName || partCode)
+        ? `（部位：${escapeHtml(partName || partCode)}${(partName && partCode) ? ` / ${escapeHtml(partCode)}` : ''}）`
+        : '';
 
-      // opinion側は承認済みのみを返す想定だが、念のため投票UIは常に有効にしておき、サーバ側で403等を返したらエラー表示する
-      const disabled = false;
+      const total = totalVotes(p);
+      const nickname = p.nickname ? escapeHtml(p.nickname) : '-';
 
-      const part = (p.part_name_ja || p.part_code) ? `（部位：${escapeHtml(p.part_name_ja || '')}${p.part_code ? ` / ${escapeHtml(p.part_code)}` : ''}）` : '';
+      const status = `<span class="badge ${isApprovedStatus(p.status) ? 'text-bg-success' : 'text-bg-secondary'} fw-normal">${escapeHtml(statusLabel(p.status))}</span>`;
+      const type = `<span class="badge text-bg-info fw-normal">${p.post_type === 'improve' ? '改善してほしい点' : '良かった点'}</span>`;
+
+      const meta = `
+        <div class="small text-secondary">
+          投稿ID: ${p.post_id} / ニックネーム: ${nickname} ${part}
+          <span class="ms-2">総投票数: <span data-total-count="1">${total}</span></span>
+        </div>`;
+
+      const body = inModal
+        ? `<div class="mt-2" style="white-space:pre-wrap;">${escapeHtml(p.body || '')}</div>`
+        : '';
+
+      const disabled = !isApprovedStatus(p.status);
 
       return `
-        <div class="post-item">
-          <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+        <div class="post-item border rounded p-3" data-post-id="${p.post_id}">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
             <div class="flex-grow-1">
               <div class="d-flex gap-2 align-items-center flex-wrap mb-1">
-                <span class="badge text-bg-success fw-normal">${escapeHtml(st)}</span>
-                <span class="badge text-bg-info fw-normal">${escapeHtml(typeLabel)}</span>
-                <div class="fw-semibold post-title">${escapeHtml(p.title || '')}</div>
+                ${status}
+                ${type}
+                <div class="fw-semibold">${escapeHtml(p.title || '')}</div>
               </div>
-              <div class="small text-secondary mb-2">
-                投稿ID: ${p.post_id}${p.nickname ? ` / ニックネーム: ${escapeHtml(p.nickname)}` : ''}${part}${total}
-              </div>
-              ${inModal ? `<div class="small" style="white-space:pre-wrap;">${escapeHtml(p.body || '')}</div>` : ''}
+              ${meta}
+              ${body}
             </div>
+
             <div class="text-end" style="min-width:220px;">
               ${voteButtons(p, disabled)}
-              <div class="form-text mt-1">クリックで投票/取消</div>
+              <div class="form-text mt-1">${disabled ? '審査中は投票不可' : 'クリックで投票/取消（表示順は次の更新まで変わりません）'}</div>
             </div>
           </div>
         </div>`;
     }
 
-    function bindVoteHandlers(rootEl) {
-      rootEl.querySelectorAll('[data-act="vote"]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const postId = Number(btn.dataset.post);
-          const voteType = String(btn.dataset.v || '').trim();
-          if (!postId || !voteType) return;
-          clearAlert();
+    /* -------------------- voting: post_id 指定でDOM更新（並び順固定） -------------------- */
+    function applyVoteResultToDom(postId, res) {
+      const myVote = (res && (res.myVote ?? res.my_vote ?? null)) || null;
+      const up = Number((res && (res.upCount ?? res.up_count)) ?? 0);
+      const down = Number((res && (res.downCount ?? res.down_count)) ?? 0);
+      const neutral = Number((res && (res.neutralCount ?? res.neutral_count)) ?? 0);
+      const total = up + down + neutral;
 
-          try {
-            await api('/api/addeva/feedback/vote', { method: 'POST', body: { postId, voteType } });
+      // 画面上に同じ投稿が複数箇所（上位表示／モーダル等）に出ても、全部更新する
+      document.querySelectorAll(`[data-post-id="${postId}"]`).forEach((card) => {
+        const upEl = card.querySelector('.vote-btn[data-v="up"] [data-count="up"]');
+        const downEl = card.querySelector('.vote-btn[data-v="down"] [data-count="down"]');
+        const neutralEl = card.querySelector('.vote-btn[data-v="neutral"] [data-count="neutral"]');
 
-            // 画面上の件数はサーバ結果で再取得し直す（単純に再読込）
-            const modalShown = document.body.classList.contains('modal-open');
-            if (modalShown) {
-              await loadAll(true);
-            }
-            await loadSummary();
-          } catch (e) {
-            showAlert('danger', e.message || '投票に失敗しました。');
-          }
-        });
+        if (upEl) upEl.textContent = String(up);
+        if (downEl) downEl.textContent = String(down);
+        if (neutralEl) neutralEl.textContent = String(neutral);
+
+        const totalEl = card.querySelector('[data-total-count]');
+        if (totalEl) totalEl.textContent = String(total);
+      });
+
+      // active 状態の更新（表示順は変えない）
+      document.querySelectorAll(`.vote-btn[data-post="${postId}"]`).forEach((btn) => {
+        const v = String(btn.dataset.v || '').trim();
+        btn.classList.toggle('active', !!myVote && v === myVote);
       });
     }
 
-    // === サマリー（TOP） ===
+    function bindVoteHandlers(rootEl) {
+      rootEl.querySelectorAll('.vote-btn').forEach((btn) => {
+        if (btn.dataset.bound === '1') return;
+
+        btn.addEventListener('click', async () => {
+          if (btn.disabled) return;
+
+          const postId = Number(btn.dataset.post);
+          const voteType = String(btn.dataset.v || '').trim();
+          if (!postId || !voteType) return;
+
+          // 二重クリック対策：同一postの全ボタンを一時disable
+          const btns = Array.from(document.querySelectorAll(`.vote-btn[data-post="${postId}"]`));
+          const prevDisabled = new Map();
+          btns.forEach((b) => prevDisabled.set(b, !!b.disabled));
+          btns.forEach((b) => { b.disabled = true; });
+
+          try {
+            const res = await api('/api/addeva/feedback/vote', { method: 'POST', body: { postId, voteType } });
+            // 並び順は維持しつつ、当該postだけ数値を更新
+            applyVoteResultToDom(postId, res);
+          } catch (e) {
+            showAlert('danger', e.message || '投票に失敗しました。');
+          } finally {
+            btns.forEach((b) => { b.disabled = prevDisabled.get(b) || false; });
+          }
+        });
+
+        btn.dataset.bound = '1';
+      });
+    }
+
+    /* -------------------- data load -------------------- */
+    function renderEmpty(wrapEl) {
+      wrapEl.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">投稿がありません。</p></div>';
+    }
+
+    async function loadProductInfo(productCode) {
+      const nameEl = document.getElementById('productName');
+      const codeEl = document.getElementById('productCodeLabel');
+      if (codeEl) codeEl.textContent = productCode || '-';
+
+      try {
+        const info = await api('/api/addeva/feedback/product_info', { method: 'POST', body: { productCode } });
+        const productName = (info && (info.product_name ?? info.productName)) ? String(info.product_name ?? info.productName).trim() : '';
+        if (nameEl) nameEl.textContent = productName || '-';
+      } catch (e) {
+        if (nameEl) nameEl.textContent = '-';
+        // 商品名が取れなくても投票ページ自体は動かす
+        console.warn('product_info failed:', e);
+      }
+    }
+
     async function loadSummary() {
+      clearAlert();
       const productCode = qs('product_code');
       if (!productCode) {
-        showAlert('danger', '商品コードが指定されていません。顧客ポータルから再度お試しください。');
+        showAlert('danger', '商品コードが指定されていません。');
         return;
       }
 
-      document.getElementById('productCodeChip').textContent = productCode;
+      // 意見追加ボタン
+      const addBtn = document.getElementById('btnAddOpinion');
+      if (addBtn) addBtn.href = `/feedback.html?product_code=${encodeURIComponent(productCode)}`;
 
-      const topImproveEl = document.getElementById('topImprove');
-      const topPraiseEl = document.getElementById('topPraise');
+      // 商品名
+      await loadProductInfo(productCode);
+
+      const improveWrap = document.getElementById('summaryImproveWrap');
+      const praiseWrap = document.getElementById('summaryPraiseWrap');
+      improveWrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
+      praiseWrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
 
       try {
-        const res = await api('/api/addeva/opinion/summary', { method: 'POST', body: { productCode, topLimit: 5 } });
+        // summary は配列（既存運用に合わせる）
+        const rows = await api('/api/addeva/opinion/summary', { method: 'POST', body: { productCode } });
+        const arr = Array.isArray(rows) ? rows : [];
 
-        document.getElementById('productName').textContent = res.product_name || '-';
-        document.getElementById('productCodeChip').textContent = res.product_code || productCode;
+        const improve = arr.filter((p) => String(p.post_type || '').trim() === 'improve');
+        const praise  = arr.filter((p) => String(p.post_type || '').trim() !== 'improve');
 
-        // 「意見追加」リンク
-        const add = document.getElementById('btnAddOpinion');
-        if (add) add.href = '/feedback.html?product_code=' + encodeURIComponent(res.product_code || productCode);
+        // 表示順は「読み込み時」に確定（以後、投票しても並び替えない）
+        improve.sort((a,b) => totalVotes(b) - totalVotes(a));
+        praise.sort((a,b) => totalVotes(b) - totalVotes(a));
 
-        const ti = Array.isArray(res.top_improve) ? res.top_improve : [];
-        const tp = Array.isArray(res.top_praise) ? res.top_praise : [];
+        const improveTop = improve.slice(0, 5);
+        const praiseTop  = praise.slice(0, 5);
 
-        if (ti.length === 0) {
-          topImproveEl.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">まだ意見がありません。</p></div>';
-        } else {
-          topImproveEl.innerHTML = ti.map(p => renderPostItem(p, false)).join('');
-          bindVoteHandlers(topImproveEl);
+        if (improveTop.length === 0) renderEmpty(improveWrap);
+        else {
+          improveWrap.innerHTML = improveTop.map((p) => renderPostItem(p, false)).join('');
+          bindVoteHandlers(improveWrap);
         }
 
-        if (tp.length === 0) {
-          topPraiseEl.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">まだ意見がありません。</p></div>';
-        } else {
-          topPraiseEl.innerHTML = tp.map(p => renderPostItem(p, false)).join('');
-          bindVoteHandlers(topPraiseEl);
+        if (praiseTop.length === 0) renderEmpty(praiseWrap);
+        else {
+          praiseWrap.innerHTML = praiseTop.map((p) => renderPostItem(p, false)).join('');
+          bindVoteHandlers(praiseWrap);
         }
 
       } catch (e) {
-        topImproveEl.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || '読み込みに失敗しました。'}</div>`;
-        topPraiseEl.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || '読み込みに失敗しました。'}</div>`;
+        improveWrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message || '読み込みに失敗しました。')}</div>`;
+        praiseWrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message || '読み込みに失敗しました。')}</div>`;
       }
     }
 
-    // === 一覧（全部見る / モーダル） ===
-    const allState = {
-      productCode: '',
-      postType: 'improve',
-      sort: 'popular',
-      limit: 20,
-      offset: 0,
-      nextOffset: null,
-      loading: false,
-    };
-
-    function setAllHeader() {
-      const title = document.getElementById('allModalTitle');
-      const sub = document.getElementById('allModalSub');
-      const label = (allState.postType === 'improve') ? '改善してほしい点' : '良かった点';
-      if (title) title.textContent = label + '（一覧）';
-      if (sub) sub.textContent = '投票数の多い順、または新着順で表示します。';
-    }
-
-    async function loadAll(reset = false) {
-      if (allState.loading) return;
-      allState.loading = true;
-
-      const listEl = document.getElementById('allList');
-      const moreBtn = document.getElementById('btnAllMore');
-      if (!listEl || !moreBtn) {
-        allState.loading = false;
-        return;
-      }
-
-      if (reset) {
-        allState.offset = 0;
-        allState.nextOffset = null;
-        listEl.innerHTML = '<div class="text-center p-4 bg-light rounded"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-      }
-
-      moreBtn.disabled = true;
-
-      try {
-        const body = {
-          productCode: allState.productCode,
-          postType: allState.postType,
-          sort: allState.sort,
-          limit: allState.limit,
-          offset: allState.offset,
-        };
-
-        const res = await api('/api/addeva/opinion/list', { method: 'POST', body });
-        const posts = Array.isArray(res.posts) ? res.posts : [];
-
-        const html = posts.map(p => renderPostItem(p, true)).join('');
-
-        if (reset) {
-          listEl.innerHTML = html || '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">まだ意見がありません。</p></div>';
-        } else {
-          listEl.insertAdjacentHTML('beforeend', html);
-        }
-
-        bindVoteHandlers(listEl);
-
-        allState.nextOffset = (res.next_offset != null) ? Number(res.next_offset) : null;
-        allState.offset = allState.nextOffset != null ? allState.nextOffset : allState.offset;
-
-        if (allState.nextOffset == null) {
-          moreBtn.classList.add('d-none');
-        } else {
-          moreBtn.classList.remove('d-none');
-          moreBtn.disabled = false;
-        }
-
-      } catch (e) {
-        listEl.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || '読み込みに失敗しました。'}</div>`;
-        moreBtn.classList.add('d-none');
-      } finally {
-        allState.loading = false;
-      }
-    }
-
-    function openAll(postType) {
+    async function loadAll() {
+      clearAlert();
       const productCode = qs('product_code');
       if (!productCode) {
-        showAlert('danger', '商品コードが指定されていません。顧客ポータルから再度お試しください。');
+        showAlert('danger', '商品コードが指定されていません。');
         return;
       }
 
-      allState.productCode = productCode;
-      allState.postType = postType;
+      const sortEl = document.getElementById('sortSelect');
+      const typeEl = document.getElementById('typeSelect');
+      const sortMode = sortEl ? String(sortEl.value || 'top') : 'top';
+      const typeMode = typeEl ? String(typeEl.value || 'improve') : 'improve';
 
-      const sortEl = document.getElementById('allSort');
-      allState.sort = sortEl ? String(sortEl.value || 'popular') : 'popular';
+      // 画面上の並び順は「この loadAll のタイミング」で確定
+      const wrap = document.getElementById('allWrap');
+      wrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
 
-      setAllHeader();
+      try {
+        const rows = await api('/api/addeva/opinion/list', { method: 'POST', body: { productCode, sort: sortMode } });
+        let arr = Array.isArray(rows) ? rows : [];
+
+        // 種類で絞り込み（モーダル内）
+        arr = arr.filter((p) => {
+          const t = String(p.post_type || '').trim();
+          return (typeMode === 'improve') ? (t === 'improve') : (t !== 'improve');
+        });
+
+        // ここで並び順を確定させる（投票後は再描画しないので変わらない）
+        if (sortMode === 'top') {
+          arr = arr.slice().sort((a,b) => totalVotes(b) - totalVotes(a));
+        } else {
+          // new: API側が新着順を返す想定だが、念のため created_at があれば降順に
+          if (arr.length > 0 && (arr[0].created_at || arr[0].createdAt)) {
+            arr = arr.slice().sort((a,b) => String(b.created_at ?? b.createdAt).localeCompare(String(a.created_at ?? a.createdAt)));
+          }
+        }
+
+        if (arr.length === 0) {
+          renderEmpty(wrap);
+          return;
+        }
+
+        wrap.innerHTML = arr.map((p) => renderPostItem(p, true)).join('');
+        bindVoteHandlers(wrap);
+
+      } catch (e) {
+        wrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message || '読み込みに失敗しました。')}</div>`;
+      }
+    }
+
+    /* -------------------- init -------------------- */
+    async function openAllModal(type) {
+      const typeEl = document.getElementById('typeSelect');
+      if (typeEl) typeEl.value = (type === 'praise') ? 'praise' : 'improve';
 
       const modalEl = document.getElementById('allModal');
       const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
       modal.show();
 
-      loadAll(true);
+      await loadAll();
     }
 
     async function init() {
-      // イベント
-      document.getElementById('btnReload').addEventListener('click', () => { clearAlert(); loadSummary(); });
+      await includeFragments();
 
-      document.querySelectorAll('[data-act="openAll"]').forEach(btn => {
-        btn.addEventListener('click', () => openAll(String(btn.dataset.type || 'improve')));
+      const btnReload = document.getElementById('btnReload');
+      const btnAllReload = document.getElementById('btnAllReload');
+      const sortSelect = document.getElementById('sortSelect');
+      const typeSelect = document.getElementById('typeSelect');
+
+      if (btnReload) btnReload.addEventListener('click', loadSummary);
+      if (btnAllReload) btnAllReload.addEventListener('click', loadAll);
+      if (sortSelect) sortSelect.addEventListener('change', loadAll);
+      if (typeSelect) typeSelect.addEventListener('change', loadAll);
+
+      // 「すべて見る」ボタン（2箇所）
+      document.querySelectorAll('[data-open-all]').forEach((btn) => {
+        if (btn.dataset.bound === '1') return;
+        btn.addEventListener('click', async () => {
+          const t = String(btn.getAttribute('data-open-all') || '').trim();
+          await openAllModal(t);
+        });
+        btn.dataset.bound = '1';
       });
 
-      document.getElementById('btnAllMore').addEventListener('click', () => {
-        if (allState.nextOffset != null) {
-          allState.offset = allState.nextOffset;
-          loadAll(false);
-        }
-      });
-
-      document.getElementById('btnAllReload').addEventListener('click', () => {
-        const sortEl = document.getElementById('allSort');
-        allState.sort = sortEl ? String(sortEl.value || 'popular') : 'popular';
-        setAllHeader();
-        loadAll(true);
-      });
-
-      document.getElementById('allSort').addEventListener('change', (e) => {
-        allState.sort = String(e.target.value || 'popular');
-        setAllHeader();
-        loadAll(true);
-      });
-
-      // 初期ロード
       await loadSummary();
     }
 
-    // ADDEVAオブジェクトの準備ができてから初期化を実行
     (function waitForADDEVA() {
       const START = Date.now();
       const TIMEOUT_MS = 7000;
@@ -490,7 +508,7 @@
         }
 
         if (Date.now() - START > TIMEOUT_MS) {
-          showAlert('danger', 'common.js の読み込みが完了していないため、API通信を開始できません。/common.js が 404 になっていないか、キャッシュを消して再読み込みしてください。');
+          showAlert('danger', 'common.js の読み込みが完了していないため、API通信を開始できません。/common.js が 404 になっていないか確認してください。');
           return;
         }
 
@@ -501,9 +519,5 @@
     })();
   </script>
 
-  <!-- ▼ includeエンジン -->
-  <script>
-    (async()=>{try{const t=document.querySelectorAll('[data-include]');for(const e of t){const l=e.getAttribute('data-include');if(!l)continue;const o=await fetch(l,{cache:'no-cache'});if(!o.ok)throw new Error(`include failed: ${l} (${o.status})`);e.outerHTML=await o.text()}}catch(e){console.error('include loader error:',e)}})();
-  </script>
 </body>
 </html>
