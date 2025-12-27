@@ -38,6 +38,24 @@
     .row-clickable { cursor: pointer; }
     .row-clickable:hover { background: rgba(13,110,253,.04); }
     .muted-small { font-size: .9rem; color: #6c757d; }
+
+    /* mobile: ヘッダー表示を縦に寄せる */
+    @media (max-width: 767.98px) {
+      .v-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      /* モバイルでは更新ボタンを非表示（ヘッダーを1行に寄せる） */
+      #btnReload { display: none !important; }
+
+      th.col-opinion-count { width: 4.5rem !important; }
+      th.col-action { width: 6rem !important; }
+    }
   </style>
 </head>
 
@@ -69,7 +87,7 @@
         <div class="mb-4">
           <h1 class="mb-2">フィードバックボード</h1>
           <p class="lead mb-1">
-            対象商品：<span id="productName" class="fw-bold text-primary">-</span>
+            <span class="d-none d-md-inline">対象商品：</span><span class="d-inline d-md-none">対象：</span> <span id="productName" class="fw-bold text-primary">-</span>
             <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
           </p>
           <p class="text-secondary mb-0">
@@ -79,7 +97,7 @@
 
         <div class="card shadow-sm p-4">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-            <h2 class="h5 m-0">投票ランキング（部位別）</h2>
+            <h2 class="h5 m-0">部位一覧（賛成数順）</h2>
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <label class="muted-small" for="limitSelect">表示</label>
               <select id="limitSelect" class="form-select form-select-sm" style="width:auto;">
@@ -98,10 +116,10 @@
                 <tr>
                   <th style="width: 6rem;">順位</th>
                   <th>部位</th>
-                  <th class="text-end" style="width: 8rem;">賛成</th>
-                  <th class="text-end" style="width: 8rem;">反対</th>
-                  <th class="text-end" style="width: 10rem;"><span class="d-none d-md-inline">承認済み意見</span><span class="d-inline d-md-none">意<br>見<br>数</span></th>
-                  <th style="width: 13rem;"></th>
+                  <th class="text-end" style="width: 8rem;"><span class="d-none d-md-inline">賛成</span><span class="d-inline d-md-none v-label">賛成</span></th>
+                  <th class="text-end" style="width: 8rem;"><span class="d-none d-md-inline">反対</span><span class="d-inline d-md-none v-label">反対</span></th>
+                  <th class="text-end col-opinion-count" style="width: 10rem;"><span class="d-none d-md-inline">承認済み意見</span><span class="d-inline d-md-none v-label">意見数</span></th>
+                  <th class="col-action" style="width: 13rem;"></th>
                 </tr>
               </thead>
               <tbody id="rankRows">
@@ -128,7 +146,7 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
-              <button id="btnOpenPart" class="btn btn-primary w-100" disabled><span class="d-none d-md-inline">投票と意見の追加へ</span><span class="d-inline d-md-none">投票と追加へ</span></button>
+              <button id="btnOpenPart" class="btn btn-primary w-100" disabled>投票と意見の追加へ</button>
             </div>
           </div>
         </div>
@@ -218,7 +236,7 @@
             <td class="text-end">${item.down_total}</td>
             <td class="text-end">${item.approved_post_count}</td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary text-nowrap" href="${escapeHtml(url)}"><span class="d-none d-md-inline">投票と意見の追加</span><span class="d-inline d-md-none">投票と追加</span></a>
+              <a class="btn btn-sm btn-outline-primary text-nowrap" href="${escapeHtml(url)}"><span class="d-none d-md-inline">投票と意見の追加</span><span class="d-inline d-md-none">投票</span></a>
             </td>
           </tr>
         `;
