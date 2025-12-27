@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>フィードバックボード｜ADDEVA サポート</title>
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
+  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
+
+  <style>
+    /* main.css 側に寄せつつ、ボード用の最小限だけ補強 */
+    #messageArea { overflow-anchor: none; }
+
+    .rank-table td, .rank-table th { vertical-align: middle; }
+    .rank-badge {
+      min-width: 2.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: .2rem .55rem;
+      font-weight: 700;
+      background: rgba(13,110,253,.10);
+      color: #0d6efd;
+    }
+    .part-link { text-decoration: none; }
+    .part-link:hover { text-decoration: underline; }
+    .row-clickable { cursor: pointer; }
+    .row-clickable:hover { background: rgba(13,110,253,.04); }
+    .muted-small { font-size: .9rem; color: #6c757d; }
+  </style>
+</head>
+
+<body>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
+  <main>
+    <section class="section py-5">
+      <div class="container container-narrow">
+
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
+            <li class="breadcrumb-item active" aria-current="page">フィードバックボード</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div id="messageText" class="flex-grow-1"></div>
+            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>
+        </div>
+
+        <!-- ページヘッダー情報 -->
+        <div class="mb-4">
+          <h1 class="mb-2">フィードバックボード</h1>
+          <p class="lead mb-1">
+            対象商品：<span id="productName" class="fw-bold text-primary">-</span>
+            <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
+          </p>
+          <p class="text-secondary mb-0">
+            部位ごとの「賛成」投票数が多い順に並べています。部位をクリックすると、投票・意見の追加ページへ移動します。
+          </p>
+        </div>
+
+        <div class="card shadow-sm p-4">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <h2 class="h5 m-0">部位ランキング（賛成が多い順）</h2>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <label class="muted-small" for="limitSelect">表示</label>
+              <select id="limitSelect" class="form-select form-select-sm" style="width:auto;">
+                <option value="10">上位10件</option>
+                <option value="20" selected>上位20件</option>
+                <option value="50">上位50件</option>
+                <option value="9999">すべて</option>
+              </select>
+              <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle rank-table mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 6rem;">順位</th>
+                  <th>部位</th>
+                  <th class="text-end" style="width: 8rem;">賛成</th>
+                  <th class="text-end" style="width: 8rem;">反対</th>
+                  <th class="text-end" style="width: 10rem;">承認済み投稿</th>
+                  <th style="width: 13rem;"></th>
+                </tr>
+              </thead>
+              <tbody id="rankRows">
+                <tr>
+                  <td colspan="6" class="text-center text-secondary py-4">読み込み中...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-3 text-secondary small">
+            ※「賛成/反対」は、承認済み（検討中/対応予定/対応済み）の投稿に対する投票のみを集計しています。
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 bg-light border rounded">
+          <div class="fw-bold mb-1">部位を選んで開く</div>
+          <div class="text-secondary small mb-2">ランキングに表示されない部位も、ここから直接開けます。</div>
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-8">
+              <label class="form-label" for="partSelect">部位</label>
+              <select id="partSelect" class="form-select">
+                <option value="">読み込み中...</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4">
+              <button id="btnOpenPart" class="btn btn-primary w-100" disabled>投票と意見の追加へ</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ▼ 共通フッターを読み込み -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/common.js"></script>
+
+  <script>
+    // === ユーティリティ ===
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+
+    const productCode = (qs('product_code') || '').trim();
+
+    const $ = (id) => document.getElementById(id);
+
+    const clearAlert = () => {
+      const box = $('messageArea');
+      const text = $('messageText');
+      if (!box || !text) return;
+      box.className = 'alert d-none';
+      text.textContent = '';
+    };
+
+    const showAlert = (type, msg) => {
+      const box = $('messageArea');
+      const text = $('messageText');
+      if (!box || !text) return;
+      const klass = (type === 'success') ? 'alert-success'
+                  : (type === 'warning') ? 'alert-warning'
+                  : (type === 'info') ? 'alert-info'
+                  : 'alert-danger';
+      box.className = 'alert ' + klass;
+      text.textContent = msg || '';
+      $('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const buildFeedbackUrl = (productCode, partCode) => {
+      const p = encodeURIComponent(productCode || '');
+      const pc = encodeURIComponent(partCode || '');
+      let u = `/feedback.html?product_code=${p}`;
+      if (pc) u += `&part_code=${pc}`;
+      return u;
+    };
+
+    const escapeHtml = (s) => {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    };
+
+    // === データ保持 ===
+    let rankingAll = []; // APIから取得した順序（＝ランキングの確定順）を保持
+    let partsAll = [];   // 部位一覧（セレクト用）
+
+    const renderRanking = () => {
+      const tbody = $('rankRows');
+      if (!tbody) return;
+
+      const limit = parseInt(($('limitSelect')?.value || '20'), 10);
+      const list = rankingAll.slice(0, (limit === 9999 ? rankingAll.length : limit));
+
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">表示できるデータがありません。</td></tr>';
+        return;
+      }
+
+      let html = '';
+      for (const item of list) {
+        const url = buildFeedbackUrl(productCode, item.part_code);
+        const partName = escapeHtml(item.part_name_ja || item.part_code || '-');
+        const cat = escapeHtml(item.category_name || '');
+
+        html += `
+          <tr class="row-clickable" data-href="${escapeHtml(url)}">
+            <td><span class="rank-badge">${item.rank}</span></td>
+            <td>
+              <div class="fw-semibold"><a class="part-link" href="${escapeHtml(url)}">${partName}</a></div>
+              <div class="text-secondary small">${cat ? cat + ' / ' : ''}${escapeHtml(item.part_code || '')}</div>
+            </td>
+            <td class="text-end fw-semibold">${item.up_total}</td>
+            <td class="text-end">${item.down_total}</td>
+            <td class="text-end">${item.approved_post_count}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="${escapeHtml(url)}">投票と意見の追加</a>
+            </td>
+          </tr>
+        `;
+      }
+      tbody.innerHTML = html;
+
+      // 行クリックで遷移（リンクがあるので補助的に）
+      tbody.querySelectorAll('tr.row-clickable').forEach(tr => {
+        tr.addEventListener('click', (e) => {
+          const a = e.target && e.target.closest && e.target.closest('a');
+          if (a) return; // リンククリックはそのまま
+          const href = tr.getAttribute('data-href');
+          if (href) window.location.href = href;
+        });
+      });
+    };
+
+    const renderPartsSelect = () => {
+      const sel = $('partSelect');
+      const btn = $('btnOpenPart');
+      if (!sel) return;
+
+      if (!partsAll.length) {
+        sel.innerHTML = '<option value="">部位がありません</option>';
+        btn && (btn.disabled = true);
+        return;
+      }
+
+      // 既存の feedback.html 互換で grouped=true を使う（カテゴリ階層）
+      // partsAll は {category_name, category_sort_order, parts:[...]} の配列
+      let html = '<option value="">部位を選択してください</option>';
+      for (const cat of partsAll) {
+        const label = escapeHtml(cat.category_name || 'その他');
+        html += `<optgroup label="${label}">`;
+        for (const p of (cat.parts || [])) {
+          const code = escapeHtml(p.part_code || '');
+          const name = escapeHtml(p.part_name_ja || code);
+          html += `<option value="${code}">${name}</option>`;
+        }
+        html += '</optgroup>';
+      }
+      sel.innerHTML = html;
+
+      const onChange = () => {
+        const v = (sel.value || '').trim();
+        if (btn) btn.disabled = !v;
+      };
+      sel.addEventListener('change', onChange);
+      onChange();
+
+      btn?.addEventListener('click', () => {
+        const v = (sel.value || '').trim();
+        if (!v) return;
+        window.location.href = buildFeedbackUrl(productCode, v);
+      });
+    };
+
+    const loadProductInfo = async () => {
+      const nameEl = $('productName');
+      const chipEl = $('productCodeChip');
+
+      chipEl && (chipEl.textContent = productCode || '-');
+
+      if (!productCode) {
+        showAlert('danger', 'product_code が指定されていません。URLに ?product_code=... を付けて開いてください。');
+        nameEl && (nameEl.textContent = '-');
+        return;
+      }
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/product_info', {
+          method: 'POST',
+          body: { productCode }
+        });
+        nameEl && (nameEl.textContent = res.product_name || '-');
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
+        nameEl && (nameEl.textContent = '-');
+      }
+    };
+
+    const loadRanking = async () => {
+      const tbody = $('rankRows');
+      tbody && (tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">読み込み中...</td></tr>');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/parts_ranking', {
+          method: 'POST',
+          body: { productCode, limit: 500 }
+        });
+        rankingAll = Array.isArray(res) ? res : [];
+        renderRanking();
+      } catch (e) {
+        console.error(e);
+        rankingAll = [];
+        showAlert('danger', e.message || 'ランキングの取得に失敗しました。');
+        renderRanking();
+      }
+    };
+
+    const loadParts = async () => {
+      const sel = $('partSelect');
+      sel && (sel.innerHTML = '<option value="">読み込み中...</option>');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
+          method: 'POST',
+          body: { productCode, grouped: true }
+        });
+        partsAll = Array.isArray(res) ? res : [];
+        renderPartsSelect();
+      } catch (e) {
+        console.error(e);
+        partsAll = [];
+        showAlert('danger', e.message || '部位一覧の取得に失敗しました。');
+        renderPartsSelect();
+      }
+    };
+
+    const bindUI = () => {
+      $('limitSelect')?.addEventListener('change', renderRanking);
+      $('btnReload')?.addEventListener('click', async () => {
+        clearAlert();
+        await loadRanking();
+      });
+    };
+
+    (async () => {
+      bindUI();
+      await loadProductInfo();
+      await loadRanking();
+      await loadParts();
+    })();
+  </script>
+</body>
+</html>
