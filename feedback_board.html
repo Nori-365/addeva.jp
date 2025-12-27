@@ -121,7 +121,7 @@
             </table>
           </div>
 
-          <div class="d-flex justify-content-center mt-3" id="toggleWrap" style="display:none;">
+          <div class="d-flex justify-content-center mt-3 d-none" id="toggleWrap">
             <button id="btnToggleAll" class="btn btn-outline-primary">全部見る</button>
           </div>
 
@@ -213,9 +213,9 @@
       const wrap = $('toggleWrap');
       const btnToggle = $('btnToggleAll');
 
-      // まずは上位20件だけ表示。ボタンで全件切替。
+      // 全件は取得しておき、21件目以降は折りたたみ表示（ボタンで展開）
       const total = rankingAll.length;
-      const list = showAll ? rankingAll : rankingAll.slice(0, DEFAULT_VISIBLE_COUNT);
+      const list = rankingAll;
 
       // ヒント文言（PCのみ表示）
       if (hint) {
@@ -230,13 +230,13 @@
         }
       }
 
-      // 「全部見る」ボタン
+      // 「全部見る」ボタン（Bootstrapの d-flex は display:flex !important なので、d-none を付け外しして制御）
       if (wrap && btnToggle) {
         if (total > DEFAULT_VISIBLE_COUNT) {
-          wrap.style.display = 'flex';
+          wrap.classList.remove('d-none');
           btnToggle.textContent = showAll ? `上位${DEFAULT_VISIBLE_COUNT}件に戻す` : '全部見る';
         } else {
-          wrap.style.display = 'none';
+          wrap.classList.add('d-none');
         }
       }
 
@@ -246,13 +246,15 @@
       }
 
       let html = '';
-      for (const item of list) {
+      for (let idx = 0; idx < list.length; idx++) {
+        const item = list[idx];
+        const isHidden = (!showAll && idx >= DEFAULT_VISIBLE_COUNT);
         const url = buildFeedbackUrl(productCode, item.part_code);
         const partName = escapeHtml(item.part_name_ja || item.part_code || '-');
         const cat = escapeHtml(item.category_name || '');
 
         html += `
-          <tr class="row-clickable" data-href="${escapeHtml(url)}">
+          <tr class="row-clickable${isHidden ? ' d-none' : ''}" data-href="${escapeHtml(url)}" ${isHidden ? 'aria-hidden="true"' : ''}>
             <td><span class="rank-badge">${item.rank}</span></td>
             <td>
               <div class="fw-semibold"><a class="part-link" href="${escapeHtml(url)}">${partName}</a></div>
