@@ -269,6 +269,15 @@
           </tr>
         `;
       }
+      // 全件表示時（または総件数が20件以下で折りたたみが無い場合）は、末尾に「以上」を表示
+      if (total && (showAll || total <= DEFAULT_VISIBLE_COUNT)) {
+        html += `
+          <tr>
+            <td colspan="6" class="text-center text-secondary py-3">- 以上、全${total}件 -</td>
+          </tr>
+        `;
+      }
+
       tbody.innerHTML = html;
 
       // 行クリックで遷移（リンクがあるので補助的に）
