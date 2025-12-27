@@ -98,16 +98,7 @@
         <div class="card shadow-sm p-4">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
             <h2 class="h5 m-0">部位一覧（賛成数順）</h2>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-              <label class="muted-small" for="limitSelect">表示</label>
-              <select id="limitSelect" class="form-select form-select-sm" style="width:auto;">
-                <option value="10">上位10件</option>
-                <option value="20" selected>上位20件</option>
-                <option value="50">上位50件</option>
-                <option value="9999">すべて</option>
-              </select>
-              <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
-            </div>
+            <div class="text-secondary small d-none d-md-block" id="rankHint">上位20件を表示中</div>
           </div>
 
           <div class="table-responsive">
@@ -128,6 +119,10 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="d-flex justify-content-center mt-3" id="toggleWrap" style="display:none;">
+            <button id="btnToggleAll" class="btn btn-outline-primary">全部見る</button>
           </div>
 
           <div class="mt-3 text-secondary small">
@@ -204,6 +199,9 @@
     };
 
     // === データ保持 ===
+    const DEFAULT_VISIBLE_COUNT = 20;
+    let showAll = false;
+
     let rankingAll = []; // APIから取得した順序（＝ランキングの確定順）を保持
     let partsAll = [];   // 部位一覧（セレクト用）
 
@@ -211,8 +209,34 @@
       const tbody = $('rankRows');
       if (!tbody) return;
 
-      const limit = parseInt(($('limitSelect')?.value || '20'), 10);
-      const list = rankingAll.slice(0, (limit === 9999 ? rankingAll.length : limit));
+      const hint = $('rankHint');
+      const wrap = $('toggleWrap');
+      const btnToggle = $('btnToggleAll');
+
+      // まずは上位20件だけ表示。ボタンで全件切替。
+      const total = rankingAll.length;
+      const list = showAll ? rankingAll : rankingAll.slice(0, DEFAULT_VISIBLE_COUNT);
+
+      // ヒント文言（PCのみ表示）
+      if (hint) {
+        if (!total) {
+          hint.textContent = '';
+        } else if (showAll) {
+          hint.textContent = `全${total}件を表示中`;
+        } else {
+          hint.textContent = `上位${Math.min(DEFAULT_VISIBLE_COUNT, total)}件を表示中`;
+        }
+      }
+
+      // 「全部見る」ボタン
+      if (wrap && btnToggle) {
+        if (total > DEFAULT_VISIBLE_COUNT) {
+          wrap.style.display = 'flex';
+          btnToggle.textContent = showAll ? `上位${DEFAULT_VISIBLE_COUNT}件に戻す` : '全部見る';
+        } else {
+          wrap.style.display = 'none';
+        }
+      }
 
       if (!list.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">表示できるデータがありません。</td></tr>';
@@ -331,10 +355,12 @@
           body: { productCode, limit: 500 }
         });
         rankingAll = Array.isArray(res) ? res : [];
+        showAll = false;
         renderRanking();
       } catch (e) {
         console.error(e);
         rankingAll = [];
+        showAll = false;
         showAlert('danger', e.message || 'ランキングの取得に失敗しました。');
         renderRanking();
       }
@@ -362,10 +388,9 @@
     };
 
     const bindUI = () => {
-      $('limitSelect')?.addEventListener('change', renderRanking);
-      $('btnReload')?.addEventListener('click', async () => {
-        clearAlert();
-        await loadRanking();
+      $('btnToggleAll')?.addEventListener('click', () => {
+        showAll = !showAll;
+        renderRanking();
       });
     };
 
