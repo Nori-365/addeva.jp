@@ -120,7 +120,7 @@
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
           </div>
-          <p class="text-secondary small">審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。</p>
+          <p class="text-secondary small">審査中の投稿も含めて表示します。投票できるのは承認済み（検討中/対応予定/対応済み）の投稿のみです。投票は任意です。気になる意見だけ「賛成」または「反対」を押してください（投票しないままで問題ありません）。</p>
 
           <div class="vstack gap-3" id="partPostsWrap">
             <div class="text-center p-4 bg-light rounded">
@@ -300,12 +300,11 @@
             </div>
 
             <div class="text-end" style="min-width:220px;">
-              <div class="btn-group btn-group-sm" role="group">
+              <div class="btn-group btn-group-sm" role="group" aria-label="投票（任意）">
                 ${voteButton('up', '賛成', p.up_count)}
                 ${voteButton('down', '反対', p.down_count)}
-                ${voteButton('neutral', 'どちらでもない', p.neutral_count)}
               </div>
-              <div class="form-text mt-1">${approved ? 'クリックで投票/取消' : '審査中は投票不可'}</div>
+              <div class="form-text mt-1">${approved ? 'クリックで投票/取消（投票は任意）' : '審査中は投票不可'}</div>
             </div>
           </div>
           ${devCommentBlock}
