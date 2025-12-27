@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Primary SEO -->
-  <title>顧客ポータル｜ADDEVA（アデバ）公式</title>
-  <meta name="description" content="ADDEVA製品の顧客ログイン、購入履歴、サポート依頼ページです。">
+  <title>ユーザーサポート｜ADDEVA（アデバ）公式</title>
+  <meta name="description" content="ADDEVA製品のユーザーログイン、購入履歴、保証期限確認、サポート依頼ページです。">
 
   <!-- Canonical -->
   <link rel="canonical" href="https://addeva.jp/customer.html">
@@ -40,7 +40,7 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-            <li class="breadcrumb-item active" aria-current="page">顧客ポータル</li>
+            <li class="breadcrumb-item active" aria-current="page">ユーザーサポート</li>
           </ol>
         </nav>
 
@@ -169,8 +169,16 @@
       // ==== UIレンダリング関数 ====
       function renderLoginUI() {
         customerContent.innerHTML = `
-          <h1 class="mb-4">顧客ログイン</h1>
+          <h1 class="mb-3">ユーザーログイン</h1>
+
+          <div class="alert alert-light border mb-4">
+            <p class="mb-2">当ページは、ご購入者様向けのサポートページです。</p>
+            <p class="mb-2">製品登録により、保証期限の管理（保証：6か月）、製品別の使用説明ページの閲覧、サポート依頼が可能になります。</p>
+            <p class="mb-0">はじめての方は「<a href="/register.html" class="link-primary">新規登録</a>」からお進みください。</p>
+          </div>
+
           <p class="lead mb-4">ご登録済みのメールアドレスとパスワードでログインしてください。</p>
+
           <form id="loginForm" class="col-md-8 mx-auto">
             <div class="mb-3">
               <label for="loginEmail" class="form-label">メールアドレス</label>
@@ -182,9 +190,17 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">ログイン</button>
             <p class="mt-3 text-center">
-              <a href="/register.html">新規ユーザーの製品登録はこちら</a>
+              <a href="/register.html">はじめての方（新規登録）はこちら</a>
             </p>
           </form>
+
+          <div class="col-md-8 mx-auto mt-4 pt-3 border-top text-center">
+            <p class="mb-2 fw-semibold">安心の半年保証</p>
+            <a href="/customer/urbanflex_amazon_08.jpg" target="_blank" rel="noopener">
+              <img src="/customer/urbanflex_amazon_08.jpg" class="img-fluid rounded" alt="安心の半年保証（6か月）">
+            </a>
+            <p class="mt-2 text-secondary small mb-0">画像をクリックすると拡大表示できます。</p>
+          </div>
         `;
 
         const loginForm = document.getElementById('loginForm');
