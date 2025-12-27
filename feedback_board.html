@@ -42,11 +42,11 @@
     /* mobile: ヘッダー表示を縦に寄せる */
     @media (max-width: 767.98px) {
       .v-label {
-        display: inline-flex;
+        display: inline-flex !important;
         align-items: center;
         justify-content: center;
-        writing-mode: vertical-rl;
-        text-orientation: upright;
+        writing-mode: vertical-rl !important;
+        text-orientation: upright !important;
         line-height: 1;
         white-space: nowrap;
       }
@@ -98,7 +98,7 @@
         <div class="card shadow-sm p-4">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
             <h2 class="h5 m-0">部位一覧（賛成数順）</h2>
-            <div class="text-secondary small d-none d-md-block" id="rankHint">上位20件を表示中</div>
+            <div class="text-secondary small d-none d-md-block" id="rankHint"></div>
           </div>
 
           <div class="table-responsive">
@@ -221,10 +221,12 @@
       if (hint) {
         if (!total) {
           hint.textContent = '';
+        } else if (total <= DEFAULT_VISIBLE_COUNT) {
+          hint.textContent = `- 全${total}件 -`;
         } else if (showAll) {
           hint.textContent = `全${total}件を表示中`;
         } else {
-          hint.textContent = `上位${Math.min(DEFAULT_VISIBLE_COUNT, total)}件を表示中`;
+          hint.textContent = `上位${DEFAULT_VISIBLE_COUNT}件を表示中`;
         }
       }
 
