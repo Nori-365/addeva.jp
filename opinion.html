@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>投票（意見一覧）｜ADDEVA</title>
 
+  <!-- 共通 head（GA4 等） -->
+  <script>
+    (async () => {
+      try {
+        const res = await fetch('/includes/head-common.html', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        const html = await res.text();
+        document.head.insertAdjacentHTML('beforeend', html);
+      } catch (e) {
+        console.warn('head-common include failed:', e);
+      }
+    })();
+  </script>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -20,7 +34,7 @@
 <body>
 
   <!-- header include -->
-  <div data-include="/header.html"></div>
+  <div data-include="/includes/header.html"></div>
 
   <main class="py-4">
     <div class="container container-narrow">
@@ -96,7 +110,7 @@
   </main>
 
   <!-- footer include -->
-  <div data-include="/footer.html"></div>
+  <div data-include="/includes/footer.html"></div>
 
   <!-- All posts modal -->
   <div class="modal fade" id="allModal" tabindex="-1" aria-hidden="true">
@@ -208,6 +222,44 @@
       return Number(p.up_count || 0) + Number(p.down_count || 0) + Number(p.neutral_count || 0);
     }
 
+    // API の返却が array / {items:[]} / {data:[]} / {improveTop:[], praiseTop:[]} 等でも表示できるように正規化
+    function normalizePostsArray(rows) {
+      if (Array.isArray(rows)) return rows;
+      if (!rows || typeof rows !== 'object') return [];
+
+      if (Array.isArray(rows.items)) return rows.items;
+      if (Array.isArray(rows.data)) return rows.data;
+      if (Array.isArray(rows.posts)) return rows.posts;
+
+      const out = [];
+      const pushIfPostArray = (arr) => {
+        if (!Array.isArray(arr) || arr.length === 0) return;
+        const first = arr[0];
+        if (!first || typeof first !== 'object') return;
+        if (!('post_id' in first) && !('postId' in first)) return;
+        out.push(...arr);
+      };
+
+      // 直下の配列
+      Object.keys(rows).forEach((k) => {
+        const v = rows[k];
+        pushIfPostArray(v);
+        if (v && typeof v === 'object') {
+          if (Array.isArray(v.items)) pushIfPostArray(v.items);
+          if (Array.isArray(v.data)) pushIfPostArray(v.data);
+        }
+      });
+
+      // 重複排除
+      const m = new Map();
+      out.forEach((p) => {
+        const id = Number(p.post_id ?? p.postId);
+        if (!id) return;
+        if (!m.has(id)) m.set(id, p);
+      });
+      return Array.from(m.values());
+    }
+
     /* -------------------- render -------------------- */
     function voteButtons(p, disabled) {
       const btn = (voteType, label, count) => `
@@ -272,10 +324,10 @@
 
     /* -------------------- voting: post_id 指定でDOM更新（並び順固定） -------------------- */
     function applyVoteResultToDom(postId, res) {
-      const myVote = (res && (res.myVote ?? res.my_vote ?? null)) || null;
-      const up = Number((res && (res.upCount ?? res.up_count)) ?? 0);
-      const down = Number((res && (res.downCount ?? res.down_count)) ?? 0);
-      const neutral = Number((res && (res.neutralCount ?? res.neutral_count)) ?? 0);
+      const myVote = (res && (res.my_vote ?? res.myVote ?? null)) || null;
+      const up = Number((res && (res.up_count ?? res.upCount)) ?? 0);
+      const down = Number((res && (res.down_count ?? res.downCount)) ?? 0);
+      const neutral = Number((res && (res.neutral_count ?? res.neutralCount)) ?? 0);
       const total = up + down + neutral;
 
       // 画面上に同じ投稿が複数箇所（上位表示／モーダル等）に出ても、全部更新する
@@ -373,9 +425,8 @@
       praiseWrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
 
       try {
-        // summary は配列（既存運用に合わせる）
         const rows = await api('/api/addeva/opinion/summary', { method: 'POST', body: { productCode } });
-        const arr = Array.isArray(rows) ? rows : [];
+        const arr = normalizePostsArray(rows);
 
         const improve = arr.filter((p) => String(p.post_type || '').trim() === 'improve');
         const praise  = arr.filter((p) => String(p.post_type || '').trim() !== 'improve');
@@ -424,7 +475,7 @@
 
       try {
         const rows = await api('/api/addeva/opinion/list', { method: 'POST', body: { productCode, sort: sortMode } });
-        let arr = Array.isArray(rows) ? rows : [];
+        let arr = normalizePostsArray(rows);
 
         // 種類で絞り込み（モーダル内）
         arr = arr.filter((p) => {
