@@ -86,7 +86,7 @@
           <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
             <div class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;">開発責任者に直接届くフィードバックです。</div>
             <div class="mt-1">
-              <span class="fw-semibold">採用された改善は、できるだけ迅速に製品へ反映します。</span><br>
+              <span class="fw-semibold">賛成の多い「改善点」は、優先的に製品への反映を検討いたします。<\/span><br>
               <span class="fw-semibold">賛成の多い「良かった点」は、次モデルに継承されます。</span><br>
               公開したご意見は、審査後に他のユーザーにも表示され、投票の対象になります。非公開は開発責任者のみが確認します。<br>
               製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。
@@ -261,7 +261,7 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "\\n");
+        d.textContent += (line + "\n");
       };
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
@@ -410,13 +410,20 @@
 
     function renderPostCard(p) {
       const approved = isApprovedStatus(p.status);
+
+      // visibility: APIが visibility 文字列 / is_public を返すどちらの形でも判定できるようにする
+      const vis = String((p && (p.visibility ?? '')) ?? '').trim().toLowerCase();
+      const isPrivate = (vis === 'private') || (p?.is_public === false) || (p?.is_public === 0);
+      const canVote = approved && !isPrivate;
+
       const statusClass = approved ? 'text-bg-success' : 'text-bg-secondary';
       const statusChip = `<span class="badge ${statusClass} fw-normal">${escapeHtml(statusLabel(p.status))}</span>`;
       const typeChip = `<span class="badge text-bg-info fw-normal">${escapeHtml(postTypeLabel(p.post_type))}</span>`;
+      const privateChip = isPrivate ? `<span class="badge text-bg-dark fw-normal"><i class="bi bi-lock-fill me-1"></i>非公開</span>` : '';
 
       const voteButton = (voteType, label, count) => `
         <button class="btn btn-sm btn-outline-secondary vote-btn ${p.my_vote === voteType ? 'active' : ''}"
-                data-act="vote" data-post="${p.post_id}" data-v="${voteType}" ${approved ? '' : 'disabled'}>
+                data-act="vote" data-post="${p.post_id}" data-v="${voteType}" ${canVote ? '' : 'disabled'}>
           ${label} <span class="badge text-bg-light">${count}</span>
         </button>`;
 
@@ -431,6 +438,8 @@
         ? `<p class="small text-secondary mb-2">ニックネーム: ${escapeHtml(p.nickname)}</p>`
         : '';
 
+      const voteHint = canVote ? 'クリックで投票/取消' : (isPrivate ? '非公開のため投票不可' : '審査中は投票不可');
+
       return `
         <div class="post-card border rounded p-3" data-post-card="${p.post_id}">
           <div class="post-card-top">
@@ -438,6 +447,7 @@
               <div class="d-flex gap-2 align-items-center flex-wrap">
                 ${statusChip}
                 ${typeChip}
+                ${privateChip}
               </div>
             </div>
 
@@ -446,7 +456,7 @@
                 ${voteButton('up', '賛成', p.up_count)}
                 ${voteButton('down', '反対', p.down_count)}
               </div>
-              <div class="form-text mt-1">${approved ? 'クリックで投票/取消' : '審査中は投票不可'}</div>
+              <div class="form-text mt-1">${voteHint}</div>
             </div>
           </div>
 
