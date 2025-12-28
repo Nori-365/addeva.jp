@@ -160,9 +160,9 @@
           <div class="row g-3">
 
             <div class="col-12">
-              <label class="form-label d-block mb-2">公開設定</label>
+              <label class="form-label d-block mb-2">公開設定 <span class="text-danger">*</span></label>
               <div class="btn-group w-100" role="group" aria-label="公開設定">
-                <input type="radio" class="btn-check" name="visibility" id="visPublic" value="public" autocomplete="off" checked>
+                <input type="radio" class="btn-check" name="visibility" id="visPublic" value="public" autocomplete="off">
                 <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-eye"></i> 公開（投票の対象）</label>
                 <input type="radio" class="btn-check" name="visibility" id="visPrivate" value="private" autocomplete="off">
                 <label class="btn btn-outline-primary" for="visPrivate"><i class="bi bi-eye-slash"></i> 非公開（開発責任者のみ）</label>
@@ -714,7 +714,7 @@
       const nickname = getNicknameValue();
       const ptEl = document.querySelector('input[name="postType"]:checked');
       const visEl = document.querySelector('input[name="visibility"]:checked');
-      const visibility = String(visEl?.value || '').trim() || 'public';
+      const visibility = String(visEl?.value || '').trim();
 
       if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
       if (!visEl) { showAlert('warning', '公開設定を選択してください。'); return; }
