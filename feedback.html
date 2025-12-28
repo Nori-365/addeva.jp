@@ -38,6 +38,13 @@
     /* 重要注意（ダークレッド） */
     .text-darkred { color: #8B0000 !important; }
 
+    /* 公開設定：どちらを選んでも「青」で強調（main.css等の上書き対策） */
+    .visibility-group .btn-check:checked + .btn{
+      background-color: var(--bs-primary) !important;
+      border-color: var(--bs-primary) !important;
+      color: #fff !important;
+    }
+
     /* スマホ微調整 */
     @media (max-width: 575.98px) {
       .post-card-top { gap: .5rem !important; }
@@ -174,12 +181,12 @@
                 <label class="btn btn-outline-primary" for="ptGuide"><i class="bi bi-journal-text me-1"></i>製品ガイド要望</label>
               </div>
               <div class="form-text mt-2">製品ガイドへの追記・修正のご要望は、「製品ガイド要望」をご選択ください。</div>
-              <div class="form-text text-darkred fw-semibold">上記のどちらかを必ず選択してください。</div>
+              <div class="form-text text-darkred fw-semibold">上記のいずれかを必ず選択してください。</div>
             </div>
 
             <div class="col-12">
               <label class="form-label">公開設定 <span class="text-danger">*</span></label>
-              <div class="btn-group w-100" role="group" aria-label="公開設定">
+              <div class="btn-group w-100 visibility-group" role="group" aria-label="公開設定">
                 <input type="radio" class="btn-check" name="visibility" id="visPublic" autocomplete="off" value="public">
                 <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-globe2 me-1"></i>公開（投票の対象）</label>
 
