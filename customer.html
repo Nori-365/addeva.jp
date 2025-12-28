@@ -44,7 +44,9 @@
           </ol>
         </nav>
 
-        $1
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert"></div>
+
         <!-- ログインページ用：説明文（ログイン枠の上） -->
         <div id="customerLoginIntro" class="mb-3 d-none"></div>
 
@@ -119,7 +121,9 @@
     }
 
     waitForADDEVA(async () => {
-      $1      const customerLoginIntro = document.getElementById('customerLoginIntro');
+      const customerContent = document.getElementById('customerContent');
+      const messageArea = document.getElementById('messageArea');
+      const customerLoginIntro = document.getElementById('customerLoginIntro');
       const customerLoginWarranty = document.getElementById('customerLoginWarranty');
 
       const urlParams = new URLSearchParams(window.location.search);
