@@ -86,10 +86,15 @@
           <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
             <div class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;">開発責任者に直接届くフィードバックです。</div>
             <div class="mt-1">
-              <span class="fw-semibold">賛成の多い「改善点」は、優先的に製品への反映を検討いたします。</span><br>
-              <span class="fw-semibold">賛成の多い「良かった点」は、次モデルに継承されます。</span><br>
-              公開したご意見は、審査後に他のユーザーにも表示され、投票の対象になります。非公開は開発責任者のみが確認します。<br>
-              製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。
+              <!--
+                不具合対策：
+                ここは span + br の書き間違いがあると「タグ文字が表示される」「以降の行が崩れる」事故が起きやすいので、
+                行ごとに div で分離して堅牢化しています。
+              -->
+              <div class="fw-semibold">賛成の多い「改善点」は、優先的に製品への反映を検討いたします。</div>
+              <div class="fw-semibold">賛成の多い「良かった点」は、次モデルに継承されます。</div>
+              <div>公開したご意見は、審査後に他のユーザーにも表示され、投票の対象になります。非公開は開発責任者のみが確認します。</div>
+              <div>製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。</div>
             </div>
           </div>
 
@@ -845,7 +850,7 @@
         });
       });
 
-      const nickEl = getNicknameEl();
+      const nickEl = document.getElementById('nickname');
       if (nickEl) {
         nickEl.addEventListener('input', () => {
           cacheNickname(getNicknameValue());
