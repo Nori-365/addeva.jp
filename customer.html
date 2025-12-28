@@ -51,7 +51,7 @@
         <div id="customerLoginIntro" class="mb-3 d-none"></div>
 
         <!-- コンテンツコンテナ -->
-        <div id="customerContent" class="card shadow-sm p-4 mb-5">
+        <div id="customerContent" class="card shadow-sm p-3 p-md-4 mb-5">
           <!-- ここにログインフォームまたはサポートコンテンツが動的に読み込まれる -->
           <div class="text-center">
             <div class="spinner-border text-primary" role="status">
@@ -93,6 +93,16 @@
       const m = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return `${y}/${m}/${day}`;
+    }
+
+    // HTMLエスケープ（innerHTML を使う箇所のXSS対策）
+    function escapeHtml(value) {
+      return String((value === undefined || value === null) ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     // next の安全化（外部URLへのオープンリダイレクト防止）
@@ -270,7 +280,7 @@
 
         customerContent.innerHTML = `
           <h1 class="mb-4">お客様サポート</h1>
-          <p class="lead mb-4">お客様ID: <span id="displayCustomerId" class="fw-bold text-primary"></span> / メールアドレス: <span id="displayEmail"></span></p>
+          <p class="lead mb-4">お客様ID: <span id="displayCustomerId" class="fw-bold text-primary"></span><span class="d-block d-md-inline"> / メールアドレス: <span id="displayEmail"></span></span></p>
 
           ${urlParams.get('registered') === 'true' ? `
             <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
@@ -288,15 +298,16 @@
               <table class="table table-bordered table-striped table-sm mb-0">
                 <thead>
                   <tr>
-                    <th>購入日</th>
-                    <th>商品名</th>
-                    <th>注文番号</th>
+                    <th class="d-none d-md-table-cell">購入日</th>
+                    <th class="d-none d-md-table-cell">商品名</th>
+                    <th class="d-none d-md-table-cell">注文番号</th>
+                    <th class="d-md-none">購入日 / 注文番号<br>商品名</th>
                     <th>保証終了日</th>
                     <th class="text-center">サポート</th>
                   </tr>
                 </thead>
                 <tbody id="purchasesTableBody">
-                  <tr><td colspan="5" class="text-muted">購入履歴を読み込み中...</td></tr>
+                  <tr><td colspan="6" class="text-muted">購入履歴を読み込み中...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -324,18 +335,54 @@
 
           purchasesTableBody.innerHTML = '';
           if (!purchases || purchases.length === 0) {
-            purchasesTableBody.innerHTML = '<tr><td colspan="5" class="text-muted">まだ購入履歴がありません。</td></tr>';
+            purchasesTableBody.innerHTML = '<tr><td colspan="6" class="text-muted">まだ購入履歴がありません。</td></tr>';
           } else {
             purchases.forEach(p => {
               const row = purchasesTableBody.insertRow();
-              row.insertCell().textContent = formatJapaneseDate(p.purchaseDate) || 'N/A';
-              row.insertCell().textContent = p.productName || 'N/A';
-              row.insertCell().textContent = p.orderNumber || 'N/A';
-              row.insertCell().textContent = formatJapaneseDate(p.warrantyEndDate) || 'N/A';
 
+              // Desktop（md以上）：従来どおり列を分ける
+              const purchaseDateCell = row.insertCell();
+              purchaseDateCell.className = 'd-none d-md-table-cell';
+              purchaseDateCell.textContent = formatJapaneseDate(p.purchaseDate) || 'N/A';
+
+              const productNameCell = row.insertCell();
+              productNameCell.className = 'd-none d-md-table-cell';
+              productNameCell.textContent = p.productName || 'N/A';
+
+              const orderNumberCell = row.insertCell();
+              orderNumberCell.className = 'd-none d-md-table-cell';
+              orderNumberCell.textContent = p.orderNumber || 'N/A';
+
+              // Mobile（md未満）：購入日/注文番号/商品名 を1セルにまとめる
+              const compactCell = row.insertCell();
+              compactCell.className = 'd-md-none';
+              compactCell.innerHTML = `${escapeHtml(formatJapaneseDate(p.purchaseDate) || 'N/A')} / ${escapeHtml(p.orderNumber || 'N/A')}<br>${escapeHtml(p.productName || 'N/A')}`;
+
+              // 共通：保証終了日
+              const warrantyEndCell = row.insertCell();
+              warrantyEndCell.textContent = formatJapaneseDate(p.warrantyEndDate) || 'N/A';
+              // 共通：取説（準備中）/ フィードバック / サポート（依頼）
               const supportCell = row.insertCell();
               supportCell.className = 'text-center';
-              supportCell.innerHTML = `<button class="btn btn-sm btn-outline-info support-request-btn" data-purchase-id="${p.purchaseSequenceNumber}" data-product-name="${(p.productName || '').replace(/"/g, '&quot;')}">依頼</button>`;
+
+              // product_code はAPIレスポンス内に含まれる前提（product_code / productCode の両方に対応）
+              const productCode = String((p.product_code ?? p.productCode ?? '') || '').trim();
+              const feedbackUrl = productCode
+                ? `/feedback_board.html?product_code=${encodeURIComponent(productCode)}`
+                : '/feedback_board.html';
+
+              supportCell.innerHTML = `
+                <div class="d-grid gap-1">
+                  <button class="btn btn-sm btn-outline-primary" type="button" disabled>取説（準備中）</button>
+                  <a class="btn btn-sm btn-outline-secondary" href="${feedbackUrl}">フィードバック</a>
+                  <button class="btn btn-sm btn-outline-info support-request-btn"
+                          data-purchase-id="${p.purchaseSequenceNumber}"
+                          data-product-name="${escapeHtml(p.productName || '')}"
+                          data-product-code="${escapeHtml(productCode)}">
+                    依頼
+                  </button>
+                </div>
+              `;
             });
 
             purchasesTableBody.querySelectorAll('.support-request-btn').forEach(button => {
@@ -349,7 +396,7 @@
           }
         } catch (error) {
           console.error('購入履歴の取得に失敗しました:', error);
-          purchasesTableBody.innerHTML = '<tr><td colspan="5" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
+          purchasesTableBody.innerHTML = '<tr><td colspan="6" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
           showError(error.message || '購入履歴の取得中にエラーが発生しました。');
         }
 
