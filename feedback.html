@@ -173,18 +173,18 @@
                 <input type="radio" class="btn-check" name="postType" id="ptGuide" autocomplete="off" value="guide">
                 <label class="btn btn-outline-primary" for="ptGuide"><i class="bi bi-journal-text me-1"></i>製品ガイド要望</label>
               </div>
-              <div class="form-text mt-2">「製品ガイド要望」は、製品ガイドへの追記・修正のご要望です。</div>
+              <div class="form-text mt-2">製品ガイドへの追記・修正のご要望は、「製品ガイド要望」をご選択ください。</div>
               <div class="form-text text-darkred fw-semibold">上記のどちらかを必ず選択してください。</div>
             </div>
 
             <div class="col-12">
               <label class="form-label">公開設定 <span class="text-danger">*</span></label>
               <div class="btn-group w-100" role="group" aria-label="公開設定">
-                <input type="radio" class="btn-check" name="visibility" id="visPublic" autocomplete="off" value="public" checked>
+                <input type="radio" class="btn-check" name="visibility" id="visPublic" autocomplete="off" value="public">
                 <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-globe2 me-1"></i>公開（投票の対象）</label>
 
                 <input type="radio" class="btn-check" name="visibility" id="visPrivate" autocomplete="off" value="private">
-                <label class="btn btn-outline-secondary" for="visPrivate"><i class="bi bi-lock me-1"></i>非公開（開発責任者のみ）</label>
+                <label class="btn btn-outline-primary" for="visPrivate"><i class="bi bi-lock me-1"></i>非公開（開発責任者のみ）</label>
               </div>
               <div class="form-text mt-2">公開したご意見は、審査後に同じ製品のユーザーへ表示され、投票の対象になります。非公開は開発責任者のみが確認します。</div>
             </div>
@@ -241,6 +241,7 @@
     const getVisibilityValue = () => {
       const el = document.querySelector('input[name="visibility"]:checked');
       const v = String(el?.value || '').trim();
+      if (!v) return '';
       return (v === 'private') ? 'private' : 'public';
     };
 
@@ -801,6 +802,9 @@
       document.getElementById('btnReload').addEventListener('click', () => loadPartPosts({ forceReorder: true }));
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
+
+      // 公開設定はデフォルト未選択（ユーザーに選択してもらう）
+      document.querySelectorAll('input[name="visibility"]').forEach(el => { el.checked = false; });
 
       ['title', 'body'].forEach(id => {
         const el = document.getElementById(id);
