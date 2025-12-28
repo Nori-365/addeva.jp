@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>FeedBack（投票と意見の追加）｜ADDEVA サポート</title>
+  <title>フィードバック（投票とご意見の追加）｜ADDEVA サポート</title>
 
   <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,7 +31,7 @@
     .post-card-top-left{ min-width: 0; }
     .post-card-top-right{ justify-self: end; }
 
-/* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
+    /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
 
     /* 重要注意（ダークレッド） */
@@ -55,9 +55,9 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-            <li class="breadcrumb-item"><a href="/customer.html">顧客ポータル</a></li>
-            <li class="breadcrumb-item"><a id="breadcrumbBoardLink" href="/feedback_board.html">FeedBackボード</a></li>
-            <li class="breadcrumb-item active" aria-current="page">FeedBack（投票と意見の追加）</li>
+            <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
+            <li class="breadcrumb-item"><a id="breadcrumbBoardLink" href="/feedback_board.html">フィードバックボード</a></li>
+            <li class="breadcrumb-item active" aria-current="page">フィードバック（投票とご意見の追加）</li>
           </ol>
         </nav>
 
@@ -75,14 +75,23 @@
 
         <!-- ページヘッダー情報 -->
         <div class="mb-4">
-          <h1 class="mb-2">FeedBack（投票と意見の追加）</h1>
+          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+            <div class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;">開発責任者に直接届くフィードバックです。</div>
+            <div class="mt-1">
+              <span class="fw-semibold">採用された改善は、できるだけ迅速に製品へ反映します。</span><br>
+              公開したご意見は、審査後に同じ製品のユーザーへ表示され、投票の対象になります。非公開は開発責任者のみが確認します。<br>
+              製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。
+            </div>
+          </div>
+
+          <h1 class="mb-2">フィードバック（投票とご意見の追加）</h1>
           <p class="lead mb-1">
             <span class="d-none d-sm-inline">対象商品：</span><span class="d-inline d-sm-none">対象：</span> <span id="productName" class="fw-bold text-primary">-</span>
             <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
           </p>
           <p class="text-secondary">
             製品改善のため、皆様のご意見をお聞かせください。<br>
-            手順：部位を選ぶ → その部位の意見を先に読む → 必要なら投票・意見を追加
+            手順：部位を選ぶ → その部位のご意見を先に読む → 必要なら投票・ご意見を追加
           </p>
         </div>
 
@@ -97,7 +106,7 @@
               <select id="partSelect" class="form-select">
                 <option value="">読み込み中...</option>
               </select>
-              <div class="form-text">まずは部位を選び、その部位の意見を先に確認してください。</div>
+              <div class="form-text">まずは部位を選び、その部位のご意見を先に確認してください。製品ガイドに関するご意見は「全体性能 / その他」から追加できます。</div>
             </div>
           </div>
 
@@ -123,9 +132,9 @@
 
           <hr class="my-4">
 
-          <!-- 2. この部位の意見を読む -->
+          <!-- 2. この部位のご意見を読む -->
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-            <h2 class="h5 m-0">2. 意見に投票する</h2>
+            <h2 class="h5 m-0">2. ご意見に投票する</h2>
             <div class="d-flex align-items-center gap-2 flex-wrap">
               <select id="filterType" class="form-select form-select-sm" style="width:auto;">
                 <option value="">すべて表示</option>
@@ -135,7 +144,7 @@
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
           </div>
-          <p class="text-secondary small">審査中のご意見は、ご本人のみ表示されます。わからない意見には、無投票でお願いします。</p>
+          <p class="text-secondary small">審査中のご意見は、ご本人のみ表示されます。わからないご意見には、無投票でお願いします。</p>
 
           <div class="vstack gap-3" id="partPostsWrap">
             <div class="text-center p-4 bg-light rounded">
@@ -145,11 +154,23 @@
 
           <hr class="my-4">
 
-          <!-- 3. この部位の新しい意見を追加する -->
-          <h2 class="h5 mb-3">3. この部位の新しい意見を追加</h2>
+          <!-- 3. この部位の新しいご意見を追加する -->
+          <h2 class="h5 mb-3">3. この部位の新しいご意見を追加</h2>
           <div class="row g-3">
+
+            <div class="col-12">
+              <label class="form-label d-block mb-2">公開設定</label>
+              <div class="btn-group w-100" role="group" aria-label="公開設定">
+                <input type="radio" class="btn-check" name="visibility" id="visPublic" value="public" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-eye"></i> 公開（投票の対象）</label>
+                <input type="radio" class="btn-check" name="visibility" id="visPrivate" value="private" autocomplete="off">
+                <label class="btn btn-outline-primary" for="visPrivate"><i class="bi bi-eye-slash"></i> 非公開（開発責任者のみ）</label>
+              </div>
+              <div class="form-text mt-2">公開したご意見は、審査後に同じ製品のユーザーへ表示され、投票の対象になります。非公開は開発責任者のみが確認します。</div>
+            </div>
+
             <div class="col-12 col-md-7">
-              <label class="form-label d-block mb-2">意見タイプ</label>
+              <label class="form-label d-block mb-2">ご意見タイプ</label>
               <div class="btn-group w-100" role="group" aria-label="意見タイプ選択">
                 <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off">
                 <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい点</label>
@@ -162,24 +183,24 @@
             <div class="col-12 col-md-5">
               <label for="nickname" class="form-label">ニックネーム <span class="text-danger">*</span></label>
               <input type="text" id="nickname" class="form-control" maxlength="32" placeholder="例：Taro" required>
-              <div class="form-text">ニックネームを変更すると、過去の投稿も変わります。</div>
+              <div class="form-text">ニックネームを変更すると、過去のご意見も変わります。</div>
             </div>
 
             <div class="col-12">
               <label for="title" class="form-label">タイトル</label>
-              <input type="text" id="title" class="form-control" maxlength="120" placeholder="例：〇〇の改善 / 〇〇が便利">
+              <input type="text" id="title" class="form-control" maxlength="120" placeholder="例：〇〇の改善 / 〇〇が便利 / 製品ガイドに〇〇を追記してほしい">
             </div>
 
             <div class="col-12">
               <label for="body" class="form-label">内容</label>
               <textarea id="body" class="form-control" rows="6" maxlength="4000"
                         placeholder="詳細をご入力ください。"></textarea>
-              <div class="form-text mt-2 text-secondary">※用語の統一・商標保護のため、投稿内容は公開前の審査で表現を一部調整する場合があります（内容の趣旨は変えません）。あらかじめご了承ください。</div>
+              <div class="form-text mt-2 text-secondary">※用語の統一・商標保護のため、ご意見は公開前の審査で表現を一部調整する場合があります（内容の趣旨は変えません）。あらかじめご了承ください。</div>
             </div>
 
             <div class="col-12">
-              <button id="btnSubmit" class="btn btn-primary btn-lg w-100">意見を追加する</button>
-              <div id="submitHint" class="form-text mt-2 text-center">部位を選ぶと投稿できます。</div>
+              <button id="btnSubmit" class="btn btn-primary btn-lg w-100">ご意見を追加する</button>
+              <div id="submitHint" class="form-text mt-2 text-center">部位を選ぶとご意見を追加できます。</div>
             </div>
           </div>
 
@@ -207,6 +228,12 @@
       if (btn.dataset.bound === '1') return;
       btn.addEventListener('click', clearAlert);
       btn.dataset.bound = '1';
+    };
+
+    const getVisibilityValue = () => {
+      const el = document.querySelector('input[name="visibility"]:checked');
+      const v = String(el?.value || '').trim();
+      return (v === 'private') ? 'private' : 'public';
     };
 
     // === Debug trace (alert) ===
@@ -321,7 +348,7 @@
         return;
       }
 
-      // 既存orderに無いものが増えた場合は末尾へ（投稿直後など）
+      // 既存orderに無いものが増えた場合は末尾へ（追加直後など）
       for (const p of posts) {
         const id = Number(p.post_id);
         if (!_renderOrder.includes(id)) _renderOrder.push(id);
@@ -357,28 +384,6 @@
       if (!card) return;
       card.querySelectorAll('.vote-btn').forEach(b => { b.disabled = !!disabled; });
     };
-
-    const _applyVoteOptimistic = (postId, voteType) => {
-      const p = _postMap.get(Number(postId));
-      if (!p) return;
-
-      const prev = (p.my_vote || null);
-      let next = voteType;
-
-      // 同じボタン＝取消
-      if (prev === voteType) next = null;
-
-      // remove prev
-      if (prev === 'up') p.up_count = Math.max(0, Number(p.up_count || 0) - 1);
-      if (prev === 'down') p.down_count = Math.max(0, Number(p.down_count || 0) - 1);
-
-      // add next
-      if (next === 'up') p.up_count = Number(p.up_count || 0) + 1;
-      if (next === 'down') p.down_count = Number(p.down_count || 0) + 1;
-
-      p.my_vote = next;
-    };
-
 
     function renderPostCard(p) {
       const approved = isApprovedStatus(p.status);
@@ -468,6 +473,7 @@
         if (cached) el.value = cached;
       } catch (_) {}
     }
+
     async function tryLoadNicknameFromApi() {
       // 方針：POST優先。ただしサーバ側がPOSTを許可していない場合(405)はGETにフォールバック。
       // 重要：ここだけは common.js(ADDEVA.apiFetch) を使わず fetch 直叩きにして、
@@ -550,26 +556,28 @@
       const hasSelection = !!partCode && !isNew;
       const nickOk = !!getNicknameValue();
       const typeOk = !!document.querySelector('input[name="postType"]:checked');
+      const visOk = !!document.querySelector('input[name="visibility"]:checked');
       const titleOk = !!String(document.getElementById('title')?.value || '').trim();
       const bodyOk  = !!String(document.getElementById('body')?.value  || '').trim();
 
       document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
 
       const btnSubmit = document.getElementById('btnSubmit');
-      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk && titleOk && bodyOk);
+      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk && visOk && titleOk && bodyOk);
 
       const hint = document.getElementById('submitHint');
       if (hint) {
         // 送信可否の理由を分かりやすく表示
         if (isNew) {
-          hint.textContent = '新しい部位を登録してから意見を追加できます。';
+          hint.textContent = '新しい部位を登録してからご意見を追加できます。';
           hint.className = 'form-text mt-2 text-center';
         } else if (!hasSelection) {
-          hint.textContent = '部位を選ぶと意見を追加できます。';
+          hint.textContent = '部位を選ぶとご意見を追加できます。';
           hint.className = 'form-text mt-2 text-center';
         } else {
           const missing = [];
-          if (!typeOk) missing.push('意見タイプ');
+          if (!visOk) missing.push('公開設定');
+          if (!typeOk) missing.push('ご意見タイプ');
           if (!nickOk) missing.push('ニックネーム');
           if (!titleOk) missing.push('タイトル');
           if (!bodyOk) missing.push('内容');
@@ -600,7 +608,7 @@
       if (!wrap) return;
 
       if (!productCode) {
-        wrap.innerHTML = '<div class="alert alert-danger mb-0">商品コードが指定されていません。顧客ポータルから再度お試しください。</div>';
+        wrap.innerHTML = '<div class="alert alert-danger mb-0">商品コードが指定されていません。ユーザーサポートから再度お試しください。</div>';
         return;
       }
 
@@ -623,7 +631,7 @@
         });
 
         if (!Array.isArray(posts) || posts.length === 0) {
-          wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">この部位の投稿はまだありません。</p></div>';
+          wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">この部位のご意見はまだありません。</p></div>';
           return;
         }
 
@@ -664,7 +672,7 @@
         });
 
       } catch (e) {
-        wrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || '投稿の読み込みに失敗しました。'}</div>`;
+        wrap.innerHTML = `<div class="alert alert-danger mb-0">${escapeHtml(e.message) || 'ご意見の読み込みに失敗しました。'}</div>`;
       }
     }
 
@@ -704,9 +712,12 @@
       const body = document.getElementById('body').value.trim();
       const nickname = getNicknameValue();
       const ptEl = document.querySelector('input[name="postType"]:checked');
+      const visEl = document.querySelector('input[name="visibility"]:checked');
+      const visibility = String(visEl?.value || '').trim() || 'public';
 
       if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
-      if (!ptEl) { showAlert('warning', '意見タイプを選択してください。'); return; }
+      if (!visEl) { showAlert('warning', '公開設定を選択してください。'); return; }
+      if (!ptEl) { showAlert('warning', 'ご意見タイプを選択してください。'); return; }
       if (!nickname) { showAlert('warning', 'ニックネームを入力してください。'); return; }
       if (!title || !body) { showAlert('warning', 'タイトルと内容を入力してください。'); return; }
 
@@ -717,6 +728,8 @@
         body,
         postType: String(ptEl.value || '').trim(),
         nickname,
+        visibility,
+        is_public: (visibility !== 'private'),
       };
 
       // フォールバック用に手元にも保持（初期表示でAPIが無い場合でもユーザー体験を落とさない）
@@ -724,7 +737,12 @@
 
       try {
         await api('/api/addeva/feedback/create', { method: 'POST', body: postData });
-        showAlert('success', '投稿しました。ありがとうございます。審査後に公開されます。');
+
+        if (visibility === 'private') {
+          showAlert('success', 'ご意見を追加しました。ありがとうございます。開発責任者に直接届きます（非公開）。');
+        } else {
+          showAlert('success', 'ご意見を追加しました。ありがとうございます。審査後に公開され、投票の対象になります。');
+        }
 
         // Debug: 成功メッセージ直後の状態を強制ログ
         try { dbg.snapshot('submitPost.afterShowAlert'); } catch (_) {}
@@ -736,14 +754,14 @@
         document.getElementById('partSelect').value = partCode;
         setUIState(partCode);
 
-        // フィルターで見えなくなるのを防ぐ（投稿直後は一度「すべて表示」に戻す）
+        // フィルターで見えなくなるのを防ぐ（追加直後は一度「すべて表示」に戻す）
         const filterEl = document.getElementById('filterType');
         if (filterEl) filterEl.value = '';
 
         await loadPartPosts({ keepAlert: true });
 
       } catch (e) {
-        showAlert('danger', e.message || '投稿に失敗しました。');
+        showAlert('danger', e.message || 'ご意見の追加に失敗しました。');
       }
     }
 
@@ -762,7 +780,7 @@
       setBreadcrumbBoardLink(productCode);
 
       if (!productCode) {
-        showAlert('danger', '商品コードが指定されていません。顧客ポータルから再度お試しください。');
+        showAlert('danger', '商品コードが指定されていません。ユーザーサポートから再度お試しください。');
         return;
       }
 
@@ -778,7 +796,7 @@
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
 
-      // タイトル/内容の入力で投稿可否を再判定
+      // タイトル/内容の入力で送信可否を再判定
       ['title', 'body'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -788,8 +806,16 @@
         });
       });
 
-      // 意見タイプを選んだら投稿可否を再判定
+      // ご意見タイプを選んだら送信可否を再判定
       document.querySelectorAll('input[name="postType"]').forEach(el => {
+        el.addEventListener('change', () => {
+          const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
+          setUIState(pc);
+        });
+      });
+
+      // 公開設定を選んだら送信可否を再判定
+      document.querySelectorAll('input[name="visibility"]').forEach(el => {
         el.addEventListener('change', () => {
           const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
           setUIState(pc);
