@@ -213,8 +213,8 @@
         }
 
         customerContent.innerHTML = `
-          <h1 class="mb-3">ユーザーログイン</h1>
-          <p class="lead mb-4">ご登録済みのメールアドレスとパスワードでログインしてください。</p>
+          <h1 class="mb-3 text-center">ユーザーログイン</h1>
+          <p class="lead mb-4 text-center">ご登録済みのメールアドレスとパスワードでログインしてください。</p>
 
           <form id="loginForm" class="col-md-8 mx-auto">
             <div class="mb-3">
@@ -279,8 +279,8 @@
         }
 
         customerContent.innerHTML = `
-          <h1 class="mb-4">お客様サポート</h1>
-          <p class="lead mb-4">お客様ID: <span id="displayCustomerId" class="fw-bold text-primary"></span><span class="d-block d-md-inline"> / メールアドレス: <span id="displayEmail"></span></span></p>
+          <h1 class="mb-4 text-center">お客様サポート</h1>
+          <p class="lead mb-4 text-center">お客様ID: <span id="displayCustomerId" class="fw-bold text-primary"></span><span class="d-block d-md-inline"> / メールアドレス: <span id="displayEmail"></span></span></p>
 
           ${urlParams.get('registered') === 'true' ? `
             <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
@@ -293,7 +293,7 @@
           ` : ''}
 
           <div class="mb-4">
-            <h5 class="mb-3">これまでの購入商品一覧</h5>
+            <h5 class="mb-3 text-center">これまでの購入商品一覧</h5>
             <div class="table-responsive">
               <table class="table table-bordered table-striped table-sm mb-0">
                 <thead>
@@ -303,7 +303,7 @@
                     <th class="d-none d-md-table-cell">注文番号</th>
                     <th class="d-md-none">購入日 / 注文番号<br>商品名</th>
                     <th>保証終了日</th>
-                    <th class="text-center">サポート</th>
+                    <th class="text-center">ガイド</th>
                   </tr>
                 </thead>
                 <tbody id="purchasesTableBody">
@@ -320,10 +320,7 @@
             <button id="logoutButton" class="btn btn-outline-secondary btn-lg">
               <i class="bi bi-box-arrow-right me-2"></i>ログアウト
             </button>
-            <button id="contactSupportButton" class="btn btn-info text-white btn-lg">
-              <i class="bi bi-headset me-2"></i>サポートを依頼する
-            </button>
-          </div>
+</div>
         `;
 
         document.getElementById('displayCustomerId').textContent = loggedInCustomerId;
@@ -367,33 +364,21 @@
 
               // product_code はAPIレスポンス内に含まれる前提（product_code / productCode の両方に対応）
               const productCode = String((p.product_code ?? p.productCode ?? '') || '').trim();
+              const guideUrl = productCode
+                ? `/product_guide/${encodeURIComponent(productCode)}.html`
+                : '/product_guide/index.html';
+
               const feedbackUrl = productCode
                 ? `/feedback_board.html?product_code=${encodeURIComponent(productCode)}`
                 : '/feedback_board.html';
 
               supportCell.innerHTML = `
                 <div class="d-grid gap-1">
-                  <button class="btn btn-sm btn-outline-primary" type="button" disabled>取説（準備中）</button>
+                  <a class="btn btn-sm btn-outline-primary" href="${guideUrl}">製品ガイド</a>
                   <a class="btn btn-sm btn-outline-secondary" href="${feedbackUrl}">フィードバック</a>
-                  <button class="btn btn-sm btn-outline-info support-request-btn"
-                          data-purchase-id="${p.purchaseSequenceNumber}"
-                          data-product-name="${escapeHtml(p.productName || '')}"
-                          data-product-code="${escapeHtml(productCode)}">
-                    依頼
-                  </button>
                 </div>
               `;
             });
-
-            purchasesTableBody.querySelectorAll('.support-request-btn').forEach(button => {
-              button.addEventListener('click', (e) => {
-                const purchaseId = e.currentTarget.dataset.purchaseId;
-                const productName = e.currentTarget.dataset.productName || '';
-                alert(`「${productName}」のサポートを依頼します (購入ID: ${purchaseId})`);
-                window.location.href = `/contact.html?mode=support&purchaseId=${encodeURIComponent(purchaseId)}&email=${encodeURIComponent(loggedInEmail)}`;
-              });
-            });
-          }
         } catch (error) {
           console.error('購入履歴の取得に失敗しました:', error);
           purchasesTableBody.innerHTML = '<tr><td colspan="6" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
@@ -403,10 +388,6 @@
         document.getElementById('logoutButton').addEventListener('click', () => {
           clearAuthToken();
           window.location.href = '/customer.html?mode=login';
-        });
-
-        document.getElementById('contactSupportButton').addEventListener('click', () => {
-          window.location.href = `/contact.html?mode=support&email=${encodeURIComponent(loggedInEmail)}`;
         });
       }
 
