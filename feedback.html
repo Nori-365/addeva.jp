@@ -18,10 +18,11 @@
   <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
 
   <style>
-    /* main.css 側に寄せつつ、投稿カードの最低限だけ補強 */
+    /* main.css 側に寄せつつ、カードUIの最低限だけ補強 */
     .post-card h3 { line-height: 1.35; }
     .vote-btn.active { box-shadow: inset 0 0 0 2px rgba(13,110,253,.35); }
-    /* 投稿カード：上段(左/右) + 下段(本文)の2段構成（Grid） */
+
+    /* カード：上段(左/右) + 下段(本文)の2段構成（Grid） */
     .post-card-top{
       display: grid;
       grid-template-columns: 1fr auto;
@@ -31,7 +32,7 @@
     .post-card-top-left{ min-width: 0; }
     .post-card-top-right{ justify-self: end; }
 
-    /* Chromeのスクロールアンカーで「投稿後に勝手に移動」するのを防ぐ */
+    /* Chromeのスクロールアンカーで「追加後に勝手に移動」するのを防ぐ */
     #messageArea, #partPostsWrap { overflow-anchor: none; }
 
     /* 重要注意（ダークレッド） */
@@ -107,7 +108,7 @@
               <select id="partSelect" class="form-select">
                 <option value="">読み込み中...</option>
               </select>
-              <div class="form-text">まずは部位を選び、その部位のご意見を先に確認してください。製品ガイドに関するご意見は「全体性能 / その他」から追加できます。</div>
+              <div class="form-text">まずは部位を選び、その部位のご意見を先に確認してください。製品ガイド要望は「全体性能 / その他」から追加するのがおすすめです。</div>
             </div>
           </div>
 
@@ -141,6 +142,7 @@
                 <option value="">すべて表示</option>
                 <option value="improve">改善してほしい点</option>
                 <option value="praise">良かった点</option>
+                <option value="guide">製品ガイド要望</option>
               </select>
               <button id="btnReload" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i> 更新</button>
             </div>
@@ -157,28 +159,34 @@
 
           <!-- 3. この部位の新しいご意見を追加する -->
           <h2 class="h5 mb-3">3. この部位の新しいご意見を追加</h2>
-          <div class="row g-3">
 
+          <div class="row g-3">
             <div class="col-12">
-              <label class="form-label d-block mb-2">公開設定 <span class="text-danger">*</span></label>
-              <div class="btn-group w-100" role="group" aria-label="公開設定">
-                <input type="radio" class="btn-check" name="visibility" id="visPublic" value="public" autocomplete="off">
-                <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-eye"></i> 公開（投票の対象）</label>
-                <input type="radio" class="btn-check" name="visibility" id="visPrivate" value="private" autocomplete="off">
-                <label class="btn btn-outline-primary" for="visPrivate"><i class="bi bi-eye-slash"></i> 非公開（開発責任者のみ）</label>
+              <label class="form-label">ご意見タイプ <span class="text-danger">*</span></label>
+              <div class="btn-group w-100" role="group" aria-label="ご意見タイプ">
+                <input type="radio" class="btn-check" name="postType" id="ptImprove" autocomplete="off" value="improve">
+                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb me-1"></i>改善してほしい点</label>
+
+                <input type="radio" class="btn-check" name="postType" id="ptPraise" autocomplete="off" value="praise">
+                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up me-1"></i>良かった点</label>
+
+                <input type="radio" class="btn-check" name="postType" id="ptGuide" autocomplete="off" value="guide">
+                <label class="btn btn-outline-primary" for="ptGuide"><i class="bi bi-journal-text me-1"></i>製品ガイド要望</label>
               </div>
-              <div class="form-text mt-2">公開したご意見は、審査後に同じ製品のユーザーへ表示され、投票の対象になります。非公開は開発責任者のみが確認します。</div>
+              <div class="form-text mt-2">「製品ガイド要望」は、製品ガイドへの追記・修正のご要望です。</div>
+              <div class="form-text text-darkred fw-semibold">上記のどちらかを必ず選択してください。</div>
             </div>
 
-            <div class="col-12 col-md-7">
-              <label class="form-label d-block mb-2">ご意見タイプ</label>
-              <div class="btn-group w-100" role="group" aria-label="意見タイプ選択">
-                <input type="radio" class="btn-check" name="postType" id="ptImprove" value="improve" autocomplete="off">
-                <label class="btn btn-outline-primary" for="ptImprove"><i class="bi bi-lightbulb"></i> 改善してほしい点</label>
-                <input type="radio" class="btn-check" name="postType" id="ptPraise" value="praise" autocomplete="off">
-                <label class="btn btn-outline-primary" for="ptPraise"><i class="bi bi-hand-thumbs-up"></i> 良かった点</label>
+            <div class="col-12">
+              <label class="form-label">公開設定 <span class="text-danger">*</span></label>
+              <div class="btn-group w-100" role="group" aria-label="公開設定">
+                <input type="radio" class="btn-check" name="visibility" id="visPublic" autocomplete="off" value="public" checked>
+                <label class="btn btn-outline-primary" for="visPublic"><i class="bi bi-globe2 me-1"></i>公開（投票の対象）</label>
+
+                <input type="radio" class="btn-check" name="visibility" id="visPrivate" autocomplete="off" value="private">
+                <label class="btn btn-outline-secondary" for="visPrivate"><i class="bi bi-lock me-1"></i>非公開（開発責任者のみ）</label>
               </div>
-              <div class="form-text mt-2 fw-semibold text-darkred">上記のどちらかを必ず選択してください。</div>
+              <div class="form-text mt-2">公開したご意見は、審査後に同じ製品のユーザーへ表示され、投票の対象になります。非公開は開発責任者のみが確認します。</div>
             </div>
 
             <div class="col-12 col-md-5">
@@ -187,15 +195,14 @@
               <div class="form-text">ニックネームを変更すると、過去のご意見も変わります。</div>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 col-md-7">
               <label for="title" class="form-label">タイトル</label>
-              <input type="text" id="title" class="form-control" maxlength="120" placeholder="例：〇〇の改善 / 〇〇が便利 / 製品ガイドに〇〇を追記してほしい">
+              <input type="text" id="title" class="form-control" maxlength="120" placeholder="例：〇〇の改善 / 〇〇が便利 / 製品ガイド要望：〇〇">
             </div>
 
             <div class="col-12">
               <label for="body" class="form-label">内容</label>
-              <textarea id="body" class="form-control" rows="6" maxlength="4000"
-                        placeholder="詳細をご入力ください。"></textarea>
+              <textarea id="body" class="form-control" rows="6" maxlength="4000" placeholder="詳細をご入力ください。"></textarea>
               <div class="form-text mt-2 text-secondary">※用語の統一・商標保護のため、ご意見は公開前の審査で表現を一部調整する場合があります（内容の趣旨は変えません）。あらかじめご了承ください。</div>
             </div>
 
@@ -246,7 +253,8 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "\n");
+        d.textContent += (line + "
+");
       };
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
@@ -309,9 +317,16 @@
     const statusLabel = s => statusMap[s] || s || '';
     const isApprovedStatus = s => ['reviewing', 'planned', 'shipped'].includes(s);
 
+    const postTypeLabel = (t) => {
+      const v = String(t || '').trim();
+      if (v === 'improve') return '改善してほしい点';
+      if (v === 'guide') return '製品ガイド要望';
+      return '良かった点';
+    };
+
     // === 表示順固定（ロード/更新時に確定）===
     // ・初回表示/「更新」/フィルタ変更/部位変更のタイミングで、賛成(up)が多い順に並べ替え
-    // ・投票時は並び順を変えず、該当投稿のDOMだけを更新
+    // ・投票時は並び順を変えず、該当カードのDOMだけを更新
     let _ctxKey = '';
     let _renderOrder = [];          // post_id の配列
     let _postMap = new Map();       // post_id -> post object
@@ -390,7 +405,7 @@
       const approved = isApprovedStatus(p.status);
       const statusClass = approved ? 'text-bg-success' : 'text-bg-secondary';
       const statusChip = `<span class="badge ${statusClass} fw-normal">${escapeHtml(statusLabel(p.status))}</span>`;
-      const typeChip = `<span class="badge text-bg-info fw-normal">${p.post_type === 'improve' ? '改善してほしい点' : '良かった点'}</span>`;
+      const typeChip = `<span class="badge text-bg-info fw-normal">${escapeHtml(postTypeLabel(p.post_type))}</span>`;
 
       const voteButton = (voteType, label, count) => `
         <button class="btn btn-sm btn-outline-secondary vote-btn ${p.my_vote === voteType ? 'active' : ''}"
@@ -568,7 +583,6 @@
 
       const hint = document.getElementById('submitHint');
       if (hint) {
-        // 送信可否の理由を分かりやすく表示
         if (isNew) {
           hint.textContent = '新しい部位を登録してからご意見を追加できます。';
           hint.className = 'form-text mt-2 text-center';
@@ -577,8 +591,8 @@
           hint.className = 'form-text mt-2 text-center';
         } else {
           const missing = [];
-          if (!visOk) missing.push('公開設定');
           if (!typeOk) missing.push('ご意見タイプ');
+          if (!visOk) missing.push('公開設定');
           if (!nickOk) missing.push('ニックネーム');
           if (!titleOk) missing.push('タイトル');
           if (!bodyOk) missing.push('内容');
@@ -598,7 +612,6 @@
       const keepAlert = !!opts.keepAlert;
       if (!keepAlert) clearAlert();
 
-      // Debug: 一覧再読込が成功メッセージを消していないかを判定するためのトレース
       try { dbg.snapshot('loadPartPosts.begin', { keepAlert }); } catch (_) {}
 
       const wrap = document.getElementById('partPostsWrap');
@@ -641,7 +654,6 @@
         wrap.innerHTML = _renderOrder.map(id => renderPostCard(_postMap.get(id))).join('');
         try { dbg.snapshot('loadPartPosts.rendered', { keepAlert, renderedCount: Array.isArray(posts) ? posts.length : null }); } catch (_) {}
 
-        // 投票（賛成/反対）
         wrap.querySelectorAll('.vote-btn').forEach(btn => {
           btn.addEventListener('click', async () => {
             const postId = Number(btn.dataset.post);
@@ -655,7 +667,6 @@
                 body: { postId, voteType }
               });
 
-              // 並び順は固定のまま、該当投稿の表示だけ更新
               const p = _postMap.get(Number(postId));
               if (p && res) {
                 p.my_vote = (res.myVote ?? null);
@@ -694,7 +705,6 @@
 
         await loadParts(productCode);
 
-        // 追加した部位を選択状態にする
         const sel = document.getElementById('partSelect');
         if (sel) sel.value = partCode;
         setUIState(partCode);
@@ -733,7 +743,6 @@
         is_public: (visibility !== 'private'),
       };
 
-      // フォールバック用に手元にも保持（初期表示でAPIが無い場合でもユーザー体験を落とさない）
       cacheNickname(nickname);
 
       try {
@@ -745,17 +754,14 @@
           showAlert('success', 'ご意見を追加しました。ありがとうございます。審査後に公開され、投票の対象になります。');
         }
 
-        // Debug: 成功メッセージ直後の状態を強制ログ
         try { dbg.snapshot('submitPost.afterShowAlert'); } catch (_) {}
 
         document.getElementById('title').value = '';
         document.getElementById('body').value = '';
 
-        // 念のため選択状態を固定
         document.getElementById('partSelect').value = partCode;
         setUIState(partCode);
 
-        // フィルターで見えなくなるのを防ぐ（追加直後は一度「すべて表示」に戻す）
         const filterEl = document.getElementById('filterType');
         if (filterEl) filterEl.value = '';
 
@@ -777,7 +783,6 @@
     async function init() {
       const productCode = qs('product_code');
 
-      // ぱんくず（フィードバックボード）リンクを商品コード付きにする
       setBreadcrumbBoardLink(productCode);
 
       if (!productCode) {
@@ -797,7 +802,6 @@
       document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
 
-      // タイトル/内容の入力で送信可否を再判定
       ['title', 'body'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -807,7 +811,6 @@
         });
       });
 
-      // ご意見タイプを選んだら送信可否を再判定
       document.querySelectorAll('input[name="postType"]').forEach(el => {
         el.addEventListener('change', () => {
           const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
@@ -815,7 +818,6 @@
         });
       });
 
-      // 公開設定を選んだら送信可否を再判定
       document.querySelectorAll('input[name="visibility"]').forEach(el => {
         el.addEventListener('change', () => {
           const pc = document.getElementById('partSelect') ? document.getElementById('partSelect').value : '';
@@ -833,23 +835,18 @@
       }
 
       try {
-        // 1) まずは手元キャッシュで埋める（APIが無い場合のフォールバック）
         loadNicknameFromCacheIfEmpty();
-
-        // 2) 可能ならサーバ側の現在値で上書き
         await tryLoadNicknameFromApi();
 
         await loadProductInfo(productCode);
         await loadParts(productCode);
 
-        // URLに part_code があれば、該当部位を初期選択して一覧を表示
         const urlPartCode = String(qs('part_code') || '').trim();
         if (urlPartCode) {
           const sel = document.getElementById('partSelect');
           if (sel) {
             sel.value = urlPartCode;
 
-            // 指定部位が存在しない場合（optionが無い）は未選択に戻す
             if (sel.value !== urlPartCode) {
               sel.value = '';
               setUIState('');
@@ -870,7 +867,6 @@
       }
     }
 
-    // ADDEVAオブジェクトの準備ができてから初期化を実行
     (function waitForADDEVA() {
       const START = Date.now();
       const TIMEOUT_MS = 7000;
