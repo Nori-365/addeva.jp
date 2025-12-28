@@ -44,8 +44,9 @@
           </ol>
         </nav>
 
-        <!-- メッセージ表示エリア -->
-        <div id="messageArea" class="alert d-none" role="alert"></div>
+        $1
+        <!-- ログインページ用：説明文（ログイン枠の上） -->
+        <div id="customerLoginIntro" class="mb-3 d-none"></div>
 
         <!-- コンテンツコンテナ -->
         <div id="customerContent" class="card shadow-sm p-4 mb-5">
@@ -57,6 +58,9 @@
             <p class="mt-2 text-secondary">コンテンツを読み込み中...</p>
           </div>
         </div>
+
+        <!-- ログインページ用：保証画像（ログイン枠の下） -->
+        <div id="customerLoginWarranty" class="mt-4 d-none"></div>
       </div>
     </section>
   </main>
@@ -115,8 +119,8 @@
     }
 
     waitForADDEVA(async () => {
-      const customerContent = document.getElementById('customerContent');
-      const messageArea = document.getElementById('messageArea');
+      $1      const customerLoginIntro = document.getElementById('customerLoginIntro');
+      const customerLoginWarranty = document.getElementById('customerLoginWarranty');
 
       const urlParams = new URLSearchParams(window.location.search);
       const mode = (urlParams.get('mode') || 'support').trim().toLowerCase();
@@ -168,15 +172,34 @@
 
       // ==== UIレンダリング関数 ====
       function renderLoginUI() {
+        // ログイン枠の上：説明文
+        if (customerLoginIntro) {
+          customerLoginIntro.innerHTML = `
+            <div class="alert alert-light border mb-0">
+              <p class="mb-2">当ページは、ご購入者様向けのサポートページです。</p>
+              <p class="mb-2">製品登録により、保証期限の管理（保証：6か月）、製品別の使用説明ページの閲覧、サポート依頼が可能になります。</p>
+              <p class="mb-0">はじめての方は「<a href="/register.html" class="link-primary">新規登録</a>」からお進みください。</p>
+            </div>
+          `;
+          customerLoginIntro.classList.remove('d-none');
+        }
+
+        // ログイン枠の下：保証書画像
+        if (customerLoginWarranty) {
+          customerLoginWarranty.innerHTML = `
+            <div class="text-center">
+              <p class="mb-2 fw-semibold">安心の半年保証</p>
+              <a href="/assets/img/customer/urbanflex_amazon_08.jpg" target="_blank" rel="noopener">
+                <img src="/assets/img/customer/urbanflex_amazon_08.jpg" class="img-fluid rounded" alt="安心の半年保証（6か月）">
+              </a>
+              <p class="mt-2 text-secondary small mb-0">画像をクリックすると拡大表示できます。</p>
+            </div>
+          `;
+          customerLoginWarranty.classList.remove('d-none');
+        }
+
         customerContent.innerHTML = `
           <h1 class="mb-3">ユーザーログイン</h1>
-
-          <div class="alert alert-light border mb-4">
-            <p class="mb-2">当ページは、ご購入者様向けのサポートページです。</p>
-            <p class="mb-2">製品登録により、保証期限の管理（保証：6か月）、製品別の使用説明ページの閲覧、サポート依頼が可能になります。</p>
-            <p class="mb-0">はじめての方は「<a href="/register.html" class="link-primary">新規登録</a>」からお進みください。</p>
-          </div>
-
           <p class="lead mb-4">ご登録済みのメールアドレスとパスワードでログインしてください。</p>
 
           <form id="loginForm" class="col-md-8 mx-auto">
@@ -193,14 +216,6 @@
               <a href="/register.html">はじめての方（新規登録）はこちら</a>
             </p>
           </form>
-
-          <div class="col-md-8 mx-auto mt-4 pt-3 border-top text-center">
-            <p class="mb-2 fw-semibold">安心の半年保証</p>
-            <a href="/customer/urbanflex_amazon_08.jpg" target="_blank" rel="noopener">
-              <img src="/customer/urbanflex_amazon_08.jpg" class="img-fluid rounded" alt="安心の半年保証（6か月）">
-            </a>
-            <p class="mt-2 text-secondary small mb-0">画像をクリックすると拡大表示できます。</p>
-          </div>
         `;
 
         const loginForm = document.getElementById('loginForm');
@@ -239,6 +254,16 @@
       }
 
       async function renderSupportUI() {
+        // サポート表示時は、ログイン用の説明と保証表示を隠す
+        if (customerLoginIntro) {
+          customerLoginIntro.classList.add('d-none');
+          customerLoginIntro.innerHTML = '';
+        }
+        if (customerLoginWarranty) {
+          customerLoginWarranty.classList.add('d-none');
+          customerLoginWarranty.innerHTML = '';
+        }
+
         customerContent.innerHTML = `
           <h1 class="mb-4">お客様サポート</h1>
           <p class="lead mb-4">お客様ID: <span id="displayCustomerId" class="fw-bold text-primary"></span> / メールアドレス: <span id="displayEmail"></span></p>
