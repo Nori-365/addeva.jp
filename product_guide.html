@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み（customer.html と同じ方式） -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Primary SEO -->
+  <title>製品ガイド｜ADDEVA（アデバ）公式</title>
+  <meta name="description" content="ADDEVA製品のご利用ガイド（よくある困りごと、FAQ、活用のコツ、注意点）を掲載します。">
+
+  <!-- Canonical（JSで製品コードに合わせて更新） -->
+  <link rel="canonical" href="https://addeva.jp/product_guide/">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Robots（必要に応じて index,follow に変更してください） -->
+  <meta name="robots" content="noindex,nofollow">
+
+  <!-- CSS（customer.html と合わせる） -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+  <!-- ▼ 共通ヘッダー -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
+  <main>
+    <section class="section py-5">
+      <div class="container container-narrow">
+
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb" id="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item active" aria-current="page">製品ガイド</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert"></div>
+
+        <!-- タイトル行 -->
+        <div class="d-flex align-items-start align-items-md-center justify-content-between gap-2 flex-wrap mb-3">
+          <div>
+            <h1 class="mb-1" id="pageTitle">製品ガイド</h1>
+            <p class="text-secondary mb-0" id="pageLead">よくある困りごと、FAQ、活用のコツ、注意点を掲載します。</p>
+          </div>
+          <div class="text-end">
+            <div class="small text-secondary">対象商品</div>
+            <div>
+              <span id="productName" class="fw-semibold"></span>
+              <span id="productCodeChip" class="badge bg-secondary fw-normal ms-2 d-none"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- コンテンツ -->
+        <div class="card shadow-sm p-3 p-md-4 mb-4">
+          <div id="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-secondary">ガイドを読み込み中...</p>
+          </div>
+
+          <!-- フラグメント差し込み先 -->
+          <div id="guideContent" class="d-none"></div>
+
+          <!-- 未更新表示 -->
+          <div id="notReady" class="d-none">
+            <div class="p-3 p-md-4 border rounded-3 bg-light">
+              <div class="d-flex align-items-start gap-3">
+                              <div class="fs-3 text-primary"><i class="bi bi-info-circle"></i></div>
+                <div>
+                  <div class="fw-semibold mb-1">この商品は、まだ更新された情報がありません</div>
+                  <div class="text-secondary mb-3">ご不便をおかけします。いただいたご意見は、製品ガイドの改善に活用します。</div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <a id="feedbackLink" class="btn btn-primary" href="#">フィードバックを送る</a>
+                    <a class="btn btn-outline-secondary" href="/customer.html?mode=support">ユーザーサポートへ戻る</a>
+                    <a class="btn btn-outline-secondary" href="/faq/">FAQを見る</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 共通の案内（常に表示） -->
+        <div class="p-3 p-md-4 border rounded-3 bg-light">
+          <div class="d-flex align-items-start gap-3">
+            <div class="fs-3 text-primary"><i class="bi bi-lightbulb"></i></div>
+            <div>
+              <div class="fw-semibold mb-1">製品ガイドは、順次アップデートされます。</div>
+              <div class="text-secondary mb-0">困った点や掲載してほしい情報（使い方、FAQ、注意点など）があれば、フィードバックからお知らせください。</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ▼ 共通フッター -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/common.js"></script>
+
+  <script>
+    function escapeHtml(value) {
+      return String((value === undefined || value === null) ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function setCanonicalForProduct(code) {
+      try {
+        const link = document.querySelector('link[rel="canonical"]');
+        if (!link) return;
+        const base = window.location.origin;
+        if (code) {
+          link.href = base + '/product_guide/' + encodeURIComponent(code) + '.html';
+        } else {
+          link.href = base + '/product_guide/';
+        }
+      } catch (_) {}
+    }
+
+    function getProductCode() {
+      const u = new URL(window.location.href);
+      const qp = (u.searchParams.get('product_code') || '').trim();
+      if (qp) return qp;
+
+      const m = (window.location.pathname || '').match(/^\/product_guide\/([0-9]{8})\.html$/);
+      return m ? m[1] : '';
+    }
+
+    function buildFeedbackUrl(code) {
+      if (!code) return '/feedback_board.html';
+      return '/feedback_board.html?product_code=' + encodeURIComponent(code);
+    }
+
+    // 追加の製品情報が取れる場合は表示に反映（エンドポイントは無ければ無視）
+    async function fetchProductInfo(code) {
+      // 例：/api/addeva/products/{code} が存在する場合にのみ有効
+      // 無い場合は 404 になる想定なので、黙って null を返します。
+      if (!code) return null;
+
+      try {
+        if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function') {
+          const res = await ADDEVA.apiFetch('/api/addeva/products/' + encodeURIComponent(code), { method: 'GET' });
+          // 期待値：{ product_code, product_name, ... }
+          return res || null;
+        }
+      } catch (_) {
+        return null;
+      }
+
+      try {
+        const r = await fetch('/api/addeva/products/' + encodeURIComponent(code), { cache: 'no-cache' });
+        if (!r.ok) return null;
+        return await r.json();
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function loadGuideFragment(code) {
+      if (!code) return null;
+      const url = '/product_guide/_content/' + encodeURIComponent(code) + '.html';
+      try {
+        const r = await fetch(url, { cache: 'no-cache' });
+        if (!r.ok) return null;
+        return await r.text();
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function showError(message) {
+      const area = document.getElementById('messageArea');
+      area.textContent = message;
+      area.classList.remove('d-none', 'alert-success');
+      area.classList.add('alert-danger');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showInfo(message) {
+      const area = document.getElementById('messageArea');
+      area.textContent = message;
+      area.classList.remove('d-none', 'alert-danger');
+      area.classList.add('alert-success');
+    }
+
+    function setProductHeader(code, productName) {
+      const nameEl = document.getElementById('productName');
+      const chipEl = document.getElementById('productCodeChip');
+      const titleEl = document.getElementById('pageTitle');
+      const leadEl = document.getElementById('pageLead');
+
+      if (code) {
+        chipEl.textContent = code;
+        chipEl.classList.remove('d-none');
+      } else {
+        chipEl.textContent = '';
+        chipEl.classList.add('d-none');
+      }
+
+      const safeName = (productName || '').trim();
+      nameEl.textContent = safeName;
+
+      if (safeName) {
+        titleEl.textContent = safeName + ' の製品ガイド';
+        leadEl.textContent = 'よくある困りごと、FAQ、活用のコツ、注意点をまとめています。';
+        document.title = safeName + '｜製品ガイド｜ADDEVA（アデバ）公式';
+      } else if (code) {
+        titleEl.textContent = '製品ガイド';
+        leadEl.textContent = '製品コード ' + code + ' のガイドを表示します。';
+        document.title = '製品ガイド ' + code + '｜ADDEVA（アデバ）公式';
+      } else {
+        titleEl.textContent = '製品ガイド';
+        leadEl.textContent = '製品コードが指定されていません。';
+        document.title = '製品ガイド｜ADDEVA（アデバ）公式';
+      }
+    }
+
+    function setBreadcrumb(code) {
+      const bc = document.getElementById('breadcrumb');
+      if (!bc) return;
+
+      // 既存の2階層を維持しつつ、製品コードがあれば末尾を差し替える
+      // Home > 製品ガイド > 00100001
+      if (!code) return;
+
+      bc.innerHTML = '';
+      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item"><a href="/">ホーム</a></li>');
+      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item"><a href="/product_guide/">製品ガイド</a></li>');
+      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item active" aria-current="page">' + escapeHtml(code) + '</li>');
+    }
+
+    async function init() {
+      const code = getProductCode();
+      setCanonicalForProduct(code);
+      setBreadcrumb(code);
+
+      const feedbackLink = document.getElementById('feedbackLink');
+      feedbackLink.href = buildFeedbackUrl(code);
+
+      // 最初は製品名なしでヘッダーを出す
+      setProductHeader(code, '');
+
+      // 製品情報が取れれば反映（無ければ無視）
+      const info = await fetchProductInfo(code);
+      if (info && (info.product_name || info.productName)) {
+        setProductHeader(code, String(info.product_name || info.productName || '').trim());
+      }
+
+      const loading = document.getElementById('loading');
+      const guideContent = document.getElementById('guideContent');
+      const notReady = document.getElementById('notReady');
+
+      if (!code) {
+        loading.classList.add('d-none');
+        guideContent.classList.add('d-none');
+        notReady.classList.remove('d-none');
+        showError('製品コードが指定されていません。リンク元（ユーザーサポート）からアクセスしてください。');
+        return;
+      }
+
+      const html = await loadGuideFragment(code);
+
+      loading.classList.add('d-none');
+
+      if (html) {
+        guideContent.innerHTML = html;
+        guideContent.classList.remove('d-none');
+        notReady.classList.add('d-none');
+        return;
+      }
+
+      guideContent.classList.add('d-none');
+      notReady.classList.remove('d-none');
+      showInfo('ガイド本文がまだ用意されていません。フィードバックから、掲載してほしい内容をお知らせください。');
+    }
+
+    // できるだけ早く初期化
+    (async () => {
+      try {
+        await init();
+      } catch (e) {
+        console.error(e);
+        const loading = document.getElementById('loading');
+        loading.classList.add('d-none');
+        showError('ガイドの読み込み中にエラーが発生しました。時間をおいて再度お試しください。');
+      }
+    })();
+  </script>
+
+  <!-- ▼ includeエンジン（customer.html と同じ。data-include と include-html 両対応） -->
+  <script>
+    (async () => {
+      try {
+        const targets = document.querySelectorAll('[data-include],[include-html]');
+        for (const el of targets) {
+          const url = el.getAttribute('data-include') || el.getAttribute('include-html');
+          if (!url) continue;
+
+          const res = await fetch(url, { cache: 'no-cache' });
+          if (!res.ok) throw new Error(`include failed: ${url} (${res.status})`);
+
+          const buf = await res.arrayBuffer();
+          const html = new TextDecoder('utf-8').decode(buf);
+          el.outerHTML = html;
+        }
+      } catch (e) {
+        console.error('include loader error:', e);
+      }
+    })();
+  </script>
+</body>
+</html>
