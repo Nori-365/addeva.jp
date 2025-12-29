@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="ja">
 <head>
   <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
@@ -6,7 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>会社概要 | ADDEVA® 公式</title>
-  <meta name="description" content="ADDEVAの会社概要。ブランドポリシー・ブランドストーリー・特定商取引法に基づく表記。">
+  <meta name="description" content="ADDEVA（アデバ）公式サイトの会社概要ページ。ブランドポリシー、ブランドストーリー、特定商取引法に基づく表記を掲載しています。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://addeva.jp/company.html">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
   <link rel="icon" href="/favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,9 +19,73 @@
   <!-- OGP（任意：SNS開始時に画像差し替え） -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="会社概要 | ADDEVA">
-  <meta property="og:description" content="ADDEVAの会社概要。ブランドポリシー／ブランドストーリー／特定商取引法に基づく表記。">
-  <meta property="og:image" content="assets/img/og/company_og.jpg">
-  <meta property="og:url" content="/company.html">
+  <meta property="og:description" content="ADDEVA（アデバ）公式サイトの会社概要ページ。ブランドポリシー、ブランドストーリー、特定商取引法に基づく表記を掲載しています。">
+  <meta property="og:image" content="https://addeva.jp/assets/img/og/company_og.jpg">
+  <meta property="og:url" content="https://addeva.jp/company.html">
+  <meta property="og:site_name" content="ADDEVA">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:image:alt" content="ADDEVA 公式サイト｜会社概要">
+
+  <!-- Twitter Card（OGPと同内容に揃える） -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="会社概要 | ADDEVA">
+  <meta name="twitter:description" content="ADDEVA（アデバ）公式サイトの会社概要ページ。ブランドポリシー、ブランドストーリー、特定商取引法に基づく表記を掲載しています。">
+  <meta name="twitter:image" content="https://addeva.jp/assets/img/og/company_og.jpg">
+
+  <!-- 構造化データ（Organization / WebSite / WebPage / Breadcrumb） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://addeva.jp/#organization",
+        "name": "ADDEVA",
+        "legalName": "株式会社ADDEVA",
+        "url": "https://addeva.jp/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://addeva.jp/assets/img/addeva_logo.png"
+        },
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+81-48-400-3033",
+            "contactType": "customer support",
+            "areaServed": "JP",
+            "availableLanguage": ["ja"]
+          }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://addeva.jp/#website",
+        "url": "https://addeva.jp/",
+        "name": "ADDEVA® 公式",
+        "publisher": {"@id": "https://addeva.jp/#organization"},
+        "inLanguage": "ja-JP"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://addeva.jp/company.html#webpage",
+        "url": "https://addeva.jp/company.html",
+        "name": "会社概要 | ADDEVA® 公式",
+        "description": "ADDEVA（アデバ）公式サイトの会社概要ページ。ブランドポリシー、ブランドストーリー、特定商取引法に基づく表記を掲載しています。",
+        "isPartOf": {"@id": "https://addeva.jp/#website"},
+        "about": {"@id": "https://addeva.jp/#organization"},
+        "inLanguage": "ja-JP"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://addeva.jp/company.html#breadcrumb",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://addeva.jp/"},
+          {"@type": "ListItem", "position": 2, "name": "会社概要", "item": "https://addeva.jp/company.html"}
+        ]
+      }
+    ]
+  }
+  </script>
 
   <style>
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 24px); }
@@ -95,13 +163,30 @@
 
           <!-- 右：挿絵（SPでは下に回る） -->
           <div class="col-12 col-md-6">
-            <img src="assets/img/company/meeting.jpg" alt="ミーティングの様子（ブランドの考え方を形に）" class="img-fluid rounded-3">
+            <img src="assets/img/company/meeting.jpg" alt="ミーティングの様子（ブランドの考え方を形に）" class="img-fluid rounded-3" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 特定商取引法に基づく表記 -->
+    <!-- 主力製品（SEO：サイト全体で狙うキーワードの“受け皿”へ内部リンク） -->
+    <section id="flagship" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">FLAGSHIP</div>
+        <h2 class="h3">3way ビジネスリュック「UrbanFlex」</h2>
+        <p>
+          ADDEVAの主力製品は、通勤と出張・旅行を1つにまとめる <strong>3way ビジネスリュック</strong>「UrbanFlex」です。
+          バックパック／ブリーフ／ショルダーの切り替えが速く、機内持ち込み（Carry-on）にも対応。
+          仕事にも旅にも、これ一つで完結する設計を目指しています。
+        </p>
+        <p class="mt-3">
+          <a class="btn btn-dark" href="/product/urbanflex/">3way ビジネスリュック UrbanFlexを見る</a>
+        </p>
+        <p class="small subtle mt-2 mb-0">※本ページは会社概要ですが、主力製品への導線を明確にすることで、サイト全体で狙うキーワードの評価を積み上げます。</p>
+      </div>
+    </section>
+
+    $1
     <section id="legal" class="section">
       <div class="container container-narrow">
         <div class="kicker">LEGAL</div>
