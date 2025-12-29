@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="ja">
 <head>
   <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み（customer.html と同じ方式） -->
@@ -13,13 +12,15 @@
 
   <!-- Canonical（JSで製品コードに合わせて更新） -->
   <link rel="canonical" href="https://addeva.jp/product_guide/">
+  <!-- JSON-LD（JSで製品名に合わせて更新） -->
+  <script type="application/ld+json" id="ldJsonProductGuide">{}</script>
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
   <!-- Robots（必要に応じて index,follow に変更してください） -->
-  <meta name="robots" content="noindex,nofollow">
+  <meta name="robots" content="index,follow">
 
   <!-- CSS（customer.html と合わせる） -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -124,14 +125,71 @@
 
     function setCanonicalForProduct(code) {
       try {
-        const link = document.querySelector('link[rel="canonical"]');
-        if (!link) return;
+        const el = document.querySelector('link[rel="canonical"]');
+        if (!el) return;
+
         const base = window.location.origin;
         if (code) {
-          link.href = base + '/product_guide/' + encodeURIComponent(code) + '.html';
+          el.setAttribute('href', base + '/product_guide/' + encodeURIComponent(code) + '.html');
         } else {
-          link.href = base + '/product_guide/';
+          el.setAttribute('href', base + '/product_guide/');
         }
+      } catch (_) {}
+    }
+
+    function setMetaDescription(code, productName) {
+      try {
+        const el = document.querySelector('meta[name="description"]');
+        if (!el) return;
+
+        const name = (productName || '').trim();
+        if (name) {
+          // 90〜130字程度を意識（検索結果のスニペット用）
+          el.setAttribute('content', name + ' の製品ガイド。よくある困りごと、FAQ、活用のコツ、注意点をまとめています。');
+          return;
+        }
+
+        if (code) {
+          el.setAttribute('content', 'ADDEVA製品ガイド（製品コード ' + code + '）。よくある困りごと、FAQ、活用のコツ、注意点を掲載します。');
+          return;
+        }
+
+        el.setAttribute('content', 'ADDEVA製品のご利用ガイド（よくある困りごと、FAQ、活用のコツ、注意点）を掲載します。');
+      } catch (_) {}
+    }
+
+    function setStructuredData(code, productName) {
+      try {
+        const el = document.getElementById('ldJsonProductGuide');
+        if (!el) return;
+
+        const base = window.location.origin;
+        const name = (productName || '').trim();
+        const pageUrl = (code ? (base + '/product_guide/' + encodeURIComponent(code) + '.html') : (base + '/product_guide/'));
+
+        const bc = {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "ホーム", "item": base + '/'},
+            {"@type": "ListItem", "position": 2, "name": "製品ガイド", "item": base + '/product_guide/'}
+          ]
+        };
+
+        if (code && name) {
+          bc.itemListElement.push({"@type": "ListItem", "position": 3, "name": name, "item": pageUrl});
+        } else if (code) {
+          bc.itemListElement.push({"@type": "ListItem", "position": 3, "name": code, "item": pageUrl});
+        }
+
+        const wp = {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": (name ? (name + ' の製品ガイド') : '製品ガイド'),
+          "url": pageUrl
+        };
+
+        el.textContent = JSON.stringify([bc, wp]);
       } catch (_) {}
     }
 
@@ -199,9 +257,7 @@
       area.textContent = message;
       area.classList.remove('d-none', 'alert-danger');
       area.classList.add('alert-success');
-    }
-
-    function setProductHeader(code, productName) {
+    }    function setProductHeader(code, productName) {
       const nameEl = document.getElementById('productName');
       const chipEl = document.getElementById('productCodeChip');
       const titleEl = document.getElementById('pageTitle');
@@ -231,26 +287,39 @@
         leadEl.textContent = '製品コードが指定されていません。';
         document.title = '製品ガイド｜ADDEVA（アデバ）公式';
       }
-    }
 
-    function setBreadcrumb(code) {
+      // SEO補助（JS実行環境で有効）
+      setMetaDescription(code, safeName);
+      setStructuredData(code, safeName);
+    }    function setBreadcrumb(code, productName) {
       const bc = document.getElementById('breadcrumb');
       if (!bc) return;
 
-      // 既存の2階層を維持しつつ、製品コードがあれば末尾を差し替える
-      // Home > 製品ガイド > 00100001
-      if (!code) return;
+      const name = (productName || '').trim();
 
+      // 製品名が取れるまでは「ホーム > 製品ガイド」まで（製品コードをパンくずに出さない）
       bc.innerHTML = '';
       bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item"><a href="/">ホーム</a></li>');
-      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item"><a href="/product_guide/">製品ガイド</a></li>');
-      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item active" aria-current="page">' + escapeHtml(code) + '</li>');
+
+      if (!code) {
+        bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item active" aria-current="page">製品ガイド</li>');
+        return;
+      }
+
+      bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item">製品ガイド</li>');
+
+      if (name) {
+        bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item active" aria-current="page">' + escapeHtml(name) + '</li>');
+      } else {
+        // 製品名が取れない場合のみ、最後にコードを表示（右上のチップでも見えるが保険）
+        bc.insertAdjacentHTML('beforeend', '<li class="breadcrumb-item active" aria-current="page">' + escapeHtml(code) + '</li>');
+      }
     }
 
     async function init() {
       const code = getProductCode();
       setCanonicalForProduct(code);
-      setBreadcrumb(code);
+      setBreadcrumb(code, '');
 
       const feedbackLink = document.getElementById('feedbackLink');
       feedbackLink.href = buildFeedbackUrl(code);
@@ -261,7 +330,9 @@
       // 製品情報が取れれば反映（無ければ無視）
       const info = await fetchProductInfo(code);
       if (info && (info.product_name || info.productName)) {
-        setProductHeader(code, String(info.product_name || info.productName || '').trim());
+        const resolvedName = String(info.product_name || info.productName || '').trim();
+        setProductHeader(code, resolvedName);
+        setBreadcrumb(code, resolvedName);
       }
 
       const loading = document.getElementById('loading');
