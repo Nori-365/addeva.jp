@@ -1,15 +1,16 @@
-<!doctype html>
 <html lang="ja">
 <head>
   <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>会社概要 | ADDEVA® 公式</title>
   <meta name="description" content="ADDEVAの会社概要。ブランドポリシー・ブランドストーリー・特定商取引法に基づく表記。">
-  <link rel="icon" href="favicon.ico">
+
+  <link rel="icon" href="/favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.8">
 
   <!-- OGP（任意：SNS開始時に画像差し替え） -->
   <meta property="og:type" content="website">
@@ -20,13 +21,26 @@
 
   <style>
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 24px); }
-    .page-hero{padding: 64px 0 24px;}
-    .subtle{color: var(--bs-secondary-color, #6c757d);}
+
+    /* ここがSPで“空き”が目立つ主因になりやすいので、デフォルトを小さめに */
+    .page-hero{ padding: 28px 0 18px; }
+    .subtle{ color: var(--bs-secondary-color, #6c757d); }
+
+    @media (min-width: 992px){
+      .page-hero{ padding: 44px 0 22px; }
+    }
+
+    @media (max-width: 767.98px){
+      section[id]{ scroll-margin-top: calc(var(--header-mobile, 56px) + 16px); }
+      .page-hero{ padding: 18px 0 12px; }
+      .page-hero .kicker{ margin-bottom: .25rem; }
+      .page-hero h1{ line-height: 1.25; }
+    }
   </style>
 </head>
 <body>
-  <!-- 共通ヘッダー -->
-  <div data-include="/includes/header.html" aria-busy="true"></div>
+  <!-- 共通ヘッダー（Topと同じクラスを付与してCSSの前提を揃える） -->
+  <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
 
   <main>
     <!-- ページ見出し -->
@@ -48,13 +62,15 @@
           </div>
           <div class="col-12 col-md-10">
             <p>ADDEVA(アデバ)の名前の由来は、「Added Value（付加価値）」という言葉にあります。私たちは、単なる商品提供に留まらず、日常をより豊かにする製品を創り出すことを社名に誓いました。</p>
-            <p>ーユーザーと共に歩みたいー<br>私たちの使命は、ユーザーのニーズに応じた「付加価値」を提供することです。ADDEVAの製品は、単なるバッグとしてではなく、ユーザーのライフスタイルに寄り添うパートナーでありたいと考えています。</p>
+            <p>ー ユーザーと共に歩みたい ー<br>私たちの使命は、ユーザーのニーズに応じた「付加価値」を提供することです。ADDEVAの製品は、単なるバッグとしてではなく、ユーザーのライフスタイルに寄り添うパートナーでありたいと考えています。</p>
           </div>
-        </div><br/>
-        <h2 class="h3">ユーザーが商品開発に関われるブランドに</h3>
+        </div>
+        <br/>
+
+        <h2 class="h3">ユーザーが商品開発に関われるブランドに</h2>
         <blockquote class="q">
           <p class="mb-0">
-            インターネットの進化により、ユーザーと開発者が簡単にコミュニケーションを取れる時代となりました。ADDDEVAは、ユーザー様が、実際にご使用したご意見やご提案を投稿したり、アイデアを出して商品開発にご参加いただけるようなシステムを準備中です。
+            インターネットの進化により、ユーザーと開発者が簡単にコミュニケーションを取れる時代となりました。ADDEVAは、ユーザー様が、実際にご使用したご意見やご提案を投稿したり、アイデアを出して商品開発にご参加いただけるようなシステムを準備中です。
           </p>
         </blockquote>
       </div>
@@ -65,18 +81,18 @@
       <div class="container container-narrow">
         <div class="kicker">BRAND STORY</div>
         <h2 class="h3">私達について</h2>
-    
+
         <div class="row g-4 align-items-start">
           <!-- 左：テキスト（SPでも先に出る） -->
           <div class="col-12 col-md-6">
             <p>
               商品開発責任者のNは、10年以上にわたりベトナムで日本向けの鞄の生産に関わってきました。<br/>
               しかし、近年の商品の開発手法に限界を感じ、ADDEVAを立ち上げるきっかけとなりました。具体的には、販売価格が先に決まり、その枠に合わせて機能や素材の品質を削るというアプローチです。このままでは、良い鞄が生まれないのではないかという危機感を抱きました。<br/><br/>
-              そこで私たちは、日本人管理のもと、ベトナムで生産と検品を行い、直接お届けする形に極力近づけることで、質の高い商品を、リーズナブルにお届けする取り組みを行っています。この取り組みにより、皆さまの生活が、より豊かになることを望んでいます。<br/><br>
+              そこで私たちは、日本人管理のもと、ベトナムで生産と検品を行い、直接お届けする形に極力近づけることで、質の高い商品を、リーズナブルにお届けする取り組みを行っています。この取り組みにより、皆さまの生活が、より豊かになることを望んでいます。<br/><br/>
               尚、現在は生産数量が少ない為、ときより欠品が発生し、ご迷惑をおかけしていますが、少しずつですが、増産を計画しておりますので、どうぞ、末永く、応援をお願いいたします。
             </p>
           </div>
-    
+
           <!-- 右：挿絵（SPでは下に回る） -->
           <div class="col-12 col-md-6">
             <img src="assets/img/company/meeting.jpg" alt="ミーティングの様子（ブランドの考え方を形に）" class="img-fluid rounded-3">
@@ -95,7 +111,7 @@
           <table class="table table-striped align-middle">
             <tbody>
               <tr>
-                <th style="">会社名</th>
+                <th>会社名</th>
                 <td>株式会社ADDEVA</td>
               </tr>
               <tr>
@@ -106,7 +122,7 @@
                 <th>事業者の所在地</th>
                 <td>
                   〒353-0004<br>
-                  埼玉県志木市（<span class="subtle">詳細住所はご請求があれば遅滞なく開示いたします。自宅を兼ねているため一般公開を控えております。</span>)
+                  埼玉県志木市（<span class="subtle">詳細住所はご請求があれば遅滞なく開示いたします。自宅を兼ねているため一般公開を控えております。</span>）
                 </td>
               </tr>
               <tr>
@@ -137,6 +153,7 @@
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
   <!-- インクルードローダー -->
   <script>
     (function () {
@@ -154,7 +171,8 @@
       }
       document.addEventListener('DOMContentLoaded', async () => {
         await includeFragments();
-        const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+        const y = document.getElementById('y');
+        if (y) y.textContent = new Date().getFullYear();
       });
     })();
   </script>
