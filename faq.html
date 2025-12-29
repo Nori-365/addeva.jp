@@ -5,26 +5,242 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>FAQ | ADDEVA® 公式</title>
-  <meta name="description" content="株式会社ADDEVAのFAQ。法人向けサービス（小ロット×OEM）と、ADDEVA UrbanFlex製品に関するよくある質問。">
-  <link rel="icon" href="favicon.ico">
+  <meta name="description" content="ADDEVAのFAQ。法人向けの小ロットOEM・ODMと、3way ビジネスリュック UrbanFlex に関するよくある質問。">
+  <link rel="canonical" href="/faq.html">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="author" content="ADDEVA">
+
+  <link rel="icon" href="/favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
+  <link rel="stylesheet" href="assets/css/main.css?v=3.8">
+
   <meta property="og:type" content="website">
   <meta property="og:title" content="FAQ | ADDEVA">
-  <meta property="og:description" content="法人向け(BtoB)サービス／UrbanFlex のよくある質問まとめ。">
+  <meta property="og:description" content="法人向け(BtoB)サービス／3way ビジネスリュック UrbanFlex のよくある質問まとめ。">
+  <meta property="og:site_name" content="ADDEVA">
+  <meta property="og:locale" content="ja_JP">
   <meta property="og:image" content="assets/img/og/faq_og.jpg">
   <meta property="og:url" content="/faq.html">
+
+  <!-- Twitter Card（任意） -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FAQ | ADDEVA">
+  <meta name="twitter:description" content="法人向け(BtoB)サービス／3way ビジネスリュック UrbanFlex のよくある質問まとめ。">
+  <meta name="twitter:image" content="assets/img/og/faq_og.jpg">
+
   <style>
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 24px); }
-    .page-hero{padding: 64px 0 24px;}
+
+    /* SPで上部余白が目立つため、page-heroの余白をページ側で調整 */
+    .page-hero{ padding: 28px 0 18px; }
+
+    @media (min-width: 992px){
+      .page-hero{ padding: 44px 0 22px; }
+    }
+
+    @media (max-width: 767.98px){
+      section[id]{ scroll-margin-top: calc(var(--header-mobile, 56px) + 16px); }
+      .page-hero{ padding: 18px 0 12px; }
+      .page-hero .kicker{ margin-bottom: .25rem; }
+      .page-hero h1{ line-height: 1.25; }
+    }
+
     .accordion-button:focus{ box-shadow: none; }
     .muted{color: var(--bs-secondary-color, #6c757d);}
   </style>
+
+  <!-- Structured Data（FAQPage / Breadcrumb） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ADDEVA", "item": "/"},
+          {"@type": "ListItem", "position": 2, "name": "FAQ", "item": "/faq.html"}
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "このサービスのメリットは何ですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "当社が輸入者となり、複数案件を同一コンテナへ集約して輸入します。海上運賃や通関などの固定費を按分でき、個別輸入より調達・物流コストの最適化が期待できます。お取引は日本円の国内取引が基本で、通関・貿易実務は当社が対応します。"}
+          },
+          {
+            "@type": "Question",
+            "name": "最小ロットはいくつから？色違いや仕様違いで内訳できますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "目安は500〜1000個です。部品・生地の最低発注数により最適な内訳が変わるため、色違い／仕様違いを含めてご相談ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "500個未満でも試作・小ロットは対応可能ですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "簡単なバッグで、他案件の生地を併用できる場合などは対応可能なケースがあります。納期に余裕がある場合はご相談ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "納期の目安は？（サンプルOK→量産→国内納品／FBA直送）",
+            "acceptedAnswer": {"@type": "Answer", "text": "オリジナルサンプルのご発送と見積・契約後、サンプル作成→同意→量産6〜10週＋輸送リードタイムが目安です。繁忙期や仕様により変動します。"}
+          },
+          {
+            "@type": "Question",
+            "name": "見積に必要な情報は何ですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "オリジナルサンプルのご発送、初回注文数、年間予想発注数量をご連絡ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "取引通貨と支払条件は？国内取引ですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "請求は日本円の国内取引が基本です。支払条件はプロジェクトごとに取り決めます。コンテナをフルにできる規模の場合は、USDで工場と直接取引も可能です。"}
+          },
+          {
+            "@type": "Question",
+            "name": "輸入実務（通関・書類）は誰が対応しますか？直接輸入との違いは？",
+            "acceptedAnswer": {"@type": "Answer", "text": "基本的に輸入・通関はADDEVA側で対応し、国内購入の形になります。直接輸入に比べ、手続きとコストを簡素化できます。"}
+          },
+          {
+            "@type": "Question",
+            "name": "提携工場は、ISO 9001 や ISO 14001 などの工場規格を取得していますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "小ロットに強い中小規模工場が中心のため、ISO認証を取得していない工場もあります。案件ごとにSOP整備、AQLに基づく抜取検査、必要に応じた第三者検品などを組み合わせて品質確保に努めます。"}
+          },
+          {
+            "@type": "Question",
+            "name": "品質保証や初期不良が出た場合の対応は？",
+            "acceptedAnswer": {"@type": "Answer", "text": "検査基準、AQL、水準検品／第三者検品の要否を事前に取り決めます。生産・検品中は現地担当者と日々連絡を取り合い、ご納得いただいた上で発送します。"}
+          },
+          {
+            "@type": "Question",
+            "name": "OEMとODMの違いは？ロゴ入れ・金具新規・型起こしは可能？",
+            "acceptedAnswer": {"@type": "Answer", "text": "OEMはご指定仕様で生産、ODMは仕様提案を含む開発です。ロゴ入れ／金具／型は条件により対応します。現在ODMは、オリジナルサンプルからの簡単な変更のみ承っています。"}
+          },
+          {
+            "@type": "Question",
+            "name": "FBA直納や量販向けのラベリング・梱包要件に対応できますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "提携のサービス会社にて対応可能です。別途ご相談ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "見積り〜発注までの標準フローを教えてください。",
+            "acceptedAnswer": {"@type": "Answer", "text": "サンプル発送→概算見積→契約→試作（必要時）→最終見積・条件合意→量産→国内納品／直納の順です。契約は試作サンプルに問題があった場合は無効となる条件付きです。"}
+          },
+          {
+            "@type": "Question",
+            "name": "NDA（秘密保持契約）や知財の取り扱いは？",
+            "acceptedAnswer": {"@type": "Answer", "text": "ご指定のNDAをご送付ください。締結のうえ進行可能です。意匠・商標・著作物の取り扱いは個別に取り決めます。"}
+          },
+          {
+            "@type": "Question",
+            "name": "環境配慮素材（リサイクル生地等）の採用は可能？",
+            "acceptedAnswer": {"@type": "Answer", "text": "対応可能です。必要な証明（例：GRS）等の要件がある場合は事前に共有ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "2R-18と3REX-40の主な違いは何ですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "3REX-40は拡張マチと独立PCルームを備えています。軽快さ重視は2R-18、PCや周辺機器を日常的に持ち歩く／荷物が多い場合は3REX-40がおすすめです。"}
+          },
+          {
+            "@type": "Question",
+            "name": "雨の日の使用は大丈夫？防水の範囲を教えてください。",
+            "acceptedAnswer": {"@type": "Answer", "text": "背負い状態で家庭用シャワー約1分のテストでは、外装に軽度の染み込みはあるものの内部への浸水はほぼありませんでした。ただし完全防水ではなく、豪雨・長時間の降雨・水没・強い水圧には非対応です。"}
+          },
+          {
+            "@type": "Question",
+            "name": "17インチPCは入りますか？（2R-18と3REX-40の違い）",
+            "acceptedAnswer": {"@type": "Answer", "text": "PC収納はモデルで異なります。2R-18はメインルーム内のクッション入りPCポケット（17インチ薄型まで目安）。3REX-40は独立PCルーム（別室）でクッションはないため、必要に応じて別売りのPCオーガナイザー／スリーブをご使用ください（17インチゲーミングクラスにも余裕がある想定）。機種により外寸が異なるため端末外寸をご確認ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "機内持ち込みはできますか？（3REX-40の拡張時は？）",
+            "acceptedAnswer": {"@type": "Answer", "text": "多くの航空会社で非拡張状態の機内持込を想定しています。拡張時は規定を超える場合があるため、航空会社のサイズ・重量規定をご確認ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "ショルダーストラップのポケットにはどのサイズのスマホが入りますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "大型スマホまでの収納を想定しています。機種やケース有無で異なるため、寸法ガイドは製品ページで順次更新します。"}
+          },
+          {
+            "@type": "Question",
+            "name": "濡れた折りたたみ傘やボトルはどこに入れますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "側面のWet Safe Pocketに収納できます。底部メッシュにより水が下に抜け、他の荷物への影響を抑えます。500mlペットボトル、スリム型水筒、折りたたみ傘が目安です。"}
+          },
+          {
+            "@type": "Question",
+            "name": "「Detach Pocket」は全モデル共通ですか？どう使いますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "2サイズともサコッシュ（Detach Pocket）が標準付属です。パスポート・スマホ・財布など軽量物の携行に適します（重量物の収納はお控えください）。"}
+          },
+          {
+            "@type": "Question",
+            "name": "どうして隠しポケットの位置は他社と違うのですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "初期サンプルでは背面下部に配置していましたが、荷物を多めに入れた際に腰へ当たり痛みを感じることがあったため位置を変更しました。"}
+          },
+          {
+            "@type": "Question",
+            "name": "3REX-40の拡張ジッパーはどのくらい容量が増えますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "3REX-40は20〜40Lへ可変する想定です（荷物の形状・パッキングにより体感は変わります）。"}
+          },
+          {
+            "@type": "Question",
+            "name": "3REX-40の拡張ジッパーはどのくらい広がりますか？下だけ開けるメリットは？",
+            "acceptedAnswer": {"@type": "Answer", "text": "拡張マチは約8cm広がります。Wスライダーの特性を活かし下側のみを開ければ、弁当箱や厚みのある小物だけをスマートに収容できます。"}
+          },
+          {
+            "@type": "Question",
+            "name": "キャリーケースに固定できますか？（キャリーオン）",
+            "acceptedAnswer": {"@type": "Answer", "text": "背面スリットでキャリーハンドルに固定できます。重い荷物はキャリー側に寄せると安定します。"}
+          },
+          {
+            "@type": "Question",
+            "name": "お手入れ方法は？洗濯機で洗えますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "汚れは中性洗剤を薄めた布で拭き取り、ぬるま湯で固く絞った布で拭き取り、陰干ししてください。洗濯機・乾燥機・漂白剤・溶剤・アイロンは不可です。"}
+          },
+          {
+            "@type": "Question",
+            "name": "重量・素材・付属品の詳細はどこで確認できますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "素材はオックスフォードポリエステル＋PUコーティングです（細部仕様はモデルにより異なる場合があります）。付属品はサコッシュ標準付属。重量は付属品を除く実測値です。最新仕様は各商品ページでご確認ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "返品・修理の窓口は？",
+            "acceptedAnswer": {"@type": "Answer", "text": "返品・交換・修理はご購入先（各モール）のポリシーに準拠します。まずは商品ページのガイドをご確認ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "価格・在庫・配送スピード・送料・配送会社は？",
+            "acceptedAnswer": {"@type": "Answer", "text": "各モール（販売チャネル）により異なります。最新情報はご購入予定のモールの商品ページでご確認ください。"}
+          },
+          {
+            "@type": "Question",
+            "name": "撥水性能が低下しました。どうすれば良いですか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "撥水が弱くなっても内部への防水性（浸水しにくさ）は変わりません。撥水性を復活させたい場合は、素材適合の市販撥水剤を目立たない箇所で試験のうえ、説明書に従って薄く施工してください（推奨ではありません）。"}
+          },
+          {
+            "@type": "Question",
+            "name": "ブリーフ持ちにする時、ショルダーストラップはどう固定しますか？",
+            "acceptedAnswer": {"@type": "Answer", "text": "ジッパー内に完全収納せず、本体側の固定ポイントへ2アクションで留めて固定します（バックル固定はありません）。固定後はぶらつきを抑える設計です。"}
+          },
+          {
+            "@type": "Question",
+            "name": "USB外付けポートはありますか？Rain Lockケーブルホールとの違いは？",
+            "acceptedAnswer": {"@type": "Answer", "text": "USB外付けポートは搭載していません。代わりに防水ケーブルホール（Rain Lock）を採用し、PCルームのモバイルバッテリーからケーブルを通して給電できます。物理ポートがないため接触不良や水侵入のリスクを抑えられます。"}
+          },
+          {
+            "@type": "Question",
+            "name": "Garment Guardには何が入りますか？使い方のコツは？",
+            "acceptedAnswer": {"@type": "Answer", "text": "目安はシャツ1〜2枚、または薄手ジャケット1枚です。両サイドのスライダーを開放して衣類を平らに入れ、閉じてホールドします。"}
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
-  <!-- 共通ヘッダー -->
-  <div data-include="/includes/header.html" aria-busy="true"></div>
+  <!-- 共通ヘッダー（Topと同じクラスを付与してCSSの前提を揃える） -->
+  <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
 
   <main>
     <!-- ページ見出し -->
@@ -83,7 +299,7 @@
             </h3>
             <div id="b2b-a3" class="accordion-collapse collapse" aria-labelledby="b2b-q3" data-bs-parent="#accB2B">
               <div class="accordion-body">
-                簡単なバッグ、かつ他の生地を併用することで、可能な場合もございます。納期に余裕があり、小ロッドでトライしたい場合には、ご相談ください。
+                簡単なバッグ、かつ他の生地を併用することで、可能な場合もございます。納期に余裕があり、小ロットでトライしたい場合には、ご相談ください。
               </div>
             </div>
           </div>
@@ -254,305 +470,300 @@
       </div>
     </section>
 
-<!-- 2) UrbanFlex FAQ -->
-<section id="faq-urbanflex" class="section">
-  <div class="container container-narrow">
-    <div class="kicker">PRODUCT</div>
-    <h2 class="h3">UrbanFlexについてのFAQ</h2>
-    <p class="muted">2R-18 と 3REX-40 共通／相違点に関するご質問</p>
+    <!-- 2) UrbanFlex FAQ -->
+    <section id="faq-urbanflex" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">PRODUCT</div>
+        <h2 class="h3">3way ビジネスリュック UrbanFlexについてのFAQ</h2>
+        <p class="muted">3way ビジネスリュック 2R-18 と 3REX-40 共通／相違点に関するご質問</p>
 
-    <div class="accordion" id="accUF">
-      <!-- U1 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a1" aria-expanded="false" aria-controls="uf-a1">
-            2R-18と3REX-40の主な違いは何ですか？
-          </button>
-        </h3>
-        <div id="uf-a1" class="accordion-collapse collapse" aria-labelledby="uf-q1" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            <strong>3REX-40は「拡張マチ」と「独立PCルーム」</strong>を備えています。<br>
-            ・ジッパーが少なく軽快さ重視 → <strong>2R-18</strong><br>
-            ・PCや周辺機器を日常的に持ち歩く／荷物が多くなりがち → <strong>3REX-40</strong><br>
-            ・普段は少なめだが時々大荷物 → 軽快な<strong>2R-18</strong>がおすすめ
+        <div class="accordion" id="accUF">
+          <!-- U1 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q1">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a1" aria-expanded="false" aria-controls="uf-a1">
+                2R-18と3REX-40の主な違いは何ですか？
+              </button>
+            </h3>
+            <div id="uf-a1" class="accordion-collapse collapse" aria-labelledby="uf-q1" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                <strong>3REX-40は「拡張マチ」と「独立PCルーム」</strong>を備えています。<br>
+                ・ジッパーが少なく軽快さ重視 → <strong>2R-18</strong><br>
+                ・PCや周辺機器を日常的に持ち歩く／荷物が多くなりがち → <strong>3REX-40</strong><br>
+                ・普段は少なめだが時々大荷物 → 軽快な<strong>2R-18</strong>がおすすめ
+              </div>
+            </div>
           </div>
+
+          <!-- U2 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a2" aria-expanded="false" aria-controls="uf-a2">
+                雨の日の使用は大丈夫？防水の範囲を教えてください。
+              </button>
+            </h3>
+            <div id="uf-a2" class="accordion-collapse collapse" aria-labelledby="uf-q2" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュックは、<strong>家庭用シャワーで背負い状態にて約1分のテスト</strong>を行い、外装に軽度の染み込みはあるものの、<strong>内部への浸水はほぼありません</strong>でした。<br>
+                ただし<strong>完全防水ではありません</strong>（豪雨・長時間の降雨・水没・強い水圧は非対応）。<br>
+                また外部ポケットは<strong>リュック使用時</strong>に雨が入りにくい向きで設計しており、<strong>ブリーフケース持ち</strong>では開口部から侵入する可能性があります。
+              </div>
+            </div>
+          </div>
+
+          <!-- U3 (UPDATED: 17インチ基準に統一) -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a3" aria-expanded="false" aria-controls="uf-a3">
+                17インチPCは入りますか？（2R-18と3REX-40の違い）
+              </button>
+            </h3>
+            <div id="uf-a3" class="accordion-collapse collapse" aria-labelledby="uf-q3" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way ビジネスリュック「UrbanFlex」のPC収納は、モデルで異なります。<br>
+                ・<strong>2R-18：</strong> <strong>メインルーム内</strong>の<strong>クッション入りPCポケット</strong>に収納します（<strong>17インチ薄型</strong>まで目安）。<br>
+                ・<strong>3REX-40：</strong> <strong>独立PCルーム（別室）</strong>に収納します。<strong>クッションは入っていない</strong>ため、必要に応じて<strong>別売りのPCオーガナイザー／スリーブ</strong>をご使用ください（<strong>17インチ“ゲーミング”クラス</strong>にも対応可能な余裕があります）。<br>
+                いずれも機種により外寸が異なるため、<strong>端末の外寸（幅・高さ・厚み）をご確認ください</strong>。
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q4">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a4" aria-expanded="false" aria-controls="uf-a4">
+                機内持ち込みはできますか？（3REX-40の拡張時は？）
+              </button>
+            </h3>
+            <div id="uf-a4" class="accordion-collapse collapse" aria-labelledby="uf-q4" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュックは、多くの航空会社で<strong>非拡張状態</strong>の機内持込を想定しています。<strong>拡張時</strong>は規定を超える場合があります。ご搭乗の航空会社のサイズ・重量規定を必ずご確認ください。
+              </div>
+            </div>
+          </div>
+
+          <!-- U5 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q5">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a5" aria-expanded="false" aria-controls="uf-a5">
+                ショルダーストラップのポケットにはどのサイズのスマホが入りますか？
+              </button>
+            </h3>
+            <div id="uf-a5" class="accordion-collapse collapse" aria-labelledby="uf-q5" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュックでは、<strong>大型スマホまでの収納</strong>を想定しています。機種ごとの適合は端末の外寸とケース有無により異なるため、<strong>寸法ガイドは製品ページで順次更新</strong>します。
+              </div>
+            </div>
+          </div>
+
+          <!-- U6 (UPDATED) -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q6">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a6" aria-expanded="false" aria-controls="uf-a6">
+                濡れた折りたたみ傘やボトルはどこに入れますか？
+              </button>
+            </h3>
+            <div id="uf-a6" class="accordion-collapse collapse" aria-labelledby="uf-q6" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュックの側面、<strong>Wet Safe Pocket</strong>に収納できます。底部メッシュにより水が下に抜け、他の荷物への影響を抑えます。<br>
+                目安として<strong>500mlペットボトル</strong>や<strong>スリム型水筒</strong>、濡れた<strong>折りたたみ傘</strong>に対応します。
+              </div>
+            </div>
+          </div>
+
+          <!-- U7 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q7">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a7" aria-expanded="false" aria-controls="uf-a7">
+                3way UrbanFlex ビジネスリュックの、「Detach Pocket」は全モデル共通ですか？どう使いますか？
+              </button>
+            </h3>
+            <div id="uf-a7" class="accordion-collapse collapse" aria-labelledby="uf-q7" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                <strong>2サイズともサコッシュ（Detach Pocket）が標準付属</strong>です。パスポート・スマホ・財布など軽量物の携行に適します（重量物の収納はお控えください）。
+              </div>
+            </div>
+          </div>
+
+          <!-- U15 隠しポケットの位置 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q15">
+              <button class="accordion-button collapsed" type="button"
+                      data-bs-toggle="collapse" data-bs-target="#uf-a15"
+                      aria-expanded="false" aria-controls="uf-a15">
+                どうして3way UrbanFlex ビジネスリュックの隠しポケットは、他社の位置と違うのですか？
+              </button>
+            </h3>
+            <div id="uf-a15" class="accordion-collapse collapse" aria-labelledby="uf-q15" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                実は、初期サンプルでは、他社と同様に<strong>背面下部</strong>に配置していました。<br>
+                しかし実際に財布などを収納してみたところ、<strong>PCや荷物を多めに入れた際に腰へ当たり痛みを感じる</strong>ことがあったため、現在の位置に変更しています。この場所の隠しポケットは、<strong>3WAYリュック</strong>だからこそ実現できる配置です。
+              </div>
+            </div>
+          </div>
+
+          <!-- U8 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q8">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a8" aria-expanded="false" aria-controls="uf-a8">
+                3REX-40の拡張ジッパーはどのくらい容量が増えますか？
+              </button>
+            </h3>
+            <div id="uf-a8" class="accordion-collapse collapse" aria-labelledby="uf-q8" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュック 3REX-40は<strong>20〜40Lへ可変</strong>する想定です（荷物の形状・パッキングにより体感は変わります）。
+              </div>
+            </div>
+          </div>
+
+          <!-- U16 (new) 拡張幅と使い方のコツ -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q16">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a16" aria-expanded="false" aria-controls="uf-a16">
+                3REX-40の拡張ジッパーはどのくらい広がりますか？下だけ開けるメリットは？
+              </button>
+            </h3>
+            <div id="uf-a16" class="accordion-collapse collapse" aria-labelledby="uf-q16" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                3way UrbanFlex ビジネスリュック 3REX-40の拡張マチは<strong>約8cm</strong>広がります。<br>
+                <strong>Wスライダー</strong>の特性を活かし、<strong>下側のみ</strong>を開ければ、弁当箱や厚みのある小物だけをスマートに収容できます。上部の見た目をすっきり保ちつつ、必要分だけ容量を追加できるのがメリットです。
+              </div>
+            </div>
+          </div>
+
+          <!-- U9 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q9">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a9" aria-expanded="false" aria-controls="uf-a9">
+                3way UrbanFlex ビジネスリュックは、キャリーケースに固定できますか？（キャリーオン）
+              </button>
+            </h3>
+            <div id="uf-a9" class="accordion-collapse collapse" aria-labelledby="uf-q9" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                背面スリットでキャリーハンドルに固定できます。走行時の横ブレを抑えます。重心が上がると不安定になるため、重い荷物はキャリー側に寄せると安定します。
+              </div>
+            </div>
+          </div>
+
+          <!-- U10 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q10">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a10" aria-expanded="false" aria-controls="uf-a10">
+                3way UrbanFlex ビジネスリュックのお手入れ方法は？洗濯機で洗えますか？
+              </button>
+            </h3>
+            <div id="uf-a10" class="accordion-collapse collapse" aria-labelledby="uf-q10" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                汚れは<strong>中性洗剤</strong>を薄めた布でやさしく拭き取り、ぬるま湯で固く絞った布で拭き取り、陰干ししてください。<strong>中性洗剤以外は絶対に使用しないでください</strong>（洗濯機・乾燥機・漂白剤・溶剤・アイロン不可）。
+              </div>
+            </div>
+          </div>
+
+          <!-- U11 (UPDATED) 素材・重量・付属品 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q11">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a11" aria-expanded="false" aria-controls="uf-a11">
+                3way UrbanFlex ビジネスリュックの重量・素材・付属品の詳細はどこで確認できますか？
+              </button>
+            </h3>
+            <div id="uf-a11" class="accordion-collapse collapse" aria-labelledby="uf-q11" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                素材は<strong>オックスフォードポリエステル＋PUコーティング</strong>です（細部仕様はモデルにより異なる場合があります）。付属品は<strong>サコッシュ標準付属</strong>。<br>
+                <strong>重量は付属品を除く実測値</strong>です。その他の最新仕様は各商品ページでご確認ください。
+              </div>
+            </div>
+          </div>
+
+          <!-- U12 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q12">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a12" aria-expanded="false" aria-controls="uf-a12">
+                3way UrbanFlex ビジネスリュックの返品・修理の窓口は？
+              </button>
+            </h3>
+            <div id="uf-a12" class="accordion-collapse collapse" aria-labelledby="uf-q12" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                返品・交換・修理は<strong>ご購入先（各モール）のポリシー</strong>に準拠します。まずは各モールの商品ページのガイドをご確認ください。お困りの場合は<a href="mailto:info@addeva.jp">info@addeva.jp</a>へご連絡ください。
+              </div>
+            </div>
+          </div>
+
+          <!-- U13 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q13">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a13" aria-expanded="false" aria-controls="uf-a13">
+                3way UrbanFlex ビジネスリュックの価格・在庫・配送スピード・送料・配送会社は？
+              </button>
+            </h3>
+            <div id="uf-a13" class="accordion-collapse collapse" aria-labelledby="uf-q13" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                いずれも<strong>各モール（販売チャネル）により異なります</strong>。最新の価格・在庫・出荷〜到着目安・送料・配送会社は、<strong>ご購入予定のモールの商品ページ</strong>でご確認ください。
+              </div>
+            </div>
+          </div>
+
+          <!-- U14 -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q14">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a14" aria-expanded="false" aria-controls="uf-a14">
+                3way UrbanFlex ビジネスリュックの撥水性能が低下しました。どうすれば良いですか？
+              </button>
+            </h3>
+            <div id="uf-a14" class="accordion-collapse collapse" aria-labelledby="uf-q14" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                撥水が弱くなっても<strong>内部への防水性（浸水しにくさ）は変わりません</strong>。どうしても撥水性を復活させたい場合は、素材適合の市販撥水剤を<strong>目立たない箇所で試験</strong>したうえで、説明書に従って薄く均一に施工してください（<strong>推奨ではありません</strong>／自己責任にてご対応ください）。
+              </div>
+            </div>
+          </div>
+
+          <!-- U17 (new) Quick Fix Strap -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q17">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a17" aria-expanded="false" aria-controls="uf-a17">
+                3way UrbanFlex ビジネスリュックをブリーフ持ちにする時、ショルダーストラップはどう固定しますか？ぶらつきませんか？
+              </button>
+            </h3>
+            <div id="uf-a17" class="accordion-collapse collapse" aria-labelledby="uf-q17" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                ジッパー内に完全収納する必要はなく、<strong>本体側の固定ポイントへ2アクションで留めて固定</strong>します（<strong>バックル固定はありません</strong>）。<br>
+                これにより移動直前までリュックとして使え、到着時に素早くブリーフ持ちへ切り替え可能。固定後は<strong>ぶらつきを抑える設計</strong>です。
+              </div>
+            </div>
+          </div>
+
+          <!-- U18 (new) Rain Lock / USBポート -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q18">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a18" aria-expanded="false" aria-controls="uf-a18">
+                3way UrbanFlex ビジネスリュックに、USB外付けポートはありますか？Rain Lockケーブルホールとの違いは？
+              </button>
+            </h3>
+            <div id="uf-a18" class="accordion-collapse collapse" aria-labelledby="uf-q18" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                <strong>USB外付けポートは搭載していません。</strong><br>
+                その代わりに<strong>防水ケーブルホール（Rain Lock）</strong>を採用。PCルームのモバイルバッテリーからケーブルを通し、<strong>ショルダーストラップのガイド経由でスマホへ給電</strong>できます。物理ポートがないため、<strong>接触不良や水侵入のリスクを抑え</strong>られます。
+              </div>
+            </div>
+          </div>
+
+          <!-- U19 (new) Garment Guard -->
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="uf-q19">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a19" aria-expanded="false" aria-controls="uf-a19">
+                3way UrbanFlex ビジネスリュックのGarment Guardには何が入りますか？使い方のコツは？
+              </button>
+            </h3>
+            <div id="uf-a19" class="accordion-collapse collapse" aria-labelledby="uf-q19" data-bs-parent="#accUF">
+              <div class="accordion-body">
+                目安は<strong>シャツ1〜2枚</strong>または<strong>薄手ジャケット1枚</strong>です。<br>
+                使い方は、<strong>両サイドのスライダーを開放→衣類を平らに入れる→スライダーを閉じてホールド</strong>。たたみジワを伸ばしてから収納すると、シワをより抑えられます。
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-
-      <!-- U2 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a2" aria-expanded="false" aria-controls="uf-a2">
-            雨の日の使用は大丈夫？防水の範囲を教えてください。
-          </button>
-        </h3>
-        <div id="uf-a2" class="accordion-collapse collapse" aria-labelledby="uf-q2" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            <strong>家庭用シャワーで背負い状態・約1分の社内テスト</strong>では、外装に軽度の染み込みはあるものの、<strong>内部への浸水はほぼありません</strong>でした。<br>
-            ただし<strong>完全防水ではありません</strong>（豪雨・長時間の降雨・水没・強い水圧は非対応）。<br>
-            また外部ポケットは<strong>リュック使用時</strong>に雨が入りにくい向きで設計しており、<strong>ブリーフケース持ち</strong>では開口部から侵入する可能性があります。
-          </div>
-        </div>
-      </div>
-
-      <!-- U3 (UPDATED: 17インチ基準に統一) -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a3" aria-expanded="false" aria-controls="uf-a3">
-            17インチのノートPCは入りますか？PCスリーブは独立していますか？
-          </button>
-        </h3>
-        <div id="uf-a3" class="accordion-collapse collapse" aria-labelledby="uf-q3" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            PCスリーブは<strong>独立</strong>しています。対応目安は以下のとおりです。<br>
-            ・<strong>2R-18：</strong> <strong>17インチ薄型</strong>まで対応。<br>
-            ・<strong>3REX-40：</strong> <strong>17インチ“ゲーミング”クラス</strong>にも対応可能な余裕があります。<br>
-            いずれも機種により外寸が異なるため、<strong>端末の外寸（幅・高さ・厚み）をご確認ください</strong>。
-          </div>
-        </div>
-      </div>
-
-      <!-- U4 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q4">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a4" aria-expanded="false" aria-controls="uf-a4">
-            機内持ち込みはできますか？（3REX-40の拡張時は？）
-          </button>
-        </h3>
-        <div id="uf-a4" class="accordion-collapse collapse" aria-labelledby="uf-q4" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            多くの航空会社で<strong>非拡張状態</strong>の機内持込を想定しています。<strong>拡張時</strong>は規定を超える場合があります。ご搭乗の航空会社のサイズ・重量規定を必ずご確認ください。
-          </div>
-        </div>
-      </div>
-
-      <!-- U5 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q5">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a5" aria-expanded="false" aria-controls="uf-a5">
-            ショルダーストラップのポケットにはどのサイズのスマホが入りますか？
-          </button>
-        </h3>
-        <div id="uf-a5" class="accordion-collapse collapse" aria-labelledby="uf-q5" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            <strong>大型スマホまでの収納</strong>を想定しています。機種ごとの適合は端末の外寸とケース有無により異なるため、<strong>寸法ガイドは製品ページで順次更新</strong>します。
-          </div>
-        </div>
-      </div>
-
-      <!-- U6 (UPDATED) -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q6">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a6" aria-expanded="false" aria-controls="uf-a6">
-            濡れた折りたたみ傘やボトルはどこに入れますか？
-          </button>
-        </h3>
-        <div id="uf-a6" class="accordion-collapse collapse" aria-labelledby="uf-q6" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            側面の<strong>Wet Safe Pocket</strong>に収納できます。底部メッシュにより水が下に抜け、他の荷物への影響を抑えます。<br>
-            目安として<strong>500mlペットボトル</strong>や<strong>スリム型水筒</strong>、濡れた<strong>折りたたみ傘</strong>に対応します。
-          </div>
-        </div>
-      </div>
-
-      <!-- U7 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q7">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a7" aria-expanded="false" aria-controls="uf-a7">
-            「Detach Pocket」は全モデル共通ですか？どう使いますか？
-          </button>
-        </h3>
-        <div id="uf-a7" class="accordion-collapse collapse" aria-labelledby="uf-q7" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            <strong>2サイズともサコッシュ（Detach Pocket）が標準付属</strong>です。パスポート・スマホ・財布など軽量物の携行に適します（重量物の収納はお控えください）。
-          </div>
-        </div>
-      </div>
-
-      <!-- U15 隠しポケットの位置 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q15">
-          <button class="accordion-button collapsed" type="button"
-                  data-bs-toggle="collapse" data-bs-target="#uf-a15"
-                  aria-expanded="false" aria-controls="uf-a15">
-            どうしてUrbanFlexの隠しポケットは、他社の位置と違うのですか？
-          </button>
-        </h3>
-        <div id="uf-a15" class="accordion-collapse collapse" aria-labelledby="uf-q15" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            実は、初期サンプルでは、他社と同様に<strong>背面下部</strong>に配置していました。<br>
-            しかし実際に財布などを収納してみたところ、<strong>PCや荷物を多めに入れた際に腰へ当たり痛みを感じる</strong>ことがあったため、現在の位置に変更しています。この場所の隠しポケットは、<strong>3WAYリュック</strong>だからこそ実現できる配置です。
-          </div>
-        </div>
-      </div>
-
-      <!-- U8 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q8">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a8" aria-expanded="false" aria-controls="uf-a8">
-            3REX-40の拡張ジッパーはどのくらい容量が増えますか？
-          </button>
-        </h3>
-        <div id="uf-a8" class="accordion-collapse collapse" aria-labelledby="uf-q8" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            3REX-40は<strong>20〜40Lへ可変</strong>する想定です（荷物の形状・パッキングにより体感は変わります）。
-          </div>
-        </div>
-      </div>
-
-      <!-- U16 (new) 拡張幅と使い方のコツ -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q16">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a16" aria-expanded="false" aria-controls="uf-a16">
-            拡張ジッパーはどのくらい広がりますか？下だけ開けるメリットは？
-          </button>
-        </h3>
-        <div id="uf-a16" class="accordion-collapse collapse" aria-labelledby="uf-q16" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            拡張マチは<strong>約8cm</strong>広がります。<br>
-            <strong>Wスライダー</strong>の特性を活かし、<strong>下側のみ</strong>を開ければ、弁当箱や厚みのある小物だけをスマートに収容できます。上部の見た目をすっきり保ちつつ、必要分だけ容量を追加できるのがメリットです。
-          </div>
-        </div>
-      </div>
-
-      <!-- U9 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q9">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a9" aria-expanded="false" aria-controls="uf-a9">
-            キャリーケースに固定できますか？（キャリーオン）
-          </button>
-        </h3>
-        <div id="uf-a9" class="accordion-collapse collapse" aria-labelledby="uf-q9" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            背面スリットでキャリーハンドルに固定できます。走行時の横ブレを抑えます。重心が上がると不安定になるため、重い荷物はキャリー側に寄せると安定します。
-          </div>
-        </div>
-      </div>
-
-      <!-- U10 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q10">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a10" aria-expanded="false" aria-controls="uf-a10">
-            お手入れ方法は？洗濯機で洗えますか？
-          </button>
-        </h3>
-        <div id="uf-a10" class="accordion-collapse collapse" aria-labelledby="uf-q10" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            汚れは<strong>中性洗剤</strong>を薄めた布でやさしく拭き取り、ぬるま湯で固く絞った布で拭き取り、陰干ししてください。<strong>中性洗剤以外は絶対に使用しないでください</strong>（洗濯機・乾燥機・漂白剤・溶剤・アイロン不可）。
-          </div>
-        </div>
-      </div>
-
-      <!-- U11 (UPDATED) 素材・重量・付属品 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q11">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a11" aria-expanded="false" aria-controls="uf-a11">
-            重量・素材・付属品の詳細はどこで確認できますか？
-          </button>
-        </h3>
-        <div id="uf-a11" class="accordion-collapse collapse" aria-labelledby="uf-q11" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            素材は<strong>オックスフォードポリエステル＋PUコーティング</strong>です（細部仕様はモデルにより異なる場合があります）。付属品は<strong>サコッシュ標準付属</strong>。<br>
-            <strong>重量は付属品を除く実測値</strong>です。その他の最新仕様は各商品ページでご確認ください。
-          </div>
-        </div>
-      </div>
-
-      <!-- U12 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q12">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a12" aria-expanded="false" aria-controls="uf-a12">
-            返品・修理の窓口は？
-          </button>
-        </h3>
-        <div id="uf-a12" class="accordion-collapse collapse" aria-labelledby="uf-q12" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            返品・交換・修理は<strong>ご購入先（各モール）のポリシー</strong>に準拠します。まずは各モールの商品ページのガイドをご確認ください。お困りの場合は<a href="mailto:info@addeva.jp">info@addeva.jp</a>へご連絡ください。
-          </div>
-        </div>
-      </div>
-
-      <!-- U13 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q13">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a13" aria-expanded="false" aria-controls="uf-a13">
-            価格・在庫・配送スピード・送料・配送会社は？
-          </button>
-        </h3>
-        <div id="uf-a13" class="accordion-collapse collapse" aria-labelledby="uf-q13" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            いずれも<strong>各モール（販売チャネル）により異なります</strong>。最新の価格・在庫・出荷〜到着目安・送料・配送会社は、<strong>ご購入予定のモールの商品ページ</strong>でご確認ください。
-          </div>
-        </div>
-      </div>
-
-      <!-- U14 -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q14">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a14" aria-expanded="false" aria-controls="uf-a14">
-            撥水性能が低下しました。どうすれば良いですか？
-          </button>
-        </h3>
-        <div id="uf-a14" class="accordion-collapse collapse" aria-labelledby="uf-q14" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            撥水が弱くなっても<strong>内部への防水性（浸水しにくさ）は変わりません</strong>。どうしても撥水性を復活させたい場合は、素材適合の市販撥水剤を<strong>目立たない箇所で試験</strong>したうえで、説明書に従って薄く均一に施工してください（<strong>推奨ではありません</strong>／自己責任にてご対応ください）。
-          </div>
-        </div>
-      </div>
-
-      <!-- U17 (new) Quick Fix Strap -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q17">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a17" aria-expanded="false" aria-controls="uf-a17">
-            ブリーフ持ちにする時、ショルダーストラップはどう固定しますか？ぶらつきませんか？
-          </button>
-        </h3>
-        <div id="uf-a17" class="accordion-collapse collapse" aria-labelledby="uf-q17" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            ジッパー内に完全収納する必要はなく、<strong>本体側の固定ポイントへ2アクションで留めて固定</strong>します（<strong>バックル固定はありません</strong>）。<br>
-            これにより移動直前までリュックとして使え、到着時に素早くブリーフ持ちへ切り替え可能。固定後は<strong>ぶらつきを抑える設計</strong>です。
-          </div>
-        </div>
-      </div>
-
-      <!-- U18 (new) Rain Lock / USBポート -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q18">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a18" aria-expanded="false" aria-controls="uf-a18">
-            USB外付けポートはありますか？Rain Lockケーブルホールとの違いは？
-          </button>
-        </h3>
-        <div id="uf-a18" class="accordion-collapse collapse" aria-labelledby="uf-q18" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            <strong>USB外付けポートは搭載していません。</strong><br>
-            その代わりに<strong>防水ケーブルホール（Rain Lock）</strong>を採用。PCルームのモバイルバッテリーからケーブルを通し、<strong>ショルダーストラップのガイド経由でスマホへ給電</strong>できます。物理ポートがないため、<strong>接触不良や水侵入のリスクを抑え</strong>られます。
-          </div>
-        </div>
-      </div>
-
-      <!-- U19 (new) Garment Guard -->
-      <div class="accordion-item">
-        <h3 class="accordion-header" id="uf-q19">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#uf-a19" aria-expanded="false" aria-controls="uf-a19">
-            Garment Guardには何が入りますか？使い方のコツは？
-          </button>
-        </h3>
-        <div id="uf-a19" class="accordion-collapse collapse" aria-labelledby="uf-q19" data-bs-parent="#accUF">
-          <div class="accordion-body">
-            目安は<strong>シャツ1〜2枚</strong>または<strong>薄手ジャケット1枚</strong>です。<br>
-            使い方は、<strong>両サイドのスライダーを開放→衣類を平らに入れる→スライダーを閉じてホールド</strong>。たたみジワを伸ばしてから収納すると、シワをより抑えられます。
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-<!-- /2) UrbanFlex FAQ -->
-
-
-
-
+    </section>
+    <!-- /2) UrbanFlex FAQ -->
 
   </main>
 
