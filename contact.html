@@ -41,7 +41,21 @@
         <div class="alert alert-success d-none" id="successBox" role="alert" aria-live="polite"></div>
         <div class="alert alert-danger d-none" id="errorBox" role="alert" aria-live="assertive"></div>
 
-        <div class="card shadow-sm">
+        <!-- 送信結果（成功時はフォームを隠して、この結果カードを表示） -->
+        <div class="card shadow-sm d-none" id="resultCard" aria-live="polite">
+          <div class="card-body p-4">
+            <h2 class="h5 mb-3">送信が完了しました</h2>
+            <div class="mb-2">受付番号：<strong id="resultTicket">-</strong></div>
+            <div class="text-muted small mb-3">※送信控え（自動返信メール）が届いているか必ずご確認ください（迷惑メールフォルダもご確認ください）。</div>
+            <div class="border rounded p-3 bg-light" id="resultSummary"></div>
+            <div class="mt-3 d-flex flex-column flex-sm-row gap-2">
+              <a class="btn btn-outline-dark" href="faq.html">FAQを見る</a>
+              <button class="btn btn-dark" type="button" id="resultNewBtn">別の問い合わせを送る</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm" id="formCard">
           <div class="card-body p-4">
             <form id="contactForm" class="needs-validation" novalidate>
               <div class="row g-3">
@@ -161,6 +175,120 @@
       const successBox = document.getElementById('successBox');
       const errorBox = document.getElementById('errorBox');
 
+      // 表示切替（送信結果/フォーム）
+      const formCard = document.getElementById('formCard');
+      const resultCard = document.getElementById('resultCard');
+      const resultTicket = document.getElementById('resultTicket');
+      const resultSummary = document.getElementById('resultSummary');
+      const resultNewBtn = document.getElementById('resultNewBtn');
+
+      const LS_LAST = 'addeva_contact_last';
+
+      function setView(mode) {
+        if (mode === 'result') {
+          formCard?.classList.add('d-none');
+          resultCard?.classList.remove('d-none');
+        } else {
+          resultCard?.classList.add('d-none');
+          formCard?.classList.remove('d-none');
+        }
+      }
+
+      function setUrlStatus(status, ticket) {
+        try {
+          const u = new URL(location.href);
+          if (status) u.searchParams.set('status', status);
+          else u.searchParams.delete('status');
+          if (ticket) u.searchParams.set('ticket', ticket);
+          else u.searchParams.delete('ticket');
+          history.replaceState({}, '', u.toString());
+        } catch (_e) { /* no-op */ }
+      }
+
+      function clearUrlStatus() {
+        try {
+          const u = new URL(location.href);
+          u.searchParams.delete('status');
+          u.searchParams.delete('ticket');
+          history.replaceState({}, '', u.pathname);
+        } catch (_e) { /* no-op */ }
+      }
+
+      function saveLast(ticket, payload) {
+        try {
+          sessionStorage.setItem(LS_LAST, JSON.stringify({ ticket, payload, at: Date.now() }));
+        } catch (_e) { /* no-op */ }
+      }
+
+      function loadLast(ticket) {
+        try {
+          const raw = sessionStorage.getItem(LS_LAST);
+          if (!raw) return null;
+          const obj = JSON.parse(raw);
+          if (!obj || obj.ticket !== ticket) return null;
+          return obj;
+        } catch (_e) {
+          return null;
+        }
+      }
+
+      function escHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+      }
+
+      function renderResult(ticket, payload) {
+        if (resultTicket) resultTicket.textContent = ticket || '-';
+
+        const p = payload || {};
+        const lines = [];
+
+        if (p.name || p.email || p.subject || p.message) {
+          lines.push(`<div class="small text-muted mb-2">送信内容</div>`);
+          if (p.name)   lines.push(`<div class="mb-1"><strong>お名前</strong>：${escHtml(p.name)}</div>`);
+          if (p.email)  lines.push(`<div class="mb-1"><strong>メール</strong>：${escHtml(p.email)}</div>`);
+          if (p.phone)  lines.push(`<div class="mb-1"><strong>電話番号</strong>：${escHtml(p.phone)}</div>`);
+          if (p.call_time) lines.push(`<div class="mb-1"><strong>ご連絡可能な時間帯</strong>：${escHtml(p.call_time)}</div>`);
+          if (p.order_id)  lines.push(`<div class="mb-1"><strong>ご注文番号</strong>：${escHtml(p.order_id)}</div>`);
+          if (p.subject)   lines.push(`<div class="mb-2"><strong>件名</strong>：${escHtml(p.subject)}</div>`);
+          if (p.message)   lines.push(`<div class="mt-2"><strong>お問い合わせ内容</strong><div class="mt-1" style="white-space:pre-wrap;">${escHtml(p.message)}</div></div>`);
+        } else {
+          lines.push('<div class="text-muted small">送信内容は、自動返信メール（送信控え）でご確認ください。</div>');
+        }
+
+        if (resultSummary) resultSummary.innerHTML = lines.join('');
+      }
+
+      // 初期表示: status=success の場合は結果表示へ
+      (function initViewByQuery() {
+        try {
+          const q = new URLSearchParams(location.search);
+          const status = (q.get('status') || '').toLowerCase();
+          const ticket = (q.get('ticket') || '').trim();
+          if (status === 'success' && ticket) {
+            const last = loadLast(ticket);
+            renderResult(ticket, last ? last.payload : null);
+            setView('result');
+          } else {
+            setView('form');
+          }
+        } catch (_e) {
+          setView('form');
+        }
+      })();
+
+      // 「別の問い合わせ」を押したらフォームへ戻す
+      resultNewBtn?.addEventListener('click', () => {
+        hideBox(successBox);
+        hideBox(errorBox);
+        clearUrlStatus();
+        setView('form');
+        try {
+          form?.reset();
+          form?.classList.remove('was-validated');
+          document.getElementById('name')?.focus();
+        } catch (_e) { /* no-op */ }
+      });
+
       function showBox(el, html) {
         if (!el) return;
         el.innerHTML = html;
@@ -194,9 +322,11 @@
 
         // honeypot: 値が入っていたら成功した体で終了（ボット対策）
         if (website) {
-          showBox(successBox, 'お問い合わせを受け付けました。ありがとうございました。<br><span class="text-muted">※送信控え（自動返信メール）が届いているかご確認ください（迷惑メールフォルダもご確認ください）。</span>');
-          form.reset();
-          form.classList.remove('was-validated');
+          // bot 対策: 表示上は成功に見せる（DB/APIにも送らない）
+          renderResult('-', null);
+          setUrlStatus('success', '-');
+          setView('result');
+          try { form.reset(); form.classList.remove('was-validated'); } catch (_e) {}
           return;
         }
 
@@ -239,16 +369,25 @@
 
           const ticket = data && (data.ticket_id || data.id || data.reference);
           if (ticket) {
-            showBox(successBox, `お問い合わせを受け付けました。ありがとうございました。<br>受付番号：<strong>${String(ticket)}</strong><br><span class="text-muted">※送信控え（自動返信メール）が届いているかご確認ください（迷惑メールフォルダもご確認ください）。</span>`);
+            // 送信内容を「結果画面」に表示（フォームは非表示）
+            saveLast(String(ticket), payload);
+            renderResult(String(ticket), payload);
+            setUrlStatus('success', String(ticket));
+            setView('result');
           } else {
-            showBox(successBox, 'お問い合わせを受け付けました。ありがとうございました。');
+            // チケットが返らない場合も結果表示へ
+            saveLast('', payload);
+            renderResult('-', payload);
+            setUrlStatus('success', '-');
+            setView('result');
           }
 
-          form.reset();
-          form.classList.remove('was-validated');
+          // 送信後は結果画面へ遷移するため、ここではフォームを見せない（値は保存済み）
+          try { form.reset(); } catch (_e) {}
+          form?.classList.remove('was-validated');
         } catch (e) {
           const raw = (e && e.message) ? String(e.message) : '';
-          const esc = (s) => s.replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+          // escHtml は上で定義済み
           const detail = raw ? `<div class="small text-muted mt-2">詳細：${esc(raw)}</div>` : '';
           showBox(errorBox, `送信に失敗しました。${detail}<div class="mt-2">お手数ですが、<a href="mailto:contact@addeva.jp">contact@addeva.jp</a> へメールでご連絡ください。</div>`);
           console.error('contact submit failed:', e);
