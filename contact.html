@@ -5,54 +5,23 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>お問い合わせ | ADDEVA® 公式</title>
-  <meta name="description" content="ADDEVAへのお問い合わせページ。メールで受け付けています。">
-
-  <!-- SEO（最低限：薄いページは評価対象にしない方針） -->
-  <link rel="canonical" href="/contact.html">
-  <meta name="robots" content="noindex,follow,max-image-preview:large">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="author" content="ADDEVA">
-
-  <link rel="icon" href="/favicon.ico">
+  <meta name="description" content="ADDEVAへのお問い合わせフォーム。ご質問・ご相談を受け付けています。">
+  <link rel="icon" href="favicon.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css?v=3.8">
-
+  <link rel="stylesheet" href="assets/css/main.css?v=3.5">
   <meta property="og:type" content="website">
   <meta property="og:title" content="お問い合わせ | ADDEVA">
-  <meta property="og:description" content="お問い合わせはADDEVA「お問い合わせ窓口 contact@addeva.jp 」へ。返信まで最大3日いただく場合があります。">
+  <meta property="og:description" content="ADDEVAへのお問い合わせフォーム。返信まで最大3日いただく場合があります。">
   <meta property="og:url" content="/contact.html">
-  <meta property="og:site_name" content="ADDEVA">
-  <meta property="og:locale" content="ja_JP">
-
-  <!-- Twitter Card（任意） -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="お問い合わせ | ADDEVA">
-  <meta name="twitter:description" content="お問い合わせはADDEVA「お問い合わせ窓口 contact@addeva.jp 」へ。返信まで最大3日いただく場合があります。">
-  <meta name="twitter:image" content="assets/img/og/contact_og.jpg">
-
   <style>
-    section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 24px); }
-
-    /* SPで上部余白が目立つため、page-heroの余白をページ側で調整 */
-    .page-hero{ padding: 28px 0 18px; }
-
-    @media (min-width: 992px){
-      .page-hero{ padding: 44px 0 22px; }
-    }
-
-    @media (max-width: 767.98px){
-      section[id]{ scroll-margin-top: calc(var(--header-mobile, 56px) + 16px); }
-      .page-hero{ padding: 18px 0 12px; }
-      .page-hero .kicker{ margin-bottom: .25rem; }
-      .page-hero h1{ line-height: 1.25; }
-    }
+    .page-hero{padding:64px 0 24px;}
+    .form-note{font-size:.95rem;}
   </style>
 </head>
 <body>
-  <!-- 共通ヘッダー（Topと同じクラスを付与してCSSの前提を揃える） -->
-  <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
+  <!-- 共通ヘッダー（include は維持） -->
+  <div data-include="/includes/header.html" aria-busy="true"></div>
 
   <main>
     <section class="page-hero">
@@ -64,70 +33,226 @@
 
     <section class="section">
       <div class="container container-narrow">
-        <p class="text-muted">
+        <p class="text-muted form-note">
           お返事には、<strong>3日</strong> かかる場合もございます。あらかじめご了承ください。<br>
-          お問い合わせ前に、<a href="/faq.html">よくあるご質問（FAQ）</a>もご覧ください。
+          お問い合わせ前に、<a href="faq.html">よくあるご質問（FAQ）</a>もご覧ください。
         </p>
 
-        <div class="mt-3">
-          <a class="btn btn-dark"
+        <div class="alert alert-success d-none" id="successBox" role="alert" aria-live="polite"></div>
+        <div class="alert alert-danger d-none" id="errorBox" role="alert" aria-live="assertive"></div>
+
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <form id="contactForm" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">お名前 <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="name" name="name" maxlength="120" autocomplete="name" required>
+                  <div class="invalid-feedback">お名前をご入力ください。</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" id="email" name="email" maxlength="200" autocomplete="email" inputmode="email" required>
+                  <div class="invalid-feedback">正しいメールアドレスをご入力ください。</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">電話番号（任意）</label>
+                  <input type="tel" class="form-control" id="phone" name="phone" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="例：09012345678">
+                  <div class="form-text">※内容により、お電話したほうが早いと判断した場合は、お電話させていただくことがあります。</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="callTime" class="form-label">ご連絡可能な時間帯（任意）</label>
+                  <input type="text" class="form-control" id="callTime" name="callTime" maxlength="120" autocomplete="off" placeholder="例：平日10:00-12:00 / 14:00-18:00">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="subject" class="form-label">件名 <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="subject" name="subject" maxlength="200" required>
+                  <div class="invalid-feedback">件名をご入力ください。</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="orderId" class="form-label">ご注文番号（任意）</label>
+                  <input type="text" class="form-control" id="orderId" name="orderId" maxlength="80" autocomplete="off">
+                </div>
+
+                <div class="col-12">
+                  <label for="message" class="form-label">お問い合わせ内容 <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="message" name="message" rows="6" maxlength="5000" required></textarea>
+                  <div class="invalid-feedback">お問い合わせ内容をご入力ください。</div>
+                  <div class="form-text">最大5,000文字</div>
+                </div>
+
+                <!-- honeypot（人間は入力しない想定） -->
+                <div class="d-none" aria-hidden="true">
+                  <label for="website" class="form-label">Website</label>
+                  <input type="text" class="form-control" id="website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="col-12 d-flex flex-column flex-sm-row gap-2 align-items-start align-items-sm-center mt-2">
+                  <button type="submit" class="btn btn-dark" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" id="sendSpinner" aria-hidden="true"></span>
+                    送信する
+                  </button>
+                  <div class="text-muted small">※送信後、受付完了メッセージが表示されます。</div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p class="mb-2 text-muted small">フォーム送信がうまくいかない場合は、メールでも受け付けています。</p>
+          <a class="btn btn-outline-dark"
              href="mailto:contact@addeva.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%88ADDEVA%EF%BC%89">
             メールアプリを開く
           </a>
           <p class="mt-2 mb-0">
             送信先「ADDEVA お問い合わせ窓口」：<a href="mailto:contact@addeva.jp">contact@addeva.jp</a>
-            <button id="copyBtn" class="btn btn-sm btn-outline-secondary ms-2">コピー</button>
+            <button id="copyBtn" class="btn btn-sm btn-outline-secondary ms-2" type="button">コピー</button>
             <span id="copied" class="text-success small ms-2" style="display:none;">コピーしました</span>
           </p>
         </div>
+
       </div>
     </section>
   </main>
 
-  <!-- 共通フッター -->
+  <!-- 共通フッター（include は維持） -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/common.js?v=1.0.0"></script>
 
-  <!-- インクルード＆メールコピー -->
   <script>
-    (function () {
-      async function includeFragments() {
-        const nodes = document.querySelectorAll('[data-include]');
-        await Promise.all([...nodes].map(async (el) => {
-          const file = el.getAttribute('data-include');
-          try {
-            const resp = await fetch(file, { cache: 'no-cache' });
-            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
-            const html = await resp.text();
-            el.outerHTML = html;
-          } catch (e) {
-            console.error('Include failed:', file, e);
-          }
-        }));
+    (async function () {
+      // header/footer 読み込み
+      const nodes = document.querySelectorAll('[data-include]');
+      await Promise.all([...nodes].map(async el => {
+        const f = el.getAttribute('data-include');
+        const r = await fetch(f, {cache:'no-cache'});
+        el.outerHTML = await r.text();
+      }));
+
+      // フッターの年号更新がある場合
+      const y = document.getElementById('y');
+      if (y) y.textContent = new Date().getFullYear();
+
+      // メールコピー
+      const btn = document.getElementById('copyBtn');
+      const ok = document.getElementById('copied');
+      btn?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('contact@addeva.jp');
+          ok.style.display = 'inline';
+          setTimeout(()=> ok.style.display='none', 1800);
+        } catch(e) {}
+      });
+
+      // お問い合わせフォーム送信
+      const API_ENDPOINT = '/api/contact';
+
+      const form = document.getElementById('contactForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const spinner = document.getElementById('sendSpinner');
+      const successBox = document.getElementById('successBox');
+      const errorBox = document.getElementById('errorBox');
+
+      function showBox(el, html) {
+        if (!el) return;
+        el.innerHTML = html;
+        el.classList.remove('d-none');
+      }
+      function hideBox(el) {
+        if (!el) return;
+        el.classList.add('d-none');
+        el.innerHTML = '';
       }
 
-      document.addEventListener('DOMContentLoaded', async () => {
-        await includeFragments();
+      form?.addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        hideBox(successBox);
+        hideBox(errorBox);
 
-        // メールコピー
-        const btn = document.getElementById('copyBtn');
-        const ok = document.getElementById('copied');
-        btn?.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText('contact@addeva.jp');
-            if (ok) {
-              ok.style.display = 'inline';
-              setTimeout(() => { ok.style.display = 'none'; }, 1800);
+        // Bootstrap validation
+        if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+          return;
+        }
+
+        const name = document.getElementById('name')?.value?.trim() || '';
+        const email = document.getElementById('email')?.value?.trim() || '';
+        const phone = document.getElementById('phone')?.value?.trim() || '';
+        const callTime = document.getElementById('callTime')?.value?.trim() || '';
+        const subject = document.getElementById('subject')?.value?.trim() || '';
+        const orderId = document.getElementById('orderId')?.value?.trim() || '';
+        const message = document.getElementById('message')?.value?.trim() || '';
+        const website = document.getElementById('website')?.value?.trim() || '';
+
+        // honeypot: 値が入っていたら成功した体で終了（ボット対策）
+        if (website) {
+          showBox(successBox, 'お問い合わせを受け付けました。ありがとうございました。');
+          form.reset();
+          form.classList.remove('was-validated');
+          return;
+        }
+
+        const payload = {
+          name,
+          email,
+          phone,
+          call_time: callTime,
+          subject,
+          order_id: orderId,
+          message,
+          page_url: location.href
+        };
+
+        // UI: sending
+        submitBtn?.setAttribute('disabled', 'disabled');
+        spinner?.classList.remove('d-none');
+
+        try {
+          let data = null;
+
+          // common.js が読み込まれていれば、APIキー付与などを共通処理に任せる
+          if (window.ADDEVA && typeof window.ADDEVA.apiFetch === 'function') {
+            data = await window.ADDEVA.apiFetch(API_ENDPOINT, { method: 'POST', body: payload });
+          } else {
+            // フォールバック（x-api-key が必須な構成の場合は common.js を必ず読み込んでください）
+            const res = await fetch(API_ENDPOINT, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            try { data = await res.json(); } catch (_) { data = null; }
+
+            if (!res.ok) {
+              const msg = (data && (data.detail || data.message)) ? (data.detail || data.message) : '送信に失敗しました。時間をおいて再度お試しください。';
+              throw new Error(msg);
             }
-          } catch (e) {
-            // 何もしない
           }
-        });
 
-        // フッターの年号更新がある場合
-        const y = document.getElementById('y');
-        if (y) y.textContent = new Date().getFullYear();
+          const ticket = data && (data.ticket_id || data.id || data.reference);
+          if (ticket) {
+            showBox(successBox, `お問い合わせを受け付けました。ありがとうございました。<br>受付番号：<strong>${String(ticket)}</strong>`);
+          } else {
+            showBox(successBox, 'お問い合わせを受け付けました。ありがとうございました。');
+          }
+
+          form.reset();
+          form.classList.remove('was-validated');
+        } catch (e) {
+          showBox(errorBox, `送信に失敗しました。<br>お手数ですが、<a href="mailto:contact@addeva.jp">contact@addeva.jp</a> へメールでご連絡ください。`);
+          console.error('contact submit failed:', e);
+        } finally {
+          spinner?.classList.add('d-none');
+          submitBtn?.removeAttribute('disabled');
+        }
       });
     })();
   </script>
