@@ -118,7 +118,7 @@
           </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4" id="fallbackMail">
           <p class="mb-2 text-muted small">フォーム送信がうまくいかない場合は、メールでも受け付けています。</p>
           <a class="btn btn-outline-dark"
              href="mailto:contact@addeva.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%EF%BC%88ADDEVA%EF%BC%89">
@@ -178,6 +178,7 @@
       // 表示切替（送信結果/フォーム）
       const formCard = document.getElementById('formCard');
       const resultCard = document.getElementById('resultCard');
+      const fallbackMail = document.getElementById('fallbackMail');
       const resultTicket = document.getElementById('resultTicket');
       const resultSummary = document.getElementById('resultSummary');
       const resultNewBtn = document.getElementById('resultNewBtn');
@@ -188,9 +189,13 @@
         if (mode === 'result') {
           formCard?.classList.add('d-none');
           resultCard?.classList.remove('d-none');
+          // 送信完了画面では「メールでも受付」ブロックは不要
+          fallbackMail?.classList.add('d-none');
         } else {
           resultCard?.classList.add('d-none');
           formCard?.classList.remove('d-none');
+          // 初期画面/エラー時は表示する
+          fallbackMail?.classList.remove('d-none');
         }
       }
 
