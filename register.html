@@ -156,8 +156,11 @@
               <!-- 同意（新規登録時のみ有効） -->
               <div class="mb-4" id="optinFields">
                 <label class="form-label">メール配信の同意（任意）</label>
-                <div class="form-text mb-2">
-                  ※安全上重要なお知らせ（リコール、重大な不具合、保証に関わる連絡等）は、配信設定にかかわらず登録メール宛に送付されます。
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="optinSafetyNotice" checked disabled>
+                  <label class="form-check-label" for="optinSafetyNotice">
+                    ※安全上重要なお知らせ（リコール、重大な不具合、保証に関わる連絡等）は、配信設定にかかわらず登録メール宛に送付されます。
+                  </label>
                 </div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="optinSales">
