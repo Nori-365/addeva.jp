@@ -7,30 +7,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Primary SEO -->
   <title>製品保証登録・アフターサービス｜ADDEVA（アデバ）公式</title>
   <meta name="description" content="ADDEVA製品の保証を有効化するためのご登録ページです。Amazon購入情報をご入力ください。">
-
-  <!-- Canonical -->
   <link rel="canonical" href="https://addeva.jp/register.html">
 
-  <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Robots -->
   <meta name="robots" content="noindex,nofollow">
 
-  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.7">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <!-- Flatpickr の CSS を追加 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
-  <!-- ▼ 共通ヘッダーを読み込み -->
   <div data-include="/includes/header.html" aria-busy="true"></div>
 
   <main>
@@ -43,132 +35,167 @@
           </ol>
         </nav>
 
-        <h1 class="mb-4">製品保証登録・アフターサービス</h1>
-        <p class="lead mb-5">ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。</p>
+        <h1 class="mb-4" id="pageTitle">製品保証登録・アフターサービス</h1>
+        <p class="lead mb-5" id="pageLead">
+          ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。
+        </p>
 
-        <!-- メッセージ表示エリア -->
         <div id="messageArea" class="alert d-none" role="alert"></div>
 
         <div class="card shadow-sm p-4 mb-5">
           <form id="registrationForm" method="POST" action="" novalidate>
-            <!-- お客様ID (会員番号) -->
-            <div class="mb-4">
-              <label for="customerId" class="form-label">お客様ID (会員番号)</label>
-              <input type="text" class="form-control" id="customerId" name="customerId" readonly>
-              <div class="form-text" id="customerIdHelp"></div>
-            </div>
 
-            <!-- メールアドレス -->
-            <div class="mb-4">
-              <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
-              <input type="email" class="form-control" id="email" name="email" required placeholder="メールアドレスをご入力ください">
-              <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
-            </div>
-
-            <!-- メール認証（新規登録時のみ） -->
-            <div id="emailOtpSection" class="mb-4" style="display:none;">
-              <label class="form-label">メール認証 <span class="text-danger">*</span></label>
-              <div class="border rounded p-3 bg-light">
-                <div class="mb-2 text-muted small">
-                  最初に確認コードをメールで送信します。届いた6桁コードを入力して認証してください。
-                </div>
-
-                <div class="d-flex gap-2 flex-wrap align-items-center mb-2">
-                  <button type="button" id="otpSendBtn" class="btn btn-outline-primary btn-sm">確認コードを送信</button>
-                  <span id="otpSendStatus" class="small text-muted"></span>
-                </div>
-
-                <div class="input-group input-group-sm mb-2" style="max-width: 360px;">
-                  <input type="text" class="form-control" id="otpCode" inputmode="numeric" autocomplete="one-time-code" placeholder="6桁コード" maxlength="6">
-                  <button type="button" id="otpVerifyBtn" class="btn btn-outline-success">認証する</button>
-                </div>
-                <div id="otpVerifyStatus" class="small"></div>
+            <!-- =========================================================
+                 Step 1: Email OTP（未ログイン時のみ使用）
+                 ========================================================= -->
+            <div class="mb-4" id="otpSection">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h2 class="h5 mb-0">メールアドレス確認</h2>
+                <span class="badge text-bg-secondary" id="otpStageBadge">STEP 1</span>
               </div>
-            </div>
 
-            <!-- パスワード入力欄 (新規登録時のみ表示：メール認証後に表示) -->
-            <div id="passwordFields" class="mb-4" style="display:none;">
-              <label for="password" class="form-label">パスワード <span class="text-danger">*</span></label>
-              <input type="password" class="form-control mb-2" id="password" name="password" required minlength="8" placeholder="パスワード（8文字以上）">
-              <label for="confirmPassword" class="form-label">パスワード確認 <span class="text-danger">*</span></label>
-              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="もう一度パスワードを入力してください">
-              <div id="passwordMismatchFeedback" class="invalid-feedback" style="display: none;">
-                パスワードが一致しません。
+              <div class="mt-3">
+                <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="メールアドレスをご入力ください">
+                <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
               </div>
-              <div class="form-text">半角英数字と記号を組み合わせた8文字以上で設定してください。</div>
-            </div>
 
-            <!-- メール配信の同意（任意・新規登録時のみ：メール認証後に表示） -->
-            <div id="marketingConsent" class="mb-4" style="display:none;">
-              <label class="form-label">メール送信の同意（任意）</label>
-              <div class="border rounded p-3">
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="checkbox" id="marketingOptInA">
-                  <label class="form-check-label" for="marketingOptInA">お使いの製品に関連するアップデート情報（リコール情報含）を受け取る</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="marketingOptInB">
-                  <label class="form-check-label" for="marketingOptInB">互換オプション、交換部品の新発売や新商品、セール情報を受け取る</label>
-                </div>
-                <div class="form-text">初期設定はOFFです。いつでも配信停止できます。</div>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <!-- 注文番号 (トップレベル) -->
-            <div class="mb-3">
-              <label for="masterOrderNumber" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="masterOrderNumber" name="masterOrderNumber" required placeholder="例: 123-1234567-1234567">
-              <div id="masterOrderNumberFeedback" class="invalid-feedback" style="display: none;">
-                Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
-              </div>
-              <div class="form-text text-danger">
-                ※ 異なる注文番号の商品は、分けてご登録ください。同一商品を複数ご注文の場合は、複数行でご登録ください。
-              </div>
-            </div>
-
-            <!-- 購入日 (トップレベル) -->
-            <div class="mb-4">
-              <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
-              <div class="input-group" id="masterPurchaseDateWrapper">
-                <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" required placeholder="YYYY/MM/DD" data-input>
-                <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn" data-toggle>
-                    <i class="bi bi-calendar"></i>
+              <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+                <button type="button" class="btn btn-outline-primary" id="sendOtpButton">
+                  <i class="bi bi-envelope me-1"></i>確認コードを送信
                 </button>
+                <div class="small text-muted" id="sendOtpHint">メールに6桁の確認コードを送ります。</div>
               </div>
-              <div class="form-text">Amazonでのご注文日を YYYY/MM/DD 形式でご入力ください。</div>
+
+              <div class="mt-3 d-none" id="otpInputBlock">
+                <label for="otpCode" class="form-label">確認コード（6桁）</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="otpCode"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    placeholder="例: 123456"
+                    maxlength="6"
+                  >
+                  <button type="button" class="btn btn-primary" id="confirmOtpButton">
+                    <i class="bi bi-check2-circle me-1"></i>認証する
+                  </button>
+                </div>
+                <div class="form-text">メールに届いた6桁のコードを入力してください。</div>
+              </div>
+
+              <div class="mt-3 d-none" id="otpVerifiedBlock">
+                <span class="badge text-bg-success">
+                  <i class="bi bi-check-circle me-1"></i>メール確認済み
+                </span>
+                <div class="small text-muted mt-2">このまま登録情報の入力へ進んでください。</div>
+              </div>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-4" id="afterOtpHr">
 
-            <!-- 複数商品入力エリアのコンテナ -->
-            <div id="productEntriesContainer" class="mb-4 border p-3 rounded bg-light">
-              <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
-              <!-- ここに動的な商品入力ブロックが追加されます -->
+            <!-- =========================================================
+                 Step 2+: 認証後（またはログイン済み）
+                 ========================================================= -->
+            <div id="afterOtpFields" class="d-none">
+
+              <!-- お客様ID -->
+              <div class="mb-4">
+                <label for="customerId" class="form-label">お客様ID (会員番号)</label>
+                <input type="text" class="form-control" id="customerId" name="customerId" readonly>
+                <div class="form-text" id="customerIdHelp"></div>
+              </div>
+
+              <!-- パスワード（新規登録時のみ表示） -->
+              <div id="passwordFields" class="mb-4">
+                <label for="password" class="form-label">パスワード <span class="text-danger">*</span></label>
+                <input type="password" class="form-control mb-2" id="password" name="password" minlength="8" placeholder="パスワード（8文字以上）">
+                <label for="confirmPassword" class="form-label">パスワード確認 <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="もう一度パスワードを入力してください">
+                <div id="passwordMismatchFeedback" class="invalid-feedback" style="display:none;">パスワードが一致しません。</div>
+                <div class="form-text">半角英数字と記号を組み合わせた8文字以上で設定してください。</div>
+              </div>
+
+              <!-- 同意（新規登録時のみ有効） -->
+              <div class="mb-4" id="optinFields">
+                <label class="form-label">メール配信の同意（任意）</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="optinUpdates">
+                  <label class="form-check-label" for="optinUpdates">
+                    お使いの製品に関連するアップデート情報（リコール情報含）を受け取る
+                  </label>
+                </div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="optinSales">
+                  <label class="form-check-label" for="optinSales">
+                    互換オプション、交換部品の新発売や新商品、セール情報を受け取る
+                  </label>
+                </div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="optinMilestone">
+                  <label class="form-check-label" for="optinMilestone">
+                    自分の投稿が一定の賛成を獲得したとき、メールで通知を受け取る
+                  </label>
+                </div>
+                <div class="form-text">既定はOFFです。必要なものだけチェックしてください。</div>
+              </div>
+
+              <hr class="my-4">
+
+              <!-- 注文番号 -->
+              <div class="mb-3">
+                <label for="masterOrderNumber" class="form-label">Amazon注文番号 <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="masterOrderNumber" name="masterOrderNumber" placeholder="例: 123-1234567-1234567">
+                <div id="masterOrderNumberFeedback" class="invalid-feedback" style="display:none;">
+                  Amazonの注文番号形式が正しくありません。（例: 123-1234567-1234567）
+                </div>
+                <div class="form-text text-danger">
+                  ※ 異なる注文番号の商品は、分けてご登録ください。同一商品を複数ご注文の場合は、複数行でご登録ください。
+                </div>
+              </div>
+
+              <!-- 購入日 -->
+              <div class="mb-4">
+                <label for="masterPurchaseDate" class="form-label">購入日 <span class="text-danger">*</span></label>
+                <div class="input-group" id="masterPurchaseDateWrapper">
+                  <input type="text" class="form-control" id="masterPurchaseDate" name="masterPurchaseDate" placeholder="YYYY/MM/DD" data-input>
+                  <button class="btn btn-outline-secondary" type="button" id="masterPurchaseDateCalendarBtn" data-toggle>
+                    <i class="bi bi-calendar"></i>
+                  </button>
+                </div>
+                <div class="form-text">Amazonでのご注文日を YYYY/MM/DD 形式でご入力ください。</div>
+              </div>
+
+              <hr class="my-4">
+
+              <!-- 複数商品 -->
+              <div id="productEntriesContainer" class="mb-4 border p-3 rounded bg-light">
+                <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
+              </div>
+
+              <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4">
+                <i class="bi bi-plus-circle me-2"></i>別の商品を追加する
+              </button>
+
+              <button type="submit" class="btn btn-primary btn-lg w-100" id="submitButton">保証を登録する</button>
             </div>
 
-            <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4">
-              <i class="bi bi-plus-circle me-2"></i>別の商品を追加する
-            </button>
-
-            <button type="submit" class="btn btn-primary btn-lg w-100">保証を登録する</button>
           </form>
         </div>
 
-        <p class="text-muted small text-center">ご登録いただいた個人情報は、当社の<a href="/privacy-policy.html" target="_blank">プライバシーポリシー</a>に基づき厳重に管理いたします。</p>
-
+        <p class="text-muted small text-center">
+          ご登録いただいた個人情報は、当社の<a href="/privacy-policy.html" target="_blank">プライバシーポリシー</a>に基づき厳重に管理いたします。
+        </p>
       </div>
     </section>
   </main>
 
-  <!-- ▼ 共通フッターを読み込み -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- addeva.jp 専用 common.js を読み込み -->
   <script defer src="/common.js"></script>
-  <!-- Flatpickr の JavaScript を追加 -->
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 
@@ -185,65 +212,78 @@
       const TODAY_ISO = new Date().toISOString().split('T')[0];
       const TODAY_DATE = new Date(TODAY_ISO);
 
+      const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/;
+      const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/;
+
+      const SS_SIGNUP_EMAIL = "addeva.signup.email";
+      const SS_SIGNUP_TOKEN = "addeva.signup.token";
+
       const registrationForm = document.getElementById('registrationForm');
       const messageArea = document.getElementById('messageArea');
-      const productEntriesContainer = document.getElementById('productEntriesContainer');
-      const addProductButton = document.getElementById('addProductButton');
+
+      const pageTitle = document.getElementById('pageTitle');
+      const pageLead = document.getElementById('pageLead');
+
+      const otpSection = document.getElementById('otpSection');
+      const otpStageBadge = document.getElementById('otpStageBadge');
+
+      const emailInput = document.getElementById('email');
+      const sendOtpButton = document.getElementById('sendOtpButton');
+      const sendOtpHint = document.getElementById('sendOtpHint');
+
+      const otpInputBlock = document.getElementById('otpInputBlock');
+      const otpCodeInput = document.getElementById('otpCode');
+      const confirmOtpButton = document.getElementById('confirmOtpButton');
+      const otpVerifiedBlock = document.getElementById('otpVerifiedBlock');
+
+      const afterOtpHr = document.getElementById('afterOtpHr');
+      const afterOtpFields = document.getElementById('afterOtpFields');
 
       const customerIdInput = document.getElementById('customerId');
       const customerIdHelp = document.getElementById('customerIdHelp');
-      const emailInput = document.getElementById('email');
+
+      const passwordFields = document.getElementById('passwordFields');
       const passwordInput = document.getElementById('password');
       const confirmPasswordInput = document.getElementById('confirmPassword');
       const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
-      const passwordFields = document.getElementById('passwordFields');
 
-      const emailOtpSection = document.getElementById('emailOtpSection');
-      const otpSendBtn = document.getElementById('otpSendBtn');
-      const otpSendStatus = document.getElementById('otpSendStatus');
-      const otpCodeInput = document.getElementById('otpCode');
-      const otpVerifyBtn = document.getElementById('otpVerifyBtn');
-      const otpVerifyStatus = document.getElementById('otpVerifyStatus');
-
-      const marketingConsent = document.getElementById('marketingConsent');
-      const marketingOptInA = document.getElementById('marketingOptInA');
-      const marketingOptInB = document.getElementById('marketingOptInB');
+      const optinFields = document.getElementById('optinFields');
+      const optinUpdates = document.getElementById('optinUpdates');
+      const optinSales = document.getElementById('optinSales');
+      const optinMilestone = document.getElementById('optinMilestone');
 
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
       const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
-      const masterPurchaseDateCalendarBtn = document.getElementById('masterPurchaseDateCalendarBtn');
+      const productEntriesContainer = document.getElementById('productEntriesContainer');
+      const addProductButton = document.getElementById('addProductButton');
 
-      const AMAZON_ORDER_PATTERN = /^\d{3}-\d{7}-\d{7}$/;
-      const JAPANESE_DATE_PATTERN = /^\d{4}\/\d{2}\/\d{2}$/;
+      let fpInstance = null;
       let availableProducts = [];
+      let productsLoaded = false;
 
       let isUserLoggedIn = false;
       let loggedInCustomerId = null;
       let loggedInEmail = '';
 
-      // --- 新規登録のメール認証（6桁コード） ---
-      let emailVerified = false;
-      let emailVerificationToken = '';
-      let otpSending = false;
-      let otpVerifying = false;
-      let otpCooldownUntil = 0; // ms
-      let otpFailCount = 0;
-      const OTP_MAX_FAILS = 3;
-      const OTP_COOLDOWN_MS = 10 * 60 * 1000; // 10分
-      const OTP_RESEND_MIN_MS = 30 * 1000; // 30秒
-      let otpResendAllowedAt = 0; // ms
-
-      let fpInstance = null;
+      let otpState = "init";  // init | sent | verified | loggedin
+      let signupToken = "";
 
       function showError(msg, asHtml=false) {
-        if (asHtml) {
-          messageArea.innerHTML = msg;
-        } else {
-          messageArea.textContent = msg;
-        }
+        if (asHtml) messageArea.innerHTML = msg;
+        else messageArea.textContent = msg;
+
         messageArea.classList.remove('d-none', 'alert-success');
         messageArea.classList.add('alert-danger');
+        window.scrollTo(0, 0);
+      }
+
+      function showSuccess(msg, asHtml=false) {
+        if (asHtml) messageArea.innerHTML = msg;
+        else messageArea.textContent = msg;
+
+        messageArea.classList.remove('d-none', 'alert-danger');
+        messageArea.classList.add('alert-success');
         window.scrollTo(0, 0);
       }
 
@@ -253,15 +293,16 @@
         messageArea.classList.remove('alert-danger', 'alert-success');
       }
 
+      function normalizeEmail(v) {
+        return (v || "").trim();
+      }
+
       function formatJapaneseDateToISO(japaneseDateString) {
         if (!japaneseDateString || !JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
-        const parts = japaneseDateString.split('/');
-        const year = parts[0];
-        const month = parts[1];
-        const day = parts[2];
+        const [year, month, day] = japaneseDateString.split('/');
         const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year)) return null;
-        return year + '-' + String(parseInt(month)).padStart(2, '0') + '-' + String(parseInt(day)).padStart(2, '0');
+        return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
       }
 
       function ensureFlatpickr() {
@@ -271,290 +312,115 @@
           locale: "ja",
           dateFormat: "Y/m/d",
           maxDate: TODAY_ISO,
-          disableMobile: true,
-          onClose: function() {
-            validatePurchaseDate();
-          }
+          disableMobile: true
         });
       }
 
-      async function checkLoginStatusAndSetupUI() {
-        const authToken = localStorage.getItem(ADDEVA.LS.authToken);
+      function setEmailReadonly(readonly) {
+        emailInput.readOnly = !!readonly;
+        if (readonly) {
+          emailInput.classList.add('form-control-plaintext');
+        } else {
+          emailInput.classList.remove('form-control-plaintext');
+        }
+      }
 
-        if (authToken) {
-          try {
-            const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', {
-              method: 'GET'
-            });
+      function setOtpUiState(state) {
+        otpState = state;
 
-            isUserLoggedIn = true;
-            loggedInCustomerId = userInfo.customer_id;
-            loggedInEmail = userInfo.email;
+        if (state === "loggedin") {
+          otpSection.classList.add("d-none");
+          afterOtpHr.classList.add("d-none");
+          afterOtpFields.classList.remove("d-none");
 
-            document.querySelector('h1').textContent = '商品情報追加・登録';
-            document.querySelector('p.lead').textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
+          otpInputBlock.classList.add("d-none");
+          otpVerifiedBlock.classList.add("d-none");
 
-            customerIdInput.value = loggedInCustomerId;
-            customerIdHelp.textContent = 'お客様IDは変更できません。';
+          setEmailReadonly(true);
 
-            emailInput.value = loggedInEmail;
-            emailInput.readOnly = true;
-            emailInput.classList.add('form-control-plaintext');
+          passwordFields.style.display = "none";
+          optinFields.style.display = "none";
 
-            // ログイン済みではメール認証不要
-            emailVerified = true;
-            emailVerificationToken = '';
-            otpFailCount = 0;
-            otpCooldownUntil = 0;
-            otpResendAllowedAt = 0;
+          otpStageBadge.textContent = "LOGGED IN";
+          return;
+        }
 
-            if (emailOtpSection) emailOtpSection.style.display = 'none';
-            if (marketingConsent) marketingConsent.style.display = 'none';
+        otpSection.classList.remove("d-none");
+        afterOtpHr.classList.remove("d-none");
 
-            // 追加登録ではパスワード不要
-            if (passwordFields) passwordFields.style.display = 'none';
+        if (state === "init") {
+          otpStageBadge.textContent = "STEP 1";
+          otpVerifiedBlock.classList.add("d-none");
+          otpInputBlock.classList.add("d-none");
+          sendOtpButton.classList.remove("d-none");
+          sendOtpButton.disabled = false;
+          sendOtpButton.innerHTML = '<i class="bi bi-envelope me-1"></i>確認コードを送信';
+          sendOtpHint.textContent = "メールに6桁の確認コードを送ります。";
 
-            ensureFlatpickr();
+          afterOtpFields.classList.add("d-none");
+          setEmailReadonly(false);
+
+          passwordFields.style.display = "block";
+          optinFields.style.display = "block";
+          return;
+        }
+
+        if (state === "sent") {
+          otpStageBadge.textContent = "STEP 1";
+          otpVerifiedBlock.classList.add("d-none");
+          otpInputBlock.classList.remove("d-none");
+          afterOtpFields.classList.add("d-none");
+          setEmailReadonly(false);
+
+          passwordFields.style.display = "block";
+          optinFields.style.display = "block";
+          return;
+        }
+
+        if (state === "verified") {
+          otpStageBadge.textContent = "STEP 2";
+          otpVerifiedBlock.classList.remove("d-none");
+          otpInputBlock.classList.add("d-none");
+          sendOtpButton.classList.add("d-none");
+
+          afterOtpFields.classList.remove("d-none");
+          setEmailReadonly(true);
+
+          passwordFields.style.display = "block";
+          optinFields.style.display = "block";
+          return;
+        }
+      }
+
+      function startSendCooldown(seconds) {
+        const base = seconds;
+        let remain = base;
+
+        sendOtpButton.disabled = true;
+        const timer = setInterval(() => {
+          remain -= 1;
+          if (remain <= 0) {
+            clearInterval(timer);
+            sendOtpButton.disabled = false;
+            sendOtpButton.innerHTML = '<i class="bi bi-envelope me-1"></i>確認コードを送信';
+            sendOtpHint.textContent = "確認コードの再送信が可能です。";
             return;
-          } catch (error) {
-            console.warn("ログイン状態の取得失敗:", error);
-            localStorage.removeItem(ADDEVA.LS.authToken);
           }
-        }
-
-        setupNewRegistrationUI();
+          sendOtpButton.innerHTML = `再送信まで ${remain}s`;
+          sendOtpHint.textContent = "連続送信を防ぐため、少し時間をおいてください。";
+        }, 1000);
       }
 
-      function setupNewRegistrationUI() {
-        isUserLoggedIn = false;
-        loggedInCustomerId = null;
-        loggedInEmail = '';
-
-        customerIdInput.value = '＜新規＞';
-        customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
-
-        emailInput.readOnly = false;
-        emailInput.classList.remove('form-control-plaintext');
-
-        // 新規登録は「メール認証→パスワード設定→送信」
-        emailVerified = false;
-        emailVerificationToken = '';
-        otpFailCount = 0;
-        otpCooldownUntil = 0;
-        otpResendAllowedAt = 0;
-
-        if (emailOtpSection) emailOtpSection.style.display = 'block';
-        if (passwordFields) passwordFields.style.display = 'none';
-        if (marketingConsent) marketingConsent.style.display = 'none';
-
-        if (otpSendStatus) otpSendStatus.textContent = '';
-        if (otpVerifyStatus) {
-          otpVerifyStatus.textContent = '';
-          otpVerifyStatus.className = 'small';
-        }
-        if (otpCodeInput) otpCodeInput.value = '';
-
-        ensureFlatpickr();
+      async function fetchProductsOnce() {
+        if (productsLoaded) return;
+        const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
+        availableProducts = Array.isArray(products) ? products : [];
+        productsLoaded = true;
       }
 
-      async function fetchProducts() {
-        try {
-          const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
-          availableProducts = products;
-        } catch (error) {
-          console.error("商品リスト取得失敗:", error);
-          throw error;
-        }
-      }
-
-      function normalizeOtpCode(raw) {
-        const s = (raw || '').toString().replace(/\D/g, '');
-        return s.slice(0, 6);
-      }
-
-      function setOtpButtonsState() {
-        if (!emailOtpSection || emailOtpSection.style.display === 'none') return;
-
-        const now = Date.now();
-        const cooldownActive = now < otpCooldownUntil;
-        const resendLock = now < otpResendAllowedAt;
-
-        if (otpSendBtn) otpSendBtn.disabled = otpSending || cooldownActive || resendLock || !emailInput.value.trim();
-        if (otpVerifyBtn) otpVerifyBtn.disabled = otpVerifying || cooldownActive || normalizeOtpCode(otpCodeInput.value).length !== 6;
-
-        if (!otpSendStatus) return;
-
-        if (cooldownActive) {
-          const sec = Math.ceil((otpCooldownUntil - now) / 1000);
-          otpSendStatus.textContent = 'しばらくお待ちください（' + sec + '秒）';
-          otpSendStatus.className = 'small text-danger';
-          return;
-        }
-
-        if (resendLock) {
-          const sec = Math.ceil((otpResendAllowedAt - now) / 1000);
-          otpSendStatus.textContent = '再送信まで ' + sec + '秒';
-          otpSendStatus.className = 'small text-muted';
-          return;
-        }
-
-        if (!emailInput.value.trim()) {
-          otpSendStatus.textContent = 'メールアドレスを入力してください。';
-          otpSendStatus.className = 'small text-muted';
-          return;
-        }
-
-        if (emailVerified) {
-          otpSendStatus.textContent = 'メール認証済み';
-          otpSendStatus.className = 'small text-success';
-          return;
-        }
-
-        otpSendStatus.textContent = '';
-        otpSendStatus.className = 'small text-muted';
-      }
-
-      function onEmailChangedResetOtp() {
-        if (isUserLoggedIn) return;
-        emailVerified = false;
-        emailVerificationToken = '';
-        otpFailCount = 0;
-        otpCooldownUntil = 0;
-        otpResendAllowedAt = 0;
-
-        if (otpVerifyStatus) {
-          otpVerifyStatus.textContent = '';
-          otpVerifyStatus.className = 'small';
-        }
-        if (otpCodeInput) otpCodeInput.value = '';
-        if (passwordFields) passwordFields.style.display = 'none';
-        if (marketingConsent) marketingConsent.style.display = 'none';
-
-        setOtpButtonsState();
-      }
-
-      async function sendOtp() {
-        clearMessage();
-
-        const email = emailInput.value.trim();
-        if (!email) {
-          showError('メールアドレスを入力してください。');
-          return;
-        }
-
-        const now = Date.now();
-        if (now < otpCooldownUntil || now < otpResendAllowedAt) {
-          setOtpButtonsState();
-          return;
-        }
-
-        otpSending = true;
-        setOtpButtonsState();
-        if (otpVerifyStatus) {
-          otpVerifyStatus.textContent = '';
-          otpVerifyStatus.className = 'small';
-        }
-
-        try {
-          await ADDEVA.apiFetch('/api/addeva/signup/email-otp/start', {
-            method: 'POST',
-            body: { email: email }
-          });
-
-          otpResendAllowedAt = Date.now() + OTP_RESEND_MIN_MS;
-          if (otpSendStatus) {
-            otpSendStatus.textContent = '確認コードを送信しました。メールをご確認ください。';
-            otpSendStatus.className = 'small text-success';
-          }
-          if (otpCodeInput) otpCodeInput.focus();
-
-        } catch (error) {
-          const msg = (error && error.message) ? error.message : '確認コードの送信に失敗しました。';
-          showError(msg);
-        } finally {
-          otpSending = false;
-          setOtpButtonsState();
-        }
-      }
-
-      async function verifyOtp() {
-        clearMessage();
-
-        const email = emailInput.value.trim();
-        const code = normalizeOtpCode(otpCodeInput.value);
-
-        if (!email) {
-          showError('メールアドレスを入力してください。');
-          return;
-        }
-        if (code.length !== 6) {
-          showError('6桁の確認コードを入力してください。');
-          return;
-        }
-
-        const now = Date.now();
-        if (now < otpCooldownUntil) {
-          setOtpButtonsState();
-          return;
-        }
-
-        otpVerifying = true;
-        setOtpButtonsState();
-
-        try {
-          const res = await ADDEVA.apiFetch('/api/addeva/signup/email-otp/confirm', {
-            method: 'POST',
-            body: { email: email, code: code }
-          });
-
-          const token = (res && (res.emailVerificationToken || res.email_verification_token || res.signup_token || res.token))
-            ? (res.emailVerificationToken || res.email_verification_token || res.signup_token || res.token)
-            : '';
-
-          if (!token) {
-            throw new Error('メール認証トークンが取得できませんでした。');
-          }
-
-          emailVerified = true;
-          emailVerificationToken = String(token);
-
-          if (otpVerifyStatus) {
-            otpVerifyStatus.textContent = 'メール認証が完了しました。続けてパスワードを設定してください。';
-            otpVerifyStatus.className = 'small text-success';
-          }
-
-          if (passwordFields) passwordFields.style.display = 'block';
-          if (marketingConsent) marketingConsent.style.display = 'block';
-
-        } catch (error) {
-          otpFailCount += 1;
-
-          if (otpFailCount >= OTP_MAX_FAILS) {
-            otpCooldownUntil = Date.now() + OTP_COOLDOWN_MS;
-            otpFailCount = 0;
-            if (otpVerifyStatus) {
-              otpVerifyStatus.textContent = '認証に失敗しました。しばらく時間をおいて再度お試しください。';
-              otpVerifyStatus.className = 'small text-danger';
-            }
-          } else {
-            if (otpVerifyStatus) {
-              otpVerifyStatus.textContent = 'コードが正しくありません。もう一度お試しください。';
-              otpVerifyStatus.className = 'small text-danger';
-            }
-          }
-
-          const msg = (error && error.message) ? error.message : '認証に失敗しました。';
-          console.warn('OTP verify failed:', msg);
-
-        } finally {
-          otpVerifying = false;
-          setOtpButtonsState();
-        }
-      }
-
-      function createProductEntry(index, initialData = {}) {
+      function createProductEntry(index) {
         const entryDiv = document.createElement('div');
-        entryDiv.className = `product-entry mb-3 p-3 border rounded ${index > 0 ? 'mt-2 bg-white' : 'bg-white'}`;
+        entryDiv.className = `product-entry mb-3 p-3 border rounded bg-white`;
         entryDiv.setAttribute('data-index', index);
 
         entryDiv.innerHTML = `
@@ -564,23 +430,22 @@
           </div>
           <div class="mb-0">
             <label for="productCode_${index}" class="form-label small mb-1">ご購入商品 <span class="text-danger">*</span></label>
-            <select class="form-select form-select-sm product-code-select" id="productCode_${index}" name="products[${index}][productCode]" required>
+            <select class="form-select form-select-sm product-code-select" id="productCode_${index}" required>
               <option value="">商品を選択してください</option>
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
           </div>
         `;
 
-        if (initialData.productCode) {
-          entryDiv.querySelector('.product-code-select').value = initialData.productCode;
-        }
-
         if (index > 0) {
-          entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => {
-            entryDiv.remove();
-          });
+          entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => entryDiv.remove());
         }
         productEntriesContainer.appendChild(entryDiv);
+      }
+
+      function ensureAtLeastOneProductEntry() {
+        const count = productEntriesContainer.querySelectorAll('.product-entry').length;
+        if (count === 0) createProductEntry(0);
       }
 
       function validatePasswords() {
@@ -588,25 +453,28 @@
         confirmPasswordInput.classList.remove('is-invalid');
         passwordMismatchFeedback.style.display = 'none';
 
-        if (passwordInput.value.length < 8) {
+        const pw = (passwordInput.value || "");
+        const cpw = (confirmPasswordInput.value || "");
+
+        if (pw.length < 8) {
           passwordInput.classList.add('is-invalid');
           passwordMismatchFeedback.textContent = 'パスワードは8文字以上で入力してください。';
           passwordMismatchFeedback.style.display = 'block';
           return false;
         }
 
-        if (passwordInput.value === confirmPasswordInput.value) {
-          return true;
+        if (pw !== cpw) {
+          confirmPasswordInput.classList.add('is-invalid');
+          passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
+          passwordMismatchFeedback.style.display = 'block';
+          return false;
         }
 
-        confirmPasswordInput.classList.add('is-invalid');
-        passwordMismatchFeedback.textContent = 'パスワードが一致しません。';
-        passwordMismatchFeedback.style.display = 'block';
-        return false;
+        return true;
       }
 
       function validateOrderNumber() {
-        const v = masterOrderNumberInput.value.trim();
+        const v = (masterOrderNumberInput.value || "").trim();
         masterOrderNumberInput.classList.remove('is-invalid', 'is-valid');
 
         if (!v) return false;
@@ -623,7 +491,7 @@
       }
 
       function validatePurchaseDate() {
-        const dateString = masterPurchaseDateInput.value.trim();
+        const dateString = (masterPurchaseDateInput.value || "").trim();
         masterPurchaseDateInput.classList.remove('is-invalid', 'is-valid');
 
         if (!dateString) return false;
@@ -652,13 +520,15 @@
       function collectProductsData() {
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
         const productsData = [];
+
         productEntries.forEach((entry) => {
-          const code = entry.querySelector('.product-code-select').value;
+          const sel = entry.querySelector('.product-code-select');
+          const code = sel ? sel.value : "";
           if (code) {
             productsData.push({
               productCode: code,
               purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
-              orderNumber: masterOrderNumberInput.value.trim(),
+              orderNumber: (masterOrderNumberInput.value || "").trim(),
               purchaseSite: "Amazon"
             });
           }
@@ -668,7 +538,6 @@
 
       function storeAuthTokenFromResult(result) {
         if (!result) return false;
-
         const token = result.access_token || result.token || result.jwt || '';
         if (!token || typeof token !== 'string') return false;
 
@@ -681,119 +550,98 @@
         }
       }
 
-      async function tryAutoLogin(email, password) {
-        if (!email || !password) return false;
-        const loginRes = await ADDEVA.apiFetch('/api/addeva/login', {
-          method: 'POST',
-          body: { email, password }
-        });
-        return storeAuthTokenFromResult(loginRes);
+      function clearSignupSessionStorage() {
+        try {
+          sessionStorage.removeItem(SS_SIGNUP_EMAIL);
+          sessionStorage.removeItem(SS_SIGNUP_TOKEN);
+        } catch(e) {}
+        signupToken = "";
       }
 
-      async function init() {
-        await fetchProducts();
-        await checkLoginStatusAndSetupUI();
-
-        for (let i = 0; i < 5; i++) {
-          createProductEntry(i);
-        }
-
-        masterOrderNumberInput.addEventListener('input', validateOrderNumber);
-        masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
-
-        addProductButton.addEventListener('click', () => {
-          const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
-          createProductEntry(nextIndex);
-        });
-
-        if (emailInput) {
-          emailInput.addEventListener('input', () => {
-            if (isUserLoggedIn) return;
-            setOtpButtonsState();
-          });
-          emailInput.addEventListener('change', onEmailChangedResetOtp);
-        }
-
-        if (otpCodeInput) {
-          otpCodeInput.addEventListener('input', () => {
-            otpCodeInput.value = normalizeOtpCode(otpCodeInput.value);
-            setOtpButtonsState();
-          });
-        }
-
-        if (otpSendBtn) otpSendBtn.addEventListener('click', sendOtp);
-        if (otpVerifyBtn) otpVerifyBtn.addEventListener('click', verifyOtp);
-
-        setOtpButtonsState();
-        setInterval(setOtpButtonsState, 500);
-
-        registrationForm.addEventListener('submit', onSubmit);
-      }
-
-      async function onSubmit(event) {
-        event.preventDefault();
-        clearMessage();
-
-        let ok = true;
-
-        if (!emailInput.value.trim()) ok = false;
-        if (!validateOrderNumber()) ok = false;
-        if (!validatePurchaseDate()) ok = false;
-
-        if (!isUserLoggedIn) {
-          if (!emailVerified || !emailVerificationToken) {
-            showError('まずメール認証を完了してください。確認コードを送信して、6桁コードで認証してください。');
-            return;
+      function loadSignupSessionStorageIfAny() {
+        try {
+          const e = sessionStorage.getItem(SS_SIGNUP_EMAIL) || "";
+          const t = sessionStorage.getItem(SS_SIGNUP_TOKEN) || "";
+          if (e && t && normalizeEmail(e).toLowerCase() === normalizeEmail(emailInput.value).toLowerCase()) {
+            signupToken = t;
+            return true;
           }
-          if (!validatePasswords()) ok = false;
-        }
+        } catch(e) {}
+        return false;
+      }
 
-        const productsData = collectProductsData();
-        if (productsData.length === 0) {
-          alert("商品を1つ以上選択してください。");
-          return;
-        }
+      async function enterAfterOtpStageIfNeeded() {
+        await fetchProductsOnce();
+        ensureFlatpickr();
+        ensureAtLeastOneProductEntry();
+      }
 
-        if (!ok) {
-          showError('入力内容に不備があります。赤枠の部分を確認してください。');
-          return;
-        }
+      async function checkLoginStatus() {
+        const authToken = localStorage.getItem(ADDEVA.LS.authToken);
 
-        const submissionData = {
-          email: emailInput.value.trim(),
-          ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : {
-            password: passwordInput.value,
-            emailVerificationToken: emailVerificationToken,
-            marketingOptInA: !!(marketingOptInA && marketingOptInA.checked),
-            marketingOptInB: !!(marketingOptInB && marketingOptInB.checked)
-          }),
-          masterOrderNumber: masterOrderNumberInput.value.trim(),
-          masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value.trim()),
-          products: productsData
-        };
+        if (!authToken) return false;
 
         try {
-          const result = await ADDEVA.apiFetch('/api/addeva/register', {
+          const userInfo = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET' });
+          isUserLoggedIn = true;
+          loggedInCustomerId = userInfo.customer_id;
+          loggedInEmail = userInfo.email;
+
+          pageTitle.textContent = '商品情報追加・登録';
+          pageLead.textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
+
+          emailInput.value = loggedInEmail;
+          setEmailReadonly(true);
+
+          customerIdInput.value = loggedInCustomerId;
+          customerIdHelp.textContent = 'お客様IDは変更できません。';
+
+          setOtpUiState("loggedin");
+          await enterAfterOtpStageIfNeeded();
+          return true;
+
+        } catch (e) {
+          console.warn("ログイン状態の取得失敗:", e);
+          localStorage.removeItem(ADDEVA.LS.authToken);
+          return false;
+        }
+      }
+
+      async function onSendOtp() {
+        clearMessage();
+
+        const email = normalizeEmail(emailInput.value);
+        if (!email) {
+          showError("メールアドレスを入力してください。");
+          return;
+        }
+
+        clearSignupSessionStorage();
+        setOtpUiState("init");
+
+        try {
+          const res = await ADDEVA.apiFetch('/api/addeva/signup/email-otp/start', {
             method: 'POST',
-            body: submissionData
+            body: { email }
           });
 
-          const stored = storeAuthTokenFromResult(result);
+          showSuccess("確認コードを送信しました。メールをご確認ください。");
+          setOtpUiState("sent");
+          otpCodeInput.value = "";
+          otpCodeInput.focus();
 
-          if (!stored && !isUserLoggedIn) {
-            const loggedIn = await tryAutoLogin(emailInput.value.trim(), passwordInput.value);
-            if (!loggedIn) {
-              window.location.href = `/customer.html?mode=login&registered=true`;
-              return;
-            }
+          startSendCooldown(60);
+
+        } catch (e) {
+          const msg = (e && e.message) ? e.message : "確認コードの送信に失敗しました。";
+
+          if (msg.includes("404")) {
+            showError("APIが見つかりません（404）。サーバー側で /api/addeva/signup/email-otp/start が有効か、/api/openapi.json で email-otp を検索して確認してください。");
+            return;
           }
 
-          window.location.href = `/customer.html?mode=support&registered=true`;
-        } catch (error) {
-          const msg = (error && error.message) ? error.message : '登録処理でエラーが発生しました。';
-
-          if (msg.includes('既に登録されています')) {
-            showError('このメールアドレスは既に登録されています。<a href="/customer.html?mode=login" class="alert-link">こちらからログイン</a>して商品を追加してください。', true);
+          if (msg.includes("既に登録済み")) {
+            showError('このメールアドレスは既に登録済みです。<a href="/customer.html?mode=login" class="alert-link">こちらからログイン</a>してください。', true);
             return;
           }
 
@@ -801,15 +649,197 @@
         }
       }
 
+      async function onConfirmOtp() {
+        clearMessage();
+
+        const email = normalizeEmail(emailInput.value);
+        const code = (otpCodeInput.value || "").trim();
+
+        if (!email) {
+          showError("メールアドレスを入力してください。");
+          return;
+        }
+        if (!/^\d{6}$/.test(code)) {
+          showError("確認コード（6桁）を入力してください。");
+          return;
+        }
+
+        try {
+          const res = await ADDEVA.apiFetch('/api/addeva/signup/email-otp/confirm', {
+            method: 'POST',
+            body: { email, code }
+          });
+
+          signupToken = res.signup_token || "";
+          if (!signupToken) {
+            showError("認証は完了しましたが、登録トークンの取得に失敗しました。最初からやり直してください。");
+            setOtpUiState("init");
+            return;
+          }
+
+          try {
+            sessionStorage.setItem(SS_SIGNUP_EMAIL, email);
+            sessionStorage.setItem(SS_SIGNUP_TOKEN, signupToken);
+          } catch(e) {}
+
+          showSuccess("メール確認が完了しました。続けて登録情報を入力してください。");
+          setOtpUiState("verified");
+          await enterAfterOtpStageIfNeeded();
+
+          customerIdInput.value = '＜新規＞';
+          customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
+
+          passwordInput.focus();
+
+        } catch (e) {
+          const msg = (e && e.message) ? e.message : "確認処理に失敗しました。";
+          showError(msg);
+        }
+      }
+
+      async function completeSignupIfNeeded() {
+        if (isUserLoggedIn) return { customer_id: loggedInCustomerId, email: loggedInEmail };
+
+        const email = normalizeEmail(emailInput.value);
+        if (!email) throw new Error("メールアドレスを入力してください。");
+
+        if (otpState !== "verified") {
+          throw new Error("メール確認が完了していません。確認コードの送信と入力を行ってください。");
+        }
+
+        if (!signupToken) {
+          loadSignupSessionStorageIfAny();
+        }
+        if (!signupToken) {
+          throw new Error("登録セッションが見つかりません。最初からやり直してください。");
+        }
+
+        if (!validatePasswords()) {
+          throw new Error("パスワードを確認してください。");
+        }
+
+        const res = await ADDEVA.apiFetch('/api/addeva/signup/email-otp/complete', {
+          method: 'POST',
+          body: {
+            email,
+            signup_token: signupToken,
+            password: passwordInput.value,
+            marketing_updates_optin: !!optinUpdates.checked,
+            marketing_sales_optin: !!optinSales.checked,
+            milestone_notify_optin: !!optinMilestone.checked
+          }
+        });
+
+        const stored = storeAuthTokenFromResult(res);
+        if (!stored) {
+          throw new Error("認証トークンの保存に失敗しました。ブラウザ設定をご確認ください。");
+        }
+
+        isUserLoggedIn = true;
+        loggedInCustomerId = res.customer_id;
+        loggedInEmail = res.email;
+
+        clearSignupSessionStorage();
+
+        setOtpUiState("loggedin");
+        await enterAfterOtpStageIfNeeded();
+
+        return { customer_id: loggedInCustomerId, email: loggedInEmail };
+      }
+
+      async function submitPurchaseRegistration(customerId) {
+        const ok1 = validateOrderNumber();
+        const ok2 = validatePurchaseDate();
+        if (!ok1 || !ok2) {
+          throw new Error("入力内容に不備があります。赤枠の部分を確認してください。");
+        }
+
+        const productsData = collectProductsData();
+        if (productsData.length === 0) {
+          throw new Error("商品を1つ以上選択してください。");
+        }
+
+        const submissionData = {
+          email: normalizeEmail(emailInput.value),
+          customerId: customerId,
+          masterOrderNumber: (masterOrderNumberInput.value || "").trim(),
+          masterPurchaseDate: formatJapaneseDateToISO((masterPurchaseDateInput.value || "").trim()),
+          products: productsData
+        };
+
+        await ADDEVA.apiFetch('/api/addeva/register', {
+          method: 'POST',
+          body: submissionData
+        });
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearMessage();
+
+        try {
+          const signup = await completeSignupIfNeeded();
+          await submitPurchaseRegistration(signup.customer_id);
+
+          window.location.href = `/customer.html?mode=support&registered=true`;
+
+        } catch (e) {
+          const msg = (e && e.message) ? e.message : "登録処理でエラーが発生しました。";
+          showError(msg);
+        }
+      }
+
+      async function init() {
+        registrationForm.addEventListener('submit', onSubmit);
+        sendOtpButton.addEventListener('click', onSendOtp);
+        confirmOtpButton.addEventListener('click', onConfirmOtp);
+
+        otpCodeInput.addEventListener('keydown', (ev) => {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
+            onConfirmOtp();
+          }
+        });
+
+        addProductButton.addEventListener('click', () => {
+          const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
+          createProductEntry(nextIndex);
+        });
+
+        masterOrderNumberInput.addEventListener('input', validateOrderNumber);
+        masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
+
+        const loggedIn = await checkLoginStatus();
+        if (loggedIn) return;
+
+        pageTitle.textContent = '新規登録（メール確認）';
+        pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
+
+        customerIdInput.value = '＜新規＞';
+        customerIdHelp.textContent = 'お客様IDは登録後に自動発行されます。';
+
+        setOtpUiState("init");
+
+        // もしリロード等でトークンが残っていたら、メール一致時のみ復元
+        const ssEmail = (sessionStorage.getItem(SS_SIGNUP_EMAIL) || "");
+        const ssToken = (sessionStorage.getItem(SS_SIGNUP_TOKEN) || "");
+        if (ssEmail && ssToken) {
+          emailInput.value = ssEmail;
+          signupToken = ssToken;
+          setOtpUiState("verified");
+          await enterAfterOtpStageIfNeeded();
+        }
+      }
+
       try {
         await init();
-      } catch (error) {
-        showError(`初期化エラー: ${error.message}`);
+      } catch (e) {
+        showError(`初期化エラー: ${(e && e.message) ? e.message : e}`);
       }
     });
   </script>
 
-  <!-- ▼ includeエンジン（将来の不具合予防：data-include と include-html 両対応） -->
+  <!-- ▼ includeエンジン（data-include と include-html 両対応） -->
   <script>
     (async () => {
       try {
