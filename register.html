@@ -31,7 +31,6 @@
 
 <body>
   <!-- ▼ 共通ヘッダーを読み込み -->
-  <!-- 修正: include-html ではなく data-include に統一 -->
   <div data-include="/includes/header.html" aria-busy="true"></div>
 
   <main>
@@ -66,8 +65,29 @@
               <div class="form-text">ご登録いただいたメールアドレスは、保証に関するご連絡にのみ利用いたします。</div>
             </div>
 
-            <!-- パスワード入力欄 (新規登録時のみ表示) -->
-            <div id="passwordFields" class="mb-4">
+            <!-- メール認証（新規登録時のみ） -->
+            <div id="emailOtpSection" class="mb-4" style="display:none;">
+              <label class="form-label">メール認証 <span class="text-danger">*</span></label>
+              <div class="border rounded p-3 bg-light">
+                <div class="mb-2 text-muted small">
+                  最初に確認コードをメールで送信します。届いた6桁コードを入力して認証してください。
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap align-items-center mb-2">
+                  <button type="button" id="otpSendBtn" class="btn btn-outline-primary btn-sm">確認コードを送信</button>
+                  <span id="otpSendStatus" class="small text-muted"></span>
+                </div>
+
+                <div class="input-group input-group-sm mb-2" style="max-width: 360px;">
+                  <input type="text" class="form-control" id="otpCode" inputmode="numeric" autocomplete="one-time-code" placeholder="6桁コード" maxlength="6">
+                  <button type="button" id="otpVerifyBtn" class="btn btn-outline-success">認証する</button>
+                </div>
+                <div id="otpVerifyStatus" class="small"></div>
+              </div>
+            </div>
+
+            <!-- パスワード入力欄 (新規登録時のみ表示：メール認証後に表示) -->
+            <div id="passwordFields" class="mb-4" style="display:none;">
               <label for="password" class="form-label">パスワード <span class="text-danger">*</span></label>
               <input type="password" class="form-control mb-2" id="password" name="password" required minlength="8" placeholder="パスワード（8文字以上）">
               <label for="confirmPassword" class="form-label">パスワード確認 <span class="text-danger">*</span></label>
@@ -76,6 +96,22 @@
                 パスワードが一致しません。
               </div>
               <div class="form-text">半角英数字と記号を組み合わせた8文字以上で設定してください。</div>
+            </div>
+
+            <!-- メール配信の同意（任意・新規登録時のみ：メール認証後に表示） -->
+            <div id="marketingConsent" class="mb-4" style="display:none;">
+              <label class="form-label">メール送信の同意（任意）</label>
+              <div class="border rounded p-3">
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="marketingOptInA">
+                  <label class="form-check-label" for="marketingOptInA">お使いの製品に関連するアップデート情報（リコール情報含）を受け取る</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="marketingOptInB">
+                  <label class="form-check-label" for="marketingOptInB">互換オプション、交換部品の新発売や新商品、セール情報を受け取る</label>
+                </div>
+                <div class="form-text">初期設定はOFFです。いつでも配信停止できます。</div>
+              </div>
             </div>
 
             <hr class="my-4">
@@ -111,7 +147,7 @@
               <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
               <!-- ここに動的な商品入力ブロックが追加されます -->
             </div>
-            
+
             <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4">
               <i class="bi bi-plus-circle me-2"></i>別の商品を追加する
             </button>
@@ -127,7 +163,6 @@
   </main>
 
   <!-- ▼ 共通フッターを読み込み -->
-  <!-- 修正: include-html ではなく data-include に統一 -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -136,7 +171,7 @@
   <!-- Flatpickr の JavaScript を追加 -->
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-  
+
   <script>
     function waitForADDEVA(callback) {
       if (typeof ADDEVA !== 'undefined' && typeof ADDEVA.apiFetch === 'function' && typeof flatpickr !== 'undefined') {
@@ -163,6 +198,17 @@
       const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
       const passwordFields = document.getElementById('passwordFields');
 
+      const emailOtpSection = document.getElementById('emailOtpSection');
+      const otpSendBtn = document.getElementById('otpSendBtn');
+      const otpSendStatus = document.getElementById('otpSendStatus');
+      const otpCodeInput = document.getElementById('otpCode');
+      const otpVerifyBtn = document.getElementById('otpVerifyBtn');
+      const otpVerifyStatus = document.getElementById('otpVerifyStatus');
+
+      const marketingConsent = document.getElementById('marketingConsent');
+      const marketingOptInA = document.getElementById('marketingOptInA');
+      const marketingOptInB = document.getElementById('marketingOptInB');
+
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
       const masterPurchaseDateInput = document.getElementById('masterPurchaseDate');
@@ -175,6 +221,18 @@
       let isUserLoggedIn = false;
       let loggedInCustomerId = null;
       let loggedInEmail = '';
+
+      // --- 新規登録のメール認証（6桁コード） ---
+      let emailVerified = false;
+      let emailVerificationToken = '';
+      let otpSending = false;
+      let otpVerifying = false;
+      let otpCooldownUntil = 0; // ms
+      let otpFailCount = 0;
+      const OTP_MAX_FAILS = 3;
+      const OTP_COOLDOWN_MS = 10 * 60 * 1000; // 10分
+      const OTP_RESEND_MIN_MS = 30 * 1000; // 30秒
+      let otpResendAllowedAt = 0; // ms
 
       let fpInstance = null;
 
@@ -197,10 +255,13 @@
 
       function formatJapaneseDateToISO(japaneseDateString) {
         if (!japaneseDateString || !JAPANESE_DATE_PATTERN.test(japaneseDateString)) return null;
-        const [year, month, day] = japaneseDateString.split('/');
+        const parts = japaneseDateString.split('/');
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
         const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
         if (isNaN(dateObj.getTime()) || dateObj.getFullYear() != parseInt(year)) return null;
-        return `${year}-${String(parseInt(month)).padStart(2, '0')}-${String(parseInt(day)).padStart(2, '0')}`;
+        return year + '-' + String(parseInt(month)).padStart(2, '0') + '-' + String(parseInt(day)).padStart(2, '0');
       }
 
       function ensureFlatpickr() {
@@ -240,7 +301,18 @@
             emailInput.readOnly = true;
             emailInput.classList.add('form-control-plaintext');
 
-            passwordFields.style.display = 'none';
+            // ログイン済みではメール認証不要
+            emailVerified = true;
+            emailVerificationToken = '';
+            otpFailCount = 0;
+            otpCooldownUntil = 0;
+            otpResendAllowedAt = 0;
+
+            if (emailOtpSection) emailOtpSection.style.display = 'none';
+            if (marketingConsent) marketingConsent.style.display = 'none';
+
+            // 追加登録ではパスワード不要
+            if (passwordFields) passwordFields.style.display = 'none';
 
             ensureFlatpickr();
             return;
@@ -264,7 +336,23 @@
         emailInput.readOnly = false;
         emailInput.classList.remove('form-control-plaintext');
 
-        passwordFields.style.display = 'block';
+        // 新規登録は「メール認証→パスワード設定→送信」
+        emailVerified = false;
+        emailVerificationToken = '';
+        otpFailCount = 0;
+        otpCooldownUntil = 0;
+        otpResendAllowedAt = 0;
+
+        if (emailOtpSection) emailOtpSection.style.display = 'block';
+        if (passwordFields) passwordFields.style.display = 'none';
+        if (marketingConsent) marketingConsent.style.display = 'none';
+
+        if (otpSendStatus) otpSendStatus.textContent = '';
+        if (otpVerifyStatus) {
+          otpVerifyStatus.textContent = '';
+          otpVerifyStatus.className = 'small';
+        }
+        if (otpCodeInput) otpCodeInput.value = '';
 
         ensureFlatpickr();
       }
@@ -276,6 +364,191 @@
         } catch (error) {
           console.error("商品リスト取得失敗:", error);
           throw error;
+        }
+      }
+
+      function normalizeOtpCode(raw) {
+        const s = (raw || '').toString().replace(/\D/g, '');
+        return s.slice(0, 6);
+      }
+
+      function setOtpButtonsState() {
+        if (!emailOtpSection || emailOtpSection.style.display === 'none') return;
+
+        const now = Date.now();
+        const cooldownActive = now < otpCooldownUntil;
+        const resendLock = now < otpResendAllowedAt;
+
+        if (otpSendBtn) otpSendBtn.disabled = otpSending || cooldownActive || resendLock || !emailInput.value.trim();
+        if (otpVerifyBtn) otpVerifyBtn.disabled = otpVerifying || cooldownActive || normalizeOtpCode(otpCodeInput.value).length !== 6;
+
+        if (!otpSendStatus) return;
+
+        if (cooldownActive) {
+          const sec = Math.ceil((otpCooldownUntil - now) / 1000);
+          otpSendStatus.textContent = 'しばらくお待ちください（' + sec + '秒）';
+          otpSendStatus.className = 'small text-danger';
+          return;
+        }
+
+        if (resendLock) {
+          const sec = Math.ceil((otpResendAllowedAt - now) / 1000);
+          otpSendStatus.textContent = '再送信まで ' + sec + '秒';
+          otpSendStatus.className = 'small text-muted';
+          return;
+        }
+
+        if (!emailInput.value.trim()) {
+          otpSendStatus.textContent = 'メールアドレスを入力してください。';
+          otpSendStatus.className = 'small text-muted';
+          return;
+        }
+
+        if (emailVerified) {
+          otpSendStatus.textContent = 'メール認証済み';
+          otpSendStatus.className = 'small text-success';
+          return;
+        }
+
+        otpSendStatus.textContent = '';
+        otpSendStatus.className = 'small text-muted';
+      }
+
+      function onEmailChangedResetOtp() {
+        if (isUserLoggedIn) return;
+        emailVerified = false;
+        emailVerificationToken = '';
+        otpFailCount = 0;
+        otpCooldownUntil = 0;
+        otpResendAllowedAt = 0;
+
+        if (otpVerifyStatus) {
+          otpVerifyStatus.textContent = '';
+          otpVerifyStatus.className = 'small';
+        }
+        if (otpCodeInput) otpCodeInput.value = '';
+        if (passwordFields) passwordFields.style.display = 'none';
+        if (marketingConsent) marketingConsent.style.display = 'none';
+
+        setOtpButtonsState();
+      }
+
+      async function sendOtp() {
+        clearMessage();
+
+        const email = emailInput.value.trim();
+        if (!email) {
+          showError('メールアドレスを入力してください。');
+          return;
+        }
+
+        const now = Date.now();
+        if (now < otpCooldownUntil || now < otpResendAllowedAt) {
+          setOtpButtonsState();
+          return;
+        }
+
+        otpSending = true;
+        setOtpButtonsState();
+        if (otpVerifyStatus) {
+          otpVerifyStatus.textContent = '';
+          otpVerifyStatus.className = 'small';
+        }
+
+        try {
+          await ADDEVA.apiFetch('/api/addeva/signup/email-otp/start', {
+            method: 'POST',
+            body: { email: email }
+          });
+
+          otpResendAllowedAt = Date.now() + OTP_RESEND_MIN_MS;
+          if (otpSendStatus) {
+            otpSendStatus.textContent = '確認コードを送信しました。メールをご確認ください。';
+            otpSendStatus.className = 'small text-success';
+          }
+          if (otpCodeInput) otpCodeInput.focus();
+
+        } catch (error) {
+          const msg = (error && error.message) ? error.message : '確認コードの送信に失敗しました。';
+          showError(msg);
+        } finally {
+          otpSending = false;
+          setOtpButtonsState();
+        }
+      }
+
+      async function verifyOtp() {
+        clearMessage();
+
+        const email = emailInput.value.trim();
+        const code = normalizeOtpCode(otpCodeInput.value);
+
+        if (!email) {
+          showError('メールアドレスを入力してください。');
+          return;
+        }
+        if (code.length !== 6) {
+          showError('6桁の確認コードを入力してください。');
+          return;
+        }
+
+        const now = Date.now();
+        if (now < otpCooldownUntil) {
+          setOtpButtonsState();
+          return;
+        }
+
+        otpVerifying = true;
+        setOtpButtonsState();
+
+        try {
+          const res = await ADDEVA.apiFetch('/api/addeva/signup/email-otp/confirm', {
+            method: 'POST',
+            body: { email: email, code: code }
+          });
+
+          const token = (res && (res.emailVerificationToken || res.email_verification_token || res.signup_token || res.token))
+            ? (res.emailVerificationToken || res.email_verification_token || res.signup_token || res.token)
+            : '';
+
+          if (!token) {
+            throw new Error('メール認証トークンが取得できませんでした。');
+          }
+
+          emailVerified = true;
+          emailVerificationToken = String(token);
+
+          if (otpVerifyStatus) {
+            otpVerifyStatus.textContent = 'メール認証が完了しました。続けてパスワードを設定してください。';
+            otpVerifyStatus.className = 'small text-success';
+          }
+
+          if (passwordFields) passwordFields.style.display = 'block';
+          if (marketingConsent) marketingConsent.style.display = 'block';
+
+        } catch (error) {
+          otpFailCount += 1;
+
+          if (otpFailCount >= OTP_MAX_FAILS) {
+            otpCooldownUntil = Date.now() + OTP_COOLDOWN_MS;
+            otpFailCount = 0;
+            if (otpVerifyStatus) {
+              otpVerifyStatus.textContent = '認証に失敗しました。しばらく時間をおいて再度お試しください。';
+              otpVerifyStatus.className = 'small text-danger';
+            }
+          } else {
+            if (otpVerifyStatus) {
+              otpVerifyStatus.textContent = 'コードが正しくありません。もう一度お試しください。';
+              otpVerifyStatus.className = 'small text-danger';
+            }
+          }
+
+          const msg = (error && error.message) ? error.message : '認証に失敗しました。';
+          console.warn('OTP verify failed:', msg);
+
+        } finally {
+          otpVerifying = false;
+          setOtpButtonsState();
         }
       }
 
@@ -433,6 +706,27 @@
           createProductEntry(nextIndex);
         });
 
+        if (emailInput) {
+          emailInput.addEventListener('input', () => {
+            if (isUserLoggedIn) return;
+            setOtpButtonsState();
+          });
+          emailInput.addEventListener('change', onEmailChangedResetOtp);
+        }
+
+        if (otpCodeInput) {
+          otpCodeInput.addEventListener('input', () => {
+            otpCodeInput.value = normalizeOtpCode(otpCodeInput.value);
+            setOtpButtonsState();
+          });
+        }
+
+        if (otpSendBtn) otpSendBtn.addEventListener('click', sendOtp);
+        if (otpVerifyBtn) otpVerifyBtn.addEventListener('click', verifyOtp);
+
+        setOtpButtonsState();
+        setInterval(setOtpButtonsState, 500);
+
         registrationForm.addEventListener('submit', onSubmit);
       }
 
@@ -447,6 +741,10 @@
         if (!validatePurchaseDate()) ok = false;
 
         if (!isUserLoggedIn) {
+          if (!emailVerified || !emailVerificationToken) {
+            showError('まずメール認証を完了してください。確認コードを送信して、6桁コードで認証してください。');
+            return;
+          }
           if (!validatePasswords()) ok = false;
         }
 
@@ -463,7 +761,12 @@
 
         const submissionData = {
           email: emailInput.value.trim(),
-          ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : { password: passwordInput.value }),
+          ...(isUserLoggedIn ? { customerId: loggedInCustomerId } : {
+            password: passwordInput.value,
+            emailVerificationToken: emailVerificationToken,
+            marketingOptInA: !!(marketingOptInA && marketingOptInA.checked),
+            marketingOptInB: !!(marketingOptInB && marketingOptInB.checked)
+          }),
           masterOrderNumber: masterOrderNumberInput.value.trim(),
           masterPurchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value.trim()),
           products: productsData
