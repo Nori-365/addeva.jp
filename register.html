@@ -118,30 +118,6 @@
                 <div class="form-text">半角英数字と記号を組み合わせた8文字以上で設定してください。</div>
               </div>
 
-              <!-- 同意（新規登録時のみ有効） -->
-              <div class="mb-4" id="optinFields">
-                <label class="form-label">メール配信の同意（任意）</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="optinUpdates">
-                  <label class="form-check-label" for="optinUpdates">
-                    お使いの製品に関連するアップデート情報（リコール情報含）を受け取る
-                  </label>
-                </div>
-                <div class="form-check mt-2">
-                  <input class="form-check-input" type="checkbox" id="optinSales">
-                  <label class="form-check-label" for="optinSales">
-                    互換オプション、交換部品の新発売や新商品、セール情報を受け取る
-                  </label>
-                </div>
-                <div class="form-check mt-2">
-                  <input class="form-check-input" type="checkbox" id="optinMilestone">
-                  <label class="form-check-label" for="optinMilestone">
-                    自分の投稿が一定の賛成を獲得したとき、メールで通知を受け取る
-                  </label>
-                </div>
-                <div class="form-text">既定はOFFです。必要なものだけチェックしてください。</div>
-              </div>
-
               <hr class="my-4">
 
               <!-- 注文番号 -->
@@ -175,9 +151,22 @@
                 <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
               </div>
 
-              <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4">
-                <i class="bi bi-plus-circle me-2"></i>別の商品を追加する
-              </button>
+              <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4"><i class="bi bi-plus-circle me-1"></i>別の商品を追加する</button>
+
+              <!-- 同意（新規登録時のみ有効） -->
+              <div class="mb-4" id="optinFields">
+                <label class="form-label">メール配信の同意（任意）</label>
+                <div class="form-text mb-2">
+                  ※安全上重要なお知らせ（リコール、重大な不具合、保証に関わる連絡等）は、配信設定にかかわらず登録メール宛に送付されます。
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="optinSales">
+                  <label class="form-check-label" for="optinSales">
+                    使用中製品の互換オプションや交換部品の新発売、セール情報を受け取る。
+                  </label>
+                </div>
+                <div class="form-text mt-2">※弊社のメール配信は、配信頻度が少なく、お客さまがご使用されている製品に関連するお知らせのみを選んで配信しています。</div>
+              </div>
 
               <button type="submit" class="btn btn-primary btn-lg w-100" id="submitButton">保証を登録する</button>
             </div>
@@ -248,9 +237,8 @@
       const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
 
       const optinFields = document.getElementById('optinFields');
-      const optinUpdates = document.getElementById('optinUpdates');
+
       const optinSales = document.getElementById('optinSales');
-      const optinMilestone = document.getElementById('optinMilestone');
 
       const masterOrderNumberInput = document.getElementById('masterOrderNumber');
       const masterOrderNumberFeedback = document.getElementById('masterOrderNumberFeedback');
@@ -437,15 +425,70 @@
           </div>
         `;
 
-        if (index > 0) {
-          entryDiv.querySelector('.remove-product-btn').addEventListener('click', () => entryDiv.remove());
+        const sel = entryDiv.querySelector('.product-code-select');
+        if (sel) {
+          sel.addEventListener('change', () => {
+            sel.classList.remove('is-invalid');
+            // 1つでも選択されていれば、全セレクトの赤枠を解除
+            if (hasAtLeastOneProductSelected()) {
+              productEntriesContainer.querySelectorAll('.product-code-select').forEach(s => s.classList.remove('is-invalid'));
+            }
+          });
         }
+
+        if (index > 0) {
+          const btn = entryDiv.querySelector('.remove-product-btn');
+          if (btn) {
+            btn.addEventListener('click', () => {
+              entryDiv.remove();
+              updateProductEntryDisplayNumbers();
+              ensureAtLeastOneProductEntry();
+            });
+          }
+        }
+
         productEntriesContainer.appendChild(entryDiv);
+        updateProductEntryDisplayNumbers();
+      }
+
+      function updateProductEntryDisplayNumbers() {
+        const entries = productEntriesContainer.querySelectorAll('.product-entry');
+        entries.forEach((entry, pos) => {
+          const h = entry.querySelector('h6');
+          if (h) h.textContent = `商品 ${pos + 1}`;
+        });
+      }
+
+      function getNextProductIndex() {
+        let max = -1;
+        productEntriesContainer.querySelectorAll('.product-entry').forEach((entry) => {
+          const v = parseInt(entry.getAttribute('data-index'), 10);
+          if (!isNaN(v) && v > max) max = v;
+        });
+        return max + 1;
+      }
+
+      function hasAtLeastOneProductSelected() {
+        const selects = productEntriesContainer.querySelectorAll('.product-code-select');
+        for (const s of selects) {
+          if (s && s.value) return true;
+        }
+        return false;
       }
 
       function ensureAtLeastOneProductEntry() {
         const count = productEntriesContainer.querySelectorAll('.product-entry').length;
         if (count === 0) createProductEntry(0);
+      }
+
+      function ensureInitialProductEntries() {
+        const count = productEntriesContainer.querySelectorAll('.product-entry').length;
+        if (count === 0) {
+          for (let i = 0; i < 5; i++) {
+            createProductEntry(i);
+          }
+        }
+        updateProductEntryDisplayNumbers();
       }
 
       function validatePasswords() {
@@ -573,7 +616,7 @@
       async function enterAfterOtpStageIfNeeded() {
         await fetchProductsOnce();
         ensureFlatpickr();
-        ensureAtLeastOneProductEntry();
+        ensureInitialProductEntries();
       }
 
       async function checkLoginStatus() {
@@ -724,9 +767,9 @@
             email,
             signup_token: signupToken,
             password: passwordInput.value,
-            marketing_updates_optin: !!optinUpdates.checked,
+            marketing_updates_optin: true,
             marketing_sales_optin: !!optinSales.checked,
-            milestone_notify_optin: !!optinMilestone.checked
+            milestone_notify_optin: false
           }
         });
 
@@ -756,6 +799,8 @@
 
         const productsData = collectProductsData();
         if (productsData.length === 0) {
+          // 1つも選択されていない場合のみエラー（空欄行があるのはOK）
+          productEntriesContainer.querySelectorAll('.product-code-select').forEach(s => s.classList.add('is-invalid'));
           throw new Error("商品を1つ以上選択してください。");
         }
 
@@ -802,7 +847,7 @@
         });
 
         addProductButton.addEventListener('click', () => {
-          const nextIndex = productEntriesContainer.querySelectorAll('.product-entry').length;
+          const nextIndex = getNextProductIndex();
           createProductEntry(nextIndex);
         });
 
