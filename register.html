@@ -228,6 +228,10 @@
       const SS_SIGNUP_EMAIL = "addeva.signup.email";
       const SS_SIGNUP_TOKEN = "addeva.signup.token";
 
+      // 「上記リストに無い商品」
+      const OTHER_PRODUCT_CODE = "99999999";
+      const OTHER_PRODUCT_MAX_LEN = 255;
+
       const registrationForm = document.getElementById('registrationForm');
       const messageArea = document.getElementById('messageArea');
 
@@ -471,14 +475,24 @@
           sendOtpHint.textContent = "連続送信を防ぐため、少し時間をおいてください。";
         }, 1000);
       }
-
       async function fetchProductsOnce() {
         if (productsLoaded) return;
         const products = await ADDEVA.apiFetch('/api/addeva/products', { method: 'POST', body: {} });
         availableProducts = Array.isArray(products) ? products : [];
+
+        // 念のため、「上記リストに無い商品」が無ければ末尾に追加（DB登録忘れでもUIが止まらない）
+        const hasOther = availableProducts.some(p => String(p.product_code) === OTHER_PRODUCT_CODE);
+        if (!hasOther) {
+          availableProducts.push({ product_code: OTHER_PRODUCT_CODE, product_name: '上記リストに無い商品' });
+        }
+
+        // 表示順：その他は末尾に固定
+        const normal = availableProducts.filter(p => String(p.product_code) !== OTHER_PRODUCT_CODE);
+        const other = availableProducts.filter(p => String(p.product_code) === OTHER_PRODUCT_CODE);
+        availableProducts = normal.concat(other);
+
         productsLoaded = true;
       }
-
       function createProductEntry(index) {
         const entryDiv = document.createElement('div');
         entryDiv.className = `product-entry mb-3 p-3 border rounded bg-white`;
@@ -495,18 +509,61 @@
               ${availableProducts.map(p => `<option value="${p.product_code}">${p.product_name}</option>`).join('')}
             </select>
           </div>
+
+          <!-- 上記リストに無い商品の場合のみ表示 -->
+          <div class="mt-2 d-none other-product-name-block">
+            <label class="form-label small mb-1">商品名（上記リストに無い商品の場合） <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-sm other-product-name-input" placeholder="商品名をご入力ください" maxlength="${OTHER_PRODUCT_MAX_LEN}" disabled>
+            <div class="invalid-feedback">商品名を入力してください。</div>
+            <div class="form-text">例：UrbanFlex（旧モデル名）、付属品、限定セットなど</div>
+          </div>
         `;
 
         const sel = entryDiv.querySelector('.product-code-select');
+        const otherBlock = entryDiv.querySelector('.other-product-name-block');
+        const otherInput = entryDiv.querySelector('.other-product-name-input');
+
+        function syncOtherProductUi() {
+          const code = sel ? String(sel.value || '') : '';
+          if (!otherBlock || !otherInput) return;
+
+          if (code === OTHER_PRODUCT_CODE) {
+            otherBlock.classList.remove('d-none');
+            otherInput.disabled = false;
+            // 既に入力があればそのまま
+            setTimeout(() => {
+              try { otherInput.focus(); } catch (e) {}
+            }, 0);
+          } else {
+            otherInput.value = '';
+            otherInput.classList.remove('is-invalid');
+            otherInput.disabled = true;
+            otherBlock.classList.add('d-none');
+          }
+        }
+
         if (sel) {
           sel.addEventListener('change', () => {
             sel.classList.remove('is-invalid');
+
             // 1つでも選択されていれば、全セレクトの赤枠を解除
             if (hasAtLeastOneProductSelected()) {
               productEntriesContainer.querySelectorAll('.product-code-select').forEach(s => s.classList.remove('is-invalid'));
             }
+
+            // 「上記リストに無い商品」入力欄の表示切替
+            syncOtherProductUi();
           });
         }
+
+        if (otherInput) {
+          otherInput.addEventListener('input', () => {
+            otherInput.classList.remove('is-invalid');
+          });
+        }
+
+        // 初期状態
+        syncOtherProductUi();
 
         if (index > 0) {
           const btn = entryDiv.querySelector('.remove-product-btn');
@@ -610,7 +667,6 @@
         masterOrderNumberFeedback.style.display = 'block';
         return false;
       }
-
       function validatePurchaseDate() {
         const dateString = (masterPurchaseDateInput.value || "").trim();
         masterPurchaseDateInput.classList.remove('is-invalid', 'is-valid');
@@ -638,22 +694,60 @@
         return true;
       }
 
+      function validateOtherProductNames() {
+        let ok = true;
+
+        productEntriesContainer.querySelectorAll('.product-entry').forEach((entry) => {
+          const sel = entry.querySelector('.product-code-select');
+          const code = sel ? String(sel.value || '') : '';
+
+          const otherBlock = entry.querySelector('.other-product-name-block');
+          const otherInput = entry.querySelector('.other-product-name-input');
+
+          if (!otherInput || !otherBlock) return;
+
+          if (code === OTHER_PRODUCT_CODE) {
+            const name = (otherInput.value || '').trim();
+            if (!name) {
+              ok = false;
+              otherBlock.classList.remove('d-none');
+              otherInput.disabled = false;
+              otherInput.classList.add('is-invalid');
+            } else if (name.length > OTHER_PRODUCT_MAX_LEN) {
+              ok = false;
+              otherBlock.classList.remove('d-none');
+              otherInput.disabled = false;
+              otherInput.classList.add('is-invalid');
+            } else {
+              otherInput.classList.remove('is-invalid');
+            }
+          } else {
+            otherInput.classList.remove('is-invalid');
+          }
+        });
+
+        return ok;
+      }
       function collectProductsData() {
         const productEntries = productEntriesContainer.querySelectorAll('.product-entry');
         const productsData = [];
 
         productEntries.forEach((entry) => {
           const sel = entry.querySelector('.product-code-select');
-          const code = sel ? sel.value : "";
-          if (code) {
-            productsData.push({
-              productCode: code,
-              purchaseDate: formatJapaneseDateToISO(masterPurchaseDateInput.value),
-              orderNumber: (masterOrderNumberInput.value || "").trim(),
-              purchaseSite: "Amazon"
-            });
+          const code = sel ? String(sel.value || '') : '';
+          if (!code) return;
+
+          const item = { productCode: code };
+
+          if (code === OTHER_PRODUCT_CODE) {
+            const otherInput = entry.querySelector('.other-product-name-input');
+            const name = (otherInput ? otherInput.value : '').trim();
+            item.productName = name;
           }
+
+          productsData.push(item);
         });
+
         return productsData;
       }
 
@@ -867,7 +961,6 @@
 
         return { customer_id: loggedInCustomerId, email: loggedInEmail };
       }
-
       async function submitPurchaseRegistration(customerId) {
         const ok1 = validateOrderNumber();
         const ok2 = validatePurchaseDate();
@@ -880,6 +973,11 @@
           // 1つも選択されていない場合のみエラー（空欄行があるのはOK）
           productEntriesContainer.querySelectorAll('.product-code-select').forEach(s => s.classList.add('is-invalid'));
           throw new Error("商品を1つ以上選択してください。");
+        }
+
+        // 「上記リストに無い商品」の場合は商品名必須
+        if (!validateOtherProductNames()) {
+          throw new Error(`「上記リストに無い商品」を選択した場合は、商品名を${OTHER_PRODUCT_MAX_LEN}文字以内で入力してください。`);
         }
 
         const submissionData = {
