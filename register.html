@@ -101,6 +101,10 @@
                  ========================================================= -->
             <div id="afterOtpFields" class="d-none">
 
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3" id="afterOtpTopTitleRow">
+                <h2 class="h5 mb-0" id="afterOtpTopTitle">パスワード登録</h2>
+              </div>
+
               <!-- お客様ID -->
               <div class="mb-4">
                 <label for="customerId" class="form-label">お客様ID (会員番号)</label>
@@ -148,7 +152,9 @@
 
               <!-- 複数商品 -->
               <div id="productEntriesContainer" class="mb-4 border p-3 rounded bg-light">
-                <h5 class="mb-3">購入商品情報 <span class="small text-muted">(最低1つ入力)</span></h5>
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <h2 class="h6 mb-0">購入商品情報 <span class="small text-muted">（複数可）</span></h2>
+                </div>
               </div>
 
               <button type="button" id="addProductButton" class="btn btn-outline-secondary btn-sm mb-4"><i class="bi bi-plus-circle me-1"></i>別の商品を追加する</button>
@@ -233,6 +239,9 @@
 
       const afterOtpHr = document.getElementById('afterOtpHr');
       const afterOtpFields = document.getElementById('afterOtpFields');
+
+      const afterOtpTopTitleRow = document.getElementById('afterOtpTopTitleRow');
+      const afterOtpTopTitle = document.getElementById('afterOtpTopTitle');
 
       const customerIdInput = document.getElementById('customerId');
       const customerIdHelp = document.getElementById('customerIdHelp');
@@ -327,6 +336,8 @@
           afterOtpHr.classList.add("d-none");
           afterOtpFields.classList.remove("d-none");
 
+          if (afterOtpTopTitleRow) afterOtpTopTitleRow.classList.add('d-none');
+
           otpInputBlock.classList.add("d-none");
           otpVerifiedBlock.classList.add("d-none");
 
@@ -388,6 +399,10 @@
           if (sendOtpRow) sendOtpRow.classList.add('d-none');
 
           afterOtpFields.classList.remove("d-none");
+
+          if (afterOtpTopTitleRow) afterOtpTopTitleRow.classList.remove('d-none');
+          if (afterOtpTopTitle) afterOtpTopTitle.textContent = 'パスワード登録';
+
           setEmailReadonly(true);
 
           passwordFields.style.display = "block";
