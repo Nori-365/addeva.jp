@@ -373,7 +373,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
+          pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -402,7 +402,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
+          pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -427,7 +427,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP2: ページ見出し（スマホで下のフォームを見せるため、リード文は隠す）
-          pageTitleText.textContent = '製品登録（ステップ２）';
+          pageTitleText.innerHTML = '製品登録<span style="font-size:0.82em;">（ステップ２）</span>';
           pageLead.textContent = '';
           pageLead.classList.add('d-none');
           otpVerifiedBlock.classList.remove("d-none");
@@ -935,7 +935,7 @@
         const loggedIn = await checkLoginStatus();
         if (loggedIn) return;
 
-        pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
+        pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
         pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
 
         customerIdInput.value = '＜新規＞';
