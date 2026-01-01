@@ -35,7 +35,10 @@
           </ol>
         </nav>
 
-        <h1 class="mb-4" id="pageTitle">製品保証登録・アフターサービス</h1>
+        <h1 class="mb-4">
+          <span id="pageTitleText">製品保証登録・アフターサービス</span>
+          <span class="text-muted fs-6 ms-2" id="pageStepLabel"></span>
+        </h1>
         <p class="lead mb-5" id="pageLead">
           ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。
         </p>
@@ -51,11 +54,11 @@
             <div class="mb-4" id="otpSection">
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h2 class="h5 mb-0" id="otpTitle">メールアドレス確認</h2>
-                <span class="badge text-bg-secondary" id="otpStageBadge">STEP 1</span>
+                <span class="badge text-bg-secondary d-none" id="otpStageBadge">STEP 1</span>
               </div>
 
-              <div class="mt-3">
-                <label for="email" class="form-label">メールアドレス <span class="text-danger">*</span></label>
+              <div class="mt-3" id="emailBlock">
+                <label for="email" class="form-label" id="emailLabel">メールアドレス <span class="text-danger">*</span></label>
                 <input type="email" class="form-control" id="email" name="email" required placeholder="メールアドレスをご入力ください">
                 <div class="form-text" id="emailHelpText">ご登録いただいたメールアドレスは、安全上重要なお知らせ（リコール、重大な不具合、保証に関わる連絡等）の送付に利用いたします。</div>
               </div>
@@ -224,7 +227,8 @@
       const registrationForm = document.getElementById('registrationForm');
       const messageArea = document.getElementById('messageArea');
 
-      const pageTitle = document.getElementById('pageTitle');
+      const pageTitleText = document.getElementById('pageTitleText');
+      const pageStepLabel = document.getElementById('pageStepLabel');
       const pageLead = document.getElementById('pageLead');
 
       const otpSection = document.getElementById('otpSection');
@@ -232,6 +236,8 @@
       const otpTitle = document.getElementById('otpTitle');
 
       const emailInput = document.getElementById('email');
+      const emailBlock = document.getElementById('emailBlock');
+      const emailLabel = document.getElementById('emailLabel');
       const emailHelpText = document.getElementById('emailHelpText');
       const sendOtpButton = document.getElementById('sendOtpButton');
       const sendOtpHint = document.getElementById('sendOtpHint');
@@ -361,10 +367,11 @@
         if (state === "init") {
           if (otpTitle) otpTitle.textContent = "メールアドレス確認";
           otpStageBadge.textContent = "STEP 1";
-          otpStageBadge.classList.remove('d-none');
+          otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitle.textContent = '新規登録（メール確認）';
+          pageTitleText.textContent = '新規登録（メール確認）';
+          if (pageStepLabel) pageStepLabel.textContent = '(Step1)';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -376,6 +383,8 @@
 
           if (emailHelpText) emailHelpText.classList.remove('d-none');
           if (sendOtpRow) sendOtpRow.classList.remove('d-none');
+          if (emailLabel) emailLabel.classList.remove('d-none');
+          if (emailBlock) { emailBlock.classList.add('mt-3'); emailBlock.classList.remove('mt-0'); }
 
           afterOtpFields.classList.add("d-none");
           setEmailReadonly(false);
@@ -388,10 +397,11 @@
         if (state === "sent") {
           if (otpTitle) otpTitle.textContent = "メールアドレス確認";
           otpStageBadge.textContent = "STEP 1";
-          otpStageBadge.classList.remove('d-none');
+          otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitle.textContent = '新規登録（メール確認）';
+          pageTitleText.textContent = '新規登録（メール確認）';
+          if (pageStepLabel) pageStepLabel.textContent = '(Step1)';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -401,6 +411,8 @@
 
           if (emailHelpText) emailHelpText.classList.remove('d-none');
           if (sendOtpRow) sendOtpRow.classList.remove('d-none');
+          if (emailLabel) emailLabel.classList.remove('d-none');
+          if (emailBlock) { emailBlock.classList.add('mt-3'); emailBlock.classList.remove('mt-0'); }
 
           passwordFields.style.display = "block";
           optinFields.style.display = "block";
@@ -408,13 +420,14 @@
         }
 
         if (state === "verified") {
-          if (otpTitle) otpTitle.textContent = "登録メールアドレス";
+          if (otpTitle) otpTitle.textContent = "ご登録メールアドレス";
           otpStageBadge.textContent = "STEP 2";
           // STEP2では重複表示を避けるため、バッジは隠す
           otpStageBadge.classList.add('d-none');
 
           // STEP2: ページ見出し（スマホで下のフォームを見せるため、リード文は隠す）
-          pageTitle.textContent = '製品登録';
+          pageTitleText.textContent = '製品登録';
+          if (pageStepLabel) pageStepLabel.textContent = '(ステップ2)';
           pageLead.textContent = '';
           pageLead.classList.add('d-none');
           otpVerifiedBlock.classList.remove("d-none");
@@ -424,6 +437,8 @@
           // STEP 2では縦を詰める（スマホで下のフォームを見せる）
           if (emailHelpText) emailHelpText.classList.add('d-none');
           if (sendOtpRow) sendOtpRow.classList.add('d-none');
+          if (emailLabel) emailLabel.classList.add('d-none');
+          if (emailBlock) { emailBlock.classList.remove('mt-3'); emailBlock.classList.add('mt-0'); }
 
           afterOtpFields.classList.remove("d-none");
 
@@ -688,7 +703,8 @@
           loggedInCustomerId = userInfo.customer_id;
           loggedInEmail = userInfo.email;
 
-          pageTitle.textContent = '商品情報追加・登録';
+          pageTitleText.textContent = '商品情報追加・登録';
+          if (pageStepLabel) pageStepLabel.textContent = '';
           pageLead.textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
 
           emailInput.value = loggedInEmail;
@@ -915,7 +931,8 @@
         const loggedIn = await checkLoginStatus();
         if (loggedIn) return;
 
-        pageTitle.textContent = '新規登録（メール確認）';
+        pageTitleText.textContent = '新規登録（メール確認）';
+          if (pageStepLabel) pageStepLabel.textContent = '(Step1)';
         pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
 
         customerIdInput.value = '＜新規＞';
