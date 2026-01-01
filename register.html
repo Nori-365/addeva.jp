@@ -50,7 +50,7 @@
                  ========================================================= -->
             <div class="mb-4" id="otpSection">
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h2 class="h5 mb-0">メールアドレス確認</h2>
+                <h2 class="h5 mb-0" id="otpTitle">メールアドレス確認</h2>
                 <span class="badge text-bg-secondary" id="otpStageBadge">STEP 1</span>
               </div>
 
@@ -165,7 +165,11 @@
                   安全上重要なお知らせ（リコール、重大な不具合、保証に関わる連絡等）は、配信設定にかかわらず登録メール宛に送付されます。
                 </div>
 
-                <label class="form-label">メール配信の同意（任意）をお願いいたします。</label>
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                  <h2 class="h6 mb-0">メール配信</h2>
+                  <span class="small text-muted">（任意）</span>
+                </div>
+                <div class="form-text mb-2">メール配信の同意をお願いいたします。</div>
                 <div class="form-text mb-2">
                   弊社のメール配信は、お客さまがご使用されている製品に関連するお知らせのみを選んで配信しています。（現在の配信は年に数回程度）。
                 </div>
@@ -225,6 +229,7 @@
 
       const otpSection = document.getElementById('otpSection');
       const otpStageBadge = document.getElementById('otpStageBadge');
+      const otpTitle = document.getElementById('otpTitle');
 
       const emailInput = document.getElementById('email');
       const emailHelpText = document.getElementById('emailHelpText');
@@ -354,7 +359,14 @@
         afterOtpHr.classList.remove("d-none");
 
         if (state === "init") {
+          if (otpTitle) otpTitle.textContent = "メールアドレス確認";
           otpStageBadge.textContent = "STEP 1";
+          otpStageBadge.classList.remove('d-none');
+
+          // STEP1: ページ見出し
+          pageTitle.textContent = '新規登録（メール確認）';
+          pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
+          pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
           otpInputBlock.classList.add("d-none");
           sendOtpButton.classList.remove("d-none");
@@ -374,7 +386,14 @@
         }
 
         if (state === "sent") {
+          if (otpTitle) otpTitle.textContent = "メールアドレス確認";
           otpStageBadge.textContent = "STEP 1";
+          otpStageBadge.classList.remove('d-none');
+
+          // STEP1: ページ見出し
+          pageTitle.textContent = '新規登録（メール確認）';
+          pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
+          pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
           otpInputBlock.classList.remove("d-none");
           afterOtpFields.classList.add("d-none");
@@ -389,7 +408,15 @@
         }
 
         if (state === "verified") {
+          if (otpTitle) otpTitle.textContent = "登録メールアドレス";
           otpStageBadge.textContent = "STEP 2";
+          // STEP2では重複表示を避けるため、バッジは隠す
+          otpStageBadge.classList.add('d-none');
+
+          // STEP2: ページ見出し（スマホで下のフォームを見せるため、リード文は隠す）
+          pageTitle.textContent = '製品登録';
+          pageLead.textContent = '';
+          pageLead.classList.add('d-none');
           otpVerifiedBlock.classList.remove("d-none");
           otpInputBlock.classList.add("d-none");
           sendOtpButton.classList.add("d-none");
