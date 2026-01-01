@@ -555,7 +555,7 @@
           </div>
 
           <!-- 商品名（常に保存。通常は自動入力＆編集不可 / 「上記リストに無い商品」は手入力） -->
-          <div class="mt-2 product-name-block">
+          <div class="mt-2 product-name-block d-none">
             <label class="form-label small mb-1">商品名 <span class="text-danger product-name-required d-none">*</span></label>
             <input type="text" class="form-control form-control-sm product-name-input" placeholder="商品名" maxlength="${OTHER_PRODUCT_MAX_LEN}" disabled readonly>
             <div class="invalid-feedback">商品名を入力してください。</div>
@@ -573,19 +573,21 @@
           const code = sel ? String(sel.value || '') : '';
           if (!nameInput) return;
 
-          // 未選択
+          // 未選択：商品名欄は非表示
           if (!code) {
             nameInput.value = '';
             nameInput.disabled = true;
             nameInput.readOnly = true;
             nameInput.classList.remove('is-invalid');
+            if (nameBlock) nameBlock.classList.add('d-none');
             if (nameRequired) nameRequired.classList.add('d-none');
             if (nameHint) nameHint.classList.add('d-none');
             return;
           }
 
-          // 「上記リストに無い商品」
+          // 「上記リストに無い商品」：商品名欄を表示して手入力
           if (code === OTHER_PRODUCT_CODE) {
+            if (nameBlock) nameBlock.classList.remove('d-none');
             nameInput.disabled = false;
             nameInput.readOnly = false;
             if (nameRequired) nameRequired.classList.remove('d-none');
@@ -597,12 +599,15 @@
             return;
           }
 
-          // 通常商品（自動入力・編集不可）
-          const selectedText = (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex]) ? (sel.options[sel.selectedIndex].text || '') : '';
+          // 通常商品：商品名は内部的に保持（送信する）が、入力欄は非表示
+          const selectedText = (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex])
+            ? (sel.options[sel.selectedIndex].text || '')
+            : '';
           nameInput.value = selectedText;
-          nameInput.disabled = false;
+          nameInput.disabled = true;
           nameInput.readOnly = true;
           nameInput.classList.remove('is-invalid');
+          if (nameBlock) nameBlock.classList.add('d-none');
           if (nameRequired) nameRequired.classList.add('d-none');
           if (nameHint) nameHint.classList.add('d-none');
         }
