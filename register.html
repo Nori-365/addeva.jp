@@ -227,6 +227,7 @@
 
       const SS_SIGNUP_EMAIL = "addeva.signup.email";
       const SS_SIGNUP_TOKEN = "addeva.signup.token";
+      const SS_SIGNUP_CONFIRMED_AT = "addeva.signup.confirmedAt";
 
       // 「上記リストに無い商品」
       const OTHER_PRODUCT_CODE = "99999999";
@@ -316,6 +317,48 @@
 
       function normalizeEmail(v) {
         return (v || "").trim();
+      }
+
+      // signup_token の exp を参照できる場合は、復元可否判定に使う
+      function decodeBase64UrlToJson(seg) {
+        try {
+          const s = (seg || '').replace(/-/g, '+').replace(/_/g, '/');
+          const pad = '='.repeat((4 - (s.length % 4)) % 4);
+          const json = atob(s + pad);
+          return JSON.parse(json);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function getTokenPayload(token) {
+        const parts = String(token || '').split('.');
+        if (parts.length !== 3) return null;
+        // JWT でも v1.payload.sig でも payload は parts[1]
+        return decodeBase64UrlToJson(parts[1]);
+      }
+
+      function getTokenExpMs(token) {
+        const p = getTokenPayload(token);
+        if (!p) return null;
+        const exp = p.exp ?? p.expires_at ?? p.expiresAt;
+        if (exp === undefined || exp === null) return null;
+
+        if (typeof exp === 'number') {
+          return exp > 1000000000000 ? exp : exp * 1000; // ms or sec
+        }
+        if (typeof exp === 'string') {
+          const n = parseInt(exp, 10);
+          if (isNaN(n)) return null;
+          return n > 1000000000000 ? n : n * 1000;
+        }
+        return null;
+      }
+
+      function isTokenNotExpired(token) {
+        const expMs = getTokenExpMs(token);
+        if (!expMs) return null; // exp が無ければ判定不能（confirmedAt TTLで判定）
+        return expMs > Date.now();
       }
 
       function formatJapaneseDateToISO(japaneseDateString) {
@@ -503,6 +546,7 @@
             <h6 class="mb-0 text-secondary small">${index === 0 ? '商品 1 <span class="text-danger">*</span>' : `商品 ${index + 1}`}</h6>
             ${index > 0 ? `<button type="button" class="btn btn-outline-danger btn-sm remove-product-btn" style="padding: 0.1rem 0.4rem; font-size: 0.75rem;">削除</button>` : ''}
           </div>
+
           <div class="mb-0">
             <select class="form-select form-select-sm product-code-select" id="productCode_${index}" required aria-label="ご購入商品">
               <option value="">商品を選択してください</option>
@@ -510,36 +554,57 @@
             </select>
           </div>
 
-          <!-- 上記リストに無い商品の場合のみ表示 -->
-          <div class="mt-2 d-none other-product-name-block">
-            <label class="form-label small mb-1">商品名（上記リストに無い商品の場合） <span class="text-danger">*</span></label>
-            <input type="text" class="form-control form-control-sm other-product-name-input" placeholder="商品名をご入力ください" maxlength="${OTHER_PRODUCT_MAX_LEN}" disabled>
+          <!-- 商品名（常に保存。通常は自動入力＆編集不可 / 「上記リストに無い商品」は手入力） -->
+          <div class="mt-2 product-name-block">
+            <label class="form-label small mb-1">商品名 <span class="text-danger product-name-required d-none">*</span></label>
+            <input type="text" class="form-control form-control-sm product-name-input" placeholder="商品名" maxlength="${OTHER_PRODUCT_MAX_LEN}" disabled readonly>
             <div class="invalid-feedback">商品名を入力してください。</div>
-            <div class="form-text">例：UrbanFlex（旧モデル名）、付属品、限定セットなど</div>
+            <div class="form-text product-name-hint d-none">例：UrbanFlex（旧モデル名）、付属品、限定セットなど</div>
           </div>
         `;
 
         const sel = entryDiv.querySelector('.product-code-select');
-        const otherBlock = entryDiv.querySelector('.other-product-name-block');
-        const otherInput = entryDiv.querySelector('.other-product-name-input');
+        const nameBlock = entryDiv.querySelector('.product-name-block');
+        const nameInput = entryDiv.querySelector('.product-name-input');
+        const nameRequired = entryDiv.querySelector('.product-name-required');
+        const nameHint = entryDiv.querySelector('.product-name-hint');
 
-        function syncOtherProductUi() {
+        function syncProductNameUi() {
           const code = sel ? String(sel.value || '') : '';
-          if (!otherBlock || !otherInput) return;
+          if (!nameInput) return;
 
-          if (code === OTHER_PRODUCT_CODE) {
-            otherBlock.classList.remove('d-none');
-            otherInput.disabled = false;
-            // 既に入力があればそのまま
-            setTimeout(() => {
-              try { otherInput.focus(); } catch (e) {}
-            }, 0);
-          } else {
-            otherInput.value = '';
-            otherInput.classList.remove('is-invalid');
-            otherInput.disabled = true;
-            otherBlock.classList.add('d-none');
+          // 未選択
+          if (!code) {
+            nameInput.value = '';
+            nameInput.disabled = true;
+            nameInput.readOnly = true;
+            nameInput.classList.remove('is-invalid');
+            if (nameRequired) nameRequired.classList.add('d-none');
+            if (nameHint) nameHint.classList.add('d-none');
+            return;
           }
+
+          // 「上記リストに無い商品」
+          if (code === OTHER_PRODUCT_CODE) {
+            nameInput.disabled = false;
+            nameInput.readOnly = false;
+            if (nameRequired) nameRequired.classList.remove('d-none');
+            if (nameHint) nameHint.classList.remove('d-none');
+            // 既に入力があれば維持。空ならフォーカス。
+            setTimeout(() => {
+              try { nameInput.focus(); } catch (e) {}
+            }, 0);
+            return;
+          }
+
+          // 通常商品（自動入力・編集不可）
+          const selectedText = (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex]) ? (sel.options[sel.selectedIndex].text || '') : '';
+          nameInput.value = selectedText;
+          nameInput.disabled = false;
+          nameInput.readOnly = true;
+          nameInput.classList.remove('is-invalid');
+          if (nameRequired) nameRequired.classList.add('d-none');
+          if (nameHint) nameHint.classList.add('d-none');
         }
 
         if (sel) {
@@ -551,19 +616,19 @@
               productEntriesContainer.querySelectorAll('.product-code-select').forEach(s => s.classList.remove('is-invalid'));
             }
 
-            // 「上記リストに無い商品」入力欄の表示切替
-            syncOtherProductUi();
+            // 商品名入力欄の同期（通常は自動、OTHERは手入力）
+            syncProductNameUi();
           });
         }
 
-        if (otherInput) {
-          otherInput.addEventListener('input', () => {
-            otherInput.classList.remove('is-invalid');
+        if (nameInput) {
+          nameInput.addEventListener('input', () => {
+            nameInput.classList.remove('is-invalid');
           });
         }
 
         // 初期状態
-        syncOtherProductUi();
+        syncProductNameUi();
 
         if (index > 0) {
           const btn = entryDiv.querySelector('.remove-product-btn');
@@ -701,28 +766,21 @@
           const sel = entry.querySelector('.product-code-select');
           const code = sel ? String(sel.value || '') : '';
 
-          const otherBlock = entry.querySelector('.other-product-name-block');
-          const otherInput = entry.querySelector('.other-product-name-input');
-
-          if (!otherInput || !otherBlock) return;
+          const nameInput = entry.querySelector('.product-name-input');
+          if (!nameInput) return;
 
           if (code === OTHER_PRODUCT_CODE) {
-            const name = (otherInput.value || '').trim();
-            if (!name) {
+            const name = (nameInput.value || '').trim();
+            if (!name || name.length > OTHER_PRODUCT_MAX_LEN) {
               ok = false;
-              otherBlock.classList.remove('d-none');
-              otherInput.disabled = false;
-              otherInput.classList.add('is-invalid');
-            } else if (name.length > OTHER_PRODUCT_MAX_LEN) {
-              ok = false;
-              otherBlock.classList.remove('d-none');
-              otherInput.disabled = false;
-              otherInput.classList.add('is-invalid');
+              nameInput.disabled = false;
+              nameInput.readOnly = false;
+              nameInput.classList.add('is-invalid');
             } else {
-              otherInput.classList.remove('is-invalid');
+              nameInput.classList.remove('is-invalid');
             }
           } else {
-            otherInput.classList.remove('is-invalid');
+            nameInput.classList.remove('is-invalid');
           }
         });
 
@@ -737,15 +795,11 @@
           const code = sel ? String(sel.value || '') : '';
           if (!code) return;
 
-          const item = { productCode: code };
+          const nameInput = entry.querySelector('.product-name-input');
+          const name = (nameInput ? nameInput.value : '').trim();
 
-          if (code === OTHER_PRODUCT_CODE) {
-            const otherInput = entry.querySelector('.other-product-name-input');
-            const name = (otherInput ? otherInput.value : '').trim();
-            item.productName = name;
-          }
-
-          productsData.push(item);
+          // productName は常に送る（通常は自動入力、OTHERは手入力）
+          productsData.push({ productCode: code, productName: name });
         });
 
         return productsData;
@@ -769,6 +823,7 @@
         try {
           sessionStorage.removeItem(SS_SIGNUP_EMAIL);
           sessionStorage.removeItem(SS_SIGNUP_TOKEN);
+          sessionStorage.removeItem(SS_SIGNUP_CONFIRMED_AT);
         } catch(e) {}
         signupToken = "";
       }
@@ -895,6 +950,7 @@
           try {
             sessionStorage.setItem(SS_SIGNUP_EMAIL, email);
             sessionStorage.setItem(SS_SIGNUP_TOKEN, signupToken);
+            sessionStorage.setItem(SS_SIGNUP_CONFIRMED_AT, String(Date.now()));
           } catch(e) {}
 
           showSuccess("メール確認が完了しました。続けて登録情報を入力してください。");
@@ -939,7 +995,7 @@
             email,
             signup_token: signupToken,
             password: passwordInput.value,
-            marketing_updates_optin: true,
+            marketing_updates_optin: false,
             marketing_sales_optin: !!optinSales.checked,
             milestone_notify_optin: false
           }
@@ -1030,7 +1086,20 @@
         masterOrderNumberInput.addEventListener('input', validateOrderNumber);
         masterPurchaseDateInput.addEventListener('change', validatePurchaseDate);
 
-        const loggedIn = await checkLoginStatus();
+        // 明示的にメール確認から開始したい場合（デバッグ/確認用）
+        // 例）/register.html?step=email
+        let forceEmailStep = false;
+        try {
+          const sp = new URLSearchParams(location.search);
+          if ((sp.get('step') || '').toLowerCase() === 'email') {
+            forceEmailStep = true;
+            clearSignupSessionStorage();
+            // メール確認ページを確実に表示するため、ログイン状態もクリアする
+            try { localStorage.removeItem(ADDEVA.LS.authToken); } catch(e) {}
+          }
+        } catch (e) {}
+
+        const loggedIn = forceEmailStep ? false : await checkLoginStatus();
         if (loggedIn) return;
 
         pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
@@ -1041,14 +1110,42 @@
 
         setOtpUiState("init");
 
-        // もしリロード等でトークンが残っていたら、メール一致時のみ復元
+        // もし「リロード直後」等でトークンが残っていたら復元（※ナビゲーションで来た場合は復元しない）
         const ssEmail = (sessionStorage.getItem(SS_SIGNUP_EMAIL) || "");
         const ssToken = (sessionStorage.getItem(SS_SIGNUP_TOKEN) || "");
-        if (ssEmail && ssToken) {
+        const ssAtRaw = (sessionStorage.getItem(SS_SIGNUP_CONFIRMED_AT) || "0");
+        const ssAt = parseInt(ssAtRaw, 10) || 0;
+
+        let navType = "";
+        try {
+          const nav = performance.getEntriesByType('navigation');
+          if (nav && nav[0] && nav[0].type) navType = String(nav[0].type);
+        } catch (e) {}
+
+        // 復元条件：
+        // ・メール/トークン/時刻が揃っている
+        // ・15分以内（トークンTTLに合わせる）
+        // ・かつ「リロード」または「直前もregister.html」
+        const withinTtl = (ssAt > 0) ? (Date.now() - ssAt <= 15 * 60 * 1000) : false;
+
+        // token に exp が入っている場合は、それもチェックする
+        const expOk = (() => {
+          const v = isTokenNotExpired(ssToken);
+          return (v === null) ? true : v;
+        })();
+        const refOk = (document.referrer || '').includes('/register.html');
+        const canRestore = !!(ssEmail && ssToken && withinTtl && expOk && (navType === 'reload' || refOk));
+
+        if (canRestore) {
           emailInput.value = ssEmail;
           signupToken = ssToken;
           setOtpUiState("verified");
           await enterAfterOtpStageIfNeeded();
+        } else {
+          // 古い/不整合なセッションが残っていると「毎回ステップ2」になるため、ここで確実に破棄する
+          if (ssEmail || ssToken || ssAt) {
+            clearSignupSessionStorage();
+          }
         }
       }
 
