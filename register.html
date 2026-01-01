@@ -37,7 +37,6 @@
 
         <h1 class="mb-4">
           <span id="pageTitleText">製品保証登録・アフターサービス</span>
-          <span class="text-muted ms-2" id="pageStepLabel"></span>
         </h1>
         <p class="lead mb-5" id="pageLead">
           ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。
@@ -233,7 +232,6 @@
       const messageArea = document.getElementById('messageArea');
 
       const pageTitleText = document.getElementById('pageTitleText');
-      const pageStepLabel = document.getElementById('pageStepLabel');
       const pageLead = document.getElementById('pageLead');
 
       const otpSection = document.getElementById('otpSection');
@@ -375,8 +373,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.textContent = '新規登録（メール確認）';
-          if (pageStepLabel) pageStepLabel.textContent = '（ステップ1）';
+          pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -405,8 +402,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.textContent = '新規登録（メール確認）';
-          if (pageStepLabel) pageStepLabel.textContent = '（ステップ1）';
+          pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -431,8 +427,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP2: ページ見出し（スマホで下のフォームを見せるため、リード文は隠す）
-          pageTitleText.textContent = '製品登録';
-          if (pageStepLabel) pageStepLabel.textContent = '（ステップ2）';
+          pageTitleText.textContent = '製品登録（ステップ２）';
           pageLead.textContent = '';
           pageLead.classList.add('d-none');
           otpVerifiedBlock.classList.remove("d-none");
@@ -714,7 +709,6 @@
           loggedInEmail = userInfo.email;
 
           pageTitleText.textContent = '商品情報追加・登録';
-          if (pageStepLabel) pageStepLabel.textContent = '';
           pageLead.textContent = 'ログイン済みのお客様として、追加の商品情報をご登録ください。';
 
           emailInput.value = loggedInEmail;
@@ -941,8 +935,7 @@
         const loggedIn = await checkLoginStatus();
         if (loggedIn) return;
 
-        pageTitleText.textContent = '新規登録（メール確認）';
-          if (pageStepLabel) pageStepLabel.textContent = '（ステップ1）';
+        pageTitleText.textContent = '新規登録（メール確認）（ステップ１）';
         pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
 
         customerIdInput.value = '＜新規＞';
