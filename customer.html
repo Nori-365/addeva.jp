@@ -308,7 +308,7 @@
                     <th class="d-none d-md-table-cell text-center">操作</th>
 
                     <!-- Mobile（md未満）：保証終了日＋ボタン を1セルにまとめる -->
-                    <th class="d-md-none text-center">保証 / 操作</th>
+                    <th class="d-md-none text-center">保証終了日<br>/操作</th>
                   </tr>
                 </thead>
                 <tbody id="purchasesTableBody">
@@ -396,9 +396,7 @@
               // Mobile（md未満）：保証終了日＋ボタンを1セルにまとめる
               const compactRightCell = row.insertCell();
               compactRightCell.className = 'd-md-none text-center';
-              compactRightCell.innerHTML = `
-                <div class="small text-secondary mb-1">保証終了日</div>
-                <div class="fw-semibold mb-2">${escapeHtml(formatJapaneseDate(p.warrantyEndDate) || 'N/A')}</div>
+              compactRightCell.innerHTML = `<div class="fw-semibold mb-2">${escapeHtml(formatJapaneseDate(p.warrantyEndDate) || 'N/A')}</div>
                 <div class="d-grid gap-1">
                   <a class="btn btn-sm btn-primary fw-semibold" href="${feedbackUrl}">フィードバック</a>
                   <a class="btn btn-sm btn-outline-secondary" href="${guideUrl}">製品ガイド</a>
