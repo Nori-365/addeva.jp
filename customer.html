@@ -302,12 +302,17 @@
                     <th class="d-none d-md-table-cell">商品名</th>
                     <th class="d-none d-md-table-cell">注文番号</th>
                     <th class="d-md-none">購入日 / 注文番号<br>商品名</th>
-                    <th>保証終了日</th>
-                    <th class="text-center">操作</th>
+
+                    <!-- Desktop（md以上）：保証終了日＋操作 を分離 -->
+                    <th class="d-none d-md-table-cell">保証終了日</th>
+                    <th class="d-none d-md-table-cell text-center">操作</th>
+
+                    <!-- Mobile（md未満）：保証終了日＋ボタン を1セルにまとめる -->
+                    <th class="d-md-none text-center">保証 / 操作</th>
                   </tr>
                 </thead>
                 <tbody id="purchasesTableBody">
-                  <tr><td colspan="6" class="text-muted">購入履歴を読み込み中...</td></tr>
+                  <tr><td colspan="7" class="text-muted">購入履歴を読み込み中...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -339,7 +344,7 @@
 
           purchasesTableBody.innerHTML = '';
           if (!purchases || purchases.length === 0) {
-            purchasesTableBody.innerHTML = '<tr><td colspan="6" class="text-muted">まだ購入履歴がありません。</td></tr>';
+            purchasesTableBody.innerHTML = '<tr><td colspan="7" class="text-muted">まだ購入履歴がありません。</td></tr>';
           } else {
             purchases.forEach(p => {
               const row = purchasesTableBody.insertRow();
@@ -362,12 +367,14 @@
               compactCell.className = 'd-md-none';
               compactCell.innerHTML = `${escapeHtml(formatJapaneseDate(p.purchaseDate) || 'N/A')} / ${escapeHtml(p.orderNumber || 'N/A')}<br>${escapeHtml(p.productName || 'N/A')}`;
 
-              // 共通：保証終了日
+              // Desktop（md以上）：保証終了日
               const warrantyEndCell = row.insertCell();
+              warrantyEndCell.className = 'd-none d-md-table-cell';
               warrantyEndCell.textContent = formatJapaneseDate(p.warrantyEndDate) || 'N/A';
-              // 共通：取説（準備中）/ フィードバック / サポート（依頼）
+
+              // Desktop（md以上）：操作（フィードバック／製品ガイド）
               const supportCell = row.insertCell();
-              supportCell.className = 'text-center';
+              supportCell.className = 'd-none d-md-table-cell text-center';
 
               // product_code はAPIレスポンス内に含まれる前提（product_code / productCode の両方に対応）
               const productCode = String((p.product_code ?? p.productCode ?? '') || '').trim();
@@ -385,11 +392,23 @@
                   <a class="btn btn-sm btn-outline-secondary" href="${guideUrl}">製品ガイド</a>
                 </div>
               `;
+
+              // Mobile（md未満）：保証終了日＋ボタンを1セルにまとめる
+              const compactRightCell = row.insertCell();
+              compactRightCell.className = 'd-md-none text-center';
+              compactRightCell.innerHTML = `
+                <div class="small text-secondary mb-1">保証終了日</div>
+                <div class="fw-semibold mb-2">${escapeHtml(formatJapaneseDate(p.warrantyEndDate) || 'N/A')}</div>
+                <div class="d-grid gap-1">
+                  <a class="btn btn-sm btn-primary fw-semibold" href="${feedbackUrl}">フィードバック</a>
+                  <a class="btn btn-sm btn-outline-secondary" href="${guideUrl}">製品ガイド</a>
+                </div>
+              `;
             });
           }
         } catch (error) {
           console.error('購入履歴の取得に失敗しました:', error);
-          purchasesTableBody.innerHTML = '<tr><td colspan="6" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
+          purchasesTableBody.innerHTML = '<tr><td colspan="7" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
           showError(error.message || '購入履歴の取得中にエラーが発生しました。');
         }
 
