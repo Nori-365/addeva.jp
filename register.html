@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>製品保証登録・アフターサービス｜ADDEVA（アデバ）公式</title>
+  <title>製品登録・アフターサービス｜ADDEVA（アデバ）公式</title>
   <meta name="description" content="ADDEVA製品の保証を有効化するためのご登録ページです。Amazon購入情報をご入力ください。">
   <link rel="canonical" href="https://addeva.jp/register.html">
 
@@ -31,15 +31,15 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-            <li class="breadcrumb-item active" aria-current="page">製品保証登録</li>
+            <li class="breadcrumb-item active" aria-current="page">製品登録</li>
           </ol>
         </nav>
 
         <h1 class="mb-4">
-          <span id="pageTitleText">製品保証登録・アフターサービス</span>
+          <span id="pageTitleText">製品登録・アフターサービス</span>
         </h1>
         <p class="lead mb-5" id="pageLead">
-          ADDEVA UrbanFlex製品をご購入いただきありがとうございます。保証を有効化し、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。
+          ADDEVA UrbanFlex製品をご購入いただきありがとうございます。製品登録を行い、より充実したアフターサービスをご利用いただくため、下記フォームより購入情報をご登録ください。
         </p>
 
         <div id="messageArea" class="alert d-none" role="alert"></div>
@@ -420,7 +420,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
+          pageTitleText.innerHTML = 'メール確認<span style="font-size:0.82em;">（ステップ１）</span>';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -449,7 +449,7 @@
           otpStageBadge.classList.add('d-none');
 
           // STEP1: ページ見出し
-          pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
+          pageTitleText.innerHTML = 'メール確認<span style="font-size:0.82em;">（ステップ１）</span>';
           pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
           pageLead.classList.remove('d-none');
           otpVerifiedBlock.classList.add("d-none");
@@ -1107,7 +1107,7 @@
         const loggedIn = forceEmailStep ? false : await checkLoginStatus();
         if (loggedIn) return;
 
-        pageTitleText.innerHTML = '新規登録（メール確認）<span style="font-size:0.82em;">（ステップ１）</span>';
+        pageTitleText.innerHTML = 'メール確認<span style="font-size:0.82em;">（ステップ１）</span>';
         pageLead.textContent = 'はじめにメールアドレスを確認します。確認が完了すると、登録情報と購入情報の入力に進めます。';
 
         customerIdInput.value = '＜新規＞';
