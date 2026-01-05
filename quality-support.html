@@ -36,11 +36,12 @@
 
   <style>
     section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 16px); }
-    .subnav-shadow{ box-shadow: 0 2px 8px rgba(0,0,0,.06); }
     .muted{color: var(--bs-secondary-color, #6c757d);}
+
     .qs-hero{
       background: linear-gradient(180deg, rgba(242,246,247,1) 0%, rgba(255,255,255,1) 60%);
     }
+
     .qs-hero-card{
       background:#fff;
       border: 1px solid rgba(0,0,0,.08);
@@ -48,8 +49,10 @@
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
       overflow:hidden;
     }
+
     /* HERO画像（図解をカード内で素直に表示） */
     .qs-hero-img{ width:100%; height:auto; display:block; }
+
     .qs-badge{
       display:inline-flex; align-items:center; gap:.5rem;
       padding:.35rem .6rem; border-radius:999px;
@@ -57,6 +60,7 @@
       background:rgba(255,255,255,.75);
       font-size:.9rem;
     }
+
     .qs-step{
       border: 1px solid rgba(0,0,0,.08);
       border-radius: .9rem;
@@ -65,6 +69,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,.04);
       height:100%;
     }
+
     .qs-figure{
       border: 1px solid rgba(0,0,0,.08);
       border-radius: 1rem;
@@ -73,7 +78,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,.05);
     }
     .qs-figure img{ width:100%; height:auto; display:block; }
-    .qs-figure figcaption{ padding:10px 12px; font-size:.9rem; color: var(--bs-secondary-color); }
+
     .qs-cta{
       border: 1px solid rgba(0,0,0,.08);
       border-radius: 1rem;
@@ -81,7 +86,13 @@
       background: #fff;
       box-shadow: 0 2px 10px rgba(0,0,0,.05);
     }
+
     .qs-divider{ height:1px; background:rgba(0,0,0,.08); margin: 18px 0; }
+
+    .qs-section-spacer{ padding-bottom: 32px; }
+    @media (min-width: 768px){
+      .qs-section-spacer{ padding-bottom: 48px; }
+    }
   </style>
 
   <!-- JSON-LD (WebPage) -->
@@ -104,14 +115,16 @@
 <body>
   <!-- 共通ヘッダー -->
   <div data-include="/includes/header.html" aria-busy="true"></div>
+
   <main>
 
     <!-- HERO -->
     <section class="section qs-hero">
       <div class="container container-narrow py-3 py-md-4">
         <div class="row g-4 align-items-stretch">
+
           <div class="col-12 col-lg-6">
-            <div class="kicker">Quality & Support</div>
+            <div class="kicker">Quality &amp; Support</div>
             <h1 class="h2 mb-3">品質とサポートの「根拠」を、見える形に。</h1>
             <p class="lead mb-3">
               ADDEVAは、素材選定から縫製、最終検品まで、工程ごとに品質基準を設けて管理しています。
@@ -156,23 +169,18 @@
                 </div>
               </div>
             </div>
-
-            <p class="small text-body-secondary mt-3 mb-0">
-              ※画像は後から差し替えられるように、プレースホルダーを入れています。
-            </p>
           </div>
 
           <div class="col-12 col-lg-6">
             <div class="qs-hero-card">
-              <!-- 画像（差し替え前提） -->
               <img
                 class="img-fluid qs-hero-img"
                 src="/assets/img/quality-support/addeva_pdca.png"
                 alt="品質管理・検品のPDCA（イメージ）"
                 loading="lazy">
-              </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -217,7 +225,7 @@
           </div>
         </div>
 
-        <br><br>
+        <div class="qs-section-spacer"></div>
       </div>
     </section>
 
@@ -239,29 +247,28 @@
                 loading="lazy">
             </figure>
           </div>
-
           <div class="col-12 col-lg-6">
-            <h3 class="h5 mb-2">管理ポイント（例）</h3>
-            <p class="mb-2">
-              工程ごとに「確認すべき点」を明確にし、品質ブレの原因になりやすい箇所から優先的に管理します。
-            </p>
-            <div class="qs-divider"></div>
-            <p class="mb-2">
-              <strong>素材選定・受入</strong><br>
-              表地のコーティング、裏地の滑り、芯材の厚み、ファスナーの品質などを用途基準で確認します。
-            </p>
-            <p class="mb-2">
-              <strong>縫製・補強</strong><br>
-              負荷のかかる取っ手・ショルダー付け根・底部などは補強仕様を設計に反映し、工程で再現できているかを確認します。
-            </p>
-            <p class="mb-0">
-              <strong>組み立て・最終仕上げ</strong><br>
-              型崩れ、歪み、左右差、可動部の干渉など、使い勝手に直結するポイントを中心に確認します。
-            </p>
+            <h3 class="h5 fw-semibold mb-3">管理ポイント（例）</h3>
+            <p class="mb-3">工程ごとに「確認すべき点」を明確にし、品質ブレの原因になりやすい箇所から優先的に管理します。</p>
+
+            <div class="mb-3">
+              <div class="fw-semibold">素材選定・受入</div>
+              <div class="muted">表地のコーティング、裏地の滑り、芯材の厚み、ファスナーの品質などを用途基準で確認します。</div>
+            </div>
+            <hr class="my-3">
+            <div class="mb-3">
+              <div class="fw-semibold">縫製・補強</div>
+              <div class="muted">負荷のかかる取っ手・ショルダー付け根・底部などは補強仕様を設計に反映し、工程で再現できているかを確認します。</div>
+            </div>
+            <hr class="my-3">
+            <div>
+              <div class="fw-semibold">組み立て・最終仕上げ</div>
+              <div class="muted">型崩れ、歪み、左右差、可動部の干渉など、使い勝手に直結するポイントを中心に確認します。</div>
+            </div>
           </div>
         </div>
 
-        <br><br>
+        <div class="qs-section-spacer"></div>
       </div>
     </section>
 
@@ -277,40 +284,30 @@
         <div class="row g-3">
           <div class="col-12 col-md-6">
             <div class="qs-step">
-              <div class="fw-semibold mb-2"><i class="bi bi-eye" aria-hidden="true"></i> 外観（見た目）</div>
-              <p class="mb-2">
-                汚れ・傷・色ムラ・縫製の歪み・左右差・糸の飛び出しなどを確認し、基準に満たないものは是正します。
-              </p>
-              <p class="muted small mb-0">
-                例）縫い目の乱れ、コバの仕上げ、ロゴ位置、シワや凹みなど
-              </p>
+              <div class="fw-semibold mb-2">外観（見た目）</div>
+              <p class="mb-2">汚れ・傷・色ムラ・縫製の歪み・左右差・糸の飛び出しなどを確認し、基準に満たないものは是正します。</p>
+              <div class="muted small">例）縫い目の乱れ、コバの仕上げ、ロゴ位置、シワや凹みなど</div>
             </div>
           </div>
-
           <div class="col-12 col-md-6">
             <div class="qs-step">
-              <div class="fw-semibold mb-2"><i class="bi bi-gear" aria-hidden="true"></i> 機能（動作）</div>
-              <p class="mb-2">
-                ファスナーの滑り、バックルや固定部の保持力、可動部の干渉、ポケットの縫い止めなど、使用時に支障がないかを確認します。
-              </p>
-              <p class="muted small mb-0">
-                例）止水ファスナーの引きやすさ、ショルダー周り、キャリーオン部など
-              </p>
+              <div class="fw-semibold mb-2">機能（動作）</div>
+              <p class="mb-2">ファスナーの滑り、バックルや固定部の保持力、可動部の干渉、ポケットの縫い止めなど、使用時に支障がないかを確認します。</p>
+              <div class="muted small">例）止水ファスナーの引きやすさ、ショルダー周り、キャリーオン部など</div>
             </div>
           </div>
         </div>
 
-        <br>
+        <div class="mt-4">
+          <figure class="qs-figure">
+            <img
+              src="/assets/img/quality-support/addeva_qc.png"
+              alt="検品のイメージ"
+              loading="lazy">
+          </figure>
+        </div>
 
-        <figure class="qs-figure">
-          <img
-            src="/assets/img/quality-support/qs_inspection_placeholder.jpg"
-            alt="検品のイメージ（差し替え予定）"
-            loading="lazy">
-          <figcaption>※写真は差し替え予定です（検品風景や検品台の写真を配置すると説得力が上がります）。</figcaption>
-        </figure>
-
-        <br><br>
+        <div class="qs-section-spacer"></div>
       </div>
     </section>
 
@@ -360,7 +357,7 @@
           </div>
         </div>
 
-        <br><br>
+        <div class="qs-section-spacer"></div>
       </div>
     </section>
 
@@ -382,9 +379,7 @@
               <p class="mb-2">
                 製品にはメーカー保証が付帯します。保証対応にあたり、ご購入日が確認できる情報（注文番号・領収書等）のご提示をお願いする場合があります。
               </p>
-              <p class="muted small mb-0">
-                詳細の手続き・問い合わせ方法はサポートガイドに集約しています。
-              </p>
+              <p class="muted small mb-0">詳細の手続き・問い合わせ方法はサポートガイドに集約しています。</p>
             </div>
           </div>
 
@@ -395,9 +390,7 @@
                 まずは状況を確認し、「使用方法で解決できるケース」「初期不良の可能性」「経年や想定外の負荷」などを切り分けます。
                 そのうえで、必要な対応をご案内します。
               </p>
-              <p class="muted small mb-0">
-                写真や動画をご用意いただくと、判断が早くなります。
-              </p>
+              <p class="muted small mb-0">写真や動画をご用意いただくと、判断が早くなります。</p>
             </div>
           </div>
         </div>
@@ -434,10 +427,11 @@
           </div>
         </div>
 
-        <br><br>
+        <div class="qs-section-spacer"></div>
       </div>
     </section>
-</main>
+
+  </main>
 
   <!-- 共通フッター -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
@@ -454,12 +448,16 @@
             if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
             const html = await resp.text();
             el.outerHTML = html;
-          } catch (e) { console.error('Include failed:', file, e); }
+          } catch (e) {
+            console.error('Include failed:', file, e);
+          }
         }));
       }
+
       document.addEventListener('DOMContentLoaded', async () => {
         await includeFragments();
-        const y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+        const y = document.getElementById('y');
+        if (y) y.textContent = new Date().getFullYear();
       });
     })();
   </script>
