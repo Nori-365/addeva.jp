@@ -7,25 +7,60 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>品質・サポート｜ADDEVA</title>
-  <meta name="description" content="ADDEVAの品質管理体制（素材選定・縫製・検品）と、メーカーとしてのアフターサポート方針をご紹介します。">
+  <!-- Primary SEO -->
+  <title>品質・サポート｜ADDEVAの品質管理体制とアフターサポート方針</title>
+  <meta name="description" content="ADDEVAの品質管理体制（素材選定・縫製・検品）と、メーカーとしてのアフターサポート方針をご紹介。購入前にも購入後にも役立つ、安心の根拠ページです。">
+
+  <!-- Canonical -->
   <link rel="canonical" href="https://www.addeva.jp/quality-support.html">
+
+  <!-- Robots -->
   <meta name="robots" content="index,follow,max-image-preview:large">
+
+  <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
 
+  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.6">
   <link rel="stylesheet" href="/assets/css/override.css?v=1.0">
 
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ADDEVA">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:url" content="https://www.addeva.jp/quality-support.html">
+  <meta property="og:title" content="品質・サポート｜ADDEVAの品質管理体制とアフターサポート方針">
+  <meta property="og:description" content="ADDEVAの品質管理体制（素材選定・縫製・検品）と、メーカーとしてのアフターサポート方針をご紹介。購入前にも購入後にも役立つ、安心の根拠ページです。">
+  <meta property="og:image" content="https://www.addeva.jp/assets/img/og/ogp_top.jpg">
+
   <style>
+    section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 56px); }
+    .subnav-shadow{ box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .muted{color: var(--bs-secondary-color, #6c757d);}
     .qs-hero{
-      background: linear-gradient(180deg, rgba(242,246,247,1) 0%, rgba(255,255,255,1) 65%);
+      background: linear-gradient(180deg, rgba(242,246,247,1) 0%, rgba(255,255,255,1) 60%);
     }
-    .qs-card{
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 1rem;
+    .qs-hero-card{
       background:#fff;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .qs-badge{
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.35rem .6rem; border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      background:rgba(255,255,255,.75);
+      font-size:.9rem;
+    }
+    .qs-step{
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: .9rem;
+      padding: 16px;
+      background:#fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
       height:100%;
     }
     .qs-figure{
@@ -37,105 +72,469 @@
     }
     .qs-figure img{ width:100%; height:auto; display:block; }
     .qs-figure figcaption{ padding:10px 12px; font-size:.9rem; color: var(--bs-secondary-color); }
+    .qs-cta{
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1rem;
+      padding: 18px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+    .qs-divider{ height:1px; background:rgba(0,0,0,.08); margin: 18px 0; }
   </style>
+
+  <!-- JSON-LD (WebPage) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebPage",
+    "name":"品質・サポート｜ADDEVAの品質管理体制とアフターサポート方針",
+    "url":"https://www.addeva.jp/quality-support.html",
+    "inLanguage":"ja-JP",
+    "isPartOf":{
+      "@type":"WebSite",
+      "name":"ADDEVA",
+      "url":"https://www.addeva.jp/"
+    }
+  }
+  </script>
 </head>
 
 <body>
   <!-- 共通ヘッダー -->
   <div data-include="/includes/header.html" aria-busy="true"></div>
 
+  <!-- サブナビ（固定） -->
+  <nav class="subnav-shadow" style="position:sticky; top: var(--header-desktop, 64px); z-index:1020; background:#fff; border-bottom:1px solid var(--line);">
+    <div class="container container-narrow">
+      <ul class="nav gap-2 py-2 small flex-wrap">
+        <li class="nav-item"><a class="nav-link px-2" href="#policy">品質方針</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#process">工程管理</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#inspection">検品基準</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#improvement">改善サイクル</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#support">サポート方針</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+  </nav>
+
   <main>
 
     <!-- HERO -->
-    <section class="section qs-hero py-4 py-md-5">
-      <div class="container container-narrow">
-        <div class="row g-4 align-items-center">
+    <section class="section qs-hero">
+      <div class="container container-narrow py-3 py-md-4">
+        <div class="row g-4 align-items-stretch">
           <div class="col-12 col-lg-6">
             <div class="kicker">Quality & Support</div>
-            <h1 class="h2 mb-3">品質とサポートの考え方</h1>
+            <h1 class="h2 mb-3">品質とサポートの「根拠」を、見える形に。</h1>
             <p class="lead mb-3">
               ADDEVAは、素材選定から縫製、最終検品まで、工程ごとに品質基準を設けて管理しています。
-              このページでは、品質管理体制とサポート方針を簡潔にご紹介します。
+              このページでは、購入前の不安を解消し、購入後も安心して使い続けられるように、品質管理体制とサポート方針をわかりやすくまとめました。
             </p>
 
-            <div class="d-flex flex-wrap gap-2">
-              <a class="btn btn-outline-primary" href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=hero">
-                サポートガイドへ
-              </a>
-              <a class="btn btn-outline-dark" href="/customer.html?mode=login&utm_source=quality_support&utm_medium=internal&utm_campaign=hero">
-                ログイン
-              </a>
-              <a class="btn btn-dark" href="/register.html?utm_source=quality_support&utm_medium=internal&utm_campaign=hero">
-                ユーザー登録（任意）
-              </a>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <span class="qs-badge"><i class="bi bi-shield-check" aria-hidden="true"></i>工程管理</span>
+              <span class="qs-badge"><i class="bi bi-check2-circle" aria-hidden="true"></i>検品基準</span>
+              <span class="qs-badge"><i class="bi bi-arrow-repeat" aria-hidden="true"></i>改善サイクル</span>
+              <span class="qs-badge"><i class="bi bi-headset" aria-hidden="true"></i>メーカーサポート</span>
             </div>
+
+            <div class="qs-cta">
+              <div class="row g-2 align-items-center">
+                <div class="col-12 col-md-7">
+                  <div class="fw-semibold mb-1">保証・使い方ガイド・ユーザーサポートの手続き</div>
+                  <div class="muted small">具体的な手順は、サポートガイドに集約しています。</div>
+                </div>
+                <div class="col-12 col-md-5 d-grid">
+                  <a class="btn btn-outline-primary"
+                     href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=hero_cta"
+                     aria-label="保証・アフターサポートの案内ページ（support-guide）へ">
+                    サポートガイドへ
+                  </a>
+                </div>
+              </div>
+
+              <div class="qs-divider"></div>
+
+              <div class="row g-2 align-items-center">
+                <div class="col-12 col-md-7">
+                  <div class="fw-semibold mb-1">UrbanFlex 製品ページ</div>
+                  <div class="muted small">仕様・サイズ・FAQを確認できます。</div>
+                </div>
+                <div class="col-12 col-md-5 d-grid">
+                  <a class="btn btn-dark"
+                     href="/product/urbanflex/?utm_source=quality_support&utm_medium=internal&utm_campaign=hero_cta"
+                     aria-label="UrbanFlex製品ページへ">
+                    UrbanFlexを見る
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <p class="small text-body-secondary mt-3 mb-0">
+              ※画像は後から差し替えられるように、プレースホルダーを入れています。
+            </p>
           </div>
 
           <div class="col-12 col-lg-6">
-            <figure class="qs-figure mb-0">
-              <img src="/assets/img/quality-support/qs_hero_placeholder.jpg" alt="品質管理のイメージ（差し替え予定）" loading="lazy">
-              <figcaption>※写真は差し替え予定です（検品風景・工場内の管理工程など）。</figcaption>
-            </figure>
+            <div class="qs-hero-card">
+              <!-- 画像（差し替え前提） -->
+              <img
+                src="/assets/img/quality-support/addeva_pdca.png"
+                alt="品質管理・検品のPDCA（イメージ）"
+                loading="lazy">
+              <div class="p-3">
+                <div class="fw-semibold">品質管理・検品のPDCA（イメージ）</div>
+                <div class="muted small">レビューや不具合情報を改善に反映し、品質を継続的にアップデートします。</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 品質管理の要点（3点） -->
-    <section class="section py-4 py-md-5">
+    <!-- 品質方針 -->
+    <section id="policy" class="section">
       <div class="container container-narrow">
-        <div class="kicker">Quality Control</div>
-        <h2 class="h3 mb-3">品質管理の要点</h2>
+        <div class="kicker">Policy</div>
+        <h2>品質方針</h2>
+        <p class="mb-3">
+          ADDEVAは「使い始めの満足」だけでなく、「使い続けた後の納得」を重視しています。
+          機能やデザインだけでなく、毎日の通勤や出張で繰り返し使われることを前提に、耐久性・使い勝手・仕上がりを総合的に管理します。
+        </p>
 
         <div class="row g-3">
           <div class="col-12 col-md-4">
-            <div class="qs-card p-3">
-              <div class="fw-semibold mb-1">素材選定</div>
-              <div class="text-body-secondary small mb-2">用途に合わせた基準で採用</div>
-              <p class="mb-0">表地・裏地・芯材・ファスナーなど、使用シーンを前提に必要な基準を満たすものを選定します。</p>
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-layers" aria-hidden="true"></i> 素材起点</div>
+              <div class="muted small mb-2">軽量性・防水性・耐久性のバランス</div>
+              <p class="mb-0">
+                表地・裏地・芯材・ファスナーなど、用途に応じた素材を選定し、必要な基準を満たすものだけを採用します。
+              </p>
             </div>
           </div>
-
           <div class="col-12 col-md-4">
-            <div class="qs-card p-3">
-              <div class="fw-semibold mb-1">縫製・補強</div>
-              <div class="text-body-secondary small mb-2">負荷のかかる部位を優先管理</div>
-              <p class="mb-0">持ち手、ショルダー付け根、底部など、耐久性に直結する部位は仕様と工程の再現性を重視します。</p>
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-scissors" aria-hidden="true"></i> 工程起点</div>
+              <div class="muted small mb-2">縫製・補強・組み立ての品質</div>
+              <p class="mb-0">
+                負荷がかかる部位は補強方法を設計に織り込み、縫い代・ステッチ・曲線部などの仕上がりを工程ごとに確認します。
+              </p>
             </div>
           </div>
-
           <div class="col-12 col-md-4">
-            <div class="qs-card p-3">
-              <div class="fw-semibold mb-1">最終検品</div>
-              <div class="text-body-secondary small mb-2">外観と機能を分けて確認</div>
-              <p class="mb-0">汚れ・傷・歪みなどの外観と、ファスナーや可動部などの機能を分けて確認し、基準に基づき出荷します。</p>
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-clipboard-check" aria-hidden="true"></i> 検品起点</div>
+              <div class="muted small mb-2">見た目と機能の両面</div>
+              <p class="mb-0">
+                外観（汚れ・傷・歪み）と機能（ファスナー・可動部・固定部）を分けて確認し、合格基準を満たしたもののみを出荷します。
+              </p>
             </div>
           </div>
         </div>
+
+        <br><br>
       </div>
     </section>
 
-    <!-- サポート導線 -->
-    <section class="section py-4 py-md-5 bg-light">
+    <!-- 工程管理 -->
+    <section id="process" class="section">
       <div class="container container-narrow">
-        <div class="kicker">Support</div>
-        <h2 class="h3 mb-3">サポートのご案内</h2>
+        <div class="kicker">Process</div>
+        <h2>工程管理</h2>
         <p class="mb-3">
-          手続きや必要情報、使い方ガイドは、サポートガイドに集約しています。
-          お困りの際は、まずはこちらをご確認ください。
+          品質は「最後の検品だけ」では作れません。ADDEVAは、工程そのものの安定化を重視し、問題が起きにくい作り方に整えます。
         </p>
 
-        <div class="d-flex flex-wrap gap-2">
-          <a class="btn btn-outline-primary" href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=support">
-            サポートガイドへ
-          </a>
-          <a class="btn btn-outline-dark" href="/contact.html?utm_source=quality_support&utm_medium=internal&utm_campaign=support">
-            お問い合わせ
-          </a>
-          <a class="btn btn-dark" href="/UrbanFlex.html?utm_source=quality_support&utm_medium=internal&utm_campaign=support">
-            UrbanFlexを見る
-          </a>
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-lg-6">
+            <figure class="qs-figure">
+              <img
+                src="/assets/img/quality-support/qs_process_placeholder.jpg"
+                alt="製造工程のイメージ（差し替え予定）"
+                loading="lazy">
+              <figcaption>※写真は差し替え予定です（工程の雰囲気が伝わる写真を配置してください）。</figcaption>
+            </figure>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <h3 class="h5 mb-2">管理ポイント（例）</h3>
+            <p class="mb-2">
+              工程ごとに「確認すべき点」を明確にし、品質ブレの原因になりやすい箇所から優先的に管理します。
+            </p>
+            <div class="qs-divider"></div>
+            <p class="mb-2">
+              <strong>素材選定・受入</strong><br>
+              表地のコーティング、裏地の滑り、芯材の厚み、ファスナーの品質などを用途基準で確認します。
+            </p>
+            <p class="mb-2">
+              <strong>縫製・補強</strong><br>
+              負荷のかかる取っ手・ショルダー付け根・底部などは補強仕様を設計に反映し、工程で再現できているかを確認します。
+            </p>
+            <p class="mb-0">
+              <strong>組み立て・最終仕上げ</strong><br>
+              型崩れ、歪み、左右差、可動部の干渉など、使い勝手に直結するポイントを中心に確認します。
+            </p>
+          </div>
         </div>
+
+        <br><br>
+      </div>
+    </section>
+
+    <!-- 検品基準 -->
+    <section id="inspection" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">Inspection</div>
+        <h2>検品基準</h2>
+        <p class="mb-3">
+          見た目の印象は、第一印象だけでなく、長く使う満足度にも影響します。ADDEVAでは、外観・機能の観点を分けて確認します。
+        </p>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="qs-step">
+              <div class="fw-semibold mb-2"><i class="bi bi-eye" aria-hidden="true"></i> 外観（見た目）</div>
+              <p class="mb-2">
+                汚れ・傷・色ムラ・縫製の歪み・左右差・糸の飛び出しなどを確認し、基準に満たないものは是正します。
+              </p>
+              <p class="muted small mb-0">
+                例）縫い目の乱れ、コバの仕上げ、ロゴ位置、シワや凹みなど
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div class="qs-step">
+              <div class="fw-semibold mb-2"><i class="bi bi-gear" aria-hidden="true"></i> 機能（動作）</div>
+              <p class="mb-2">
+                ファスナーの滑り、バックルや固定部の保持力、可動部の干渉、ポケットの縫い止めなど、使用時に支障がないかを確認します。
+              </p>
+              <p class="muted small mb-0">
+                例）止水ファスナーの引きやすさ、ショルダー周り、キャリーオン部など
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <br>
+
+        <figure class="qs-figure">
+          <img
+            src="/assets/img/quality-support/qs_inspection_placeholder.jpg"
+            alt="検品のイメージ（差し替え予定）"
+            loading="lazy">
+          <figcaption>※写真は差し替え予定です（検品風景や検品台の写真を配置すると説得力が上がります）。</figcaption>
+        </figure>
+
+        <br><br>
+      </div>
+    </section>
+
+    <!-- 改善サイクル -->
+    <section id="improvement" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">Improve</div>
+        <h2>改善サイクル</h2>
+        <p class="mb-3">
+          製品は、使われて初めて課題が見えることがあります。ADDEVAは、レビューやお問い合わせ、実使用の気づきを設計と製造に反映し、次のロット・次モデルへ改善していきます。
+        </p>
+
+        <div class="row g-3">
+          <div class="col-12 col-lg-4">
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-chat-left-text" aria-hidden="true"></i> フィードバック</div>
+              <p class="mb-0">レビューやお問い合わせ、使用感の声を収集し、課題を言語化します。</p>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-pencil-square" aria-hidden="true"></i> 設計反映</div>
+              <p class="mb-0">原因を切り分け、縫製仕様・部材・寸法・収納設計などへ反映します。</p>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="qs-step">
+              <div class="fw-semibold mb-1"><i class="bi bi-tools" aria-hidden="true"></i> 工程改善</div>
+              <p class="mb-0">工程の再現性を高めるため、手順やチェックポイントを見直します。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="qs-cta mt-4">
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-8">
+              <div class="fw-semibold mb-1">ユーザー登録（任意）で、改善に参加できます</div>
+              <div class="muted small">使い方ガイドやフィードバック企画は、登録ユーザー向けに順次ご案内します。</div>
+            </div>
+            <div class="col-12 col-md-4 d-grid">
+              <a class="btn btn-outline-dark"
+                 href="/register.html?utm_source=quality_support&utm_medium=internal&utm_campaign=improvement_cta"
+                 aria-label="ユーザー登録（register）へ">
+                ユーザー登録へ
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <br><br>
+      </div>
+    </section>
+
+    <!-- サポート方針 -->
+    <section id="support" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">Support</div>
+        <h2>メーカーとしてのサポート方針</h2>
+
+        <p class="mb-3">
+          ADDEVAは、メーカーとして製品不具合に関するサポートに責任を持って対応します。
+          具体的な手続きや必要情報はサポートガイドにまとめていますが、ここでは方針を簡潔にご紹介します。
+        </p>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="qs-step">
+              <div class="fw-semibold mb-2"><i class="bi bi-shield" aria-hidden="true"></i> メーカー保証</div>
+              <p class="mb-2">
+                製品にはメーカー保証が付帯します。保証対応にあたり、ご購入日が確認できる情報（注文番号・領収書等）のご提示をお願いする場合があります。
+              </p>
+              <p class="muted small mb-0">
+                詳細の手続き・問い合わせ方法はサポートガイドに集約しています。
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <div class="qs-step">
+              <div class="fw-semibold mb-2"><i class="bi bi-envelope-check" aria-hidden="true"></i> 迅速な切り分け</div>
+              <p class="mb-2">
+                まずは状況を確認し、「使用方法で解決できるケース」「初期不良の可能性」「経年や想定外の負荷」などを切り分けます。
+                そのうえで、必要な対応をご案内します。
+              </p>
+              <p class="muted small mb-0">
+                写真や動画をご用意いただくと、判断が早くなります。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="qs-cta mt-4">
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-8">
+              <div class="fw-semibold mb-1">保証・サポートの具体的な手続きはこちら</div>
+              <div class="muted small">ログイン／新規登録、使い方ガイド、問い合わせ手順をまとめています。</div>
+            </div>
+            <div class="col-12 col-md-4 d-grid">
+              <a class="btn btn-outline-primary"
+                 href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=support_section_cta"
+                 aria-label="サポートガイド（support-guide）へ">
+                サポートガイドへ
+              </a>
+            </div>
+          </div>
+
+          <div class="qs-divider"></div>
+
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-8">
+              <div class="fw-semibold mb-1">ユーザーページ（ログイン）</div>
+              <div class="muted small">登録済みの方は、こちらからログインできます。</div>
+            </div>
+            <div class="col-12 col-md-4 d-grid">
+              <a class="btn btn-outline-dark"
+                 href="/customer.html?mode=login&utm_source=quality_support&utm_medium=internal&utm_campaign=support_section_cta"
+                 aria-label="顧客ページ（ログイン）へ">
+                ログインへ
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <br><br>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="container container-narrow">
+        <div class="kicker">FAQ</div>
+        <h2 class="h3">品質・サポートに関するFAQ</h2>
+        <p class="muted">購入前の確認ポイントと、購入後の困りごとに関するよくある質問</p>
+
+        <div class="accordion" id="accQS">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="qs-q1">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a1" aria-expanded="false" aria-controls="qs-a1">
+                このページとサポートガイド（support-guide）の違いは何ですか？
+              </button>
+            </h3>
+            <div id="qs-a1" class="accordion-collapse collapse" aria-labelledby="qs-q1" data-bs-parent="#accQS">
+              <div class="accordion-body">
+                このページは、品質管理体制とサポート方針の「根拠」を説明するページです。具体的な手続き（ログイン／登録、問い合わせ方法、必要情報、使い方ガイド）はサポートガイドに集約しています。
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="qs-q2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a2" aria-expanded="false" aria-controls="qs-a2">
+                初期不良が疑われる場合、どうすればよいですか？
+              </button>
+            </h3>
+            <div id="qs-a2" class="accordion-collapse collapse" aria-labelledby="qs-q2" data-bs-parent="#accQS">
+              <div class="accordion-body">
+                まずは状態がわかる写真（可能なら短い動画）をご用意ください。状況に応じて、使用方法で解決できるケースか、交換や修理の検討が必要かを切り分けます。詳細はサポートガイドをご確認ください。
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="qs-q3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a3" aria-expanded="false" aria-controls="qs-a3">
+                品質はロットで変わりませんか？
+              </button>
+            </h3>
+            <div id="qs-a3" class="accordion-collapse collapse" aria-labelledby="qs-q3" data-bs-parent="#accQS">
+              <div class="accordion-body">
+                素材や工程の条件が変わると品質がブレる可能性があります。ADDEVAは、工程ごとのチェックポイントと基準を明確にし、ロット間の差が出にくい運用を重視しています。改善が必要な場合は、次ロットへ反映します。
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="qs-q4">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a4" aria-expanded="false" aria-controls="qs-a4">
+                ユーザー登録は必須ですか？
+              </button>
+            </h3>
+            <div id="qs-a4" class="accordion-collapse collapse" aria-labelledby="qs-q4" data-bs-parent="#accQS">
+              <div class="accordion-body">
+                必須ではありません。登録いただくと、保証期間の確認やアフターサポートがスムーズになります。また、使い方ガイドやフィードバック企画などのご案内を順次お届けします。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qs-cta mt-4">
+          <div class="fw-semibold mb-1">すぐに手続きしたい方へ</div>
+          <div class="muted small mb-3">具体的な手順は、サポートガイドに集約しています。</div>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-primary"
+               href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
+              サポートガイドへ
+            </a>
+            <a class="btn btn-outline-dark"
+               href="/customer.html?mode=login&utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
+              ログインへ
+            </a>
+            <a class="btn btn-dark"
+               href="/register.html?utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
+              ユーザー登録へ
+            </a>
+          </div>
+        </div>
+
+        <br><br>
       </div>
     </section>
 
