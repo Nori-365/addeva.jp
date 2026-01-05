@@ -48,6 +48,11 @@
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
       overflow:hidden;
     }
+    /* HERO画像（縦長/情報量の多い画像が大きく見えすぎないように高さを制御） */
+    .qs-hero-img{ width:100%; height:auto; display:block; }
+    @media (min-width: 992px){
+      .qs-hero-img{ height: 360px; object-fit: contain; background: #f8f9fa; }
+    }
     .qs-badge{
       display:inline-flex; align-items:center; gap:.5rem;
       padding:.35rem .6rem; border-radius:999px;
@@ -179,12 +184,13 @@
             <div class="qs-hero-card">
               <!-- 画像（差し替え前提） -->
               <img
+                class="img-fluid qs-hero-img"
                 src="/assets/img/quality-support/addeva_pdca.png"
                 alt="品質管理・検品のPDCA（イメージ）"
                 loading="lazy">
               <div class="p-3">
                 <div class="fw-semibold">品質管理・検品のPDCA（イメージ）</div>
-                <div class="muted small">レビューや不具合情報を改善に反映し、品質を継続的にアップデートします。</div>
+                <div class="muted small">品質改善サイクル（PDCA）の考え方を図示したイメージです。</div>
               </div>
             </div>
           </div>
