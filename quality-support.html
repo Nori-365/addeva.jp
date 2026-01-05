@@ -35,7 +35,7 @@
   <meta property="og:image" content="https://www.addeva.jp/assets/img/og/ogp_top.jpg">
 
   <style>
-    section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 56px); }
+    section[id]{ scroll-margin-top: calc(var(--header-desktop, 64px) + 16px); }
     .subnav-shadow{ box-shadow: 0 2px 8px rgba(0,0,0,.06); }
     .muted{color: var(--bs-secondary-color, #6c757d);}
     .qs-hero{
@@ -48,11 +48,8 @@
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
       overflow:hidden;
     }
-    /* HERO画像（縦長/情報量の多い画像が大きく見えすぎないように高さを制御） */
+    /* HERO画像（図解をカード内で素直に表示） */
     .qs-hero-img{ width:100%; height:auto; display:block; }
-    @media (min-width: 992px){
-      .qs-hero-img{ height: 360px; object-fit: contain; background: #f8f9fa; }
-    }
     .qs-badge{
       display:inline-flex; align-items:center; gap:.5rem;
       padding:.35rem .6rem; border-radius:999px;
@@ -107,21 +104,6 @@
 <body>
   <!-- 共通ヘッダー -->
   <div data-include="/includes/header.html" aria-busy="true"></div>
-
-  <!-- サブナビ（固定） -->
-  <nav class="subnav-shadow" style="position:sticky; top: var(--header-desktop, 64px); z-index:1020; background:#fff; border-bottom:1px solid var(--line);">
-    <div class="container container-narrow">
-      <ul class="nav gap-2 py-2 small flex-wrap">
-        <li class="nav-item"><a class="nav-link px-2" href="#policy">品質方針</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="#process">工程管理</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="#inspection">検品基準</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="#improvement">改善サイクル</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="#support">サポート方針</a></li>
-        <li class="nav-item"><a class="nav-link px-2" href="#faq">FAQ</a></li>
-      </ul>
-    </div>
-  </nav>
-
   <main>
 
     <!-- HERO -->
@@ -188,9 +170,6 @@
                 src="/assets/img/quality-support/addeva_pdca.png"
                 alt="品質管理・検品のPDCA（イメージ）"
                 loading="lazy">
-              <div class="p-3">
-                <div class="fw-semibold">品質管理・検品のPDCA（イメージ）</div>
-                <div class="muted small">品質改善サイクル（PDCA）の考え方を図示したイメージです。</div>
               </div>
             </div>
           </div>
@@ -255,10 +234,9 @@
           <div class="col-12 col-lg-6">
             <figure class="qs-figure">
               <img
-                src="/assets/img/quality-support/qs_process_placeholder.jpg"
-                alt="製造工程のイメージ（差し替え予定）"
+                src="/assets/img/quality-support/factory_1024_1024.png"
+                alt="製造工程のイメージ"
                 loading="lazy">
-              <figcaption>※写真は差し替え予定です（工程の雰囲気が伝わる写真を配置してください）。</figcaption>
             </figure>
           </div>
 
@@ -459,92 +437,7 @@
         <br><br>
       </div>
     </section>
-
-    <!-- FAQ -->
-    <section id="faq" class="section">
-      <div class="container container-narrow">
-        <div class="kicker">FAQ</div>
-        <h2 class="h3">品質・サポートに関するFAQ</h2>
-        <p class="muted">購入前の確認ポイントと、購入後の困りごとに関するよくある質問</p>
-
-        <div class="accordion" id="accQS">
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="qs-q1">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a1" aria-expanded="false" aria-controls="qs-a1">
-                このページとサポートガイド（support-guide）の違いは何ですか？
-              </button>
-            </h3>
-            <div id="qs-a1" class="accordion-collapse collapse" aria-labelledby="qs-q1" data-bs-parent="#accQS">
-              <div class="accordion-body">
-                このページは、品質管理体制とサポート方針の「根拠」を説明するページです。具体的な手続き（ログイン／登録、問い合わせ方法、必要情報、使い方ガイド）はサポートガイドに集約しています。
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="qs-q2">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a2" aria-expanded="false" aria-controls="qs-a2">
-                初期不良が疑われる場合、どうすればよいですか？
-              </button>
-            </h3>
-            <div id="qs-a2" class="accordion-collapse collapse" aria-labelledby="qs-q2" data-bs-parent="#accQS">
-              <div class="accordion-body">
-                まずは状態がわかる写真（可能なら短い動画）をご用意ください。状況に応じて、使用方法で解決できるケースか、交換や修理の検討が必要かを切り分けます。詳細はサポートガイドをご確認ください。
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="qs-q3">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a3" aria-expanded="false" aria-controls="qs-a3">
-                品質はロットで変わりませんか？
-              </button>
-            </h3>
-            <div id="qs-a3" class="accordion-collapse collapse" aria-labelledby="qs-q3" data-bs-parent="#accQS">
-              <div class="accordion-body">
-                素材や工程の条件が変わると品質がブレる可能性があります。ADDEVAは、工程ごとのチェックポイントと基準を明確にし、ロット間の差が出にくい運用を重視しています。改善が必要な場合は、次ロットへ反映します。
-              </div>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="qs-q4">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#qs-a4" aria-expanded="false" aria-controls="qs-a4">
-                ユーザー登録は必須ですか？
-              </button>
-            </h3>
-            <div id="qs-a4" class="accordion-collapse collapse" aria-labelledby="qs-q4" data-bs-parent="#accQS">
-              <div class="accordion-body">
-                必須ではありません。登録いただくと、保証期間の確認やアフターサポートがスムーズになります。また、使い方ガイドやフィードバック企画などのご案内を順次お届けします。
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="qs-cta mt-4">
-          <div class="fw-semibold mb-1">すぐに手続きしたい方へ</div>
-          <div class="muted small mb-3">具体的な手順は、サポートガイドに集約しています。</div>
-          <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-outline-primary"
-               href="/support-guide.html?utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
-              サポートガイドへ
-            </a>
-            <a class="btn btn-outline-dark"
-               href="/customer.html?mode=login&utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
-              ログインへ
-            </a>
-            <a class="btn btn-dark"
-               href="/register.html?utm_source=quality_support&utm_medium=internal&utm_campaign=faq_cta">
-              ユーザー登録へ
-            </a>
-          </div>
-        </div>
-
-        <br><br>
-      </div>
-    </section>
-
-  </main>
+</main>
 
   <!-- 共通フッター -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
