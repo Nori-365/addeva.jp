@@ -93,6 +93,15 @@
               製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。
             </div>
           </div>
+
+          <!-- 製品チームからのメッセージ（APIから取得して表示） -->
+          <div id="productTeamMessageWrap" class="mb-3 d-none">
+            <div class="p-3 bg-white border rounded">
+              <div class="fw-bold mb-2">製品チームから</div>
+              <div id="productTeamMessageBody"></div>
+            </div>
+          </div>
+
           <h1 class="mb-2">フィードバックボード</h1>
           <p class="lead mb-1">
             <span class="d-none d-md-inline">対象商品：</span><span class="d-inline d-md-none">対象：</span> <span id="productName" class="fw-bold">-</span>
@@ -364,6 +373,35 @@
       }
     };
 
+
+    const loadProductTeamMessage = async () => {
+      const wrap = $('productTeamMessageWrap');
+      const body = $('productTeamMessageBody');
+
+      if (!wrap || !body) return;
+
+      wrap.classList.add('d-none');
+      body.innerHTML = '';
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/product_team_message', {
+          method: 'POST',
+          body: { productCode }
+        });
+
+        const html = (res && res.content_html) ? String(res.content_html) : '';
+        if (!html.trim()) return;
+
+        body.innerHTML = html;
+        wrap.classList.remove('d-none');
+      } catch (e) {
+        // メッセージ取得失敗は致命ではないため、画面はそのまま（非表示）
+        console.error(e);
+      }
+    };
+
     const loadRanking = async () => {
       const tbody = $('rankRows');
       tbody && (tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">読み込み中...</td></tr>');
@@ -418,10 +456,10 @@
     (async () => {
       bindUI();
       await loadProductInfo();
+      await loadProductTeamMessage();
       await loadRanking();
       await loadParts();
     })();
   </script>
 </body>
 </html>
-
