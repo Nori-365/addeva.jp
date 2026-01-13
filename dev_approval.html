@@ -77,7 +77,7 @@
         <!-- ページヘッダー -->
         <div class="mb-4">
           <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
-            <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">承認待ち（new / updated）の投稿を確認し、公開内容（public_*）を保存します。</div>
+            <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">承認待ち（new / updated）の意見を確認し、公開内容（public_*）を確定します。</div>
             <div class="mt-1 text-secondary">
               公開表示は public_* を参照します。ユーザーが原文（title/body/part_code 等）を更新しても、公開内容は自動では変わりません。
             </div>
@@ -114,7 +114,7 @@
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                   <div>
                     <div class="h5 m-0">承認待ち一覧</div>
-                    <div class="text-secondary small">status が new / updated の投稿のみ表示します。</div>
+                    <div class="text-secondary small">status が new / updated の意見のみ表示します。</div>
                   </div>
                   <div class="text-secondary small">
                     件数：<span id="pendingCount">-</span>
@@ -125,9 +125,9 @@
                   <table class="table table-hover align-middle mb-0">
                     <thead>
                       <tr>
-                        <th style="width:5.8rem;">投稿ID</th>
-                        <th>意見</th>
-                        <th class="col-hide-sm" style="width:11.5rem;">更新日時</th>
+                        <th class="text-nowrap" style="width:4.4rem;">ID</th>
+                        <th class="text-center">意見</th>
+                        <th class="col-hide-sm text-nowrap" style="width:11.5rem;">更新日時</th>
                       </tr>
                     </thead>
                     <tbody id="pendingRows">
@@ -218,7 +218,7 @@
                   </div>
 
                   <div id="detailEmpty" class="text-secondary">
-                    左の一覧から投稿を選択してください。
+                    左の一覧から意見を選択してください。
                   </div>
 
                   <div id="detailWrap" class="d-none">
@@ -270,8 +270,7 @@
                       <div class="mb-3">
                         <label class="form-label" for="publicTitle">タイトル（公開）</label>
                         <input id="publicTitle" class="form-control" type="text" maxlength="200">
-                        <div class="d-flex justify-content-between">
-                          <div class="char-hint">未設定のときは原文を表示し、保存時は public_title に確定保存します。</div>
+                        <div class="d-flex justify-content-end">
                           <div class="char-hint"><span id="publicTitleCount">0</span>/200</div>
                         </div>
                       </div>
@@ -279,23 +278,12 @@
                       <div class="mb-3">
                         <label class="form-label" for="publicBody">本文（公開）</label>
                         <textarea id="publicBody" class="form-control" rows="16"></textarea>
-                        <div class="char-hint">未設定のときは原文を表示し、保存時は public_body に確定保存します。</div>
                       </div>
 
-                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div class="text-secondary small">
-                          <span>承認日時：</span><span id="approvedAt">-</span>
-                          <span class="ms-2">承認者：</span><span id="approvedBy">-</span>
-                        </div>
-                        <div class="d-flex gap-2">
-                          <button id="btnPublish" class="btn btn-primary" type="button">
-                            <i class="bi bi-check2-circle"></i> 承認して保存
-                          </button>
-                        </div>
-                      </div>
-
-                      <div class="text-secondary small mt-2">
-                        ※ 「承認して保存」は public_* と approved_at/approved_by を更新し、status を選択した値に更新します。
+                      <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
+                        <button id="btnPublish" class="btn btn-primary" type="button">
+                          <i class="bi bi-check2-circle"></i> 承認して公開
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -403,7 +391,7 @@
       btnNext && (btnNext.disabled = pendingList.length < LIMIT);
 
       if (!pendingList.length) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">承認待ちの投稿はありません。</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">承認待ちの意見はありません。</td></tr>';
         return;
       }
 
@@ -415,7 +403,7 @@
         const stLabel = escapeHtml(stRaw);
         let stBadgeClass = 'text-bg-secondary';
         if (stLc === 'new') stBadgeClass = 'text-bg-warning';
-        else if (stLc === 'updated') stBadgeClass = 'text-bg-warning';
+        else if (stLc === 'updated') stBadgeClass = 'text-bg-success';
         const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${stLabel}</span>`;
 
         const title = item.original_title || '';
@@ -481,7 +469,7 @@
 
       const hint = $('publicPartHint');
       if (hint) {
-        hint.textContent = '公開側の部位は一覧から選択してください。';
+        hint.textContent = '';
       }
     };
 
@@ -515,7 +503,7 @@
       wrap && wrap.classList.remove('d-none');
       btnScroll && (btnScroll.disabled = false);
 
-      meta && (meta.textContent = `投稿ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
+      meta && (meta.textContent = `ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
 
       const origPartText = $('origPartText');
       const origTitle = $('origTitle');
@@ -523,9 +511,6 @@
 
       const publicTitle = $('publicTitle');
       const publicBody = $('publicBody');
-
-      const approvedAt = $('approvedAt');
-      const approvedBy = $('approvedBy');
 
       const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || '';
       origPartText && (origPartText.textContent = originalPart ? String(originalPart) : '-');
@@ -537,10 +522,6 @@
       // APIの仕様に合わせて effective_public_* を使う
       publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || ''));
       publicBody && (publicBody.value = String(selectedPost.effective_public_body || ''));
-
-      // 承認メタ
-      approvedAt && (approvedAt.textContent = selectedPost.approved_at ? fmtDateTime(selectedPost.approved_at) : '-');
-      approvedBy && (approvedBy.textContent = (selectedPost.approved_by !== null && selectedPost.approved_by !== undefined) ? String(selectedPost.approved_by) : '-');
 
       // public_part_code
       const partWrap = $('publicPartWrap');
@@ -706,7 +687,7 @@
       } catch (e) {
         console.error(e);
         selectedPost = null;
-        showAlert('danger', e.message || '投稿詳細の取得に失敗しました。');
+        showAlert('danger', e.message || '意見詳細の取得に失敗しました。');
         renderDetail();
       }
     };
@@ -714,7 +695,7 @@
     const doPublish = async () => {
       if (!productCode) return;
       if (!selectedPost || !selectedPost.post_id) {
-        showAlert('warning', '承認対象の投稿を選択してください。');
+        showAlert('warning', '承認対象の意見を選択してください。');
         return;
       }
 
@@ -741,7 +722,7 @@
 
           // effective が空で、選択も空の場合は保存をブロック
           if (!publicPartCode && !effective && !originalPartCode && originalFree) {
-            showAlert('warning', '原文が自由入力のため、公開側の部位を一覧から選択してください。');
+            showAlert('warning', '公開側の部位を選択してください。');
             btn && (btn.disabled = false);
             return;
           }
@@ -759,17 +740,17 @@
           }
         });
 
-        showAlert('success', `保存しました（post_id=${res.post_id}, status=${res.status}）。`);
+        showAlert('success', `承認して公開しました（ID=${res.post_id}, status=${res.status}）。`);
 
-        // 一覧を更新（承認した投稿は new/updated から外れる想定）
+        // 一覧を更新（承認した意見は new/updated から外れる想定）
         await loadPendingList();
 
-        // 詳細も再読込して表示更新（承認日時等）
+        // 詳細も再読込して表示更新
         await loadPostDetail(Number(selectedPost.post_id));
 
       } catch (e) {
         console.error(e);
-        showAlert('danger', e.message || '承認（保存）に失敗しました。');
+        showAlert('danger', e.message || '承認（公開）に失敗しました。');
       } finally {
         btn && (btn.disabled = false);
       }
