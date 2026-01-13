@@ -257,21 +257,21 @@
   <script>
     // === ユーティリティ ===
     const qs = name => new URL(window.location.href).searchParams.get(name) || '';
-    const  = (id) => document.getElementById(id);
+    const el = (id) => document.getElementById(id);
 
     const productCode = (qs('product_code') || '').trim();
 
     const clearAlert = () => {
-      const box = ('messageArea');
-      const text = $('messageText');
+      const box = el('messageArea');
+      const text = el('messageText');
       if (!box || !text) return;
       box.className = 'alert d-none';
       text.textContent = '';
     };
 
     const showAlert = (type, msg) => {
-      const box = $('messageArea');
-      const text = $('messageText');
+      const box = el('messageArea');
+      const text = el('messageText');
       if (!box || !text) return;
 
       const klass = (type === 'success') ? 'alert-success'
@@ -281,12 +281,18 @@
 
       box.className = 'alert ' + klass;
       text.textContent = msg || '';
-      $('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+      el('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const escapeHtml = (s) => {
-      return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[c]));
     };
 
     const fmtDateTime = (iso) => {
@@ -322,19 +328,19 @@
 
     // === 描画 ===
     const renderPending = () => {
-      const tbody = $('pendingRows');
+      const tbody = el('pendingRows');
       if (!tbody) return;
 
-      const countEl = $('pendingCount');
+      const countEl = el('pendingCount');
       countEl && (countEl.textContent = String(pendingList.length));
 
-      const fromEl = $('pageFrom');
-      const toEl = $('pageTo');
+      const fromEl = el('pageFrom');
+      const toEl = el('pageTo');
       fromEl && (fromEl.textContent = pendingList.length ? String(offset + 1) : '0');
       toEl && (toEl.textContent = pendingList.length ? String(offset + pendingList.length) : '0');
 
-      const btnPrev = $('btnPrev');
-      const btnNext = $('btnNext');
+      const btnPrev = el('btnPrev');
+      const btnNext = el('btnNext');
       btnPrev && (btnPrev.disabled = offset <= 0);
       btnNext && (btnNext.disabled = pendingList.length < LIMIT);
 
@@ -389,7 +395,7 @@
     };
 
     const renderPartsSelect = (selectedCode) => {
-      const sel = $('publicPartSelect');
+      const sel = el('publicPartSelect');
       if (!sel) return;
 
       if (!partsGrouped.length) {
@@ -415,15 +421,15 @@
         sel.value = String(selectedCode);
       }
 
-      const hint = $('publicPartHint');
+      const hint = el('publicPartHint');
       if (hint) {
         hint.textContent = '';
       }
     };
 
     const bindCharCount = () => {
-      const t = $('publicTitle');
-      const c = $('publicTitleCount');
+      const t = el('publicTitle');
+      const c = el('publicTitleCount');
       if (!t || !c) return;
 
       const update = () => {
@@ -434,10 +440,10 @@
     };
 
     const renderDetail = () => {
-      const empty = $('detailEmpty');
-      const wrap = $('detailWrap');
-      const meta = $('detailMeta');
-      const btnScroll = $('btnScrollToDetail');
+      const empty = el('detailEmpty');
+      const wrap = el('detailWrap');
+      const meta = el('detailMeta');
+      const btnScroll = el('btnScrollToDetail');
 
       if (!selectedPost) {
         empty && empty.classList.remove('d-none');
@@ -453,12 +459,12 @@
 
       meta && (meta.textContent = `ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
 
-      const origPartText = $('origPartText');
-      const origTitle = $('origTitle');
-      const origBody = $('origBody');
+      const origPartText = el('origPartText');
+      const origTitle = el('origTitle');
+      const origBody = el('origBody');
 
-      const publicTitle = $('publicTitle');
-      const publicBody = $('publicBody');
+      const publicTitle = el('publicTitle');
+      const publicBody = el('publicBody');
 
       const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || '';
       origPartText && (origPartText.textContent = originalPart ? String(originalPart) : '-');
@@ -472,7 +478,7 @@
       publicBody && (publicBody.value = String(selectedPost.effective_public_body || ''));
 
       // public_part_code
-      const partWrap = $('publicPartWrap');
+      const partWrap = el('publicPartWrap');
       if (partWrap) {
         partWrap.style.display = hasPublicPartCode ? '' : 'none';
       }
@@ -482,7 +488,7 @@
       }
 
       // status セレクト
-      const stSel = $('publishStatus');
+      const stSel = el('publishStatus');
       if (stSel) {
         // 承認待ち一覧は new/updated。公開での既定は reviewing。
         stSel.value = 'reviewing';
@@ -493,7 +499,7 @@
 
     // === API 呼び出し ===
     const loadDeveloperStatus = async () => {
-      $('developerBadgeWrap')?.style && ($('developerBadgeWrap').style.display = 'none');
+      el('developerBadgeWrap')?.style && (el('developerBadgeWrap').style.display = 'none');
 
       if (!productCode) return;
 
@@ -507,8 +513,8 @@
         developerRole = (res && res.role) ? String(res.role) : '';
 
         if (isDeveloper) {
-          $('developerRole') && ($('developerRole').textContent = developerRole || '-');
-          const wrap = $('developerBadgeWrap');
+          el('developerRole') && (el('developerRole').textContent = developerRole || '-');
+          const wrap = el('developerBadgeWrap');
           wrap && (wrap.style.display = '');
         }
 
@@ -519,11 +525,11 @@
     };
 
     const loadProductInfo = async () => {
-      const nameEl = $('productName');
-      const chipEl = $('productCodeChip');
+      const nameEl = el('productName');
+      const chipEl = el('productCodeChip');
       chipEl && (chipEl.textContent = productCode || '-');
 
-      const bc = $('breadcrumbBoard');
+      const bc = el('breadcrumbBoard');
       if (bc) {
         bc.href = buildBoardUrl(productCode);
       }
@@ -548,7 +554,7 @@
     };
 
     const loadParts = async () => {
-      const sel = $('publicPartSelect');
+      const sel = el('publicPartSelect');
       sel && (sel.innerHTML = '<option value="">読み込み中...</option>');
 
       if (!productCode) return;
@@ -569,7 +575,7 @@
     };
 
     const loadPendingList = async () => {
-      const tbody = $('pendingRows');
+      const tbody = el('pendingRows');
       tbody && (tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">読み込み中...</td></tr>');
 
       if (!productCode) return;
@@ -630,19 +636,19 @@
         return;
       }
 
-      const btn = $('btnPublish');
+      const btn = el('btnPublish');
       btn && (btn.disabled = true);
 
       try {
-        const stSel = $('publishStatus');
+        const stSel = el('publishStatus');
         const newStatus = stSel ? String(stSel.value || '').trim() : 'reviewing';
 
-        const publicTitle = $('publicTitle') ? String($('publicTitle').value || '') : '';
-        const publicBody = $('publicBody') ? String($('publicBody').value || '') : '';
+        const publicTitle = el('publicTitle') ? String(el('publicTitle').value || '') : '';
+        const publicBody = el('publicBody') ? String(el('publicBody').value || '') : '';
 
         let publicPartCode = null;
         if (hasPublicPartCode) {
-          const sel = $('publicPartSelect');
+          const sel = el('publicPartSelect');
           const v = sel ? String(sel.value || '').trim() : '';
           publicPartCode = v ? v : null;
 
@@ -689,30 +695,30 @@
 
     // === UI バインド ===
     const bindUI = () => {
-      $('btnReload')?.addEventListener('click', async () => {
+      el('btnReload')?.addEventListener('click', async () => {
         clearAlert();
         await loadPendingList();
       });
 
-      $('btnScrollToDetail')?.addEventListener('click', () => {
-        $('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el('btnScrollToDetail')?.addEventListener('click', () => {
+        el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
-      $('btnPrev')?.addEventListener('click', async () => {
+      el('btnPrev')?.addEventListener('click', async () => {
         if (offset <= 0) return;
         offset = Math.max(0, offset - LIMIT);
         await loadPendingList();
       });
 
-      $('btnNext')?.addEventListener('click', async () => {
+      el('btnNext')?.addEventListener('click', async () => {
         offset = offset + LIMIT;
         await loadPendingList();
       });
 
-      $('btnPublish')?.addEventListener('click', doPublish);
+      el('btnPublish')?.addEventListener('click', doPublish);
 
       // Ctrl/Cmd+Enter で承認（公開）
-      $('publicBody')?.addEventListener('keydown', (e) => {
+      el('publicBody')?.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           doPublish();
         }
@@ -732,8 +738,8 @@
       if (!isDeveloper) {
         showAlert('danger', 'デベロッパー権限がありません。');
         // 一覧や操作ボタンを無効化
-        $('btnReload') && ($('btnReload').disabled = true);
-        $('btnPublish') && ($('btnPublish').disabled = true);
+        el('btnReload') && (el('btnReload').disabled = true);
+        el('btnPublish') && (el('btnPublish').disabled = true);
         return;
       }
 
