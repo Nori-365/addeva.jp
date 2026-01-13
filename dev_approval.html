@@ -149,7 +149,6 @@
 
               </div>
             </div>
-            </div>
           </div>
 
           <!-- 右：詳細／公開内容編集 -->
@@ -258,12 +257,12 @@
   <script>
     // === ユーティリティ ===
     const qs = name => new URL(window.location.href).searchParams.get(name) || '';
-    const $ = (id) => document.getElementById(id);
+    const  = (id) => document.getElementById(id);
 
     const productCode = (qs('product_code') || '').trim();
 
     const clearAlert = () => {
-      const box = $('messageArea');
+      const box = ('messageArea');
       const text = $('messageText');
       if (!box || !text) return;
       box.className = 'alert d-none';
@@ -315,7 +314,6 @@
 
     let pendingList = [];
     let partsGrouped = []; // grouped=true
-    let partsFlat = [];    // [{part_code, part_name_ja, category_name, category_sort_order, sort_order}]
 
     let selectedPostId = null;
     let selectedPost = null; // post_detail レスポンス
@@ -563,26 +561,9 @@
 
         partsGrouped = Array.isArray(res) ? res : [];
 
-        // flat も作っておく（将来の検索などに利用可能）
-        partsFlat = [];
-        for (const cat of partsGrouped) {
-          const category_name = cat.category_name || '';
-          const category_sort_order = Number(cat.category_sort_order || 0);
-          for (const p of (cat.parts || [])) {
-            partsFlat.push({
-              category_name,
-              category_sort_order,
-              part_code: p.part_code,
-              part_name_ja: p.part_name_ja,
-              sort_order: Number(p.sort_order || 0),
-            });
-          }
-        }
-
       } catch (e) {
         console.error(e);
         partsGrouped = [];
-        partsFlat = [];
         // 部位リスト取得失敗は致命ではない（承認はタイトル/本文だけでも可能）
       }
     };
@@ -705,7 +686,8 @@
         btn && (btn.disabled = false);
       }
     };
-$1
+
+    // === UI バインド ===
     const bindUI = () => {
       $('btnReload')?.addEventListener('click', async () => {
         clearAlert();
@@ -729,7 +711,7 @@ $1
 
       $('btnPublish')?.addEventListener('click', doPublish);
 
-      // Enter で送信しない（textarea の誤送信防止）
+      // Ctrl/Cmd+Enter で承認（公開）
       $('publicBody')?.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           doPublish();
