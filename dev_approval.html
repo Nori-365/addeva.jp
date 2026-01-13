@@ -149,56 +149,6 @@
 
               </div>
             </div>
-
-            <div class="card shadow-sm mt-4">
-              <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                  <div>
-                    <div class="h5 m-0">部位コードの登録（Developer）</div>
-                    <div class="text-secondary small">part_code は英小文字/数字/_ のみ（3〜32文字）。</div>
-                  </div>
-                </div>
-
-                <form id="partCreateForm" novalidate>
-                  <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                      <label class="form-label" for="pcCategoryName">カテゴリ名</label>
-                      <input id="pcCategoryName" class="form-control" type="text" maxlength="64" required>
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="form-label" for="pcPartCode">part_code</label>
-                      <input id="pcPartCode" class="form-control mono" type="text" maxlength="32" required placeholder="example_part">
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label" for="pcPartNameJa">部位名（日本語）</label>
-                      <input id="pcPartNameJa" class="form-control" type="text" maxlength="64" required>
-                    </div>
-                    <div class="col-6 col-md-3">
-                      <label class="form-label" for="pcCategorySort">カテゴリ順</label>
-                      <input id="pcCategorySort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
-                    </div>
-                    <div class="col-6 col-md-3">
-                      <label class="form-label" for="pcSort">部位順</label>
-                      <input id="pcSort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
-                    </div>
-                    <div class="col-12 col-md-6 d-flex align-items-end">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="pcIsActive" checked>
-                        <label class="form-check-label" for="pcIsActive">有効</label>
-                      </div>
-                    </div>
-                    <div class="col-12 d-flex justify-content-end">
-                      <button id="btnCreatePart" class="btn btn-primary" type="submit">
-                        <i class="bi bi-plus-circle"></i> 登録
-                      </button>
-                    </div>
-                  </div>
-                </form>
-
-                <div class="text-secondary small mt-2">
-                  ※ 登録後、承認フォームの部位リストに反映されます。
-                </div>
-              </div>
             </div>
           </div>
 
@@ -756,43 +706,6 @@
       }
     };
 
-    const doCreatePart = async (ev) => {
-      ev && ev.preventDefault && ev.preventDefault();
-
-      if (!productCode) return;
-
-      const btn = $('btnCreatePart');
-      btn && (btn.disabled = true);
-
-      const categoryName = String($('pcCategoryName')?.value || '').trim();
-      const partCode = String($('pcPartCode')?.value || '').trim();
-      const partNameJa = String($('pcPartNameJa')?.value || '').trim();
-
-      const categorySortOrderRaw = String($('pcCategorySort')?.value || '').trim();
-      const sortOrderRaw = String($('pcSort')?.value || '').trim();
-
-      const isActive = !!$('pcIsActive')?.checked;
-
-      if (!categoryName || !partCode || !partNameJa) {
-        showAlert('warning', 'カテゴリ名 / part_code / 部位名（日本語）は必須です。');
-        btn && (btn.disabled = false);
-        return;
-      }
-
-      if (!/^[a-z0-9_]{3,32}$/.test(partCode)) {
-        showAlert('warning', 'part_code の形式が不正です（英小文字/数字/_ のみ、3〜32文字）。');
-        btn && (btn.disabled = false);
-        return;
-      }
-
-      const payload = {
-        productCode,
-        categoryName,
-        partCode,
-        partNameJa,
-        isActive,
-      };
-
       if (categorySortOrderRaw !== '') payload.categorySortOrder = Number(categorySortOrderRaw);
       if (sortOrderRaw !== '') payload.sortOrder = Number(sortOrderRaw);
 
@@ -847,8 +760,6 @@
 
       $('btnPublish')?.addEventListener('click', doPublish);
 
-      $('partCreateForm')?.addEventListener('submit', doCreatePart);
-
       // Enter で送信しない（textarea の誤送信防止）
       $('publicBody')?.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -872,7 +783,6 @@
         // 一覧や操作ボタンを無効化
         $('btnReload') && ($('btnReload').disabled = true);
         $('btnPublish') && ($('btnPublish').disabled = true);
-        $('btnCreatePart') && ($('btnCreatePart').disabled = true);
         return;
       }
 
