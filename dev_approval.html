@@ -108,7 +108,7 @@
 
         <div class="row g-4">
           <!-- 左：承認待ち一覧 -->
-          <div class="col-12 col-lg-7">
+          <div class="col-12 col-lg-5">
             <div class="card shadow-sm">
               <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
@@ -125,16 +125,14 @@
                   <table class="table table-hover align-middle mb-0">
                     <thead>
                       <tr>
-                        <th style="width:6.2rem;">投稿ID</th>
-                        <th>タイトル</th>
-                        <th class="col-hide-sm" style="width:9.5rem;">部位</th>
-                        <th style="width:7.2rem;">状態</th>
+                        <th style="width:5.8rem;">投稿ID</th>
+                        <th>意見</th>
                         <th class="col-hide-sm" style="width:11.5rem;">更新日時</th>
                       </tr>
                     </thead>
                     <tbody id="pendingRows">
                       <tr>
-                        <td colspan="5" class="text-center text-secondary py-4">読み込み中...</td>
+                        <td colspan="3" class="text-center text-secondary py-4">読み込み中...</td>
                       </tr>
                     </tbody>
                   </table>
@@ -205,13 +203,13 @@
           </div>
 
           <!-- 右：詳細／公開内容編集 -->
-          <div class="col-12 col-lg-5">
+          <div class="col-12 col-lg-7">
             <div class="sticky-pane">
               <div class="card shadow-sm">
                 <div class="card-body p-4">
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
-                      <div class="h5 m-0">投稿詳細</div>
+                      <div class="h5 m-0">意見詳細</div>
                       <div class="text-secondary small">原文は編集不可。公開内容（public_*）のみ編集できます。</div>
                     </div>
                     <div class="text-secondary small">
@@ -240,7 +238,7 @@
 
                       <div>
                         <div class="small text-secondary">本文（原文）</div>
-                        <textarea id="origBody" class="form-control textarea-readonly" rows="6" readonly></textarea>
+                        <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
                       </div>
                     </div>
 
@@ -280,7 +278,7 @@
 
                       <div class="mb-3">
                         <label class="form-label" for="publicBody">本文（公開）</label>
-                        <textarea id="publicBody" class="form-control" rows="8"></textarea>
+                        <textarea id="publicBody" class="form-control" rows="16"></textarea>
                         <div class="char-hint">未設定のときは原文を表示し、保存時は public_body に確定保存します。</div>
                       </div>
 
@@ -405,7 +403,7 @@
       btnNext && (btnNext.disabled = pendingList.length < LIMIT);
 
       if (!pendingList.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">承認待ちの投稿はありません。</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">承認待ちの投稿はありません。</td></tr>';
         return;
       }
 
@@ -424,13 +422,13 @@
           <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}">
             <td class="mono">${escapeHtml(postId)}</td>
             <td>
-              <div class="fw-semibold text-truncate" style="max-width: 22rem;">${escapeHtml(title)}</div>
-              <div class="text-secondary small">顧客ID: ${escapeHtml(item.customer_id)}</div>
+              <div class="small text-secondary text-truncate" style="max-width: 26rem;">
+                <span class="mono">${escapeHtml(part)}</span>｜顧客ID: ${escapeHtml(item.customer_id)}
+              </div>
+              <div class="fw-semibold text-truncate" style="max-width: 26rem;">
+                ${escapeHtml(title)}<span class="text-secondary fw-normal">｜${escapeHtml(st)}</span>
+              </div>
             </td>
-            <td class="col-hide-sm">
-              <div class="mono text-truncate" style="max-width: 10rem;">${escapeHtml(part)}</div>
-            </td>
-            <td><span class="badge text-bg-warning">${escapeHtml(st)}</span></td>
             <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
           </tr>
         `;
@@ -654,7 +652,7 @@
 
     const loadPendingList = async () => {
       const tbody = $('pendingRows');
-      tbody && (tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">読み込み中...</td></tr>');
+      tbody && (tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">読み込み中...</td></tr>');
 
       if (!productCode) return;
 
