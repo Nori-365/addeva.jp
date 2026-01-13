@@ -72,6 +72,7 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
             <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
+            <li class="breadcrumb-item d-none" id="devBreadcrumbItem"><a href="#" id="devBreadcrumbLink">デベロッパー管理ページ</a></li>
             <li class="breadcrumb-item active" aria-current="page">フィードバックボード</li>
           </ol>
         </nav>
@@ -348,6 +349,32 @@
       });
     };
 
+
+    const loadDeveloperBreadcrumb = async () => {
+      const item = document.getElementById('devBreadcrumbItem');
+      const link = document.getElementById('devBreadcrumbLink');
+      if (!item || !link) return;
+
+      item.classList.add('d-none');
+      link.setAttribute('href', '#');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
+          method: 'POST',
+          body: { productCode }
+        });
+
+        if (res && res.is_developer) {
+          link.href = `/dev_approval.html?product_code=${encodeURIComponent(productCode)}`;
+          item.classList.remove('d-none');
+        }
+      } catch (e) {
+        // 未ログイン/権限なし/通信失敗は静かに無視（リンクは出さない）
+      }
+    };
+
     const loadProductInfo = async () => {
       const nameEl = $('productName');
       const chipEl = $('productCodeChip');
@@ -455,6 +482,7 @@
 
     (async () => {
       bindUI();
+      await loadDeveloperBreadcrumb();
       await loadProductInfo();
       await loadProductTeamMessage();
       await loadRanking();
