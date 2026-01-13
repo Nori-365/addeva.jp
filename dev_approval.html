@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>デベロッパー承認｜ADDEVA サポート</title>
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
+  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
+
+  <style>
+    /* main.css 側に寄せつつ、承認画面用の最小限だけ補強 */
+    #messageArea { overflow-anchor: none; }
+
+    .row-clickable { cursor: pointer; }
+    .row-clickable:hover { background: rgba(13,110,253,.04); }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .sticky-pane {
+      position: sticky;
+      top: 86px; /* fixed header を想定 */
+    }
+
+    .textarea-readonly {
+      background: #f8f9fa;
+    }
+
+    .char-hint { font-size: .85rem; color: #6c757d; }
+
+    @media (max-width: 991.98px) {
+      .sticky-pane { position: static; top: auto; }
+    }
+
+    /* モバイル：テーブルの情報密度を少し下げる */
+    @media (max-width: 767.98px) {
+      .col-hide-sm { display: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
+  <main>
+    <section class="section py-5">
+      <div class="container">
+
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
+            <li class="breadcrumb-item"><a id="breadcrumbBoard" href="#">フィードバックボード</a></li>
+            <li class="breadcrumb-item active" aria-current="page">デベロッパー承認</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div id="messageText" class="flex-grow-1"></div>
+            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>
+        </div>
+
+        <!-- ページヘッダー -->
+        <div class="mb-4">
+          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+            <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">承認待ち（new / updated）の投稿を確認し、公開内容（public_*）を保存します。</div>
+            <div class="mt-1 text-secondary">
+              公開表示は public_* を参照します。ユーザーが原文（title/body/part_code 等）を更新しても、公開内容は自動では変わりません。
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <h1 class="mb-1">デベロッパー承認</h1>
+              <div class="text-secondary">
+                対象商品：<span id="productName" class="fw-semibold">-</span>
+                <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
+                <span class="ms-2 small" id="developerBadgeWrap" style="display:none;">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Developer: <span id="developerRole">-</span></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button id="btnReload" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-clockwise"></i> 更新
+              </button>
+              <button id="btnScrollToDetail" class="btn btn-outline-secondary" disabled>
+                <i class="bi bi-box-arrow-in-down"></i> 詳細へ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- 左：承認待ち一覧 -->
+          <div class="col-12 col-lg-7">
+            <div class="card shadow-sm">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <div class="h5 m-0">承認待ち一覧</div>
+                    <div class="text-secondary small">status が new / updated の投稿のみ表示します。</div>
+                  </div>
+                  <div class="text-secondary small">
+                    件数：<span id="pendingCount">-</span>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th style="width:6.2rem;">投稿ID</th>
+                        <th>タイトル</th>
+                        <th class="col-hide-sm" style="width:9.5rem;">部位</th>
+                        <th style="width:7.2rem;">状態</th>
+                        <th class="col-hide-sm" style="width:11.5rem;">更新日時</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pendingRows">
+                      <tr>
+                        <td colspan="5" class="text-center text-secondary py-4">読み込み中...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mt-3">
+                  <div class="text-secondary small">※ クリックで詳細を表示します。</div>
+                  <div class="d-flex align-items-center gap-2">
+                    <button id="btnPrev" class="btn btn-sm btn-outline-secondary" disabled>前へ</button>
+                    <span class="text-secondary small"><span id="pageFrom">-</span>–<span id="pageTo">-</span></span>
+                    <button id="btnNext" class="btn btn-sm btn-outline-secondary" disabled>次へ</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <div class="h5 m-0">部位コードの登録（Developer）</div>
+                    <div class="text-secondary small">part_code は英小文字/数字/_ のみ（3〜32文字）。</div>
+                  </div>
+                </div>
+
+                <form id="partCreateForm" novalidate>
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label class="form-label" for="pcCategoryName">カテゴリ名</label>
+                      <input id="pcCategoryName" class="form-control" type="text" maxlength="64" required>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label" for="pcPartCode">part_code</label>
+                      <input id="pcPartCode" class="form-control mono" type="text" maxlength="32" required placeholder="example_part">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="pcPartNameJa">部位名（日本語）</label>
+                      <input id="pcPartNameJa" class="form-control" type="text" maxlength="64" required>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <label class="form-label" for="pcCategorySort">カテゴリ順</label>
+                      <input id="pcCategorySort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <label class="form-label" for="pcSort">部位順</label>
+                      <input id="pcSort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
+                    </div>
+                    <div class="col-12 col-md-6 d-flex align-items-end">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="pcIsActive" checked>
+                        <label class="form-check-label" for="pcIsActive">有効</label>
+                      </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                      <button id="btnCreatePart" class="btn btn-primary" type="submit">
+                        <i class="bi bi-plus-circle"></i> 登録
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <div class="text-secondary small mt-2">
+                  ※ 登録後、承認フォームの部位リストに反映されます。
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右：詳細／公開内容編集 -->
+          <div class="col-12 col-lg-5">
+            <div class="sticky-pane">
+              <div class="card shadow-sm">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                      <div class="h5 m-0">投稿詳細</div>
+                      <div class="text-secondary small">原文は編集不可。公開内容（public_*）のみ編集できます。</div>
+                    </div>
+                    <div class="text-secondary small">
+                      <span id="detailMeta">未選択</span>
+                    </div>
+                  </div>
+
+                  <div id="detailEmpty" class="text-secondary">
+                    左の一覧から投稿を選択してください。
+                  </div>
+
+                  <div id="detailWrap" class="d-none">
+                    <!-- 原文 -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                      <div class="fw-semibold mb-2">お客様の原文（編集不可）</div>
+
+                      <div class="mb-2">
+                        <div class="small text-secondary">部位（原文）</div>
+                        <div class="mono" id="origPartText">-</div>
+                      </div>
+
+                      <div class="mb-2">
+                        <div class="small text-secondary">タイトル（原文）</div>
+                        <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
+                      </div>
+
+                      <div>
+                        <div class="small text-secondary">本文（原文）</div>
+                        <textarea id="origBody" class="form-control textarea-readonly" rows="6" readonly></textarea>
+                      </div>
+                    </div>
+
+                    <!-- 公開内容 -->
+                    <div class="border rounded p-3">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">公開内容（public_*）</div>
+                        <div class="text-secondary small">
+                          <span>status：</span>
+                          <select id="publishStatus" class="form-select form-select-sm d-inline-block" style="width:auto;">
+                            <option value="reviewing">reviewing（検討中）</option>
+                            <option value="planned">planned（対応予定）</option>
+                            <option value="shipped">shipped（対応済み）</option>
+                            <option value="rejected">rejected（不採用）</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <hr class="my-3">
+
+                      <div class="mb-3" id="publicPartWrap" style="display:none;">
+                        <label class="form-label" for="publicPartSelect">部位（公開）</label>
+                        <select id="publicPartSelect" class="form-select">
+                          <option value="">読み込み中...</option>
+                        </select>
+                        <div class="char-hint mt-1" id="publicPartHint"></div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="publicTitle">タイトル（公開）</label>
+                        <input id="publicTitle" class="form-control" type="text" maxlength="200">
+                        <div class="d-flex justify-content-between">
+                          <div class="char-hint">未設定のときは原文を表示し、保存時は public_title に確定保存します。</div>
+                          <div class="char-hint"><span id="publicTitleCount">0</span>/200</div>
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="publicBody">本文（公開）</label>
+                        <textarea id="publicBody" class="form-control" rows="8"></textarea>
+                        <div class="char-hint">未設定のときは原文を表示し、保存時は public_body に確定保存します。</div>
+                      </div>
+
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="text-secondary small">
+                          <span>承認日時：</span><span id="approvedAt">-</span>
+                          <span class="ms-2">承認者：</span><span id="approvedBy">-</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                          <button id="btnPublish" class="btn btn-primary" type="button">
+                            <i class="bi bi-check2-circle"></i> 承認して保存
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="text-secondary small mt-2">
+                        ※ 「承認して保存」は public_* と approved_at/approved_by を更新し、status を選択した値に更新します。
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ▼ 共通フッターを読み込み -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/common.js"></script>
+
+  <script>
+    // === ユーティリティ ===
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+    const $ = (id) => document.getElementById(id);
+
+    const productCode = (qs('product_code') || '').trim();
+
+    const clearAlert = () => {
+      const box = $('messageArea');
+      const text = $('messageText');
+      if (!box || !text) return;
+      box.className = 'alert d-none';
+      text.textContent = '';
+    };
+
+    const showAlert = (type, msg) => {
+      const box = $('messageArea');
+      const text = $('messageText');
+      if (!box || !text) return;
+
+      const klass = (type === 'success') ? 'alert-success'
+                  : (type === 'warning') ? 'alert-warning'
+                  : (type === 'info') ? 'alert-info'
+                  : 'alert-danger';
+
+      box.className = 'alert ' + klass;
+      text.textContent = msg || '';
+      $('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const escapeHtml = (s) => {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    };
+
+    const fmtDateTime = (iso) => {
+      if (!iso) return '';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return String(iso);
+        return d.toLocaleString();
+      } catch {
+        return String(iso);
+      }
+    };
+
+    const buildBoardUrl = (productCode) => {
+      const p = encodeURIComponent(productCode || '');
+      return `/feedback_board.html?product_code=${p}`;
+    };
+
+    // === 状態 ===
+    const LIMIT = 50;
+    let offset = 0;
+
+    let isDeveloper = false;
+    let developerRole = '';
+
+    let pendingList = [];
+    let partsGrouped = []; // grouped=true
+    let partsFlat = [];    // [{part_code, part_name_ja, category_name, category_sort_order, sort_order}]
+
+    let selectedPostId = null;
+    let selectedPost = null; // post_detail レスポンス
+
+    let hasPublicPartCode = false;
+
+    // === 描画 ===
+    const renderPending = () => {
+      const tbody = $('pendingRows');
+      if (!tbody) return;
+
+      const countEl = $('pendingCount');
+      countEl && (countEl.textContent = String(pendingList.length));
+
+      const fromEl = $('pageFrom');
+      const toEl = $('pageTo');
+      fromEl && (fromEl.textContent = pendingList.length ? String(offset + 1) : '0');
+      toEl && (toEl.textContent = pendingList.length ? String(offset + pendingList.length) : '0');
+
+      const btnPrev = $('btnPrev');
+      const btnNext = $('btnNext');
+      btnPrev && (btnPrev.disabled = offset <= 0);
+      btnNext && (btnNext.disabled = pendingList.length < LIMIT);
+
+      if (!pendingList.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">承認待ちの投稿はありません。</td></tr>';
+        return;
+      }
+
+      let html = '';
+      for (const item of pendingList) {
+        const postId = item.post_id;
+        const st = String(item.status || '-');
+
+        const title = item.original_title || '';
+        const part = item.original_part_code || item.original_part_free_text || '';
+
+        const updatedAt = fmtDateTime(item.updated_at || item.created_at || '');
+        const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
+
+        html += `
+          <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}">
+            <td class="mono">${escapeHtml(postId)}</td>
+            <td>
+              <div class="fw-semibold text-truncate" style="max-width: 22rem;">${escapeHtml(title)}</div>
+              <div class="text-secondary small">顧客ID: ${escapeHtml(item.customer_id)}</div>
+            </td>
+            <td class="col-hide-sm">
+              <div class="mono text-truncate" style="max-width: 10rem;">${escapeHtml(part)}</div>
+            </td>
+            <td><span class="badge text-bg-warning">${escapeHtml(st)}</span></td>
+            <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = html;
+
+      tbody.querySelectorAll('tr.row-clickable').forEach(tr => {
+        tr.addEventListener('click', async () => {
+          const postId = tr.getAttribute('data-post-id');
+          if (!postId) return;
+          await loadPostDetail(Number(postId));
+          renderPending();
+        });
+      });
+    };
+
+    const renderPartsSelect = (selectedCode) => {
+      const sel = $('publicPartSelect');
+      if (!sel) return;
+
+      if (!partsGrouped.length) {
+        sel.innerHTML = '<option value="">部位がありません</option>';
+        return;
+      }
+
+      let html = '<option value="">（未選択）</option>';
+      for (const cat of partsGrouped) {
+        const label = escapeHtml(cat.category_name || 'その他');
+        html += `<optgroup label="${label}">`;
+        for (const p of (cat.parts || [])) {
+          const code = String(p.part_code || '');
+          const name = String(p.part_name_ja || code);
+          html += `<option value="${escapeHtml(code)}">${escapeHtml(name)} (${escapeHtml(code)})</option>`;
+        }
+        html += '</optgroup>';
+      }
+
+      sel.innerHTML = html;
+
+      if (selectedCode) {
+        sel.value = String(selectedCode);
+      }
+
+      const hint = $('publicPartHint');
+      if (hint) {
+        hint.textContent = '公開側の部位は一覧から選択してください。';
+      }
+    };
+
+    const bindCharCount = () => {
+      const t = $('publicTitle');
+      const c = $('publicTitleCount');
+      if (!t || !c) return;
+
+      const update = () => {
+        c.textContent = String((t.value || '').length);
+      };
+      t.addEventListener('input', update);
+      update();
+    };
+
+    const renderDetail = () => {
+      const empty = $('detailEmpty');
+      const wrap = $('detailWrap');
+      const meta = $('detailMeta');
+      const btnScroll = $('btnScrollToDetail');
+
+      if (!selectedPost) {
+        empty && empty.classList.remove('d-none');
+        wrap && wrap.classList.add('d-none');
+        meta && (meta.textContent = '未選択');
+        btnScroll && (btnScroll.disabled = true);
+        return;
+      }
+
+      empty && empty.classList.add('d-none');
+      wrap && wrap.classList.remove('d-none');
+      btnScroll && (btnScroll.disabled = false);
+
+      meta && (meta.textContent = `投稿ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
+
+      const origPartText = $('origPartText');
+      const origTitle = $('origTitle');
+      const origBody = $('origBody');
+
+      const publicTitle = $('publicTitle');
+      const publicBody = $('publicBody');
+
+      const approvedAt = $('approvedAt');
+      const approvedBy = $('approvedBy');
+
+      const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || '';
+      origPartText && (origPartText.textContent = originalPart ? String(originalPart) : '-');
+
+      origTitle && (origTitle.value = String(selectedPost.original_title || ''));
+      origBody && (origBody.value = String(selectedPost.original_body || ''));
+
+      // public_* の入力欄は、既に値があるならそれ、無いなら原文（フォールバック）を表示
+      // APIの仕様に合わせて effective_public_* を使う
+      publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || ''));
+      publicBody && (publicBody.value = String(selectedPost.effective_public_body || ''));
+
+      // 承認メタ
+      approvedAt && (approvedAt.textContent = selectedPost.approved_at ? fmtDateTime(selectedPost.approved_at) : '-');
+      approvedBy && (approvedBy.textContent = (selectedPost.approved_by !== null && selectedPost.approved_by !== undefined) ? String(selectedPost.approved_by) : '-');
+
+      // public_part_code
+      const partWrap = $('publicPartWrap');
+      if (partWrap) {
+        partWrap.style.display = hasPublicPartCode ? '' : 'none';
+      }
+      if (hasPublicPartCode) {
+        const defaultCode = selectedPost.effective_public_part_code || '';
+        renderPartsSelect(defaultCode);
+      }
+
+      // status セレクト
+      const stSel = $('publishStatus');
+      if (stSel) {
+        // 承認待ち一覧は new/updated。公開での既定は reviewing。
+        stSel.value = 'reviewing';
+      }
+
+      bindCharCount();
+    };
+
+    // === API 呼び出し ===
+    const loadDeveloperStatus = async () => {
+      $('developerBadgeWrap')?.style && ($('developerBadgeWrap').style.display = 'none');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
+          method: 'POST',
+          body: { productCode }
+        });
+
+        isDeveloper = !!(res && res.is_developer);
+        developerRole = (res && res.role) ? String(res.role) : '';
+
+        if (isDeveloper) {
+          $('developerRole') && ($('developerRole').textContent = developerRole || '-');
+          const wrap = $('developerBadgeWrap');
+          wrap && (wrap.style.display = '');
+        }
+
+      } catch (e) {
+        isDeveloper = false;
+        developerRole = '';
+      }
+    };
+
+    const loadProductInfo = async () => {
+      const nameEl = $('productName');
+      const chipEl = $('productCodeChip');
+      chipEl && (chipEl.textContent = productCode || '-');
+
+      const bc = $('breadcrumbBoard');
+      if (bc) {
+        bc.href = buildBoardUrl(productCode);
+      }
+
+      if (!productCode) {
+        showAlert('danger', 'product_code が指定されていません。URLに ?product_code=... を付けて開いてください。');
+        nameEl && (nameEl.textContent = '-');
+        return;
+      }
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/product_info', {
+          method: 'POST',
+          body: { productCode }
+        });
+        nameEl && (nameEl.textContent = res.product_name || '-');
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
+        nameEl && (nameEl.textContent = '-');
+      }
+    };
+
+    const loadParts = async () => {
+      const sel = $('publicPartSelect');
+      sel && (sel.innerHTML = '<option value="">読み込み中...</option>');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
+          method: 'POST',
+          body: { productCode, grouped: true }
+        });
+
+        partsGrouped = Array.isArray(res) ? res : [];
+
+        // flat も作っておく（将来の検索などに利用可能）
+        partsFlat = [];
+        for (const cat of partsGrouped) {
+          const category_name = cat.category_name || '';
+          const category_sort_order = Number(cat.category_sort_order || 0);
+          for (const p of (cat.parts || [])) {
+            partsFlat.push({
+              category_name,
+              category_sort_order,
+              part_code: p.part_code,
+              part_name_ja: p.part_name_ja,
+              sort_order: Number(p.sort_order || 0),
+            });
+          }
+        }
+
+      } catch (e) {
+        console.error(e);
+        partsGrouped = [];
+        partsFlat = [];
+        // 部位リスト取得失敗は致命ではない（承認はタイトル/本文だけでも可能）
+      }
+    };
+
+    const loadPendingList = async () => {
+      const tbody = $('pendingRows');
+      tbody && (tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">読み込み中...</td></tr>');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/pending_list', {
+          method: 'POST',
+          body: { productCode, limit: LIMIT, offset }
+        });
+
+        pendingList = Array.isArray(res) ? res : [];
+        renderPending();
+
+      } catch (e) {
+        console.error(e);
+        pendingList = [];
+        showAlert('danger', e.message || '承認待ち一覧の取得に失敗しました。');
+        renderPending();
+      }
+    };
+
+    const loadPostDetail = async (postId) => {
+      if (!productCode) return;
+
+      selectedPostId = postId;
+      selectedPost = null;
+      renderDetail();
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/post_detail', {
+          method: 'POST',
+          body: { productCode, postId }
+        });
+
+        selectedPost = res || null;
+        hasPublicPartCode = !!(selectedPost && selectedPost.capabilities && selectedPost.capabilities.has_public_part_code);
+
+        // parts は、public_part_code を使うときのみ必須だが、ここで読み込んでおく
+        if (hasPublicPartCode && !partsGrouped.length) {
+          await loadParts();
+        }
+
+        renderDetail();
+        clearAlert();
+
+      } catch (e) {
+        console.error(e);
+        selectedPost = null;
+        showAlert('danger', e.message || '投稿詳細の取得に失敗しました。');
+        renderDetail();
+      }
+    };
+
+    const doPublish = async () => {
+      if (!productCode) return;
+      if (!selectedPost || !selectedPost.post_id) {
+        showAlert('warning', '承認対象の投稿を選択してください。');
+        return;
+      }
+
+      const btn = $('btnPublish');
+      btn && (btn.disabled = true);
+
+      try {
+        const stSel = $('publishStatus');
+        const newStatus = stSel ? String(stSel.value || '').trim() : 'reviewing';
+
+        const publicTitle = $('publicTitle') ? String($('publicTitle').value || '') : '';
+        const publicBody = $('publicBody') ? String($('publicBody').value || '') : '';
+
+        let publicPartCode = null;
+        if (hasPublicPartCode) {
+          const sel = $('publicPartSelect');
+          const v = sel ? String(sel.value || '').trim() : '';
+          publicPartCode = v ? v : null;
+
+          // 原文が自由入力（part_code が NULL）だった場合、公開部位は必須に寄せる
+          const originalPartCode = (selectedPost.original_part_code || '').trim();
+          const originalFree = (selectedPost.original_part_free_text || '').trim();
+          const effective = (selectedPost.effective_public_part_code || '').trim();
+
+          // effective が空で、選択も空の場合は保存をブロック
+          if (!publicPartCode && !effective && !originalPartCode && originalFree) {
+            showAlert('warning', '原文が自由入力のため、公開側の部位を一覧から選択してください。');
+            btn && (btn.disabled = false);
+            return;
+          }
+        }
+
+        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish', {
+          method: 'POST',
+          body: {
+            productCode,
+            postId: Number(selectedPost.post_id),
+            publicTitle,
+            publicBody,
+            publicPartCode,
+            newStatus,
+          }
+        });
+
+        showAlert('success', `保存しました（post_id=${res.post_id}, status=${res.status}）。`);
+
+        // 一覧を更新（承認した投稿は new/updated から外れる想定）
+        await loadPendingList();
+
+        // 詳細も再読込して表示更新（承認日時等）
+        await loadPostDetail(Number(selectedPost.post_id));
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '承認（保存）に失敗しました。');
+      } finally {
+        btn && (btn.disabled = false);
+      }
+    };
+
+    const doCreatePart = async (ev) => {
+      ev && ev.preventDefault && ev.preventDefault();
+
+      if (!productCode) return;
+
+      const btn = $('btnCreatePart');
+      btn && (btn.disabled = true);
+
+      const categoryName = String($('pcCategoryName')?.value || '').trim();
+      const partCode = String($('pcPartCode')?.value || '').trim();
+      const partNameJa = String($('pcPartNameJa')?.value || '').trim();
+
+      const categorySortOrderRaw = String($('pcCategorySort')?.value || '').trim();
+      const sortOrderRaw = String($('pcSort')?.value || '').trim();
+
+      const isActive = !!$('pcIsActive')?.checked;
+
+      if (!categoryName || !partCode || !partNameJa) {
+        showAlert('warning', 'カテゴリ名 / part_code / 部位名（日本語）は必須です。');
+        btn && (btn.disabled = false);
+        return;
+      }
+
+      if (!/^[a-z0-9_]{3,32}$/.test(partCode)) {
+        showAlert('warning', 'part_code の形式が不正です（英小文字/数字/_ のみ、3〜32文字）。');
+        btn && (btn.disabled = false);
+        return;
+      }
+
+      const payload = {
+        productCode,
+        categoryName,
+        partCode,
+        partNameJa,
+        isActive,
+      };
+
+      if (categorySortOrderRaw !== '') payload.categorySortOrder = Number(categorySortOrderRaw);
+      if (sortOrderRaw !== '') payload.sortOrder = Number(sortOrderRaw);
+
+      try {
+        await ADDEVA.apiFetch('/api/addeva/dev_approval/parts/create', {
+          method: 'POST',
+          body: payload
+        });
+
+        showAlert('success', `部位を登録しました（${partCode}）。`);
+
+        // 部位を再読み込み
+        await loadParts();
+
+        // 詳細が開いている場合、セレクトも再描画
+        if (selectedPost && hasPublicPartCode) {
+          const defaultCode = selectedPost.effective_public_part_code || '';
+          renderPartsSelect(defaultCode);
+        }
+
+        // 入力欄は維持（連続登録できるように）
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '部位の登録に失敗しました。');
+      } finally {
+        btn && (btn.disabled = false);
+      }
+    };
+
+    // === UI バインド ===
+    const bindUI = () => {
+      $('btnReload')?.addEventListener('click', async () => {
+        clearAlert();
+        await loadPendingList();
+      });
+
+      $('btnScrollToDetail')?.addEventListener('click', () => {
+        $('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      $('btnPrev')?.addEventListener('click', async () => {
+        if (offset <= 0) return;
+        offset = Math.max(0, offset - LIMIT);
+        await loadPendingList();
+      });
+
+      $('btnNext')?.addEventListener('click', async () => {
+        offset = offset + LIMIT;
+        await loadPendingList();
+      });
+
+      $('btnPublish')?.addEventListener('click', doPublish);
+
+      $('partCreateForm')?.addEventListener('submit', doCreatePart);
+
+      // Enter で送信しない（textarea の誤送信防止）
+      $('publicBody')?.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          doPublish();
+        }
+      });
+    };
+
+    // === 初期化 ===
+    (async () => {
+      bindUI();
+
+      // product_code 必須
+      await loadProductInfo();
+      if (!productCode) return;
+
+      // 権限チェック
+      await loadDeveloperStatus();
+      if (!isDeveloper) {
+        showAlert('danger', 'デベロッパー権限がありません。');
+        // 一覧や操作ボタンを無効化
+        $('btnReload') && ($('btnReload').disabled = true);
+        $('btnPublish') && ($('btnPublish').disabled = true);
+        $('btnCreatePart') && ($('btnCreatePart').disabled = true);
+        return;
+      }
+
+      // 先に部位を読み込んでおく（public_part_code ありの場合に即表示できるように）
+      await loadParts();
+
+      // 一覧
+      await loadPendingList();
+
+    })();
+  </script>
+</body>
+</html>
