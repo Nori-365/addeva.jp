@@ -705,38 +705,7 @@
         btn && (btn.disabled = false);
       }
     };
-
-      if (categorySortOrderRaw !== '') payload.categorySortOrder = Number(categorySortOrderRaw);
-      if (sortOrderRaw !== '') payload.sortOrder = Number(sortOrderRaw);
-
-      try {
-        await ADDEVA.apiFetch('/api/addeva/dev_approval/parts/create', {
-          method: 'POST',
-          body: payload
-        });
-
-        showAlert('success', `部位を登録しました（${partCode}）。`);
-
-        // 部位を再読み込み
-        await loadParts();
-
-        // 詳細が開いている場合、セレクトも再描画
-        if (selectedPost && hasPublicPartCode) {
-          const defaultCode = selectedPost.effective_public_part_code || '';
-          renderPartsSelect(defaultCode);
-        }
-
-        // 入力欄は維持（連続登録できるように）
-
-      } catch (e) {
-        console.error(e);
-        showAlert('danger', e.message || '部位の登録に失敗しました。');
-      } finally {
-        btn && (btn.disabled = false);
-      }
-    };
-
-    // === UI バインド ===
+$1
     const bindUI = () => {
       $('btnReload')?.addEventListener('click', async () => {
         clearAlert();
