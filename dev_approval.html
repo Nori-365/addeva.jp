@@ -410,7 +410,13 @@
       let html = '';
       for (const item of pendingList) {
         const postId = item.post_id;
-        const st = String(item.status || '-');
+        const stRaw = String(item.status || '-');
+        const stLc = stRaw.toLowerCase();
+        const stLabel = escapeHtml(stRaw);
+        let stBadgeClass = 'text-bg-secondary';
+        if (stLc === 'new') stBadgeClass = 'text-bg-warning';
+        else if (stLc === 'updated') stBadgeClass = 'text-bg-warning';
+        const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${stLabel}</span>`;
 
         const title = item.original_title || '';
         const part = item.original_part_code || item.original_part_free_text || '';
@@ -426,7 +432,7 @@
                 <span class="mono">${escapeHtml(part)}</span>｜顧客ID: ${escapeHtml(item.customer_id)}
               </div>
               <div class="fw-semibold text-truncate" style="max-width: 26rem;">
-                ${escapeHtml(title)}<span class="text-secondary fw-normal">｜${escapeHtml(st)}</span>
+                ${escapeHtml(title)}${stBadge}
               </div>
             </td>
             <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
