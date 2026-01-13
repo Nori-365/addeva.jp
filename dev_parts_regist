@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>部位コード管理（Developer）｜ADDEVA サポート</title>
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
+  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
+
+  <style>
+    /* main.css 側に寄せつつ、管理画面用の最小限だけ補強 */
+    #messageArea { overflow-anchor: none; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row-clickable { cursor: pointer; }
+    .row-clickable:hover { background: rgba(13,110,253,.04); }
+
+    .badge-code { border: 1px solid rgba(0,0,0,.08); background: rgba(13,110,253,.06); color:#0d6efd; }
+    .badge-inactive { border: 1px solid rgba(0,0,0,.08); background: rgba(220,53,69,.06); color:#dc3545; }
+
+    .sticky-side {
+      position: sticky;
+      top: 86px; /* fixed header を想定 */
+    }
+
+    .textarea-bulk {
+      min-height: 340px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .sticky-side { position: static; top: auto; }
+    }
+
+    @media (max-width: 767.98px) {
+      .col-hide-sm { display:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
+  <main>
+    <section class="section py-5">
+      <div class="container">
+
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
+            <li class="breadcrumb-item"><a id="breadcrumbBoard" href="#">フィードバックボード</a></li>
+            <li class="breadcrumb-item"><a id="breadcrumbDevApproval" href="#">デベロッパー承認</a></li>
+            <li class="breadcrumb-item active" aria-current="page">部位コード管理</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div id="messageText" class="flex-grow-1"></div>
+            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>
+        </div>
+
+        <!-- ページヘッダー -->
+        <div class="mb-4">
+          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+            <div class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;">部位コード（part_code）を登録・修正できます（Developer）。</div>
+            <div class="mt-1 text-secondary">
+              ここで登録した部位は、投票・意見入力、承認画面の部位選択に使用されます。
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <h1 class="mb-1">部位コード管理</h1>
+              <div class="text-secondary">
+                対象商品：<span id="productName" class="fw-semibold">-</span>
+                <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
+                <span class="ms-2 small" id="developerBadgeWrap" style="display:none;">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Developer: <span id="developerRole">-</span></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button id="btnReload" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-clockwise"></i> 更新
+              </button>
+              <button id="btnFillBulk" class="btn btn-outline-secondary">
+                <i class="bi bi-file-earmark-text"></i> 一括欄に反映
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- 左：一覧 -->
+          <div class="col-12 col-lg-7">
+            <div class="card shadow-sm">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <div class="h5 m-0">部位一覧</div>
+                    <div class="text-secondary small">一覧から選択して、右側で修正・保存できます。</div>
+                  </div>
+                  <div class="text-secondary small">件数：<span id="partsCount">-</span></div>
+                </div>
+
+                <div class="row g-2 align-items-end mb-3">
+                  <div class="col-12 col-md-8">
+                    <label class="form-label" for="searchInput">検索（部位名 / part_code / カテゴリ）</label>
+                    <input id="searchInput" class="form-control" type="text" placeholder="例：strap / ストラップ / 防水">
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label" for="filterActive">表示</label>
+                    <select id="filterActive" class="form-select">
+                      <option value="all" selected>すべて（表示できる範囲）</option>
+                      <option value="active">有効のみ</option>
+                      <option value="inactive">無効のみ</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th style="width: 14rem;">カテゴリ</th>
+                        <th style="width: 12rem;">part_code</th>
+                        <th>部位名</th>
+                        <th class="col-hide-sm text-end" style="width: 6.5rem;">順</th>
+                        <th class="text-end" style="width: 6.5rem;">状態</th>
+                      </tr>
+                    </thead>
+                    <tbody id="partsRows">
+                      <tr>
+                        <td colspan="5" class="text-center text-secondary py-4">読み込み中...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="mt-3 text-secondary small">
+                  注意：一覧は、現在の parts/list API の返却内容に依存します。無効（is_active=false）の部位が一覧に出ない場合は、右側のフォームや一括保存で明示的に isActive を指定して更新してください。
+                </div>
+              </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                  <div>
+                    <div class="h5 m-0">一括編集（TSV）</div>
+                    <div class="text-secondary small">ヘッダー行あり。列：categoryName / categorySortOrder / partCode / partNameJa / sortOrder / isActive</div>
+                  </div>
+                  <div class="d-flex align-items-center gap-2">
+                    <button id="btnPreviewBulk" class="btn btn-sm btn-outline-secondary">プレビュー</button>
+                    <button id="btnSaveBulk" class="btn btn-sm btn-primary">一括保存</button>
+                  </div>
+                </div>
+
+                <textarea id="bulkTsv" class="form-control textarea-bulk" spellcheck="false" placeholder="categoryName\tcategorySortOrder\tpartCode\tpartNameJa\tsortOrder\tisActive\n...\n"></textarea>
+
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-2">
+                  <div class="text-secondary small" id="bulkHint">
+                    例：isActive は true/false または 1/0。
+                  </div>
+                  <div class="text-secondary small" id="bulkProgress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右：登録/修正フォーム -->
+          <div class="col-12 col-lg-5">
+            <div class="sticky-side">
+              <div class="card shadow-sm">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                      <div class="h5 m-0">登録・修正</div>
+                      <div class="text-secondary small">part_code は英小文字/数字/_ のみ（3〜32文字）。</div>
+                    </div>
+                    <div class="text-secondary small" id="editMode">新規登録</div>
+                  </div>
+
+                  <form id="partForm" novalidate>
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <label class="form-label" for="fCategoryName">カテゴリ名</label>
+                        <input id="fCategoryName" class="form-control" type="text" maxlength="64" required>
+                      </div>
+
+                      <div class="col-12">
+                        <label class="form-label" for="fPartCode">part_code</label>
+                        <input id="fPartCode" class="form-control mono" type="text" maxlength="32" required placeholder="example_part">
+                        <div class="form-text">変更すると新規レコードになる場合があります（DBキー：product_code×category_name×part_code）。</div>
+                      </div>
+
+                      <div class="col-12">
+                        <label class="form-label" for="fPartNameJa">部位名（日本語）</label>
+                        <input id="fPartNameJa" class="form-control" type="text" maxlength="64" required>
+                      </div>
+
+                      <div class="col-6">
+                        <label class="form-label" for="fCategorySort">カテゴリ順</label>
+                        <input id="fCategorySort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
+                      </div>
+
+                      <div class="col-6">
+                        <label class="form-label" for="fSort">部位順</label>
+                        <input id="fSort" class="form-control" type="number" min="0" max="1000000" placeholder="1000">
+                      </div>
+
+                      <div class="col-12">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="fIsActive" checked>
+                          <label class="form-check-label" for="fIsActive">有効</label>
+                        </div>
+                      </div>
+
+                      <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <button id="btnReset" class="btn btn-outline-secondary" type="button">フォームをクリア</button>
+                        <button id="btnSave" class="btn btn-primary" type="submit">
+                          <i class="bi bi-check2-circle"></i> 保存
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+
+                  <hr class="my-3">
+
+                  <div class="text-secondary small">
+                    ヒント：部位名や順番、状態を修正しても、既存の意見データ（原文）は変更されません。公開側の部位は、デベロッパー承認画面で public_part_code を設定して運用してください。
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow-sm mt-4">
+                <div class="card-body p-4">
+                  <div class="h6">リンク</div>
+                  <div class="d-flex flex-column gap-2">
+                    <a id="linkDevApproval" class="btn btn-outline-primary" href="#"><i class="bi bi-arrow-left-right"></i> デベロッパー承認へ</a>
+                    <a id="linkBoard" class="btn btn-outline-secondary" href="#"><i class="bi bi-columns"></i> フィードバックボードへ</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ▼ 共通フッターを読み込み -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/common.js"></script>
+
+  <script>
+    // === ユーティリティ ===
+    const qs = (name) => new URL(window.location.href).searchParams.get(name) || '';
+    const el = (id) => document.getElementById(id);
+
+    const productCode = (qs('product_code') || '').trim();
+
+    const clearAlert = () => {
+      const box = el('messageArea');
+      const text = el('messageText');
+      if (!box || !text) return;
+      box.className = 'alert d-none';
+      text.textContent = '';
+    };
+
+    const showAlert = (type, msg) => {
+      const box = el('messageArea');
+      const text = el('messageText');
+      if (!box || !text) return;
+
+      const klass = (type === 'success') ? 'alert-success'
+                  : (type === 'warning') ? 'alert-warning'
+                  : (type === 'info') ? 'alert-info'
+                  : 'alert-danger';
+
+      box.className = 'alert ' + klass;
+      text.textContent = msg || '';
+      el('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const escapeHtml = (s) => {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    };
+
+    const buildBoardUrl = (productCode) => {
+      const p = encodeURIComponent(productCode || '');
+      return `/feedback_board.html?product_code=${p}`;
+    };
+
+    const buildDevApprovalUrl = (productCode) => {
+      const p = encodeURIComponent(productCode || '');
+      return `/dev_approval.html?product_code=${p}`;
+    };
+
+    const normalizeBool = (v) => {
+      const s = String(v ?? '').trim().toLowerCase();
+      if (s === 'true' || s === '1' || s === 'yes' || s === 'y') return true;
+      if (s === 'false' || s === '0' || s === 'no' || s === 'n') return false;
+      return null;
+    };
+
+    const isValidPartCode = (s) => {
+      return /^[a-z0-9_]{3,32}$/.test(String(s || '').trim());
+    };
+
+    // === 状態 ===
+    let isDeveloper = false;
+    let developerRole = '';
+
+    // flat list: {category_name, category_sort_order, part_code, part_name_ja, sort_order, is_active}
+    let parts = [];
+
+    let selectedKey = null; // `${category_name}::${part_code}`
+
+    // === API ===
+    const loadDeveloperStatus = async () => {
+      el('developerBadgeWrap') && (el('developerBadgeWrap').style.display = 'none');
+
+      if (!productCode) return;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
+          method: 'POST',
+          body: { productCode }
+        });
+
+        isDeveloper = !!(res && res.is_developer);
+        developerRole = (res && res.role) ? String(res.role) : '';
+
+        if (isDeveloper) {
+          el('developerRole') && (el('developerRole').textContent = developerRole || '-');
+          el('developerBadgeWrap') && (el('developerBadgeWrap').style.display = '');
+        }
+
+      } catch (e) {
+        isDeveloper = false;
+        developerRole = '';
+      }
+    };
+
+    const loadProductInfo = async () => {
+      el('productCodeChip') && (el('productCodeChip').textContent = productCode || '-');
+
+      el('breadcrumbBoard') && (el('breadcrumbBoard').href = buildBoardUrl(productCode));
+      el('breadcrumbDevApproval') && (el('breadcrumbDevApproval').href = buildDevApprovalUrl(productCode));
+      el('linkBoard') && (el('linkBoard').href = buildBoardUrl(productCode));
+      el('linkDevApproval') && (el('linkDevApproval').href = buildDevApprovalUrl(productCode));
+
+      if (!productCode) {
+        showAlert('danger', 'product_code が指定されていません。URLに ?product_code=... を付けて開いてください。');
+        el('productName') && (el('productName').textContent = '-');
+        return;
+      }
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/product_info', {
+          method: 'POST',
+          body: { productCode }
+        });
+        el('productName') && (el('productName').textContent = res.product_name || '-');
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
+        el('productName') && (el('productName').textContent = '-');
+      }
+    };
+
+    const loadParts = async () => {
+      const tbody = el('partsRows');
+      tbody && (tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">読み込み中...</td></tr>');
+
+      if (!productCode) return;
+
+      try {
+        // 既存実装（ユーザー画面）と合わせて parts/list を流用
+        // ただし、is_active 等が返らない場合があるので、存在すれば採用する。
+        const grouped = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
+          method: 'POST',
+          body: { productCode, grouped: true }
+        });
+
+        const flat = [];
+        const groups = Array.isArray(grouped) ? grouped : [];
+
+        for (const g of groups) {
+          const category_name = String(g.category_name || '');
+          const category_sort_order = Number(g.category_sort_order ?? 0);
+          const partsIn = Array.isArray(g.parts) ? g.parts : [];
+          for (const p of partsIn) {
+            flat.push({
+              category_name,
+              category_sort_order,
+              part_code: String(p.part_code || ''),
+              part_name_ja: String(p.part_name_ja || ''),
+              sort_order: Number(p.sort_order ?? 0),
+              // is_active が返らない場合は true とみなして表示（必要に応じて一括保存で明示更新）
+              is_active: (typeof p.is_active === 'boolean') ? p.is_active : (typeof p.isActive === 'boolean') ? p.isActive : true,
+            });
+          }
+        }
+
+        // 表示順：カテゴリ順 → 部位順 → コード
+        flat.sort((a,b) => {
+          const ca = Number(a.category_sort_order || 0), cb = Number(b.category_sort_order || 0);
+          if (ca !== cb) return ca - cb;
+          const sa = Number(a.sort_order || 0), sb = Number(b.sort_order || 0);
+          if (sa !== sb) return sa - sb;
+          return String(a.part_code || '').localeCompare(String(b.part_code || ''));
+        });
+
+        parts = flat;
+        renderParts();
+        clearAlert();
+
+      } catch (e) {
+        console.error(e);
+        parts = [];
+        showAlert('danger', e.message || '部位一覧の取得に失敗しました。');
+        renderParts();
+      }
+    };
+
+    const upsertPart = async (payload) => {
+      return await ADDEVA.apiFetch('/api/addeva/dev_approval/parts/create', {
+        method: 'POST',
+        body: payload,
+      });
+    };
+
+    // === 描画 ===
+    const renderParts = () => {
+      const tbody = el('partsRows');
+      const countEl = el('partsCount');
+      if (!tbody) return;
+
+      const q = String(el('searchInput')?.value || '').trim().toLowerCase();
+      const f = String(el('filterActive')?.value || 'all');
+
+      let view = parts;
+
+      if (q) {
+        view = view.filter(x => {
+          const s = `${x.category_name} ${x.part_code} ${x.part_name_ja}`.toLowerCase();
+          return s.includes(q);
+        });
+      }
+
+      if (f === 'active') {
+        view = view.filter(x => !!x.is_active);
+      } else if (f === 'inactive') {
+        view = view.filter(x => !x.is_active);
+      }
+
+      countEl && (countEl.textContent = String(view.length));
+
+      if (!view.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">該当する部位がありません。</td></tr>';
+        return;
+      }
+
+      let html = '';
+      for (const x of view) {
+        const key = `${x.category_name}::${x.part_code}`;
+        const isActive = (selectedKey && selectedKey === key);
+
+        const badge = x.is_active
+          ? `<span class="badge badge-code">有効</span>`
+          : `<span class="badge badge-inactive">無効</span>`;
+
+        html += `
+          <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-key="${escapeHtml(key)}">
+            <td class="text-truncate" style="max-width: 16rem;" title="${escapeHtml(x.category_name)}">
+              ${escapeHtml(x.category_name || '-')}
+              <div class="text-secondary small">順: ${escapeHtml(x.category_sort_order)}</div>
+            </td>
+            <td class="mono">${escapeHtml(x.part_code || '')}</td>
+            <td class="text-truncate" style="max-width: 24rem;" title="${escapeHtml(x.part_name_ja)}">${escapeHtml(x.part_name_ja || '')}</td>
+            <td class="col-hide-sm text-end">${escapeHtml(x.sort_order)}</td>
+            <td class="text-end">${badge}</td>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = html;
+
+      tbody.querySelectorAll('tr.row-clickable').forEach(tr => {
+        tr.addEventListener('click', () => {
+          const key = tr.getAttribute('data-key');
+          if (!key) return;
+          const [category_name, part_code] = key.split('::');
+          const hit = parts.find(p => p.category_name === category_name && p.part_code === part_code);
+          if (!hit) return;
+          selectedKey = key;
+          fillForm(hit);
+          renderParts();
+        });
+      });
+    };
+
+    const fillForm = (p) => {
+      el('editMode') && (el('editMode').textContent = '修正モード');
+
+      el('fCategoryName') && (el('fCategoryName').value = String(p.category_name || ''));
+      el('fPartCode') && (el('fPartCode').value = String(p.part_code || ''));
+      el('fPartNameJa') && (el('fPartNameJa').value = String(p.part_name_ja || ''));
+
+      el('fCategorySort') && (el('fCategorySort').value = (p.category_sort_order ?? '') !== null ? String(p.category_sort_order ?? '') : '');
+      el('fSort') && (el('fSort').value = (p.sort_order ?? '') !== null ? String(p.sort_order ?? '') : '');
+      el('fIsActive') && (el('fIsActive').checked = !!p.is_active);
+    };
+
+    const resetForm = () => {
+      selectedKey = null;
+      el('editMode') && (el('editMode').textContent = '新規登録');
+
+      el('fCategoryName') && (el('fCategoryName').value = '');
+      el('fPartCode') && (el('fPartCode').value = '');
+      el('fPartNameJa') && (el('fPartNameJa').value = '');
+      el('fCategorySort') && (el('fCategorySort').value = '');
+      el('fSort') && (el('fSort').value = '');
+      el('fIsActive') && (el('fIsActive').checked = true);
+      renderParts();
+    };
+
+    const exportTsv = () => {
+      const lines = [];
+      lines.push('categoryName\tcategorySortOrder\tpartCode\tpartNameJa\tsortOrder\tisActive');
+      for (const p of parts) {
+        lines.push([
+          String(p.category_name ?? ''),
+          String(p.category_sort_order ?? ''),
+          String(p.part_code ?? ''),
+          String(p.part_name_ja ?? ''),
+          String(p.sort_order ?? ''),
+          p.is_active ? 'true' : 'false',
+        ].join('\t'));
+      }
+      return lines.join('\n') + '\n';
+    };
+
+    const fillBulk = () => {
+      el('bulkTsv') && (el('bulkTsv').value = exportTsv());
+      el('bulkProgress') && (el('bulkProgress').textContent = '');
+      showAlert('info', '一括編集欄に現在の部位一覧を反映しました。');
+    };
+
+    const parseBulkTsv = (tsv) => {
+      const text = String(tsv || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const lines = text.split('\n').filter(x => x.trim() !== '');
+      if (!lines.length) return { header: null, rows: [] };
+
+      // 先頭が header の想定。列名が無い場合でも、6列TSVなら処理可能。
+      const head = lines[0].split('\t').map(x => x.trim());
+      const looksHeader = head.some(x => x.toLowerCase().includes('category') || x.toLowerCase().includes('part'));
+
+      const start = looksHeader ? 1 : 0;
+      const rows = [];
+
+      for (let i = start; i < lines.length; i++) {
+        const cols = lines[i].split('\t');
+        if (cols.length < 4) continue; // 最低限
+
+        const categoryName = String(cols[0] ?? '').trim();
+        const categorySortOrder = String(cols[1] ?? '').trim();
+        const partCode = String(cols[2] ?? '').trim();
+        const partNameJa = String(cols[3] ?? '').trim();
+        const sortOrder = String(cols[4] ?? '').trim();
+        const isActiveRaw = String(cols[5] ?? '').trim();
+
+        rows.push({
+          lineNo: i + 1,
+          categoryName,
+          categorySortOrder,
+          partCode,
+          partNameJa,
+          sortOrder,
+          isActiveRaw,
+        });
+      }
+
+      return { header: looksHeader ? head : null, rows };
+    };
+
+    // === 操作 ===
+    const saveOne = async (ev) => {
+      ev && ev.preventDefault && ev.preventDefault();
+      if (!productCode) return;
+
+      if (!isDeveloper) {
+        showAlert('danger', 'デベロッパー権限がありません。');
+        return;
+      }
+
+      const btn = el('btnSave');
+      btn && (btn.disabled = true);
+
+      try {
+        const categoryName = String(el('fCategoryName')?.value || '').trim();
+        const partCode = String(el('fPartCode')?.value || '').trim();
+        const partNameJa = String(el('fPartNameJa')?.value || '').trim();
+
+        if (!categoryName || !partCode || !partNameJa) {
+          showAlert('warning', 'カテゴリ名 / part_code / 部位名（日本語）は必須です。');
+          return;
+        }
+
+        if (!isValidPartCode(partCode)) {
+          showAlert('warning', 'part_code の形式が不正です（英小文字/数字/_ のみ、3〜32文字）。');
+          return;
+        }
+
+        const payload = {
+          productCode,
+          categoryName,
+          partCode,
+          partNameJa,
+          isActive: !!el('fIsActive')?.checked,
+        };
+
+        const cs = String(el('fCategorySort')?.value || '').trim();
+        const so = String(el('fSort')?.value || '').trim();
+        if (cs !== '') payload.categorySortOrder = Number(cs);
+        if (so !== '') payload.sortOrder = Number(so);
+
+        await upsertPart(payload);
+
+        showAlert('success', `保存しました（${partCode}）。`);
+        await loadParts();
+
+        // 保存後もフォーム内容は残す（連続修正しやすい）
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '保存に失敗しました。');
+      } finally {
+        btn && (btn.disabled = false);
+      }
+    };
+
+    const previewBulk = () => {
+      const tsv = el('bulkTsv')?.value || '';
+      const parsed = parseBulkTsv(tsv);
+      const rows = parsed.rows;
+
+      if (!rows.length) {
+        showAlert('warning', 'プレビュー対象がありません。TSVを入力してください。');
+        return;
+      }
+
+      const errors = [];
+      let ok = 0;
+
+      for (const r of rows) {
+        if (!r.categoryName || !r.partCode || !r.partNameJa) {
+          errors.push(`L${r.lineNo}: 必須列（categoryName/partCode/partNameJa）の不足`);
+          continue;
+        }
+        if (!isValidPartCode(r.partCode)) {
+          errors.push(`L${r.lineNo}: partCode 形式不正（${r.partCode}）`);
+          continue;
+        }
+        const b = normalizeBool(r.isActiveRaw);
+        if (r.isActiveRaw !== '' && b === null) {
+          errors.push(`L${r.lineNo}: isActive 形式不正（${r.isActiveRaw}）`);
+          continue;
+        }
+        ok++;
+      }
+
+      const hint = el('bulkHint');
+      if (hint) {
+        hint.textContent = errors.length
+          ? `OK: ${ok}行 / エラー: ${errors.length}行（先頭3件：${errors.slice(0,3).join(' / ')}）`
+          : `OK: ${ok}行（エラーなし）`;
+      }
+
+      if (errors.length) {
+        showAlert('warning', 'TSVにエラーがあります。bulk欄の先頭3件をヒントに修正してください。');
+      } else {
+        showAlert('info', 'プレビューOKです。');
+      }
+    };
+
+    const saveBulk = async () => {
+      if (!productCode) return;
+      if (!isDeveloper) {
+        showAlert('danger', 'デベロッパー権限がありません。');
+        return;
+      }
+
+      const btn = el('btnSaveBulk');
+      btn && (btn.disabled = true);
+
+      const progress = el('bulkProgress');
+      progress && (progress.textContent = '');
+
+      try {
+        const parsed = parseBulkTsv(el('bulkTsv')?.value || '');
+        const rows = parsed.rows;
+
+        if (!rows.length) {
+          showAlert('warning', '保存対象がありません。TSVを入力してください。');
+          return;
+        }
+
+        // バリデーション
+        const errors = [];
+        for (const r of rows) {
+          if (!r.categoryName || !r.partCode || !r.partNameJa) {
+            errors.push(`L${r.lineNo}: 必須列（categoryName/partCode/partNameJa）の不足`);
+            continue;
+          }
+          if (!isValidPartCode(r.partCode)) {
+            errors.push(`L${r.lineNo}: partCode 形式不正（${r.partCode}）`);
+            continue;
+          }
+          const b = normalizeBool(r.isActiveRaw);
+          if (r.isActiveRaw !== '' && b === null) {
+            errors.push(`L${r.lineNo}: isActive 形式不正（${r.isActiveRaw}）`);
+            continue;
+          }
+        }
+
+        if (errors.length) {
+          showAlert('warning', `TSVにエラーがあります（先頭3件：${errors.slice(0,3).join(' / ')}）。`);
+          return;
+        }
+
+        let done = 0;
+        const total = rows.length;
+
+        for (const r of rows) {
+          const payload = {
+            productCode,
+            categoryName: r.categoryName,
+            partCode: r.partCode,
+            partNameJa: r.partNameJa,
+          };
+
+          if (String(r.categorySortOrder).trim() !== '') payload.categorySortOrder = Number(r.categorySortOrder);
+          if (String(r.sortOrder).trim() !== '') payload.sortOrder = Number(r.sortOrder);
+
+          const b = normalizeBool(r.isActiveRaw);
+          if (b !== null) payload.isActive = b;
+
+          await upsertPart(payload);
+
+          done++;
+          if (progress) progress.textContent = `${done}/${total} 保存中...`;
+        }
+
+        if (progress) progress.textContent = `${done}/${total} 保存完了`;
+        showAlert('success', `一括保存が完了しました（${done}件）。`);
+
+        await loadParts();
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e.message || '一括保存に失敗しました。');
+      } finally {
+        btn && (btn.disabled = false);
+      }
+    };
+
+    // === UI bind ===
+    const bindUI = () => {
+      el('btnReload')?.addEventListener('click', async () => {
+        clearAlert();
+        await loadParts();
+      });
+
+      el('btnFillBulk')?.addEventListener('click', fillBulk);
+
+      el('btnPreviewBulk')?.addEventListener('click', previewBulk);
+      el('btnSaveBulk')?.addEventListener('click', saveBulk);
+
+      el('partForm')?.addEventListener('submit', saveOne);
+      el('btnReset')?.addEventListener('click', resetForm);
+
+      el('searchInput')?.addEventListener('input', renderParts);
+      el('filterActive')?.addEventListener('change', renderParts);
+
+      // bulk: Ctrl/Cmd+Enter で一括保存
+      el('bulkTsv')?.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          saveBulk();
+        }
+      });
+    };
+
+    // === 初期化 ===
+    (async () => {
+      bindUI();
+
+      await loadProductInfo();
+      if (!productCode) return;
+
+      await loadDeveloperStatus();
+      if (!isDeveloper) {
+        showAlert('danger', 'デベロッパー権限がありません。');
+        el('btnReload') && (el('btnReload').disabled = true);
+        el('btnSave') && (el('btnSave').disabled = true);
+        el('btnSaveBulk') && (el('btnSaveBulk').disabled = true);
+        return;
+      }
+
+      await loadParts();
+      fillBulk();
+    })();
+  </script>
+</body>
+</html>
