@@ -42,6 +42,37 @@
     @media (max-width: 767.98px) {
       .col-hide-sm { display: none !important; }
     }
+
+    /* 商品別ブロック */
+    .product-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .product-title {
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .product-title .name {
+      font-weight: 700;
+    }
+
+    .product-actions {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .accordion-button .badge {
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 
@@ -57,7 +88,7 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
             <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
-            <li class="breadcrumb-item"><a id="breadcrumbBoard" href="#">フィードバックボード</a></li>
+            <li class="breadcrumb-item d-none" id="breadcrumbBoardItem"><a id="breadcrumbBoard" href="#">フィードバックボード</a></li>
             <li class="breadcrumb-item active" aria-current="page">デベロッパー承認</li>
           </ol>
         </nav>
@@ -83,8 +114,7 @@
             <div>
               <h1 class="mb-1">デベロッパー承認</h1>
               <div class="text-secondary">
-                対象商品：<span id="productName" class="fw-semibold">-</span>
-                <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
+                管理対象：<span id="productCount" class="fw-semibold">-</span> 商品 ／ 承認待ち：<span id="pendingTotal" class="fw-semibold">-</span> 件
                 <span class="ms-2 small" id="developerBadgeWrap" style="display:none;">
                   <span class="badge bg-success-subtle text-success border border-success-subtle">Developer: <span id="developerRole">-</span></span>
                 </span>
@@ -103,45 +133,23 @@
         </div>
 
         <div class="row g-4">
-          <!-- 左：承認待ち一覧 -->
+          <!-- 左：商品別 承認待ち一覧 -->
           <div class="col-12 col-lg-5">
             <div class="card shadow-sm">
               <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                   <div>
-                    <div class="h5 m-0">承認待ち一覧</div>
+                    <div class="h5 m-0">承認待ち一覧（商品別）</div>
                     <div class="text-secondary small">status が new / updated の意見のみ表示します。</div>
                   </div>
-                  <div class="text-secondary small">
-                    件数：<span id="pendingCount">-</span>
-                  </div>
+                  <div class="text-secondary small" id="leftHint"></div>
                 </div>
 
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle mb-0">
-                    <thead>
-                      <tr>
-                        <th class="text-nowrap" style="width:4.4rem;">ID</th>
-                        <th class="text-center">意見</th>
-                        <th class="col-hide-sm text-nowrap" style="width:11.5rem;">更新日時</th>
-                      </tr>
-                    </thead>
-                    <tbody id="pendingRows">
-                      <tr>
-                        <td colspan="3" class="text-center text-secondary py-4">読み込み中...</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div id="productAccordion" class="accordion">
+                  <div class="text-center text-secondary py-4">読み込み中...</div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between mt-3">
-                  <div class="text-secondary small">※ クリックで詳細を表示します。</div>
-                  <div class="d-flex align-items-center gap-2">
-                    <button id="btnPrev" class="btn btn-sm btn-outline-secondary" disabled>前へ</button>
-                    <span class="text-secondary small"><span id="pageFrom">-</span>–<span id="pageTo">-</span></span>
-                    <button id="btnNext" class="btn btn-sm btn-outline-secondary" disabled>次へ</button>
-                  </div>
-                </div>
+                <div class="mt-3 text-secondary small">※ 行をクリックすると右側に詳細を表示します。</div>
 
               </div>
             </div>
@@ -170,6 +178,11 @@
                     <!-- 原文 -->
                     <div class="border rounded p-3 mb-3 bg-light">
                       <div class="fw-semibold mb-2">お客様の原文（編集不可）</div>
+
+                      <div class="mb-2">
+                        <div class="small text-secondary">商品</div>
+                        <div class="mono" id="detailProductText">-</div>
+                      </div>
 
                       <div class="mb-2">
                         <div class="small text-secondary">部位（原文）</div>
@@ -255,7 +268,26 @@
     const qs = name => new URL(window.location.href).searchParams.get(name) || '';
     const el = (id) => document.getElementById(id);
 
-    const productCode = (qs('product_code') || '').trim();
+    const escapeHtml = (s) => {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[c]));
+    };
+
+    const fmtDateTime = (iso) => {
+      if (!iso) return '';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return String(iso);
+        return d.toLocaleString();
+      } catch {
+        return String(iso);
+      }
+    };
 
     const clearAlert = () => {
       const box = el('messageArea');
@@ -281,120 +313,215 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const escapeHtml = (s) => {
-      return String(s ?? '').replace(/[&<>"']/g, (c) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-      }[c]));
-    };
-
-    const fmtDateTime = (iso) => {
-      if (!iso) return '';
-      try {
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return String(iso);
-        return d.toLocaleString();
-      } catch {
-        return String(iso);
-      }
-    };
-
     const buildBoardUrl = (productCode) => {
       const p = encodeURIComponent(productCode || '');
       return `/feedback_board.html?product_code=${p}`;
     };
 
     // === 状態 ===
-    const LIMIT = 50;
-    let offset = 0;
+    const focusProductCode = (qs('product_code') || '').trim(); // 互換：特定商品へフォーカスしたい時のみ使用
 
     let isDeveloper = false;
     let developerRole = '';
 
-    let pendingList = [];
-    let partsGrouped = []; // grouped=true
+    // dashboard から
+    let products = []; // [{product_code, product_name}]
+    let pendingByProduct = new Map(); // product_code => pending[]
+    let pendingTotal = 0;
 
+    // エンドポイント互換
+    let supportsPostDetailById = false;
+    let supportsPublishById = false;
+
+    // 詳細
     let selectedPostId = null;
-    let selectedPost = null; // post_detail レスポンス
-
+    let selectedProductCode = '';
+    let selectedPost = null;
     let hasPublicPartCode = false;
 
+    // parts キャッシュ
+    const partsCache = new Map(); // product_code => grouped parts
+
     // === 描画 ===
-    const renderPending = () => {
-      const tbody = el('pendingRows');
-      if (!tbody) return;
+    const renderHeaderSummary = () => {
+      const pc = el('productCount');
+      const pt = el('pendingTotal');
+      pc && (pc.textContent = String(products.length));
+      pt && (pt.textContent = String(pendingTotal));
 
-      const countEl = el('pendingCount');
-      countEl && (countEl.textContent = String(pendingList.length));
+      const hint = el('leftHint');
+      if (hint) {
+        if (!products.length) hint.textContent = '';
+        else hint.textContent = '商品数：' + String(products.length);
+      }
 
-      const fromEl = el('pageFrom');
-      const toEl = el('pageTo');
-      fromEl && (fromEl.textContent = pendingList.length ? String(offset + 1) : '0');
-      toEl && (toEl.textContent = pendingList.length ? String(offset + pendingList.length) : '0');
+      const wrap = el('developerBadgeWrap');
+      if (wrap) {
+        if (isDeveloper) {
+          wrap.style.display = '';
+          el('developerRole') && (el('developerRole').textContent = developerRole || '-');
+        } else {
+          wrap.style.display = 'none';
+        }
+      }
 
-      const btnPrev = el('btnPrev');
-      const btnNext = el('btnNext');
-      btnPrev && (btnPrev.disabled = offset <= 0);
-      btnNext && (btnNext.disabled = pendingList.length < LIMIT);
+      // breadcrumb の「フィードバックボード」は、互換として product_code が付いている時だけ出す
+      const bcItem = el('breadcrumbBoardItem');
+      const bcLink = el('breadcrumbBoard');
+      if (bcItem && bcLink) {
+        if (focusProductCode) {
+          bcLink.href = buildBoardUrl(focusProductCode);
+          bcItem.classList.remove('d-none');
+        } else {
+          bcItem.classList.add('d-none');
+        }
+      }
+    };
 
-      if (!pendingList.length) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">承認待ちの意見はありません。</td></tr>';
+    const renderProducts = () => {
+      const acc = el('productAccordion');
+      if (!acc) return;
+
+      if (!products.length) {
+        acc.innerHTML = '<div class="text-center text-secondary py-4">管理対象の商品がありません。</div>';
         return;
       }
 
       let html = '';
-      for (const item of pendingList) {
-        const postId = item.post_id;
-        const stRaw = String(item.status || '-');
-        const stLc = stRaw.toLowerCase();
-        const stLabel = escapeHtml(stRaw);
-        let stBadgeClass = 'text-bg-secondary';
-        if (stLc === 'new') stBadgeClass = 'text-bg-warning';
-        else if (stLc === 'updated') stBadgeClass = 'text-bg-success';
-        const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${stLabel}</span>`;
 
-        const title = item.original_title || '';
-        const part = item.original_part_code || item.original_part_free_text || '';
+      for (let i = 0; i < products.length; i++) {
+        const p = products[i];
+        const code = String(p.product_code || '');
+        const name = String(p.product_name || '');
+        const items = pendingByProduct.get(code) || [];
 
-        const updatedAt = fmtDateTime(item.updated_at || item.created_at || '');
-        const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
+        const headingId = 'heading_' + i;
+        const collapseId = 'collapse_' + i;
 
+        const pendingCount = items.length;
+        const badge = pendingCount
+          ? `<span class="badge text-bg-danger ms-2">${pendingCount}</span>`
+          : `<span class="badge text-bg-secondary ms-2">0</span>`;
+
+        const isShow = (focusProductCode && focusProductCode === code);
+        const expanded = isShow ? 'true' : 'false';
+        const showClass = isShow ? 'show' : '';
+        const collapsedClass = isShow ? '' : 'collapsed';
+
+        // テーブル
+        let bodyHtml = '';
+        if (!pendingCount) {
+          bodyHtml = '<div class="text-secondary">承認待ちの意見はありません。</div>';
+        } else {
+          let rows = '';
+          for (const it of items) {
+            const postId = it.post_id;
+            const stRaw = String(it.status || '-');
+            const stLc = stRaw.toLowerCase();
+            const stLabel = escapeHtml(stRaw);
+            let stBadgeClass = 'text-bg-secondary';
+            if (stLc === 'new') stBadgeClass = 'text-bg-warning';
+            else if (stLc === 'updated') stBadgeClass = 'text-bg-success';
+            const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${stLabel}</span>`;
+
+            const title = it.original_title || '';
+            const part = it.original_part_code || it.original_part_free_text || '';
+            const updatedAt = fmtDateTime(it.updated_at || it.created_at || '');
+            const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
+
+            rows += `
+              <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}" data-product-code="${escapeHtml(code)}">
+                <td class="mono text-nowrap">${escapeHtml(postId)}</td>
+                <td>
+                  <div class="small text-secondary text-truncate" style="max-width: 26rem;">
+                    <span class="mono">${escapeHtml(part)}</span>｜顧客ID: ${escapeHtml(it.customer_id)}
+                  </div>
+                  <div class="fw-semibold text-truncate" style="max-width: 26rem;">
+                    ${escapeHtml(title)}${stBadge}
+                  </div>
+                </td>
+                <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
+              </tr>
+            `;
+          }
+
+          bodyHtml = `
+            <div class="product-head mb-2">
+              <div class="product-title">
+                <span class="name">${escapeHtml(name || code || '-')}</span>
+                <span class="badge bg-secondary fw-normal">${escapeHtml(code)}</span>
+              </div>
+              <div class="product-actions">
+                <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildBoardUrl(code))}">フィードバックボード</a>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-nowrap" style="width:4.4rem;">ID</th>
+                    <th class="text-center">意見</th>
+                    <th class="col-hide-sm text-nowrap" style="width:11.5rem;">更新日時</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        const headLabel = name ? `${escapeHtml(name)} ` : '';
         html += `
-          <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}">
-            <td class="mono">${escapeHtml(postId)}</td>
-            <td>
-              <div class="small text-secondary text-truncate" style="max-width: 26rem;">
-                <span class="mono">${escapeHtml(part)}</span>｜顧客ID: ${escapeHtml(item.customer_id)}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="${escapeHtml(headingId)}">
+              <button class="accordion-button ${collapsedClass}" type="button" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
+                <span class="me-2">${headLabel}<span class="mono">${escapeHtml(code)}</span></span>
+                ${badge}
+              </button>
+            </h2>
+            <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}" data-bs-parent="#productAccordion">
+              <div class="accordion-body">
+                ${bodyHtml}
               </div>
-              <div class="fw-semibold text-truncate" style="max-width: 26rem;">
-                ${escapeHtml(title)}${stBadge}
-              </div>
-            </td>
-            <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
-          </tr>
+            </div>
+          </div>
         `;
       }
 
-      tbody.innerHTML = html;
+      acc.innerHTML = html;
 
-      tbody.querySelectorAll('tr.row-clickable').forEach(tr => {
+      // 行クリック
+      acc.querySelectorAll('tr.row-clickable').forEach(tr => {
         tr.addEventListener('click', async () => {
           const postId = tr.getAttribute('data-post-id');
+          const pc = tr.getAttribute('data-product-code') || '';
           if (!postId) return;
-          await loadPostDetail(Number(postId));
-          renderPending();
+          await loadPostDetail(Number(postId), String(pc));
+          renderProducts();
         });
       });
     };
 
-    const renderPartsSelect = (selectedCode) => {
+    const bindCharCount = () => {
+      const t = el('publicTitle');
+      const c = el('publicTitleCount');
+      if (!t || !c) return;
+
+      const update = () => {
+        c.textContent = String((t.value || '').length);
+      };
+      t.addEventListener('input', update);
+      update();
+    };
+
+    const renderPartsSelect = (partsGrouped, selectedCode) => {
       const sel = el('publicPartSelect');
       if (!sel) return;
 
-      if (!partsGrouped.length) {
+      if (!partsGrouped || !partsGrouped.length) {
         sel.innerHTML = '<option value="">部位がありません</option>';
         return;
       }
@@ -412,27 +539,10 @@
       }
 
       sel.innerHTML = html;
-
-      if (selectedCode) {
-        sel.value = String(selectedCode);
-      }
+      if (selectedCode) sel.value = String(selectedCode);
 
       const hint = el('publicPartHint');
-      if (hint) {
-        hint.textContent = '';
-      }
-    };
-
-    const bindCharCount = () => {
-      const t = el('publicTitle');
-      const c = el('publicTitleCount');
-      if (!t || !c) return;
-
-      const update = () => {
-        c.textContent = String((t.value || '').length);
-      };
-      t.addEventListener('input', update);
-      update();
+      if (hint) hint.textContent = '';
     };
 
     const renderDetail = () => {
@@ -455,6 +565,13 @@
 
       meta && (meta.textContent = `ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
 
+      // 商品情報（最低限 product_code は出す）
+      const prodTxt = el('detailProductText');
+      const code = String(selectedPost.product_code || selectedProductCode || '');
+      const p = products.find(x => String(x.product_code || '') === code);
+      const name = p ? String(p.product_name || '') : '';
+      prodTxt && (prodTxt.textContent = name ? `${name} / ${code}` : (code || '-'));
+
       const origPartText = el('origPartText');
       const origTitle = el('origTitle');
       const origBody = el('origBody');
@@ -469,7 +586,6 @@
       origBody && (origBody.value = String(selectedPost.original_body || ''));
 
       // public_* の入力欄は、既に値があるならそれ、無いなら原文（フォールバック）を表示
-      // APIの仕様に合わせて effective_public_* を使う
       publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || ''));
       publicBody && (publicBody.value = String(selectedPost.effective_public_body || ''));
 
@@ -478,140 +594,172 @@
       if (partWrap) {
         partWrap.style.display = hasPublicPartCode ? '' : 'none';
       }
-      if (hasPublicPartCode) {
-        const defaultCode = selectedPost.effective_public_part_code || '';
-        renderPartsSelect(defaultCode);
-      }
 
-      // status セレクト
+      // status セレクト（承認時の既定値）
       const stSel = el('publishStatus');
-      if (stSel) {
-        // 承認待ち一覧は new/updated。公開での既定は reviewing。
-        stSel.value = 'reviewing';
-      }
+      if (stSel) stSel.value = 'reviewing';
 
       bindCharCount();
     };
 
     // === API 呼び出し ===
-    const loadDeveloperStatus = async () => {
-      el('developerBadgeWrap')?.style && (el('developerBadgeWrap').style.display = 'none');
-
-      if (!productCode) return;
+    const loadDashboard = async () => {
+      // 初期表示
+      const acc = el('productAccordion');
+      acc && (acc.innerHTML = '<div class="text-center text-secondary py-4">読み込み中...</div>');
 
       try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
+        // JWT が無い場合は common.js の挙動に任せる（あれば）
+        try {
+          const token = (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) ? (localStorage.getItem(ADDEVA.LS.authToken) || '') : '';
+          if (!token || (typeof ADDEVA.isJwtExpired === 'function' && ADDEVA.isJwtExpired(token))) {
+            if (window.ADDEVA && typeof ADDEVA._handleAuthFailure === 'function') {
+              ADDEVA._handleAuthFailure('startup: token missing/expired');
+              return;
+            }
+          }
+        } catch (_) {}
+
+        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/dashboard', {
           method: 'POST',
-          body: { productCode }
+          body: {}
         });
 
-        isDeveloper = !!(res && res.is_developer);
-        developerRole = (res && res.role) ? String(res.role) : '';
+        // capability
+        const caps = (res && res.capabilities) ? res.capabilities : {};
+        supportsPostDetailById = !!caps.supports_post_detail_by_id;
+        supportsPublishById = !!caps.supports_publish_by_id;
 
-        if (isDeveloper) {
-          el('developerRole') && (el('developerRole').textContent = developerRole || '-');
-          const wrap = el('developerBadgeWrap');
-          wrap && (wrap.style.display = '');
+        // developer
+        developerRole = (res && res.role) ? String(res.role) : '';
+        isDeveloper = !!(res && (res.is_developer || developerRole));
+
+        // products
+        const rawProducts = (res && (res.products || res.developer_products || res.product_list)) ? (res.products || res.developer_products || res.product_list) : [];
+        products = (Array.isArray(rawProducts) ? rawProducts : []).map(v => {
+          if (typeof v === 'string') {
+            return { product_code: v, product_name: '' };
+          }
+          return {
+            product_code: String(v.product_code || v.productCode || ''),
+            product_name: String(v.product_name || v.productName || ''),
+          };
+        }).filter(x => x.product_code);
+
+        // pending
+        pendingByProduct = new Map();
+        pendingTotal = 0;
+
+        const by = res && (res.pending_by_product_code || res.pendingByProductCode || res.pending_by_product) ? (res.pending_by_product_code || res.pendingByProductCode || res.pending_by_product) : null;
+        if (by && typeof by === 'object' && !Array.isArray(by)) {
+          Object.keys(by).forEach(code => {
+            const arr = Array.isArray(by[code]) ? by[code] : [];
+            pendingByProduct.set(String(code), arr);
+            pendingTotal += arr.length;
+          });
+        } else {
+          const all = res && (res.pending || res.pending_list || res.pendingList) ? (res.pending || res.pending_list || res.pendingList) : [];
+          const arrAll = Array.isArray(all) ? all : [];
+          for (const it of arrAll) {
+            const code = String(it.product_code || it.productCode || '');
+            if (!code) continue;
+            if (!pendingByProduct.has(code)) pendingByProduct.set(code, []);
+            pendingByProduct.get(code).push(it);
+          }
+          // total
+          pendingByProduct.forEach(v => { pendingTotal += v.length; });
+        }
+
+        // products の順序に合わせて、pendingByProduct に無いキーも作っておく
+        for (const p of products) {
+          const code = String(p.product_code || '');
+          if (!pendingByProduct.has(code)) pendingByProduct.set(code, []);
+        }
+
+        // 表示
+        renderHeaderSummary();
+        renderProducts();
+
+        // 権限なし
+        if (!isDeveloper) {
+          showAlert('danger', 'デベロッパー権限がありません。');
+          el('btnReload') && (el('btnReload').disabled = true);
+          el('btnPublish') && (el('btnPublish').disabled = true);
+          return;
         }
 
       } catch (e) {
+        console.error(e);
         isDeveloper = false;
         developerRole = '';
+        products = [];
+        pendingByProduct = new Map();
+        pendingTotal = 0;
+        renderHeaderSummary();
+        renderProducts();
+        showAlert('danger', e && e.message ? e.message : '承認待ち情報の取得に失敗しました。');
       }
     };
 
-    const loadProductInfo = async () => {
-      const nameEl = el('productName');
-      const chipEl = el('productCodeChip');
-      chipEl && (chipEl.textContent = productCode || '-');
-
-      const bc = el('breadcrumbBoard');
-      if (bc) {
-        bc.href = buildBoardUrl(productCode);
-      }
-
-      if (!productCode) {
-        showAlert('danger', 'product_code が指定されていません。URLに ?product_code=... を付けて開いてください。');
-        nameEl && (nameEl.textContent = '-');
-        return;
-      }
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback/product_info', {
-          method: 'POST',
-          body: { productCode }
-        });
-        nameEl && (nameEl.textContent = res.product_name || '-');
-      } catch (e) {
-        console.error(e);
-        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
-        nameEl && (nameEl.textContent = '-');
-      }
-    };
-
-    const loadParts = async () => {
-      const sel = el('publicPartSelect');
-      sel && (sel.innerHTML = '<option value="">読み込み中...</option>');
-
-      if (!productCode) return;
+    const loadPartsForProduct = async (productCode) => {
+      const pc = String(productCode || '').trim();
+      if (!pc) return [];
+      if (partsCache.has(pc)) return partsCache.get(pc);
 
       try {
         const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
           method: 'POST',
-          body: { productCode, grouped: true }
+          body: { productCode: pc, grouped: true }
         });
-
-        partsGrouped = Array.isArray(res) ? res : [];
-
+        const parts = Array.isArray(res) ? res : [];
+        partsCache.set(pc, parts);
+        return parts;
       } catch (e) {
         console.error(e);
-        partsGrouped = [];
-        // 部位リスト取得失敗は致命ではない（承認はタイトル/本文だけでも可能）
+        partsCache.set(pc, []);
+        return [];
       }
     };
 
-    const loadPendingList = async () => {
-      const tbody = el('pendingRows');
-      tbody && (tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-4">読み込み中...</td></tr>');
-
-      if (!productCode) return;
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/pending_list', {
-          method: 'POST',
-          body: { productCode, limit: LIMIT, offset }
-        });
-
-        pendingList = Array.isArray(res) ? res : [];
-        renderPending();
-
-      } catch (e) {
-        console.error(e);
-        pendingList = [];
-        showAlert('danger', e.message || '承認待ち一覧の取得に失敗しました。');
-        renderPending();
-      }
-    };
-
-    const loadPostDetail = async (postId) => {
-      if (!productCode) return;
-
+    const loadPostDetail = async (postId, productCode) => {
       selectedPostId = postId;
+      selectedProductCode = String(productCode || '').trim();
       selectedPost = null;
+      hasPublicPartCode = false;
       renderDetail();
 
       try {
-        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/post_detail', {
-          method: 'POST',
-          body: { productCode, postId }
-        });
+        let res = null;
+
+        if (supportsPostDetailById) {
+          res = await ADDEVA.apiFetch('/api/addeva/dev_approval/post_detail_by_id', {
+            method: 'POST',
+            body: { postId: Number(postId) }
+          });
+        }
+
+        if (!res) {
+          // 互換：従来ルート
+          const pc = String(selectedProductCode || '').trim();
+          if (!pc) {
+            showAlert('danger', '内部エラー：product_code が取得できません。');
+            return;
+          }
+          res = await ADDEVA.apiFetch('/api/addeva/dev_approval/post_detail', {
+            method: 'POST',
+            body: { productCode: pc, postId: Number(postId) }
+          });
+        }
 
         selectedPost = res || null;
         hasPublicPartCode = !!(selectedPost && selectedPost.capabilities && selectedPost.capabilities.has_public_part_code);
 
-        // parts は、public_part_code を使うときのみ必須だが、ここで読み込んでおく
-        if (hasPublicPartCode && !partsGrouped.length) {
-          await loadParts();
+        // public_part_code を使うときのみ部位一覧を取得
+        if (hasPublicPartCode) {
+          const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
+          const parts = await loadPartsForProduct(pc);
+          const defaultCode = (selectedPost.effective_public_part_code || '').trim();
+          renderPartsSelect(parts, defaultCode);
         }
 
         renderDetail();
@@ -620,13 +768,13 @@
       } catch (e) {
         console.error(e);
         selectedPost = null;
-        showAlert('danger', e.message || '意見詳細の取得に失敗しました。');
+        hasPublicPartCode = false;
+        showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
         renderDetail();
       }
     };
 
     const doPublish = async () => {
-      if (!productCode) return;
       if (!selectedPost || !selectedPost.post_id) {
         showAlert('warning', '承認対象の意見を選択してください。');
         return;
@@ -648,12 +796,10 @@
           const v = sel ? String(sel.value || '').trim() : '';
           publicPartCode = v ? v : null;
 
-          // 原文が自由入力（part_code が NULL）だった場合、公開部位は必須に寄せる
           const originalPartCode = (selectedPost.original_part_code || '').trim();
           const originalFree = (selectedPost.original_part_free_text || '').trim();
           const effective = (selectedPost.effective_public_part_code || '').trim();
 
-          // effective が空で、選択も空の場合は保存をブロック
           if (!publicPartCode && !effective && !originalPartCode && originalFree) {
             showAlert('warning', '公開側の部位を選択してください。');
             btn && (btn.disabled = false);
@@ -661,29 +807,50 @@
           }
         }
 
-        const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish', {
-          method: 'POST',
-          body: {
-            productCode,
-            postId: Number(selectedPost.post_id),
-            publicTitle,
-            publicBody,
-            publicPartCode,
-            newStatus,
+        let res = null;
+        if (supportsPublishById) {
+          res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish_by_id', {
+            method: 'POST',
+            body: {
+              postId: Number(selectedPost.post_id),
+              publicTitle,
+              publicBody,
+              publicPartCode,
+              newStatus,
+            }
+          });
+        }
+
+        if (!res) {
+          const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
+          if (!pc) {
+            showAlert('danger', '内部エラー：product_code が取得できません。');
+            return;
           }
-        });
+          res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish', {
+            method: 'POST',
+            body: {
+              productCode: pc,
+              postId: Number(selectedPost.post_id),
+              publicTitle,
+              publicBody,
+              publicPartCode,
+              newStatus,
+            }
+          });
+        }
 
         showAlert('success', `承認して公開しました（ID=${res.post_id}, status=${res.status}）。`);
 
-        // 一覧を更新（承認した意見は new/updated から外れる想定）
-        await loadPendingList();
+        // 一覧を更新
+        await loadDashboard();
 
-        // 詳細も再読込して表示更新
-        await loadPostDetail(Number(selectedPost.post_id));
+        // 詳細も再読込
+        await loadPostDetail(Number(selectedPost.post_id), String(selectedPost.product_code || selectedProductCode || ''));
 
       } catch (e) {
         console.error(e);
-        showAlert('danger', e.message || '承認（公開）に失敗しました。');
+        showAlert('danger', e && e.message ? e.message : '承認（公開）に失敗しました。');
       } finally {
         btn && (btn.disabled = false);
       }
@@ -693,22 +860,11 @@
     const bindUI = () => {
       el('btnReload')?.addEventListener('click', async () => {
         clearAlert();
-        await loadPendingList();
+        await loadDashboard();
       });
 
       el('btnScrollToDetail')?.addEventListener('click', () => {
         el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-
-      el('btnPrev')?.addEventListener('click', async () => {
-        if (offset <= 0) return;
-        offset = Math.max(0, offset - LIMIT);
-        await loadPendingList();
-      });
-
-      el('btnNext')?.addEventListener('click', async () => {
-        offset = offset + LIMIT;
-        await loadPendingList();
       });
 
       el('btnPublish')?.addEventListener('click', doPublish);
@@ -724,27 +880,8 @@
     // === 初期化 ===
     (async () => {
       bindUI();
-
-      // product_code 必須
-      await loadProductInfo();
-      if (!productCode) return;
-
-      // 権限チェック
-      await loadDeveloperStatus();
-      if (!isDeveloper) {
-        showAlert('danger', 'デベロッパー権限がありません。');
-        // 一覧や操作ボタンを無効化
-        el('btnReload') && (el('btnReload').disabled = true);
-        el('btnPublish') && (el('btnPublish').disabled = true);
-        return;
-      }
-
-      // 先に部位を読み込んでおく（public_part_code ありの場合に即表示できるように）
-      await loadParts();
-
-      // 一覧
-      await loadPendingList();
-
+      await loadDashboard();
+      renderDetail();
     })();
   </script>
 </body>
