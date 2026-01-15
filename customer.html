@@ -12,7 +12,7 @@
   <meta name="description" content="ADDEVA製品のユーザーログイン、購入履歴、保証期限確認、サポート依頼ページです。">
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://addeva.jp/customer.html">
+  <link rel="canonical" href="https://www.addeva.jp/customer.html">
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
@@ -503,7 +503,7 @@
             if (devProductCode) {
               const devBtn = document.getElementById('developerButtonTop');
               if (devBtn) {
-                devBtn.href = `/dev_approval.html?product_code=${encodeURIComponent(devProductCode)}`;
+                devBtn.href = `/dev_approval.html`;
                 devBtn.classList.remove('d-none');
               }
 
@@ -521,7 +521,7 @@
               }
 
               if (hasPending) {
-                const u = `/dev_approval.html?product_code=${encodeURIComponent(devProductCode)}`;
+                const u = `/dev_approval.html`;
                 const countText = (pendingCount >= 1)
                   ? `（${pendingCount}件）`
                   : '';
@@ -631,3 +631,4 @@
   </script>
 </body>
 </html>
+
