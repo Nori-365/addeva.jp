@@ -176,6 +176,12 @@
 
     const productCode = (qs('product_code') || '').trim();
 
+    // debug=1 のときは「自動ログアウト／ログイン画面へ遷移」を止めて、このページに留まる
+    const DEBUG_AUTH = (() => {
+      const v = (qs('debug') || '').toLowerCase();
+      return (v === '1' || v === 'true' || v === 'yes' || v === 'on');
+    })();
+
     const $ = (id) => document.getElementById(id);
 
     const clearAlert = () => {
@@ -186,7 +192,7 @@
       text.textContent = '';
     };
 
-    const showAlert = (type, msg) => {
+    const showAlert = (type, msg, opts = {}) => {
       const box = $('messageArea');
       const text = $('messageText');
       if (!box || !text) return;
@@ -195,7 +201,14 @@
                   : (type === 'info') ? 'alert-info'
                   : 'alert-danger';
       box.className = 'alert ' + klass;
-      text.textContent = msg || '';
+
+      // opts.html=true のときだけ innerHTML を許可（デバッグ用パネルなど）
+      if (opts && opts.html) {
+        text.innerHTML = String(msg || '');
+      } else {
+        text.textContent = msg || '';
+      }
+
       $('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -210,6 +223,112 @@
 
     const escapeHtml = (s) => {
       return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    };
+
+    // === debug=1: 認証失敗時にページに留まって調査できるようにする ===
+    const buildUrlWithParams = (path, params = {}) => {
+      const u = new URL(path, window.location.origin);
+      Object.entries(params || {}).forEach(([k, v]) => {
+        if (v === undefined || v === null) return;
+        const s = String(v);
+        // 空文字は「指定なし」として扱う（URLが汚れないように）
+        if (s === '') return;
+        u.searchParams.set(k, s);
+      });
+      return u.pathname + (u.search || '');
+    };
+
+    const renderDebugAuthPanel = (reason) => {
+      try {
+        const cur = new URL(window.location.href);
+        cur.searchParams.set('debug', '1');
+        const curHref = cur.pathname + cur.search + (cur.hash || '');
+
+        const retryHref = buildUrlWithParams('/feedback_board.html', {
+          product_code: productCode || '',
+          debug: '1'
+        });
+        const retryNoDebugHref = buildUrlWithParams('/feedback_board.html', {
+          product_code: productCode || ''
+        });
+        const customerHref = buildUrlWithParams('/customer.html', {
+          debug: '1',
+          return_to: curHref
+        });
+
+        // 参考情報（token の有無・期限）
+        let token = '';
+        let expired = null;
+        try {
+          if (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) {
+            token = localStorage.getItem(ADDEVA.LS.authToken) || '';
+            if (token && typeof ADDEVA.isJwtExpired === 'function') {
+              expired = !!ADDEVA.isJwtExpired(token);
+            }
+          }
+        } catch (_) {
+          token = '';
+          expired = null;
+        }
+
+        const reasonStr = (() => {
+          if (!reason) return '';
+          if (typeof reason === 'string') return reason;
+          const m = reason?.message || reason?.error || reason?.reason;
+          return m ? String(m) : String(reason);
+        })();
+
+        const tokenShort = token ? (token.slice(0, 24) + '…') : '(none)';
+        const tokenBadge = (expired === null)
+          ? ''
+          : (expired
+              ? '<span class="badge text-bg-warning ms-2">expired</span>'
+              : '<span class="badge text-bg-success ms-2">not expired</span>');
+
+        const html = `
+          <div class="fw-bold mb-2">DEBUG_AUTH: 認証失敗のため自動遷移を停止しました</div>
+          <div class="small text-secondary mb-3">debug=1 のときはログアウト処理／ログイン画面への自動遷移を抑止し、このページに留まります。Network/Console を確認してください。</div>
+
+          <div class="mb-2"><span class="fw-semibold">reason:</span> ${escapeHtml(reasonStr || '(no reason)')}</div>
+          <div class="mb-3"><span class="fw-semibold">token:</span> ${escapeHtml(tokenShort)} ${tokenBadge}</div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-sm btn-primary" href="${escapeHtml(customerHref)}">ログイン画面へ（customer.html）</a>
+            <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(retryHref)}">このページを再読込（debug=1）</a>
+            <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(retryNoDebugHref)}">このページを再読込（debugなし）</a>
+            <a class="btn btn-sm btn-outline-secondary" href="/api/docs" target="_blank" rel="noopener">API Docs</a>
+          </div>
+
+          <div class="small text-secondary mt-3">
+            ・DevTools: Console/Network の Preserve log を ON にし、401 等のレスポンスと Request Headers（Authorization）を確認してください。<br>
+            ・この表示は debug=1 の時だけです。
+          </div>
+        `;
+
+        showAlert('danger', html, { html: true });
+      } catch (e) {
+        // 最後の手段：テキストだけでも表示
+        try { showAlert('danger', 'DEBUG_AUTH: 認証失敗（表示生成に失敗しました）'); } catch (_) {}
+      }
+    };
+
+    const installDebugAuthFailureTrap = () => {
+      if (!DEBUG_AUTH) return;
+      if (!window.ADDEVA || typeof ADDEVA._handleAuthFailure !== 'function') return;
+
+      // 多重パッチを防止
+      if (ADDEVA.__debugAuthPatched) return;
+      ADDEVA.__debugAuthPatched = true;
+
+      const orig = ADDEVA._handleAuthFailure.bind(ADDEVA);
+      ADDEVA.__origHandleAuthFailure = orig;
+
+      ADDEVA._handleAuthFailure = function(reason) {
+        try { console.error('[DEBUG_AUTH] _handleAuthFailure intercepted', reason); } catch (_) {}
+        renderDebugAuthPanel(reason || 'ADDEVA._handleAuthFailure()');
+        // debug=1 の時は「遷移しない／トークン消さない」
+        return;
+      };
     };
 
     // === データ保持 ===
@@ -480,14 +599,15 @@
       // ===============================
       // JWTログイン必須（APIキーは使わない）
       // ===============================
+      installDebugAuthFailureTrap();
       try {
         const token = localStorage.getItem(ADDEVA.LS.authToken) || '';
         if (!token || ADDEVA.isJwtExpired(token)) {
-          ADDEVA._handleAuthFailure();
+          ADDEVA._handleAuthFailure('startup: token missing/expired');
           return;
         }
       } catch (_) {
-        ADDEVA._handleAuthFailure();
+        ADDEVA._handleAuthFailure('startup: token check error');
         return;
       }
 
