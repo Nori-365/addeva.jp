@@ -9,6 +9,78 @@ ADDEVA.LS = {
   authToken: 'addeva_auth_token', // JWT Authorization ヘッダー用
 };
 
+/* ---------- Debug helpers (debug=1 のときは自動リダイレクトしない) ---------- */
+ADDEVA.isDebug = function () {
+  try {
+    const sp = new URLSearchParams(window.location.search || '');
+    const v = String(sp.get('debug') || '').trim().toLowerCase();
+    return v === '1' || v === 'true' || v === 'on' || v === 'yes';
+  } catch (_) {
+    return false;
+  }
+};
+
+ADDEVA._showDebugLoginLink = function (loginUrl, reason = '') {
+  try {
+    const id = 'addevaDebugAuthBanner';
+    let el = document.getElementById(id);
+
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      el.style.cssText = [
+        'position:sticky',
+        'top:0',
+        'z-index:99999',
+        'background:#fff3cd',
+        'color:#664d03',
+        'border:1px solid #ffecb5',
+        'padding:10px 12px',
+        'font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif',
+        'font-size:14px',
+        'line-height:1.4',
+      ].join(';');
+
+      if (document.body) document.body.prepend(el);
+      else document.documentElement.prepend(el);
+    }
+
+    // 中身を組み立て（HTML直書きを避け、DOMで安全に構築）
+    while (el.firstChild) el.removeChild(el.firstChild);
+
+    const head = document.createElement('div');
+    head.appendChild(document.createTextNode('debug=1 のため、自動的にログイン画面へ遷移しません。'));
+    el.appendChild(head);
+
+    const row = document.createElement('div');
+    row.style.marginTop = '6px';
+
+    const a = document.createElement('a');
+    a.href = loginUrl;
+    a.textContent = '手動でログイン画面を開く';
+    a.style.textDecoration = 'underline';
+    a.style.color = 'inherit';
+    a.style.fontWeight = '700';
+
+    row.appendChild(a);
+
+    if (reason) {
+      const r = document.createElement('span');
+      r.style.marginLeft = '10px';
+      r.style.opacity = '0.85';
+      r.appendChild(document.createTextNode(`(reason: ${String(reason)})`));
+      row.appendChild(r);
+    }
+
+    el.appendChild(row);
+
+    // コンソールにも出す（原因特定を容易にする）
+    try { console.warn('[ADDEVA][debug] auth redirect suppressed', { reason, loginUrl }); } catch (_) {}
+  } catch (_) {
+    // 何もしない
+  }
+};
+
 /* --- 初回実行時に <meta name="x-api-key"> から localStorage に API キーを保存 --- */
 // この処理はDOMContentLoadedで実行されるため、head-common.html の読み込みよりも後に、
 // あるいは document.body.onload で実行されるように調整すると良い場合があります。
@@ -28,7 +100,7 @@ ADDEVA.LS = {
 })();
 
 /* ---------- Auth helpers (JWT / redirect) ---------- */
-ADDEVA._redirectToLogin = function () {
+ADDEVA._redirectToLogin = function (reason = '') {
   try {
     const path = String(window.location.pathname || '');
     const sp = new URLSearchParams(window.location.search || '');
@@ -44,7 +116,15 @@ ADDEVA._redirectToLogin = function () {
     );
 
     // 正しいログインURLへ統一（ユーザー指定）
-    window.location.href = '/customer.html?mode=login&next=' + next;
+    const loginUrl = '/customer.html?mode=login&next=' + next;
+
+    // debug=1 のときは「ジャンプせずに留まる」＋手動リンクを表示
+    if (ADDEVA.isDebug && ADDEVA.isDebug()) {
+      if (ADDEVA._showDebugLoginLink) ADDEVA._showDebugLoginLink(loginUrl, reason || 'redirectToLogin');
+      return;
+    }
+
+    window.location.href = loginUrl;
   } catch (_) {
     // 何もしない
   }
@@ -80,9 +160,15 @@ ADDEVA.isJwtExpired = function (token, skewSec = 30) {
   return now >= (exp - skewSec);
 };
 
-ADDEVA._handleAuthFailure = function () {
+ADDEVA._handleAuthFailure = function (reason = '') {
+  // debug=1 のときは、状態を壊さず「留まる」ことを優先（原因解析用）
+  if (ADDEVA.isDebug && ADDEVA.isDebug()) {
+    ADDEVA._redirectToLogin(reason || 'handleAuthFailure');
+    return;
+  }
+
   ADDEVA.clearAuth();
-  ADDEVA._redirectToLogin();
+  ADDEVA._redirectToLogin(reason || 'handleAuthFailure');
 };
 
 /* ---------- HTTP fetch (APIアクセス用) ---------- */
@@ -101,7 +187,7 @@ ADDEVA.apiFetch = async function (path, { method = 'POST', body = null, headers 
 
   // JWTが入っていて exp が期限切れなら、APIを叩く前にログインへ戻す
   if (authToken && ADDEVA.isJwtExpired(authToken)) {
-    ADDEVA._handleAuthFailure();
+    ADDEVA._handleAuthFailure('jwt_expired_precheck');
     throw new Error("ログインが必要です。");
   }
 
@@ -134,7 +220,7 @@ ADDEVA.apiFetch = async function (path, { method = 'POST', body = null, headers 
 
     // 401は「ログインし直し」が正しい挙動なので、ここで一括処理
     if (res.status === 401) {
-      ADDEVA._handleAuthFailure();
+      ADDEVA._handleAuthFailure('http_401');
 
       // 呼び出し元のcatchでも自然に扱えるように例外は投げる
       let msg = 'ログインが必要です。';
