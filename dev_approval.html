@@ -403,7 +403,9 @@
           ? `<span class="badge text-bg-danger ms-2">${pendingCount}</span>`
           : `<span class="badge text-bg-secondary ms-2">0</span>`;
 
-        const isShow = (focusProductCode && focusProductCode === code);
+        // 仕様：未承認（>0）は初期表示で展開、0件は非展開。
+        // 互換：URLに product_code があれば、その商品も展開。
+        const isShow = (pendingCount > 0) || (focusProductCode && focusProductCode === code);
         const expanded = isShow ? 'true' : 'false';
         const showClass = isShow ? 'show' : '';
         const collapsedClass = isShow ? '' : 'collapsed';
@@ -473,16 +475,19 @@
           `;
         }
 
-        const headLabel = name ? `${escapeHtml(name)} ` : '';
+        // 左リスト：product_code → 商品名 → 未承認件数 の順
+        const safeName = name ? escapeHtml(name) : '<span class="text-secondary small ms-2">（商品名未設定）</span>';
+
         html += `
           <div class="accordion-item">
             <h2 class="accordion-header" id="${escapeHtml(headingId)}">
               <button class="accordion-button ${collapsedClass}" type="button" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
-                <span class="me-2">${headLabel}<span class="mono">${escapeHtml(code)}</span></span>
+                <span class="mono me-2">${escapeHtml(code)}</span>
+                <span class="me-2">${safeName}</span>
                 ${badge}
               </button>
             </h2>
-            <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}" data-bs-parent="#productAccordion">
+            <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}">
               <div class="accordion-body">
                 ${bodyHtml}
               </div>
