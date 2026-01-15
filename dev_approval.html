@@ -73,6 +73,15 @@
     .accordion-button .badge {
       transform: translateY(-1px);
     }
+
+    /* PC：左右ペインを独立スクロールにして、右（編集ボード）上でホイールすると右がスクロールされるようにする */
+    @media (min-width: 992px) {
+      .panel-scroll {
+        max-height: calc(100vh - 140px); /* fixed header + 余白ぶん */
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+    }
   </style>
 </head>
 
@@ -136,7 +145,7 @@
           <!-- 左：商品別 承認待ち一覧 -->
           <div class="col-12 col-lg-5">
             <div class="card shadow-sm">
-              <div class="card-body p-4">
+              <div class="card-body p-4 panel-scroll">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                   <div>
                     <div class="h5 m-0">承認待ち一覧（商品別）</div>
@@ -159,7 +168,7 @@
           <div class="col-12 col-lg-7">
             <div class="sticky-pane">
               <div class="card shadow-sm">
-                <div class="card-body p-4">
+                <div class="card-body p-4 panel-scroll">
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
                       <div class="h5 m-0">意見詳細</div>
@@ -324,7 +333,7 @@
         if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
       } catch (_) {}
       // 最低限：バックスラッシュとダブルクォートだけエスケープ（セレクタ用）
-      return String(s ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      return String(s ?? '').replace(/\/g, '\\').replace(/"/g, '\"');
     };
 
     // 保存後：左の一覧（該当行があればその行、無ければ該当 product のヘッダー）へジャンプ
