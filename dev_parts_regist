@@ -15,9 +15,7 @@
   <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- APIキーをcommon.jsが読み取るためのメタタグ -->
-  <meta name="x-api-key" content="ADDEVA_API_KEY_c3rITY1LbafHBYaO62tJ4h4nzqQKsEMvXQ7aFRz3Uqk">
-
+  <!-- x-api-key はクライアントへ埋め込まない（common.js 側で未設定でも動作する想定） -->
   <style>
     /* main.css 側に寄せつつ、管理画面用の最小限だけ補強 */
     #messageArea { overflow-anchor: none; }
