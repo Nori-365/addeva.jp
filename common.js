@@ -1,802 +1,179 @@
-<!doctype html>
-<html lang="ja">
-<head>
-  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
-  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+// /var/www/addeva/site/common.js
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,follow">
+// ADDEVAサイト専用の共通ユーティリティオブジェクト
+const ADDEVA = window.ADDEVA || {};
 
-  <title>フィードバックボード｜ADDEVA サポート</title>
+// ローカルストレージキーの定義
+ADDEVA.LS = {
+  apiKey: 'addeva_api_key',       // X-API-KEY ヘッダー用
+  authToken: 'addeva_auth_token', // JWT Authorization ヘッダー用
+};
 
-  <!-- CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <style>
-    /* main.css 側に寄せつつ、ボード用の最小限だけ補強 */
-    #messageArea { overflow-anchor: none; }
-
-    .rank-table td, .rank-table th { vertical-align: middle; }
-    .rank-badge {
-      min-width: 2.2rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: .2rem .55rem;
-      font-weight: 700;
-      background: rgba(13,110,253,.10);
-      color: #0d6efd;
+/* --- 初回実行時に <meta name="x-api-key"> から localStorage に API キーを保存 --- */
+// この処理はDOMContentLoadedで実行されるため、head-common.html の読み込みよりも後に、
+// あるいは document.body.onload で実行されるように調整すると良い場合があります。
+// 現状は <script defer src="/common.js"></script> で問題なく動く想定です。
+(() => {
+  try {
+    const cur = localStorage.getItem(ADDEVA.LS.apiKey);
+    const m = document.querySelector('meta[name="x-api-key"]');
+    const k = m && (m.getAttribute('content') || '').trim();
+    if (!cur && k) {
+      localStorage.setItem(ADDEVA.LS.apiKey, k);
+      // console.log("API Key initialized from meta tag:", k); // デバッグ用
     }
-    .part-link { text-decoration: none; }
-    .part-link:hover { text-decoration: underline; }
-    .row-clickable { cursor: pointer; }
-    .row-clickable:hover { background: rgba(13,110,253,.04); }
-    .muted-small { font-size: .9rem; color: #6c757d; }
+  } catch (e) {
+    console.error("Error initializing API Key from meta tag:", e);
+  }
+})();
 
-    /* mobile: ヘッダー表示を縦に寄せる */
-    @media (max-width: 767.98px) {
-      .v-label {
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-        writing-mode: vertical-rl !important;
-        text-orientation: upright !important;
-        line-height: 1;
-        white-space: nowrap;
-      }
-      /* モバイルでは更新ボタンを非表示（ヘッダーを1行に寄せる） */
-      #btnReload { display: none !important; }
+/* ---------- Auth helpers (JWT / redirect) ---------- */
+ADDEVA._redirectToLogin = function () {
+  try {
+    const path = String(window.location.pathname || '');
+    const sp = new URLSearchParams(window.location.search || '');
+    const mode = (sp.get('mode') || '').trim();
 
-      th.col-opinion-count { width: 4.5rem !important; }
-      th.col-action { width: 6rem !important; }
-    }
-  </style>
-</head>
+    // ログインページでは飛ばさない（無限ループ防止）
+    if (path.endsWith('/customer.html') && mode === 'login') return;
 
-<body>
-  <!-- ▼ 共通ヘッダーを読み込み -->
-  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+    const next = encodeURIComponent(
+      (window.location.pathname || '/') +
+      (window.location.search || '') +
+      (window.location.hash || '')
+    );
 
-  <main>
-    <section class="section py-5">
-      <div class="container container-narrow">
+    // 正しいログインURLへ統一（ユーザー指定）
+    window.location.href = '/customer.html?mode=login&next=' + next;
+  } catch (_) {
+    // 何もしない
+  }
+};
 
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
-            <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
-            <li class="breadcrumb-item d-none" id="devBreadcrumbItem"><a href="#" id="devBreadcrumbLink">デベロッパー管理ページ</a></li>
-            <li class="breadcrumb-item active" aria-current="page">フィードバックボード</li>
-          </ol>
-        </nav>
+ADDEVA.clearAuth = function () {
+  try {
+    localStorage.removeItem(ADDEVA.LS.authToken);
+  } catch (_) {}
+};
 
-        <!-- メッセージ表示エリア -->
-        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
-          <div class="d-flex align-items-start justify-content-between gap-3">
-            <div id="messageText" class="flex-grow-1"></div>
-            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
-          </div>
-        </div>
+// base64url -> payload(JSON)
+ADDEVA._jwtPayload = function (token) {
+  try {
+    const t = String(token || '');
+    const parts = t.split('.');
+    if (parts.length !== 3) return null;
+    let b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64.length % 4;
+    if (pad) b64 += '='.repeat(4 - pad);
+    const json = decodeURIComponent(escape(atob(b64)));
+    return JSON.parse(json);
+  } catch (_) {
+    return null;
+  }
+};
 
-        <!-- ページヘッダー情報 -->
-        <div class="mb-4">
-          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
-            <div class="fw-bold" style="font-size: 1.6rem; line-height: 1.35;">公開されたご意見に投票して、製品づくりに参加できます。</div>
-            <div class="mt-1">
-              <span class="fw-semibold">賛成の多いご意見ほど、優先して製品に反映されます。</span><br>
-              製品ガイドに掲載してほしい情報（使い方、FAQ、注意点など）も、ご意見として追加できます。
-            </div>
-          </div>
+ADDEVA.isJwtExpired = function (token, skewSec = 30) {
+  const p = ADDEVA._jwtPayload(token);
+  const exp = p && typeof p.exp === 'number' ? p.exp : null;
+  if (!exp) return false; // expが無いJWTは期限判定できないので「期限切れ扱いしない」
+  const now = Math.floor(Date.now() / 1000);
+  return now >= (exp - skewSec);
+};
 
-          <!-- 製品チームからのメッセージ（APIから取得して表示） -->
-          <div id="productTeamMessageWrap" class="mb-3 d-none">
-            <div class="p-3 bg-white border rounded">
-              <div class="fw-bold mb-2">製品チームから</div>
-              <div id="productTeamMessageBody"></div>
-            </div>
-          </div>
+ADDEVA._handleAuthFailure = function () {
+  ADDEVA.clearAuth();
+  ADDEVA._redirectToLogin();
+};
 
-          <h1 class="mb-2">フィードバックボード</h1>
-          <p class="lead mb-1">
-            <span class="d-none d-md-inline">対象商品：</span><span class="d-inline d-md-none">対象：</span> <span id="productName" class="fw-bold">-</span>
-            <span class="badge bg-secondary fw-normal ms-2" id="productCodeChip">-</span>
-          </p>
-          <p class="text-secondary mb-0">
-            部位ごとの「賛成」投票数が多い順に並べています。部位をクリックすると、投票とご意見の追加ページへ移動します。
-          </p>
-</div>
+/* ---------- HTTP fetch (APIアクセス用) ---------- */
+/**
+ * FastAPIバックエンドへAPIリクエストを送信する共通関数
+ * @param {string} path - APIエンドポイントのパス (例: '/api/addeva/products')
+ * @param {object} options - オプション { method, body, headers }
+ * @param {string} options.method - HTTPメソッド (GET, POSTなど)
+ * @param {any} options.body - リクエストボディ (オブジェクトの場合、自動でJSON.stringifyされる)
+ * @param {object} options.headers - 追加のHTTPヘッダー
+ * @returns {Promise<any>} - APIからのレスポンスデータ (JSON形式)
+ */
+ADDEVA.apiFetch = async function (path, { method = 'POST', body = null, headers = {} } = {}) {
+  const apiKey = localStorage.getItem(ADDEVA.LS.apiKey) || '';
+  const authToken = localStorage.getItem(ADDEVA.LS.authToken) || '';
 
-        <div class="card shadow-sm p-4">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-            <h2 class="h5 m-0">部位一覧（賛成数順）</h2>
-            <div class="text-secondary small d-none d-md-block" id="rankHint"></div>
-          </div>
+  // JWTが入っていて exp が期限切れなら、APIを叩く前にログインへ戻す
+  if (authToken && ADDEVA.isJwtExpired(authToken)) {
+    ADDEVA._handleAuthFailure();
+    throw new Error("ログインが必要です。");
+  }
 
-          <div class="table-responsive">
-            <table class="table table-hover align-middle rank-table mb-0">
-              <thead>
-                <tr>
-                  <th style="width: 6rem;">順位</th>
-                  <th>部位</th>
-                  <th class="text-end" style="width: 8rem;"><span class="d-none d-md-inline">賛成</span><span class="d-inline d-md-none v-label">賛成</span></th>
-                  <th class="text-end" style="width: 8rem;"><span class="d-none d-md-inline">反対</span><span class="d-inline d-md-none v-label">反対</span></th>
-                  <th class="text-end" style="width: 8rem;"><span class="d-none d-md-inline">意見数</span><span class="d-inline d-md-none v-label">意見数</span></th>
-                  <th class="col-action" style="width: 13rem;"></th>
-                </tr>
-              </thead>
-              <tbody id="rankRows">
-                <tr>
-                  <td colspan="6" class="text-center text-secondary py-4">読み込み中...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+  // デフォルトヘッダーの設定
+  const defaultHeaders = {
+    'Content-Type': 'application/json',
+  };
 
-          <div class="d-flex justify-content-center mt-3 d-none" id="toggleWrap">
-            <button id="btnToggleAll" class="btn btn-outline-primary">全部見る</button>
-          </div>
+  // ユーザーがheadersオプションで渡したものをデフォルトにマージ
+  const finalHeaders = { ...defaultHeaders, ...headers };
 
-          <div class="mt-3 text-secondary small">
-            ※「賛成/反対」は、承認済み（検討中/対応予定/対応済み）の意見に対する投票のみを集計しています。
-          </div>
-        </div>
+  // APIキーが存在すれば X-API-KEY ヘッダーを追加 (ユーザー指定の headers に x-api-key があればそちらが優先)
+  if (apiKey && !finalHeaders['x-api-key']) {
+    finalHeaders['x-api-key'] = apiKey;
+  }
 
-        <div class="mt-4 p-3 bg-light border rounded">
-          <div class="fw-bold mb-1">部位を選んで開く</div>
-          <div class="text-secondary small mb-2">ランキングに表示されない部位も、ここから直接開けます。</div>
-          <div class="row g-2 align-items-end">
-            <div class="col-12 col-md-8">
-              <label class="form-label" for="partSelect">部位</label>
-              <select id="partSelect" class="form-select">
-                <option value="">読み込み中...</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-4">
-              <button id="btnOpenPart" class="btn btn-primary w-100" disabled>投票とご意見の追加へ</button>
-            </div>
-          </div>
-        </div>
+  // Authorization ヘッダーがまだ設定されておらず、かつ authToken があれば追加
+  // (ユーザー指定の headers に Authorization があればそちらが優先)
+  if (!finalHeaders['Authorization'] && authToken) {
+    finalHeaders['Authorization'] = `Bearer ${authToken}`;
+  }
 
-      </div>
-    </section>
-  </main>
+  // bodyがオブジェクトの場合は自動でJSON.stringifyする
+  const requestBody = (body && typeof body === 'object') ? JSON.stringify(body) : body;
 
-  <!-- ▼ 共通フッターを読み込み -->
-  <div data-include="/includes/footer.html" aria-busy="true"></div>
+  const init = { method, headers: finalHeaders, body: requestBody };
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  try {
+    const res = await fetch(path, init);
 
-  <!-- ============================================================
-       DEBUG_AUTH preload guard（重要）
-       ・/common.js が読み込まれた直後にログイン画面へ飛ぶ場合、
-         その遷移は /common.js 実行中に起きています。
-       ・debug=1 のときだけ、/common.js より前に「遷移・トークン削除」を抑止します。
-       ============================================================ -->
-  <script>
-    (function(){
-      const params = new URL(location.href).searchParams;
-      const v = (params.get('debug') || '').toLowerCase();
-      const DEBUG_AUTH = (v === '1' || v === 'true' || v === 'yes' || v === 'on');
-      window.__ADDEVA_DEBUG_AUTH = DEBUG_AUTH;
+    // 401は「ログインし直し」が正しい挙動なので、ここで一括処理
+    if (res.status === 401) {
+      ADDEVA._handleAuthFailure();
 
-      if (!DEBUG_AUTH) return;
-
-      window.__ADDEVA_DEBUG = window.__ADDEVA_DEBUG || {};
-      const DBG = window.__ADDEVA_DEBUG;
-      DBG.events = DBG.events || [];
-
-      const log = (type, payload) => {
-        try { DBG.events.push({ ts: Date.now(), type, payload }); } catch (_) {}
-        try { console.warn('[DEBUG_AUTH]', type, payload); } catch (_) {}
-      };
-
-      // ------------------------------------------------------------
-      // 1) token/auth/jwt 系の removeItem をブロック（debug=1 の時だけ）
-      // ------------------------------------------------------------
+      // 呼び出し元のcatchでも自然に扱えるように例外は投げる
+      let msg = 'ログインが必要です。';
       try {
-        if (!DBG.__storagePatched) {
-          DBG.__storagePatched = true;
-
-          const patchStorage = (st, name) => {
-            if (!st || typeof st.removeItem !== 'function') return;
-            const _rm = st.removeItem.bind(st);
-            st.removeItem = function(k){
-              const ks = String(k || '');
-              if (/token|auth|jwt/i.test(ks)) {
-                log(name + '.removeItem.blocked', { key: ks });
-                return;
-              }
-              return _rm(ks);
-            };
-          };
-
-          patchStorage(localStorage, 'localStorage');
-          patchStorage(sessionStorage, 'sessionStorage');
-        }
-      } catch (e) {
-        log('storage.patch.error', String(e && e.message ? e.message : e));
-      }
-
-      // ------------------------------------------------------------
-      // 2) ログイン画面への遷移をブロック（assign/replace/pushState）
-      //    ※ location.href 代入は捕捉できないため、以後の debug パネルで原因を追う
-      // ------------------------------------------------------------
-      const isLoginUrl = (u) => {
-        try {
-          const s = String(u || '');
-          return /\/customer\.html/.test(s);
-        } catch (_) {
-          return false;
-        }
-      };
-
-      const blockNav = (method, u) => {
-        if (isLoginUrl(u)) {
-          log('nav.' + method + '.blocked', { url: String(u || '') });
-          return true;
-        }
-        return false;
-      };
-
-      try {
-        if (!DBG.__navPatched) {
-          DBG.__navPatched = true;
-
-          const loc = window.location;
-          const _assign = (loc && loc.assign) ? loc.assign.bind(loc) : null;
-          const _replace = (loc && loc.replace) ? loc.replace.bind(loc) : null;
-
-          if (_assign) {
-            loc.assign = function(u){
-              if (blockNav('assign', u)) return;
-              return _assign(u);
-            };
-          }
-
-          if (_replace) {
-            loc.replace = function(u){
-              if (blockNav('replace', u)) return;
-              return _replace(u);
-            };
-          }
-
-          const _push = history.pushState.bind(history);
-          history.pushState = function(state, title, url){
-            if (blockNav('pushState', url)) return;
-            return _push(state, title, url);
-          };
-        }
-      } catch (e) {
-        log('nav.patch.error', String(e && e.message ? e.message : e));
-      }
-
-      // ------------------------------------------------------------
-      // 3) ADDEVA の認証失敗系ハンドラを「差し替え可能な形」で抑止
-      //    /common.js が window.ADDEVA を上書きしても setter で吸収し、
-      //    logout/_handleAuthFailure/needLogin などを debug 時は no-op にする
-      // ------------------------------------------------------------
-      try {
-        const base = (window.ADDEVA && typeof window.ADDEVA === 'object') ? window.ADDEVA : {};
-        const trapNames = new Set([
-          '_handleAuthFailure',
-          'handleAuthFailure',
-          'logout',
-          'needLogin',
-          'requireLogin',
-          'redirectToLogin',
-          'goLogin'
-        ]);
-
-        const proxy = new Proxy(base, {
-          set(obj, prop, value){
-            const p = String(prop);
-            if (trapNames.has(p) && typeof value === 'function') {
-              try { obj['__orig_' + p] = value; } catch (_) {}
-              obj[p] = function(){
-                const args = Array.from(arguments || []).map(a => {
-                  try {
-                    if (typeof a === 'string') return a;
-                    if (a && typeof a === 'object' && a.message) return a.message;
-                    return JSON.stringify(a);
-                  } catch (_) {
-                    return String(a);
-                  }
-                });
-                log('ADDEVA.' + p + '.intercepted', { args });
-                // debug=1 では「トークン削除」「ログイン画面遷移」をしない
-                return;
-              };
-              return true;
-            }
-            obj[prop] = value;
-            return true;
-          },
-          get(obj, prop){
-            return obj[prop];
-          }
-        });
-
-        if (!DBG.__addevaDefined) {
-          DBG.__addevaDefined = true;
-          try {
-            Object.defineProperty(window, 'ADDEVA', {
-              configurable: false,
-              enumerable: true,
-              get(){ return proxy; },
-              set(v){
-                if (v && typeof v === 'object') {
-                  Object.keys(v).forEach(k => { proxy[k] = v[k]; });
-                }
-              }
-            });
-          } catch (_) {
-            window.ADDEVA = proxy;
-          }
-        } else {
-          window.ADDEVA = proxy;
-        }
-
-      } catch (e) {
-        log('ADDEVA.proxy.error', String(e && e.message ? e.message : e));
-      }
-    })();
-  </script>
-
-  <script src="/common.js"></script>
-
-  <script>
-    // === ユーティリティ ===
-    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
-
-    const productCode = (qs('product_code') || '').trim();
-
-    // debug=1 のときは「自動ログアウト／ログイン画面へ遷移」を止めて、このページに留まる
-    const DEBUG_AUTH = (typeof window.__ADDEVA_DEBUG_AUTH === 'boolean')
-      ? window.__ADDEVA_DEBUG_AUTH
-      : (() => {
-          const v = (qs('debug') || '').toLowerCase();
-          return (v === '1' || v === 'true' || v === 'yes' || v === 'on');
-        })();
-
-    const $ = (id) => document.getElementById(id);
-
-    const clearAlert = () => {
-      const box = $('messageArea');
-      const text = $('messageText');
-      if (!box || !text) return;
-      box.className = 'alert d-none';
-      text.textContent = '';
-    };
-
-    const showAlert = (type, msg, opts = {}) => {
-      const box = $('messageArea');
-      const text = $('messageText');
-      if (!box || !text) return;
-      const klass = (type === 'success') ? 'alert-success'
-                  : (type === 'warning') ? 'alert-warning'
-                  : (type === 'info') ? 'alert-info'
-                  : 'alert-danger';
-      box.className = 'alert ' + klass;
-
-      // opts.html=true のときだけ innerHTML を許可（デバッグ用パネルなど）
-      if (opts && opts.html) {
-        text.innerHTML = String(msg || '');
-      } else {
-        text.textContent = msg || '';
-      }
-
-      $('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const buildFeedbackUrl = (productCode, partCode) => {
-      const p = encodeURIComponent(productCode || '');
-      const pc = encodeURIComponent(partCode || '');
-      let u = `/feedback.html?product_code=${p}`;
-      if (pc) u += `&part_code=${pc}`;
-      return u;
-    };
-
-    const escapeHtml = (s) => {
-      return String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
-    };
-
-    // === debug=1: 認証失敗時にページに留まって調査できるようにする ===
-    const buildUrlWithParams = (path, params = {}) => {
-      const u = new URL(path, window.location.origin);
-      Object.entries(params || {}).forEach(([k, v]) => {
-        if (v === undefined || v === null) return;
-        const s = String(v);
-        // 空文字は「指定なし」として扱う（URLが汚れないように）
-        if (s === '') return;
-        u.searchParams.set(k, s);
-      });
-      return u.pathname + (u.search || '');
-    };
-
-    const renderDebugAuthPanel = (reason) => {
-      try {
-        const cur = new URL(window.location.href);
-        cur.searchParams.set('debug', '1');
-        const curHref = cur.pathname + cur.search + (cur.hash || '');
-
-        const retryHref = buildUrlWithParams('/feedback_board.html', {
-          product_code: productCode || '',
-          debug: '1'
-        });
-        const retryNoDebugHref = buildUrlWithParams('/feedback_board.html', {
-          product_code: productCode || ''
-        });
-        const customerHref = buildUrlWithParams('/customer.html', {
-          debug: '1',
-          return_to: curHref
-        });
-
-        // 参考情報（token の有無・期限）
-        let token = '';
-        let expired = null;
-        try {
-          if (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) {
-            token = localStorage.getItem(ADDEVA.LS.authToken) || '';
-            if (token && typeof ADDEVA.isJwtExpired === 'function') {
-              expired = !!ADDEVA.isJwtExpired(token);
-            }
-          }
-        } catch (_) {
-          token = '';
-          expired = null;
-        }
-
-        const reasonStr = (() => {
-          if (!reason) return '';
-          if (typeof reason === 'string') return reason;
-          const m = reason?.message || reason?.error || reason?.reason;
-          return m ? String(m) : String(reason);
-        })();
-
-        const tokenShort = token ? (token.slice(0, 24) + '…') : '(none)';
-        const tokenBadge = (expired === null)
-          ? ''
-          : (expired
-              ? '<span class="badge text-bg-warning ms-2">expired</span>'
-              : '<span class="badge text-bg-success ms-2">not expired</span>');
-
-        const html = `
-          <div class="fw-bold mb-2">DEBUG_AUTH: 認証失敗のため自動遷移を停止しました</div>
-          <div class="small text-secondary mb-3">debug=1 のときはログアウト処理／ログイン画面への自動遷移を抑止し、このページに留まります。Network/Console を確認してください。</div>
-
-          <div class="mb-2"><span class="fw-semibold">reason:</span> ${escapeHtml(reasonStr || '(no reason)')}</div>
-          <div class="mb-3"><span class="fw-semibold">token:</span> ${escapeHtml(tokenShort)} ${tokenBadge}</div>
-
-          <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-sm btn-primary" href="${escapeHtml(customerHref)}">ログイン画面へ（customer.html）</a>
-            <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(retryHref)}">このページを再読込（debug=1）</a>
-            <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(retryNoDebugHref)}">このページを再読込（debugなし）</a>
-            <a class="btn btn-sm btn-outline-secondary" href="/api/docs" target="_blank" rel="noopener">API Docs</a>
-          </div>
-
-          <div class="small text-secondary mt-3">
-            ・DevTools: Console/Network の Preserve log を ON にし、401 等のレスポンスと Request Headers（Authorization）を確認してください。<br>
-            ・この表示は debug=1 の時だけです。
-          </div>
-        `;
-
-        showAlert('danger', html, { html: true });
-      } catch (e) {
-        // 最後の手段：テキストだけでも表示
-        try { showAlert('danger', 'DEBUG_AUTH: 認証失敗（表示生成に失敗しました）'); } catch (_) {}
-      }
-    };
-
-    const installDebugAuthFailureTrap = () => {
-      if (!DEBUG_AUTH) return;
-      if (!window.ADDEVA || typeof ADDEVA._handleAuthFailure !== 'function') return;
-
-      // 多重パッチを防止
-      if (ADDEVA.__debugAuthPatched) return;
-      ADDEVA.__debugAuthPatched = true;
-
-      const orig = ADDEVA._handleAuthFailure.bind(ADDEVA);
-      ADDEVA.__origHandleAuthFailure = orig;
-
-      ADDEVA._handleAuthFailure = function(reason) {
-        try { console.error('[DEBUG_AUTH] _handleAuthFailure intercepted', reason); } catch (_) {}
-        renderDebugAuthPanel(reason || 'ADDEVA._handleAuthFailure()');
-        // debug=1 の時は「遷移しない／トークン消さない」
-        return;
-      };
-    };
-
-    // === データ保持 ===
-    const DEFAULT_VISIBLE_COUNT = 20;
-    let showAll = false;
-
-    let rankingAll = []; // APIから取得した順序（＝ランキングの確定順）を保持
-    let partsAll = [];   // 部位一覧（セレクト用）
-
-    const renderRanking = () => {
-      const tbody = $('rankRows');
-      if (!tbody) return;
-
-      const hint = $('rankHint');
-      const wrap = $('toggleWrap');
-      const btnToggle = $('btnToggleAll');
-
-      // 全件は取得しておき、21件目以降は折りたたみ表示（ボタンで展開）
-      const total = rankingAll.length;
-      const list = rankingAll;
-
-      // ヒント文言（PCのみ表示）
-      if (hint) {
-        if (!total) {
-          hint.textContent = '';
-        } else if (total <= DEFAULT_VISIBLE_COUNT) {
-          hint.textContent = `- 全${total}件 -`;
-        } else if (showAll) {
-          hint.textContent = `全${total}件を表示中`;
-        } else {
-          hint.textContent = `上位${DEFAULT_VISIBLE_COUNT}件を表示中`;
-        }
-      }
-
-      // 「全部見る」ボタン（Bootstrapの d-flex は display:flex !important なので、d-none を付け外しして制御）
-      if (wrap && btnToggle) {
-        if (total > DEFAULT_VISIBLE_COUNT) {
-          wrap.classList.remove('d-none');
-          btnToggle.textContent = showAll ? `上位${DEFAULT_VISIBLE_COUNT}件に戻す` : '全部見る';
-        } else {
-          wrap.classList.add('d-none');
-        }
-      }
-
-      if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">表示できるデータがありません。</td></tr>';
-        return;
-      }
-
-      let html = '';
-      for (let idx = 0; idx < list.length; idx++) {
-        const item = list[idx];
-        const isHidden = (!showAll && idx >= DEFAULT_VISIBLE_COUNT);
-        const url = buildFeedbackUrl(productCode, item.part_code);
-        const partName = escapeHtml(item.part_name_ja || item.part_code || '-');
-        const cat = escapeHtml(item.category_name || '');
-
-        html += `
-          <tr class="row-clickable${isHidden ? ' d-none' : ''}" data-href="${escapeHtml(url)}" ${isHidden ? 'aria-hidden="true"' : ''}>
-            <td><span class="rank-badge">${item.rank}</span></td>
-            <td>
-              <div class="fw-semibold"><a class="part-link" href="${escapeHtml(url)}">${partName}</a></div>
-              <div class="text-secondary small">${cat ? cat + ' / ' : ''}${escapeHtml(item.part_code || '')}</div>
-            </td>
-            <td class="text-end fw-semibold">${item.up_total}</td>
-            <td class="text-end">${item.down_total}</td>
-            <td class="text-end">${item.approved_post_count}</td>
-            <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary text-nowrap" href="${escapeHtml(url)}"><span class="d-none d-md-inline">投票とご意見の追加</span><span class="d-inline d-md-none">投票・追加</span></a>
-            </td>
-          </tr>
-        `;
-      }
-      // 全件表示時（または総件数が20件以下で折りたたみが無い場合）は、末尾に「以上」を表示
-      if (total && (showAll || total <= DEFAULT_VISIBLE_COUNT)) {
-        html += `
-          <tr>
-            <td colspan="6" class="text-center text-secondary py-3">- 以上、全${total}件 -</td>
-          </tr>
-        `;
-      }
-
-      tbody.innerHTML = html;
-
-      // 行クリックで遷移（リンクがあるので補助的に）
-      tbody.querySelectorAll('tr.row-clickable').forEach(tr => {
-        tr.addEventListener('click', (e) => {
-          const a = e.target && e.target.closest && e.target.closest('a');
-          if (a) return; // リンククリックはそのまま
-          const href = tr.getAttribute('data-href');
-          if (href) window.location.href = href;
-        });
-      });
-    };
-
-    const renderPartsSelect = () => {
-      const sel = $('partSelect');
-      const btn = $('btnOpenPart');
-      if (!sel) return;
-
-      if (!partsAll.length) {
-        sel.innerHTML = '<option value="">部位がありません</option>';
-        btn && (btn.disabled = true);
-        return;
-      }
-
-      // 既存の feedback.html 互換で grouped=true を使う（カテゴリ階層）
-      // partsAll は {category_name, category_sort_order, parts:[...]} の配列
-      let html = '<option value="">部位を選択してください</option>';
-      for (const cat of partsAll) {
-        const label = escapeHtml(cat.category_name || 'その他');
-        html += `<optgroup label="${label}">`;
-        for (const p of (cat.parts || [])) {
-          const code = escapeHtml(p.part_code || '');
-          const name = escapeHtml(p.part_name_ja || code);
-          html += `<option value="${code}">${name}</option>`;
-        }
-        html += '</optgroup>';
-      }
-      sel.innerHTML = html;
-
-      const onChange = () => {
-        const v = (sel.value || '').trim();
-        if (btn) btn.disabled = !v;
-      };
-      sel.addEventListener('change', onChange);
-      onChange();
-
-      btn?.addEventListener('click', () => {
-        const v = (sel.value || '').trim();
-        if (!v) return;
-        window.location.href = buildFeedbackUrl(productCode, v);
-      });
-    };
-
-
-    const loadDeveloperBreadcrumb = async () => {
-      const item = document.getElementById('devBreadcrumbItem');
-      const link = document.getElementById('devBreadcrumbLink');
-      if (!item || !link) return;
-
-      item.classList.add('d-none');
-      link.setAttribute('href', '#');
-
-      if (!productCode) return;
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
-          method: 'POST',
-          body: { productCode }
-        });
-
-        if (res && res.is_developer) {
-          link.href = `/dev_approval.html?product_code=${encodeURIComponent(productCode)}`;
-          item.classList.remove('d-none');
-        }
-      } catch (e) {
-        // 未ログイン/権限なし/通信失敗は静かに無視（リンクは出さない）
-      }
-    };
-
-    const loadProductInfo = async () => {
-      const nameEl = $('productName');
-      const chipEl = $('productCodeChip');
-
-      chipEl && (chipEl.textContent = productCode || '-');
-
-      if (!productCode) {
-        showAlert('danger', 'product_code が指定されていません。URLに ?product_code=... を付けて開いてください。');
-        nameEl && (nameEl.textContent = '-');
-        return;
-      }
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback/product_info', {
-          method: 'POST',
-          body: { productCode }
-        });
-        nameEl && (nameEl.textContent = res.product_name || '-');
-      } catch (e) {
-        console.error(e);
-        showAlert('danger', e.message || '商品情報の取得に失敗しました。');
-        nameEl && (nameEl.textContent = '-');
-      }
-    };
-
-
-    const loadProductTeamMessage = async () => {
-      const wrap = $('productTeamMessageWrap');
-      const body = $('productTeamMessageBody');
-
-      if (!wrap || !body) return;
-
-      wrap.classList.add('d-none');
-      body.innerHTML = '';
-
-      if (!productCode) return;
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/product_team_message', {
-          method: 'POST',
-          body: { productCode }
-        });
-
-        const html = (res && res.content_html) ? String(res.content_html) : '';
-        if (!html.trim()) return;
-
-        body.innerHTML = html;
-        wrap.classList.remove('d-none');
-      } catch (e) {
-        // メッセージ取得失敗は致命ではないため、画面はそのまま（非表示）
-        console.error(e);
-      }
-    };
-
-    const loadRanking = async () => {
-      const tbody = $('rankRows');
-      tbody && (tbody.innerHTML = '<tr><td colspan="6" class="text-center text-secondary py-4">読み込み中...</td></tr>');
-
-      if (!productCode) return;
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/parts_ranking', {
-          method: 'POST',
-          body: { productCode, limit: 500 }
-        });
-        rankingAll = Array.isArray(res) ? res : [];
-        showAll = false;
-        renderRanking();
-      } catch (e) {
-        console.error(e);
-        rankingAll = [];
-        showAll = false;
-        showAlert('danger', e.message || 'ランキングの取得に失敗しました。');
-        renderRanking();
-      }
-    };
-
-    const loadParts = async () => {
-      const sel = $('partSelect');
-      sel && (sel.innerHTML = '<option value="">読み込み中...</option>');
-
-      if (!productCode) return;
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
-          method: 'POST',
-          body: { productCode, grouped: true }
-        });
-        partsAll = Array.isArray(res) ? res : [];
-        renderPartsSelect();
-      } catch (e) {
-        console.error(e);
-        partsAll = [];
-        showAlert('danger', e.message || '部位一覧の取得に失敗しました。');
-        renderPartsSelect();
-      }
-    };
-
-    const bindUI = () => {
-      $('btnToggleAll')?.addEventListener('click', () => {
-        showAll = !showAll;
-        renderRanking();
-      });
-    };
-
-    (async () => {
-      // ===============================
-      // JWTログイン必須（APIキーは使わない）
-      // ===============================
-      installDebugAuthFailureTrap();
-      try {
-        const token = localStorage.getItem(ADDEVA.LS.authToken) || '';
-        if (!token || ADDEVA.isJwtExpired(token)) {
-          ADDEVA._handleAuthFailure('startup: token missing/expired');
-          return;
-        }
+        const t = await res.text().catch(() => '');
+        const j = JSON.parse(t);
+        msg = j.detail || msg;
       } catch (_) {
-        ADDEVA._handleAuthFailure('startup: token check error');
-        return;
+        // 何もしない
       }
+      throw new Error(msg);
+    }
 
-      bindUI();
-      await loadDeveloperBreadcrumb();
-      await loadProductInfo();
-      await loadProductTeamMessage();
-      await loadRanking();
-      await loadParts();
-    })();
-  </script>
-</body>
-</html>
+    // レスポンスがOKでない場合も、エラー詳細を読み込もうと試みる
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => ''); // エラーボディをテキストとして取得
+      let errorMessage = `API Error: ${res.status} ${res.statusText}`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.detail || errorMessage; // FastAPIのHTTPExceptionは "detail" を含む
+      } catch (_) {
+        // JSONパースに失敗した場合はそのままのテキストを使用
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage); // エラーメッセージを含んだ Error オブジェクトをスロー
+    }
+
+    return res.json(); // 成功時はJSONをパース
+  } catch (e) {
+    console.error("ADDEVA.apiFetch failed:", e);
+    // ネットワークエラーなど、fetch自体が失敗した場合
+    throw new Error(e.message || "ネットワークエラーが発生しました。");
+  }
+};
+
+// その他の共通ヘルパー関数が必要であればここに追加
+// 例:
+// ADDEVA.getLang = function(){ /* ... */ };
+// ADDEVA.setLang = function(l){ /* ... */ };
+
+// windowオブジェクトにADDEVAオブジェクトを公開
+window.ADDEVA = ADDEVA;
