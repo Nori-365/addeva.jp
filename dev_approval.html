@@ -318,6 +318,40 @@
       return `/feedback_board.html?product_code=${p}`;
     };
 
+    // CSS.escape の簡易フォールバック（data-* セレクタ用）
+    const cssEscape = (s) => {
+      try {
+        if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
+      } catch (_) {}
+      // 最低限：ダブルクォート/バックスラッシュをエスケープ
+      return String(s ?? '').replace(/\/g, '\\').replace(/"/g, '\"');
+    };
+
+    // 保存後：左の一覧（該当行があればその行、無ければ該当 product のヘッダー）へジャンプ
+    const scrollToEditedList = (productCode, postId) => {
+      const acc = el('productAccordion');
+      if (!acc) return;
+
+      let target = null;
+      const pid = (postId !== null && postId !== undefined) ? String(postId) : '';
+      const pc = String(productCode || '').trim();
+
+      if (pid) {
+        target = acc.querySelector(`tr.row-clickable[data-post-id="${cssEscape(pid)}"]`);
+      }
+      if (!target && pc) {
+        target = acc.querySelector(`button.accordion-button[data-product-code="${cssEscape(pc)}"]`);
+      }
+      if (!target) target = acc;
+
+      try {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (_) {
+        // scrollIntoView が失敗しても落とさない
+      }
+    };
+
+
     // === 状態 ===
     const focusProductCode = (qs('product_code') || '').trim(); // 互換：特定商品へフォーカスしたい時のみ使用
 
@@ -481,7 +515,7 @@
         html += `
           <div class="accordion-item">
             <h2 class="accordion-header" id="${escapeHtml(headingId)}">
-              <button class="accordion-button ${collapsedClass}" type="button" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
+              <button class="accordion-button ${collapsedClass}" type="button" data-product-code="${escapeHtml(code)}" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
                 <span class="mono me-2">${escapeHtml(code)}</span>
                 <span class="me-2">${safeName}</span>
                 ${badge}
@@ -726,7 +760,7 @@
       }
     };
 
-    const loadPostDetail = async (postId, productCode) => {
+    const loadPostDetail = async (postId, productCode, opts = {}) => {
       selectedPostId = postId;
       selectedProductCode = String(productCode || '').trim();
       selectedPost = null;
@@ -769,6 +803,21 @@
 
         renderDetail();
         clearAlert();
+
+        // 選択した意見が右側（編集ボード）に表示されたら、先頭へスクロール
+        if (!opts || !opts.skipScrollToDetail) {
+          const detailTarget = el('detailWrap') || el('detailEmpty');
+          if (detailTarget) {
+            detailTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+
+        // 編集を始めやすいように、公開タイトルへフォーカス（スクロールは抑止）
+        if (!opts || !opts.skipFocus) {
+          setTimeout(() => {
+            try { el('publicTitle')?.focus({ preventScroll: true }); } catch (_) {}
+          }, 0);
+        }
 
       } catch (e) {
         console.error(e);
@@ -848,10 +897,16 @@
         showAlert('success', `承認して公開しました（ID=${res.post_id}, status=${res.status}）。`);
 
         // 一覧を更新
+        const keepPostId = Number(selectedPost.post_id);
+        const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
+
         await loadDashboard();
 
-        // 詳細も再読込
-        await loadPostDetail(Number(selectedPost.post_id), String(selectedPost.product_code || selectedProductCode || ''));
+        // 保存後：左の一覧へジャンプ（該当行が消えている場合は product のヘッダーへ）
+        scrollToEditedList(keepProductCode, keepPostId);
+
+        // 詳細も再読込（ただし保存後は一覧側を見たいので、右ペインへの自動スクロール/フォーカスは抑止）
+        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
 
       } catch (e) {
         console.error(e);
@@ -891,3 +946,4 @@
   </script>
 </body>
 </html>
+
