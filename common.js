@@ -1,7 +1,7 @@
 // /var/www/addeva/site/common.js
 
 // ADDEVAサイト専用の共通ユーティリティオブジェクト
-const ADDEVA = window.ADDEVA || {};
+var ADDEVA = (window.ADDEVA = window.ADDEVA || {});
 
 // ローカルストレージキーの定義
 ADDEVA.LS = {
