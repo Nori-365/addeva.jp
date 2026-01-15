@@ -43,11 +43,11 @@
           </ol>
         </nav>
 
-        <!-- 右上アクション（サポート表示時のみ：ログアウトを配置） -->
-        <div id="customerTopBar" class="d-flex justify-content-end align-items-center mb-2"></div>
+        <!-- 右上アクション（サポート表示時のみ：デベロッパー管理＋ログアウトを配置） -->
+        <div id="customerTopBar" class="d-flex justify-content-end align-items-center gap-2 mb-2"></div>
 
-        <!-- メッセージ表示エリア -->
-        <div id="messageArea" class="alert d-none" role="alert"></div>
+        <!-- メッセージ表示エリア（承認待ち通知などもここに表示） -->
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true"></div>
 
         <!-- ログインページ用：説明文（ログイン枠の上） -->
         <div id="customerLoginIntro" class="mb-3 d-none"></div>
@@ -136,6 +136,7 @@
       // customer.html は JWT 認証で運用する想定。
       // 既存セッションで localStorage に API Key が残っている場合でも送出しないよう、このページでは削除する。
       try { localStorage.removeItem(ADDEVA.LS.apiKey); } catch (_) {}
+
       const customerContent = document.getElementById('customerContent');
       const messageArea = document.getElementById('messageArea');
       const customerLoginIntro = document.getElementById('customerLoginIntro');
@@ -151,20 +152,32 @@
       function clearMessage() {
         messageArea.classList.add('d-none');
         messageArea.textContent = '';
-        messageArea.classList.remove('alert-danger', 'alert-success');
+        messageArea.innerHTML = '';
+        messageArea.classList.remove('alert-danger', 'alert-success', 'alert-warning', 'alert-info');
       }
 
       function showError(msg) {
         messageArea.textContent = msg;
-        messageArea.classList.remove('d-none', 'alert-success');
+        messageArea.classList.remove('d-none', 'alert-success', 'alert-warning', 'alert-info');
         messageArea.classList.add('alert-danger');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       function showSuccess(msg) {
         messageArea.textContent = msg;
-        messageArea.classList.remove('d-none', 'alert-danger');
+        messageArea.classList.remove('d-none', 'alert-danger', 'alert-warning', 'alert-info');
         messageArea.classList.add('alert-success');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // messageArea に HTML を表示（リンク付き通知などに使用）
+      function showHtmlBanner(type, html) {
+        const klass = (type === 'success') ? 'alert-success'
+                    : (type === 'warning') ? 'alert-warning'
+                    : (type === 'info') ? 'alert-info'
+                    : 'alert-danger';
+        messageArea.innerHTML = String(html || '');
+        messageArea.className = `alert ${klass} border rounded mb-3`;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
@@ -259,7 +272,7 @@
 
               showSuccess(result.message || 'ログインに成功しました。');
 
-              // ここが重要：ログイン後は next へ戻す（無ければ support）
+              // ログイン後は next へ戻す（無ければ support）
               redirectAfterLogin();
               return;
             }
@@ -272,6 +285,39 @@
         });
       }
 
+      // デベロッパー権限がある product_code を1つ見つける（あれば「デベロッパー管理」ボタンを表示）
+      async function findDeveloperProductCode(productCodes) {
+        try {
+          const uniq = Array.from(new Set((productCodes || []).map(v => String(v || '').trim()).filter(Boolean)));
+          for (const code of uniq) {
+            try {
+              const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
+                method: 'POST',
+                body: { productCode: code }
+              });
+              if (res && res.is_developer) return code;
+            } catch (_) {
+              // 権限なし/未ログイン/通信失敗は静かに無視（次の product_code を試す）
+            }
+          }
+        } catch (_) {}
+        return '';
+      }
+
+      // 承認待ち（dev_approval: status=new/updated）が存在するかを確認（存在すれば true）
+      async function hasPendingApproval(productCode) {
+        if (!productCode) return false;
+        try {
+          const res = await ADDEVA.apiFetch('/api/addeva/dev_approval/pending_list', {
+            method: 'POST',
+            body: { productCode: String(productCode), limit: 1, offset: 0 }
+          });
+          return Array.isArray(res) && res.length > 0;
+        } catch (_) {
+          return false;
+        }
+      }
+
       async function renderSupportUI() {
         // サポート表示時は、ログイン用の説明と保証表示を隠す
         if (customerLoginIntro) {
@@ -281,6 +327,27 @@
         if (customerLoginWarranty) {
           customerLoginWarranty.classList.add('d-none');
           customerLoginWarranty.innerHTML = '';
+        }
+
+        // 右上アクション（ログアウトは常に表示、デベロッパー管理は後で判定）
+        const topBar = document.getElementById('customerTopBar');
+        if (topBar) {
+          topBar.innerHTML = `
+            <a id="developerButtonTop" class="btn btn-outline-primary btn-sm d-none" href="#" role="button">
+              <i class="bi bi-gear me-1"></i>デベロッパー管理
+            </a>
+            <button id="logoutButtonTop" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-box-arrow-right me-1"></i>ログアウト
+            </button>
+          `;
+
+          const logoutBtn = document.getElementById('logoutButtonTop');
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+              clearAuthToken();
+              window.location.href = '/customer.html?mode=login';
+            });
+          }
         }
 
         customerContent.innerHTML = `
@@ -336,16 +403,16 @@
               <p class="mb-0">ADDEVAは、皆様と一緒にブランドを育てていきたいと考えています。いただいたフィードバックは、製品開発責任者に共有されます。採用された改良は、可能な限り迅速に製品へ反映します。公開／非公開は投稿画面で選択できます。</p>
             </div>
           </div>
-
-          
         `;
 
         document.getElementById('displayCustomerId').textContent = loggedInCustomerId;
         document.getElementById('displayEmail').textContent = loggedInEmail;
 
         const purchasesTableBody = document.getElementById('purchasesTableBody');
+        let purchases = [];
+
         try {
-          const purchases = await ADDEVA.apiFetch('/api/addeva/customer/purchases', { method: 'GET' });
+          purchases = await ADDEVA.apiFetch('/api/addeva/customer/purchases', { method: 'GET' });
 
           purchasesTableBody.innerHTML = '';
           if (!purchases || purchases.length === 0) {
@@ -409,28 +476,46 @@
               `;
             });
           }
+
+          // デベロッパー権限がある場合のみ、デベロッパー管理ボタン＋承認待ち通知を出す
+          try {
+            const productCodes = (purchases || []).map(p => String((p.product_code ?? p.productCode ?? '') || '').trim()).filter(Boolean);
+            const devProductCode = await findDeveloperProductCode(productCodes);
+            if (devProductCode) {
+              const devBtn = document.getElementById('developerButtonTop');
+              if (devBtn) {
+                devBtn.href = `/dev_approval.html?product_code=${encodeURIComponent(devProductCode)}`;
+                devBtn.classList.remove('d-none');
+              }
+
+              const hasPending = await hasPendingApproval(devProductCode);
+              if (hasPending) {
+                const u = `/dev_approval.html?product_code=${encodeURIComponent(devProductCode)}`;
+                const html = `
+                  <div class="d-flex align-items-start justify-content-between gap-3">
+                    <div class="d-flex align-items-start gap-2">
+                      <i class="bi bi-exclamation-circle-fill fs-5"></i>
+                      <div>
+                        <div class="fw-semibold">承認待ちの意見があります</div>
+                        <div class="small">デベロッパー管理ページで内容を確認してください。</div>
+                      </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                      <a class="btn btn-sm btn-success" href="${u}">確認する</a>
+                    </div>
+                  </div>
+                `;
+                showHtmlBanner('success', html);
+              }
+            }
+          } catch (_) {
+            // 失敗しても表示しないだけ（ユーザー側の通常動線は維持）
+          }
+
         } catch (error) {
           console.error('購入履歴の取得に失敗しました:', error);
           purchasesTableBody.innerHTML = '<tr><td colspan="7" class="text-danger">購入履歴の表示に失敗しました。再度ログインしてください。</td></tr>';
           showError(error.message || '購入履歴の取得中にエラーが発生しました。');
-        }
-
-        // 上部（ぱんくずと同じ高さ右寄せ）にログアウトを配置
-        const topBar = document.getElementById('customerTopBar');
-        if (topBar) {
-          topBar.innerHTML = `
-            <button id="logoutButtonTop" class="btn btn-outline-secondary btn-sm">
-              <i class="bi bi-box-arrow-right me-1"></i>ログアウト
-            </button>
-          `;
-
-          const logoutBtn = document.getElementById('logoutButtonTop');
-          if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => {
-              clearAuthToken();
-              window.location.href = '/customer.html?mode=login';
-            });
-          }
         }
       }
 
@@ -477,7 +562,7 @@
           console.error('認証情報の検証に失敗しました:', error);
           clearAuthToken();
 
-          // ここが重要：再ログイン後に戻せるよう next を付けて loginへ
+          // 再ログイン後に戻せるよう next を付けて loginへ
           window.location.href = buildLoginUrl(currentFullPath());
           return;
         }
