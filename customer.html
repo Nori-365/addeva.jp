@@ -286,22 +286,37 @@
       }
 
       // デベロッパー権限がある product_code を1つ見つける（あれば「デベロッパー管理」ボタンを表示）
+      // 併せて developer_status の返り値に含まれる pending_summary（承認待ち要約）も取得する。
+      // ※pending_summary は「自分が developer/admin の全製品」に対する承認待ち件数を返す想定。
       async function findDeveloperProductCode(productCodes) {
         try {
           const uniq = Array.from(new Set((productCodes || []).map(v => String(v || '').trim()).filter(Boolean)));
+          let lastPendingSummary = null;
+
           for (const code of uniq) {
             try {
               const res = await ADDEVA.apiFetch('/api/addeva/feedback_board/developer_status', {
                 method: 'POST',
                 body: { productCode: code }
               });
-              if (res && res.is_developer) return code;
+
+              if (res && res.pending_summary && !lastPendingSummary) {
+                lastPendingSummary = res.pending_summary;
+              }
+
+              if (res && res.is_developer) {
+                return {
+                  devProductCode: code,
+                  pendingSummary: res.pending_summary || lastPendingSummary
+                };
+              }
             } catch (_) {
               // 権限なし/未ログイン/通信失敗は静かに無視（次の product_code を試す）
             }
           }
         } catch (_) {}
-        return '';
+
+        return { devProductCode: '', pendingSummary: null };
       }
 
       // 承認待ち（dev_approval: status=new/updated）が存在するかを確認（存在すれば true）
@@ -478,9 +493,13 @@
           }
 
           // デベロッパー権限がある場合のみ、デベロッパー管理ボタン＋承認待ち通知を出す
+          // 新仕様：pending_list を叩かず、developer_status の pending_summary を参照する
           try {
             const productCodes = (purchases || []).map(p => String((p.product_code ?? p.productCode ?? '') || '').trim()).filter(Boolean);
-            const devProductCode = await findDeveloperProductCode(productCodes);
+            const found = await findDeveloperProductCode(productCodes);
+            const devProductCode = (found && found.devProductCode) ? String(found.devProductCode) : '';
+            const pendingSummary = (found && found.pendingSummary) ? found.pendingSummary : null;
+
             if (devProductCode) {
               const devBtn = document.getElementById('developerButtonTop');
               if (devBtn) {
@@ -488,15 +507,31 @@
                 devBtn.classList.remove('d-none');
               }
 
-              const hasPending = await hasPendingApproval(devProductCode);
+              // pending_summary があればそれを優先。無ければ（旧API互換）pending_list を1件だけ確認。
+              let pendingCount = 0;
+              let hasPending = false;
+
+              if (pendingSummary && (pendingSummary.pending_count !== undefined || pendingSummary.has_pending !== undefined)) {
+                pendingCount = Number(pendingSummary.pending_count || 0);
+                hasPending = !!pendingSummary.has_pending || pendingCount > 0;
+              } else {
+                // 旧API互換（万が一、サーバー側が未更新でも UI が落ちないように）
+                hasPending = await hasPendingApproval(devProductCode);
+                pendingCount = hasPending ? 1 : 0;
+              }
+
               if (hasPending) {
                 const u = `/dev_approval.html?product_code=${encodeURIComponent(devProductCode)}`;
+                const countText = (pendingCount >= 1)
+                  ? `（${pendingCount}件）`
+                  : '';
+
                 const html = `
                   <div class="d-flex align-items-start justify-content-between gap-3">
                     <div class="d-flex align-items-start gap-2">
                       <i class="bi bi-exclamation-circle-fill fs-5"></i>
                       <div>
-                        <div class="fw-semibold">承認待ちの意見があります</div>
+                        <div class="fw-semibold">承認待ちの意見があります${countText}</div>
                         <div class="small">デベロッパー管理ページで内容を確認してください。</div>
                       </div>
                     </div>
