@@ -168,6 +168,183 @@
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ============================================================
+       DEBUG_AUTH preload guard（重要）
+       ・/common.js が読み込まれた直後にログイン画面へ飛ぶ場合、
+         その遷移は /common.js 実行中に起きています。
+       ・debug=1 のときだけ、/common.js より前に「遷移・トークン削除」を抑止します。
+       ============================================================ -->
+  <script>
+    (function(){
+      const params = new URL(location.href).searchParams;
+      const v = (params.get('debug') || '').toLowerCase();
+      const DEBUG_AUTH = (v === '1' || v === 'true' || v === 'yes' || v === 'on');
+      window.__ADDEVA_DEBUG_AUTH = DEBUG_AUTH;
+
+      if (!DEBUG_AUTH) return;
+
+      window.__ADDEVA_DEBUG = window.__ADDEVA_DEBUG || {};
+      const DBG = window.__ADDEVA_DEBUG;
+      DBG.events = DBG.events || [];
+
+      const log = (type, payload) => {
+        try { DBG.events.push({ ts: Date.now(), type, payload }); } catch (_) {}
+        try { console.warn('[DEBUG_AUTH]', type, payload); } catch (_) {}
+      };
+
+      // ------------------------------------------------------------
+      // 1) token/auth/jwt 系の removeItem をブロック（debug=1 の時だけ）
+      // ------------------------------------------------------------
+      try {
+        if (!DBG.__storagePatched) {
+          DBG.__storagePatched = true;
+
+          const patchStorage = (st, name) => {
+            if (!st || typeof st.removeItem !== 'function') return;
+            const _rm = st.removeItem.bind(st);
+            st.removeItem = function(k){
+              const ks = String(k || '');
+              if (/token|auth|jwt/i.test(ks)) {
+                log(name + '.removeItem.blocked', { key: ks });
+                return;
+              }
+              return _rm(ks);
+            };
+          };
+
+          patchStorage(localStorage, 'localStorage');
+          patchStorage(sessionStorage, 'sessionStorage');
+        }
+      } catch (e) {
+        log('storage.patch.error', String(e && e.message ? e.message : e));
+      }
+
+      // ------------------------------------------------------------
+      // 2) ログイン画面への遷移をブロック（assign/replace/pushState）
+      //    ※ location.href 代入は捕捉できないため、以後の debug パネルで原因を追う
+      // ------------------------------------------------------------
+      const isLoginUrl = (u) => {
+        try {
+          const s = String(u || '');
+          return /\/customer\.html/.test(s);
+        } catch (_) {
+          return false;
+        }
+      };
+
+      const blockNav = (method, u) => {
+        if (isLoginUrl(u)) {
+          log('nav.' + method + '.blocked', { url: String(u || '') });
+          return true;
+        }
+        return false;
+      };
+
+      try {
+        if (!DBG.__navPatched) {
+          DBG.__navPatched = true;
+
+          const loc = window.location;
+          const _assign = (loc && loc.assign) ? loc.assign.bind(loc) : null;
+          const _replace = (loc && loc.replace) ? loc.replace.bind(loc) : null;
+
+          if (_assign) {
+            loc.assign = function(u){
+              if (blockNav('assign', u)) return;
+              return _assign(u);
+            };
+          }
+
+          if (_replace) {
+            loc.replace = function(u){
+              if (blockNav('replace', u)) return;
+              return _replace(u);
+            };
+          }
+
+          const _push = history.pushState.bind(history);
+          history.pushState = function(state, title, url){
+            if (blockNav('pushState', url)) return;
+            return _push(state, title, url);
+          };
+        }
+      } catch (e) {
+        log('nav.patch.error', String(e && e.message ? e.message : e));
+      }
+
+      // ------------------------------------------------------------
+      // 3) ADDEVA の認証失敗系ハンドラを「差し替え可能な形」で抑止
+      //    /common.js が window.ADDEVA を上書きしても setter で吸収し、
+      //    logout/_handleAuthFailure/needLogin などを debug 時は no-op にする
+      // ------------------------------------------------------------
+      try {
+        const base = (window.ADDEVA && typeof window.ADDEVA === 'object') ? window.ADDEVA : {};
+        const trapNames = new Set([
+          '_handleAuthFailure',
+          'handleAuthFailure',
+          'logout',
+          'needLogin',
+          'requireLogin',
+          'redirectToLogin',
+          'goLogin'
+        ]);
+
+        const proxy = new Proxy(base, {
+          set(obj, prop, value){
+            const p = String(prop);
+            if (trapNames.has(p) && typeof value === 'function') {
+              try { obj['__orig_' + p] = value; } catch (_) {}
+              obj[p] = function(){
+                const args = Array.from(arguments || []).map(a => {
+                  try {
+                    if (typeof a === 'string') return a;
+                    if (a && typeof a === 'object' && a.message) return a.message;
+                    return JSON.stringify(a);
+                  } catch (_) {
+                    return String(a);
+                  }
+                });
+                log('ADDEVA.' + p + '.intercepted', { args });
+                // debug=1 では「トークン削除」「ログイン画面遷移」をしない
+                return;
+              };
+              return true;
+            }
+            obj[prop] = value;
+            return true;
+          },
+          get(obj, prop){
+            return obj[prop];
+          }
+        });
+
+        if (!DBG.__addevaDefined) {
+          DBG.__addevaDefined = true;
+          try {
+            Object.defineProperty(window, 'ADDEVA', {
+              configurable: false,
+              enumerable: true,
+              get(){ return proxy; },
+              set(v){
+                if (v && typeof v === 'object') {
+                  Object.keys(v).forEach(k => { proxy[k] = v[k]; });
+                }
+              }
+            });
+          } catch (_) {
+            window.ADDEVA = proxy;
+          }
+        } else {
+          window.ADDEVA = proxy;
+        }
+
+      } catch (e) {
+        log('ADDEVA.proxy.error', String(e && e.message ? e.message : e));
+      }
+    })();
+  </script>
+
   <script src="/common.js"></script>
 
   <script>
@@ -177,10 +354,12 @@
     const productCode = (qs('product_code') || '').trim();
 
     // debug=1 のときは「自動ログアウト／ログイン画面へ遷移」を止めて、このページに留まる
-    const DEBUG_AUTH = (() => {
-      const v = (qs('debug') || '').toLowerCase();
-      return (v === '1' || v === 'true' || v === 'yes' || v === 'on');
-    })();
+    const DEBUG_AUTH = (typeof window.__ADDEVA_DEBUG_AUTH === 'boolean')
+      ? window.__ADDEVA_DEBUG_AUTH
+      : (() => {
+          const v = (qs('debug') || '').toLowerCase();
+          return (v === '1' || v === 'true' || v === 'yes' || v === 'on');
+        })();
 
     const $ = (id) => document.getElementById(id);
 
