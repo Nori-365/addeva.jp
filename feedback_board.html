@@ -627,6 +627,9 @@
         }
         html += '</optgroup>';
       }
+
+      // 追加（部位が見当たらない場合）: feedback.html 側で __other__ を受けて自由入力へ誘導
+      html += '<option value="__other__">その他（部位が見当たらない）</option>';
       sel.innerHTML = html;
 
       const onChange = () => {
