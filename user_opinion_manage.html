@@ -174,18 +174,10 @@
                       <hr class="my-3">
 
                       <div class="mb-3">
-                        <label class="form-label" for="partSelect">部位</label>
-                        <select id="partSelect" class="form-select">
-                          <option value="">読み込み中...</option>
-                        </select>
-                        <div class="char-hint mt-1">部位を選べない場合は下の「その他（自由入力）」を使用してください。</div>
+                        <div class="small text-secondary">部位（固定）</div>
+                        <div class="mono" id="originalPartText">-</div>
+                        <div class="text-secondary small mt-1">部位は変更できません。必要な場合は「意見を取消」後、正しい部位で投稿してください。</div>
                       </div>
-
-                      <div class="mb-3">
-                        <label class="form-label" for="partFreeText">その他（自由入力）</label>
-                        <input id="partFreeText" class="form-control" type="text" maxlength="64" placeholder="例：胸ベルトの金具、内装の仕切り など">
-                        <div class="d-flex justify-content-end">
-                          <div class="char-hint"><span id="partFreeTextCount">0</span>/64</div>
                         </div>
                       </div>
 
@@ -202,11 +194,16 @@
                         <textarea id="body" class="form-control" rows="14"></textarea>
                       </div>
 
-                      <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <button id="btnCancel" class="btn btn-danger" type="button">
+                          <i class="bi bi-x-octagon"></i> 意見を取消
+                        </button>
+
                         <button id="btnSave" class="btn btn-primary" type="button">
                           <i class="bi bi-save"></i> 更新する
                         </button>
                       </div>
+                      <div class="text-secondary small mt-2">※「意見を取消」は元に戻せません。部位間違い等で投稿を取り下げる場合にのみ使用してください。</div>
                     </div>
 
 
@@ -712,11 +709,8 @@
 
       const partCode = String(selectedPost.part_code || '');
       const partFree = String(selectedPost.part_free_text || '');
-
-      const sel = el('partSelect');
-      const free = el('partFreeText');
-      if (sel) sel.value = partCode;
-      if (free) free.value = partFree;
+      const partDisp = partCode ? partCode : (partFree || '-');
+      el('originalPartText') && (el('originalPartText').textContent = String(partDisp));
 
       // 公開内容（参照）
       el('publicTitle') && (el('publicTitle').value = String(selectedPost.public_title || ''));
@@ -887,6 +881,62 @@
       }
     };
 
+    const doCancel = async () => {
+      if (!selectedPost || !selectedPost.post_id) {
+        showAlert('warning', '取消対象の意見を選択してください。');
+        return;
+      }
+
+      const ok = window.confirm('この意見を取消します。元に戻せません。よろしいですか？');
+      if (!ok) return;
+
+      const btnCancel = el('btnCancel');
+      const btnSave = el('btnSave');
+      btnCancel && (btnCancel.disabled = true);
+      btnSave && (btnSave.disabled = true);
+
+      try {
+        // まずは status=cancel の保存を試す（API未対応なら fallback で非公開化）
+        await ADDEVA.apiFetch('/api/addeva/user_opinion/update', {
+          method: 'POST',
+          body: {
+            postId: Number(selectedPost.post_id),
+            status: 'cancel',
+            visibility: 'private'
+          }
+        });
+
+        showAlert('success', `取消しました（ID=${selectedPost.post_id}）。`);
+
+      } catch (e) {
+        console.error(e);
+        try {
+          // fallback：取消ステータス未対応の場合でも、最低限「非公開」で取り下げ扱い
+          await ADDEVA.apiFetch('/api/addeva/user_opinion/update', {
+            method: 'POST',
+            body: {
+              postId: Number(selectedPost.post_id),
+              visibility: 'private'
+            }
+          });
+          showAlert('warning', '取消ステータスの保存が未対応のため、非公開（private）にしました。');
+        } catch (e2) {
+          console.error(e2);
+          showAlert('danger', (e2 && e2.message) ? e2.message : '取消に失敗しました。');
+          return;
+        }
+      } finally {
+        btnCancel && (btnCancel.disabled = false);
+        btnSave && (btnSave.disabled = false);
+      }
+
+      const keepPostId = Number(selectedPost.post_id);
+      const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
+
+      await loadDashboard();
+      await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
+    };
+
     const doSave = async () => {
       if (!selectedPost || !selectedPost.post_id) {
         showAlert('warning', '更新対象の意見を選択してください。');
@@ -902,24 +952,12 @@
         const postType = el('postType') ? String(el('postType').value || '').trim() : 'improve';
         const visibility = el('visibility') ? String(el('visibility').value || '').trim() : 'public';
 
-        const partCode = el('partSelect') ? String(el('partSelect').value || '').trim() : '';
-        const partFreeText = el('partFreeText') ? String(el('partFreeText').value || '').trim() : '';
-
         if (!title) {
           showAlert('warning', 'タイトルを入力してください。');
           return;
         }
         if (!body) {
           showAlert('warning', '本文を入力してください。');
-          return;
-        }
-        if (!partCode && !partFreeText) {
-          showAlert('warning', '部位を選択するか、「その他（自由入力）」を入力してください。');
-          return;
-        }
-        if (partCode && partFreeText) {
-          // UI上は無効化しているが保険
-          showAlert('warning', '部位を選択した場合は「その他（自由入力）」は空にしてください。');
           return;
         }
 
@@ -931,8 +969,6 @@
             body,
             postType,
             visibility,
-            partCode: partCode || null,
-            partFreeText: partFreeText || null,
           }
         });
 
@@ -962,6 +998,8 @@
       el('btnScrollToDetail')?.addEventListener('click', () => {
         el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
+
+      el('btnCancel')?.addEventListener('click', doCancel);
 
       el('btnSave')?.addEventListener('click', doSave);
 
