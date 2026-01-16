@@ -234,6 +234,16 @@
                         <div class="char-hint mt-1" id="publicPartHint"></div>
                       </div>
 
+                      <div class="mb-3" id="publicPostTypeWrap" style="display:none;">
+                        <label class="form-label" for="publicPostType">タイプ（公開）</label>
+                        <select id="publicPostType" class="form-select">
+                          <option value="improve">改善</option>
+                          <option value="praise">良かった点</option>
+                          <option value="guide">ガイド要望</option>
+                        </select>
+                        <div class="char-hint mt-1">公開表示の分類です（ユーザーの原文タイプとは別管理）。</div>
+                      </div>
+
                       <div class="mb-3">
                         <label class="form-label" for="publicTitle">タイトル（公開）</label>
                         <input id="publicTitle" class="form-control" type="text" maxlength="200">
@@ -338,6 +348,22 @@
         .replace(/"/g, '\\"');
     };
 
+    // 値のゆらぎを吸収（古い値・互換値）
+    const normalizePostType = (v) => {
+      const s = String(v ?? '').toLowerCase().trim();
+      if (!s) return '';
+      if (s === 'good') return 'praise'; // 互換：user_opinion_manage 側の値
+      if (s === 'praise' || s === 'improve' || s === 'guide') return s;
+      return '';
+    };
+
+    const normalizeDevStatus = (v) => {
+      const s = String(v ?? '').toLowerCase().trim();
+      if (!s) return '';
+      if (s === 'reviewing' || s === 'planned' || s === 'shipped' || s === 'rejected') return s;
+      return '';
+    };
+
     // 保存後：左の一覧（該当行があればその行、無ければ該当 product のヘッダー）へジャンプ
     const scrollToEditedList = (productCode, postId) => {
       const acc = el('productAccordion');
@@ -377,12 +403,15 @@
     // エンドポイント互換
     let supportsPostDetailById = false;
     let supportsPublishById = false;
+    let supportsPublicPartCode = false;
+    let supportsPublicPostType = false;
 
     // 詳細
     let selectedPostId = null;
     let selectedProductCode = '';
     let selectedPost = null;
     let hasPublicPartCode = false;
+    let hasPublicPostType = false;
 
     // parts キャッシュ
     const partsCache = new Map(); // product_code => grouped parts
@@ -645,9 +674,37 @@
         partWrap.style.display = hasPublicPartCode ? '' : 'none';
       }
 
-      // status セレクト（承認時の既定値）
+      const ptWrap = el('publicPostTypeWrap');
+      if (ptWrap) {
+        ptWrap.style.display = hasPublicPostType ? '' : 'none';
+      }
+
+      // タイプ（公開）
+      if (hasPublicPostType) {
+        const ptSel = el('publicPostType');
+        if (ptSel) {
+          const cur = normalizePostType(
+            selectedPost.effective_public_post_type ||
+            selectedPost.public_post_type ||
+            selectedPost.publicPostType ||
+            ''
+          );
+          const fallback = normalizePostType(
+            selectedPost.original_post_type ||
+            selectedPost.post_type ||
+            selectedPost.postType ||
+            ''
+          );
+          ptSel.value = cur || fallback || 'improve';
+        }
+      }
+
+      // status セレクト（既存値があれば反映）
       const stSel = el('publishStatus');
-      if (stSel) stSel.value = 'reviewing';
+      if (stSel) {
+        const st = normalizeDevStatus(selectedPost.status_dev || selectedPost.statusDev || '');
+        stSel.value = st || 'reviewing';
+      }
 
       bindCharCount();
     };
@@ -679,6 +736,8 @@
         const caps = (res && res.capabilities) ? res.capabilities : {};
         supportsPostDetailById = !!caps.supports_post_detail_by_id;
         supportsPublishById = !!caps.supports_publish_by_id;
+        supportsPublicPartCode = !!caps.supports_public_part_code;
+        supportsPublicPostType = !!caps.supports_public_post_type;
 
         // developer
         developerRole = (res && res.role) ? String(res.role) : '';
@@ -802,7 +861,13 @@
         }
 
         selectedPost = res || null;
-        hasPublicPartCode = !!(selectedPost && selectedPost.capabilities && selectedPost.capabilities.has_public_part_code);
+        // capabilities は API で返る想定。未提供の場合は dashboard の capability をフォールバックする。
+        hasPublicPartCode = (selectedPost && selectedPost.capabilities && typeof selectedPost.capabilities.has_public_part_code === 'boolean')
+          ? selectedPost.capabilities.has_public_part_code
+          : supportsPublicPartCode;
+        hasPublicPostType = (selectedPost && selectedPost.capabilities && typeof selectedPost.capabilities.has_public_post_type === 'boolean')
+          ? selectedPost.capabilities.has_public_post_type
+          : supportsPublicPostType;
 
         // public_part_code を使うときのみ部位一覧を取得
         if (hasPublicPartCode) {
@@ -855,6 +920,15 @@
         const publicTitle = el('publicTitle') ? String(el('publicTitle').value || '') : '';
         const publicBody = el('publicBody') ? String(el('publicBody').value || '') : '';
 
+        // 公開タイプ（public_post_type）
+        let publicPostType = null;
+        if (hasPublicPostType) {
+          const ptSel = el('publicPostType');
+          const v = normalizePostType(ptSel ? ptSel.value : '');
+          publicPostType = v ? v : null;
+        }
+
+        // 公開部位（public_part_code）
         let publicPartCode = null;
         if (hasPublicPartCode) {
           const sel = el('publicPartSelect');
@@ -865,6 +939,7 @@
           const originalFree = (selectedPost.original_part_free_text || '').trim();
           const effective = (selectedPost.effective_public_part_code || '').trim();
 
+          // 原文が「その他（自由入力）」で、公開側の部位が未確定のままは NG
           if (!publicPartCode && !effective && !originalPartCode && originalFree) {
             showAlert('warning', '公開側の部位を選択してください。');
             btn && (btn.disabled = false);
@@ -872,17 +947,25 @@
           }
         }
 
+        // payload を一度作ってから、必要な項目だけ追加（古いAPIで余計な項目を送らないため）
+        const payloadBase = {
+          publicTitle,
+          publicBody,
+          publicPartCode,
+          newStatus,
+        };
+        if (publicPostType) payloadBase.publicPostType = publicPostType;
+
         let res = null;
+
         if (supportsPublishById) {
+          const payload = {
+            postId: Number(selectedPost.post_id),
+            ...payloadBase,
+          };
           res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish_by_id', {
             method: 'POST',
-            body: {
-              postId: Number(selectedPost.post_id),
-              publicTitle,
-              publicBody,
-              publicPartCode,
-              newStatus,
-            }
+            body: payload
           });
         }
 
@@ -892,16 +975,15 @@
             showAlert('danger', '内部エラー：product_code が取得できません。');
             return;
           }
+
+          const payload = {
+            productCode: pc,
+            postId: Number(selectedPost.post_id),
+            ...payloadBase,
+          };
           res = await ADDEVA.apiFetch('/api/addeva/dev_approval/publish', {
             method: 'POST',
-            body: {
-              productCode: pc,
-              postId: Number(selectedPost.post_id),
-              publicTitle,
-              publicBody,
-              publicPartCode,
-              newStatus,
-            }
+            body: payload
           });
         }
 
