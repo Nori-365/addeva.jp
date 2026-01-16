@@ -68,12 +68,24 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">ホーム</a></li>
             <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
-            <li class="breadcrumb-item d-none" id="devBreadcrumbItem"><a href="#" id="devBreadcrumbLink">デベロッパー管理ページ</a></li>
             <li class="breadcrumb-item active" aria-current="page">フィードバックボード</li>
           </ol>
         </nav>
 
-        <!-- メッセージ表示エリア -->
+        <!-- 右上アクション（デベロッパー管理＋自分の意見管理＋ログアウト） -->
+        <div id="feedbackTopBar" class="d-flex justify-content-end align-items-center gap-2 mb-2">
+          <a id="developerButtonTop" class="btn btn-outline-primary btn-sm d-none" href="#" role="button">
+            <i class="bi bi-gear me-1"></i>デベロッパー管理
+          </a>
+          <a id="opinionManageButtonTop" class="btn btn-outline-primary btn-sm" href="/user_opinion_manage.html" role="button">
+            <i class="bi bi-card-checklist me-1"></i>自分の意見管理
+          </a>
+          <button id="logoutButtonTop" class="btn btn-outline-secondary btn-sm" type="button">
+            <i class="bi bi-box-arrow-right me-1"></i>ログアウト
+          </button>
+        </div>
+
+
         <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div id="messageText" class="flex-grow-1"></div>
@@ -647,13 +659,12 @@
     };
 
 
-    const loadDeveloperBreadcrumb = async () => {
-      const item = document.getElementById('devBreadcrumbItem');
-      const link = document.getElementById('devBreadcrumbLink');
-      if (!item || !link) return;
-
-      item.classList.add('d-none');
-      link.setAttribute('href', '#');
+    const loadDeveloperButton = async () => {
+      const devBtn = document.getElementById('developerButtonTop');
+      if (devBtn) {
+        devBtn.classList.add('d-none');
+        devBtn.setAttribute('href', '#');
+      }
 
       if (!productCode) return;
 
@@ -663,12 +674,13 @@
           body: { productCode }
         });
 
-        if (res && res.is_developer) {
-          link.href = `/dev_approval.html?product_code=${encodeURIComponent(productCode)}`;
-          item.classList.remove('d-none');
+        if (res && res.is_developer && devBtn) {
+          // パンくずには出さない（右上ボタンのみ）
+          devBtn.href = '/dev_approval.html';
+          devBtn.classList.remove('d-none');
         }
       } catch (e) {
-        // 未ログイン/権限なし/通信失敗は静かに無視（リンクは出さない）
+        // 未ログイン/権限なし/通信失敗は静かに無視（ボタンは出さない）
       }
     };
 
@@ -775,6 +787,20 @@
         showAll = !showAll;
         renderRanking();
       });
+
+      const logoutBtn = $('logoutButtonTop');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          try {
+            if (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) {
+              localStorage.removeItem(ADDEVA.LS.authToken);
+            } else {
+              localStorage.removeItem('authToken');
+            }
+          } catch (_) {}
+          window.location.href = '/customer.html?mode=login';
+        });
+      }
     };
 
     (async () => {
@@ -794,7 +820,7 @@
       }
 
       bindUI();
-      await loadDeveloperBreadcrumb();
+      await loadDeveloperButton();
       await loadProductInfo();
       await loadProductTeamMessage();
       await loadRanking();
@@ -803,3 +829,5 @@
   </script>
 </body>
 </html>
+
+
