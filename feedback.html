@@ -105,7 +105,8 @@
           </p>
           <p class="text-secondary">
             製品改善のため、皆様のご意見をお聞かせください。<br>
-            手順：部位を選ぶ → その部位のご意見を先に読む → 必要なら投票・ご意見を追加
+            手順：部位を選ぶ → その部位のご意見を先に読む → 必要なら投票・ご意見を追加<br>
+            ※ 部位が見当たらない場合は「その他（部位が見当たらない）」を選び、部位名を自由入力してご意見を追加できます。
           </p>
         </div>
 
@@ -120,25 +121,19 @@
               <select id="partSelect" class="form-select">
                 <option value="">読み込み中...</option>
               </select>
-              <div class="form-text">まずは部位を選び、その部位のご意見を先に確認してください。製品ガイド要望は「全体性能 / その他」から追加するのがおすすめです。</div>
+              <div class="form-text">まずは部位を選び、その部位のご意見を先に確認してください。製品ガイド要望など全体に関する内容は、全体カテゴリの部位から追加するのがおすすめです。</div>
             </div>
           </div>
 
-          <div id="newPartWrap" class="mt-4 d-none">
+          <!-- その他（部位が見当たらない） -->
+          <div id="otherPartWrap" class="mt-4 d-none">
             <div class="p-3 bg-light border rounded">
-              <p class="fw-bold mb-2">新しい部位を登録（その他）</p>
+              <p class="fw-bold mb-2">その他（部位が見当たらない）</p>
               <div class="row g-3">
-                <div class="col-12 col-md-5">
-                  <label for="newPartCode" class="form-label">部位コード（英語）</label>
-                  <input type="text" id="newPartCode" class="form-control" maxlength="32" placeholder="例: main_zipper">
-                  <div class="form-text">半角英小文字・数字・アンダースコアのみ（3〜32文字）。</div>
-                </div>
-                <div class="col-12 col-md-7">
-                  <label for="newPartNameJa" class="form-label">部位名（日本語）</label>
-                  <input type="text" id="newPartNameJa" class="form-control" maxlength="64" placeholder="例: メインファスナー">
-                </div>
                 <div class="col-12">
-                  <button id="btnCreatePart" class="btn btn-primary">この部位を追加して選択する</button>
+                  <label for="otherPartText" class="form-label">部位名（自由入力） <span class="text-danger">*</span></label>
+                  <input type="text" id="otherPartText" class="form-control" maxlength="64" placeholder="例：持ち手 / 側面のDカン / ここがどの部位か分からない など">
+                  <div class="form-text">部位名が不明な場合は、場所や状況が伝わるように入力してください（例：前面の上側ポケット付近）。</div>
                 </div>
               </div>
             </div>
@@ -242,6 +237,9 @@
     // ニックネーム（フロント側の控え。APIで取得できない場合のフォールバック用途）
     const NICK_CACHE_KEY = 'addeva_nickname_cache';
 
+    // 部位（その他）
+    const OTHER_PART_VALUE = '__other__';
+
     const bindMessageClose = () => {
       const btn = document.getElementById('messageCloseBtn');
       if (!btn) return;
@@ -257,6 +255,11 @@
       return (v === 'private') ? 'private' : 'public';
     };
 
+    const getOtherPartText = () => {
+      const el = document.getElementById('otherPartText');
+      return el ? String(el.value || '').trim() : '';
+    };
+
     // === Debug trace (alert) ===
     // ・URLに ?debug=1 を付けると画面上にも表示します（付けなくてもDOM上には残ります）
     const dbg = (() => {
@@ -266,7 +269,8 @@
         const d = el();
         if (!d) return;
         if (enabled) d.classList.remove('d-none');
-        d.textContent += (line + "\n");
+        d.textContent += (line + "
+");
       };
       const snapshot = (tag, extra = {}) => {
         const box = document.getElementById('messageArea');
@@ -584,48 +588,51 @@
         html += `</optgroup>`;
       }
 
-      // 追加（ユーザー定義部位）
-      html += '<option value="__new__">その他（新しい部位を登録）</option>';
+      // 部位が見当たらない場合
+      html += `<option value="${OTHER_PART_VALUE}">その他（部位が見当たらない）</option>`;
+
       sel.innerHTML = html;
     }
 
     function setUIState(partCode) {
-      const isNew = partCode === '__new__';
-      const hasSelection = !!partCode && !isNew;
+      const isOther = (partCode === OTHER_PART_VALUE);
+      const hasSelection = !!partCode;
+
       const nickOk = !!getNicknameValue();
       const typeOk = !!document.querySelector('input[name="postType"]:checked');
       const visOk = !!document.querySelector('input[name="visibility"]:checked');
       const titleOk = !!String(document.getElementById('title')?.value || '').trim();
       const bodyOk  = !!String(document.getElementById('body')?.value  || '').trim();
 
-      document.getElementById('newPartWrap').classList.toggle('d-none', !isNew);
+      const otherOk = !isOther || !!getOtherPartText();
+
+      document.getElementById('otherPartWrap').classList.toggle('d-none', !isOther);
 
       const btnSubmit = document.getElementById('btnSubmit');
-      if (btnSubmit) btnSubmit.disabled = !(hasSelection && nickOk && typeOk && visOk && titleOk && bodyOk);
+      if (btnSubmit) btnSubmit.disabled = !(hasSelection && otherOk && nickOk && typeOk && visOk && titleOk && bodyOk);
 
       const hint = document.getElementById('submitHint');
       if (hint) {
-        if (isNew) {
-          hint.textContent = '新しい部位を登録してからご意見を追加できます。';
-          hint.className = 'form-text mt-2 text-center';
-        } else if (!hasSelection) {
+        if (!hasSelection) {
           hint.textContent = '部位を選ぶとご意見を追加できます。';
           hint.className = 'form-text mt-2 text-center';
-        } else {
-          const missing = [];
-          if (!typeOk) missing.push('ご意見タイプ');
-          if (!visOk) missing.push('公開設定');
-          if (!nickOk) missing.push('ニックネーム');
-          if (!titleOk) missing.push('タイトル');
-          if (!bodyOk) missing.push('内容');
+          return;
+        }
 
-          if (missing.length > 0) {
-            hint.textContent = '未入力項目：' + missing.join('、');
-            hint.className = 'form-text mt-2 text-center fw-semibold text-darkred';
-          } else {
-            hint.textContent = '送信できます。';
-            hint.className = 'form-text mt-2 text-center';
-          }
+        const missing = [];
+        if (isOther && !otherOk) missing.push('部位名（自由入力）');
+        if (!typeOk) missing.push('ご意見タイプ');
+        if (!visOk) missing.push('公開設定');
+        if (!nickOk) missing.push('ニックネーム');
+        if (!titleOk) missing.push('タイトル');
+        if (!bodyOk) missing.push('内容');
+
+        if (missing.length > 0) {
+          hint.textContent = '未入力項目：' + missing.join('、');
+          hint.className = 'form-text mt-2 text-center fw-semibold text-darkred';
+        } else {
+          hint.textContent = '送信できます。';
+          hint.className = 'form-text mt-2 text-center';
         }
       }
     }
@@ -653,8 +660,8 @@
         return;
       }
 
-      if (partCode === '__new__') {
-        wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-0">新しい部位を登録してください。</p></div>';
+      if (partCode === OTHER_PART_VALUE) {
+        wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-1">「その他（部位が見当たらない）」が選択されています。</p><p class="text-secondary mb-0">この部位には既存のご意見一覧は表示されません。必要に応じて下のフォームからご意見を追加してください。</p></div>';
         return;
       }
 
@@ -710,37 +717,10 @@
       }
     }
 
-    async function createPart() {
-      clearAlert();
-      const productCode = qs('product_code');
-      const partCode = document.getElementById('newPartCode').value.trim();
-      const partNameJa = document.getElementById('newPartNameJa').value.trim();
-
-      if (!partCode || !partNameJa) {
-        showAlert('warning', '部位コードと部位名を入力してください。');
-        return;
-      }
-
-      try {
-        await api('/api/addeva/feedback/parts/create', { method: 'POST', body: { productCode, partCode, partNameJa } });
-        showAlert('success', '部位を追加しました。');
-
-        await loadParts(productCode);
-
-        const sel = document.getElementById('partSelect');
-        if (sel) sel.value = partCode;
-        setUIState(partCode);
-
-        await loadPartPosts({ keepAlert: true, forceReorder: true });
-      } catch (e) {
-        showAlert('danger', e.message || '部位の追加に失敗しました。');
-      }
-    }
-
     async function submitPost() {
       clearAlert();
       const productCode = qs('product_code');
-      const partCode = document.getElementById('partSelect').value;
+      const partCodeRaw = document.getElementById('partSelect').value;
       const title = document.getElementById('title').value.trim();
       const body = document.getElementById('body').value.trim();
       const nickname = getNicknameValue();
@@ -748,15 +728,23 @@
       const visEl = document.querySelector('input[name="visibility"]:checked');
       const visibility = String(visEl?.value || '').trim();
 
-      if (!partCode || partCode === '__new__') { showAlert('warning', '部位を選択してください。'); return; }
+      if (!partCodeRaw) { showAlert('warning', '部位を選択してください。'); return; }
       if (!visEl) { showAlert('warning', '公開設定を選択してください。'); return; }
       if (!ptEl) { showAlert('warning', 'ご意見タイプを選択してください。'); return; }
       if (!nickname) { showAlert('warning', 'ニックネームを入力してください。'); return; }
       if (!title || !body) { showAlert('warning', 'タイトルと内容を入力してください。'); return; }
 
+      const isOther = (partCodeRaw === OTHER_PART_VALUE);
+      const otherPartText = isOther ? getOtherPartText() : '';
+      if (isOther && !otherPartText) { showAlert('warning', '「部位名（自由入力）」を入力してください。'); return; }
+
+      // 重要：一般ユーザーは部位マスタを追加しません。
+      // ・通常：partCode を送る
+      // ・その他：partCode は null（未分類）として、partFreeText に自由入力を送る
       const postData = {
         productCode,
-        partCode,
+        partCode: isOther ? null : partCodeRaw,
+        partFreeText: isOther ? otherPartText : null,
         title,
         body,
         postType: String(ptEl.value || '').trim(),
@@ -781,8 +769,15 @@
         document.getElementById('title').value = '';
         document.getElementById('body').value = '';
 
-        document.getElementById('partSelect').value = partCode;
-        setUIState(partCode);
+        // 送信後：部位選択は維持（その他の場合も維持）
+        document.getElementById('partSelect').value = partCodeRaw;
+        if (isOther) {
+          // 自由入力は「入力したまま」にして、連続投稿しやすくする
+        } else {
+          const otherEl = document.getElementById('otherPartText');
+          if (otherEl) otherEl.value = '';
+        }
+        setUIState(partCodeRaw);
 
         const filterEl = document.getElementById('filterType');
         if (filterEl) filterEl.value = '';
@@ -821,13 +816,12 @@
 
       document.getElementById('filterType').addEventListener('change', () => loadPartPosts({ forceReorder: true }));
       document.getElementById('btnReload').addEventListener('click', () => loadPartPosts({ forceReorder: true }));
-      document.getElementById('btnCreatePart').addEventListener('click', createPart);
       document.getElementById('btnSubmit').addEventListener('click', submitPost);
 
       // 公開設定はデフォルト未選択（ユーザーに選択してもらう）
       document.querySelectorAll('input[name="visibility"]').forEach(el => { el.checked = false; });
 
-      ['title', 'body'].forEach(id => {
+      ['title', 'body', 'otherPartText'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         el.addEventListener('input', () => {
