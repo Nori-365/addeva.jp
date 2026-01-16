@@ -145,7 +145,7 @@
           <!-- 左：商品別 承認待ち一覧 -->
           <div class="col-12 col-lg-5">
             <div class="card shadow-sm">
-              <div class="card-body p-4 panel-scroll">
+              <div class="card-body p-4 panel-scroll" id="leftPanelScroll">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                   <div>
                     <div class="h5 m-0">承認待ち一覧（商品別）</div>
@@ -168,7 +168,7 @@
           <div class="col-12 col-lg-7">
             <div class="sticky-pane">
               <div class="card shadow-sm">
-                <div class="card-body p-4 panel-scroll">
+                <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
                       <div class="h5 m-0">意見詳細</div>
@@ -326,7 +326,6 @@
       const p = encodeURIComponent(productCode || '');
       return `/feedback_board.html?product_code=${p}`;
     };
-
     // CSS.escape の簡易フォールバック（data-* セレクタ用）
     const cssEscape = (s) => {
       try {
@@ -946,13 +945,60 @@
       });
     };
 
+    // === スクロール制御（PC） ===
+    // 目的：右（編集ボード）上でホイール/トラックパッド操作したときに、左の一覧ではなく右ペインが優先的にスクロールされるようにする。
+    const initWheelRouting = () => {
+      const leftBox = el('leftPanelScroll');
+      const rightBox = el('rightPanelScroll');
+      if (!leftBox || !rightBox) return;
+
+      const isDesktop = () => {
+        try { return window.matchMedia('(min-width: 992px)').matches; } catch (_) { return window.innerWidth >= 992; }
+      };
+
+      const canScroll = (box, deltaY) => {
+        if (!box) return false;
+        if (box.scrollHeight <= box.clientHeight + 1) return false;
+        const atTop = box.scrollTop <= 0;
+        const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 1;
+        if (deltaY < 0) return !atTop;
+        if (deltaY > 0) return !atBottom;
+        return false;
+      };
+
+      document.addEventListener('wheel', (e) => {
+        if (!isDesktop()) return;
+        if (e.defaultPrevented) return;
+        if (e.ctrlKey) return; // pinch-zoom 等
+
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+
+        // 入力要素はネイティブ動作を優先（テキストエリア内部スクロール等）
+        if (target.closest('textarea, select, input, [contenteditable="true"]')) return;
+
+        const deltaY = Number(e.deltaY || 0);
+        if (!deltaY) return;
+
+        let box = null;
+        if (target.closest('.col-lg-7')) box = rightBox;
+        else if (target.closest('.col-lg-5')) box = leftBox;
+        else return;
+
+        if (canScroll(box, deltaY)) {
+          box.scrollTop += deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false, capture: true });
+    };
+
     // === 初期化 ===
     (async () => {
       bindUI();
+      initWheelRouting();
       await loadDashboard();
       renderDetail();
     })();
   </script>
 </body>
 </html>
-
