@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+
+  <title>ユーザー意見管理｜ADDEVA サポート</title>
+
+  <!-- CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    /* dev_approval.html に合わせつつ、ユーザー用に最小限の差分 */
+    #messageArea { overflow-anchor: none; }
+
+    .row-clickable { cursor: pointer; }
+    .row-clickable:hover { background: rgba(13,110,253,.04); }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .sticky-pane {
+      position: sticky;
+      top: 86px; /* fixed header を想定 */
+    }
+
+    .textarea-readonly { background: #f8f9fa; }
+
+    .char-hint { font-size: .85rem; color: #6c757d; }
+
+    @media (max-width: 991.98px) {
+      .sticky-pane { position: static; top: auto; }
+    }
+
+    @media (max-width: 767.98px) {
+      .col-hide-sm { display: none !important; }
+    }
+
+    @media (min-width: 992px) {
+      .panel-scroll {
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ▼ 共通ヘッダーを読み込み -->
+  <div data-include="/includes/header.html" class="site-header fixed-top" aria-busy="true"></div>
+
+  <main>
+    <section class="section py-5">
+      <div class="container">
+
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">ホーム</a></li>
+            <li class="breadcrumb-item"><a href="/customer.html">ユーザーサポート</a></li>
+            <li class="breadcrumb-item d-none" id="breadcrumbBoardItem"><a id="breadcrumbBoard" href="#">フィードバックボード</a></li>
+            <li class="breadcrumb-item active" aria-current="page">ユーザー意見管理</li>
+          </ol>
+        </nav>
+
+        <!-- メッセージ表示エリア -->
+        <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
+          <div class="d-flex align-items-start justify-content-between gap-3">
+            <div id="messageText" class="flex-grow-1"></div>
+            <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>
+        </div>
+
+        <!-- ページヘッダー -->
+        <div class="mb-4">
+          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+            <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">あなたが投稿した意見を一覧で確認し、原文（title/body/part 等）を修正できます。</div>
+            <div class="mt-1 text-secondary">
+              公開表示は public_* を参照します。公開されるのは「あなたの visibility=public」かつ「デベロッパー側 visibility_dev=public」の投稿のみです。あなたが原文を修正すると status は updated になり、再承認が必要です。
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+              <h1 class="mb-1">ユーザー意見管理</h1>
+              <div class="text-secondary">
+                投稿数：<span id="postTotal" class="fw-semibold">-</span> 件 ／ 対象商品：<span id="productCount" class="fw-semibold">-</span> 件
+                <span class="ms-2 small" id="loginBadgeWrap" style="display:none;">
+                  <span class="badge bg-success-subtle text-success border border-success-subtle">Login: <span id="loginEmail">-</span></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button id="btnReload" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-clockwise"></i> 更新
+              </button>
+              <button id="btnScrollToDetail" class="btn btn-outline-secondary" disabled>
+                <i class="bi bi-box-arrow-in-down"></i> 詳細へ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- 左：投稿一覧 -->
+          <div class="col-12 col-lg-5">
+            <div class="card shadow-sm">
+              <div class="card-body p-4 panel-scroll" id="leftPanelScroll">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                  <div>
+                    <div class="h5 m-0">あなたの投稿一覧（商品別）</div>
+                    <div class="text-secondary small">行をクリックすると右側に詳細（編集フォーム）を表示します。</div>
+                  </div>
+                  <div class="text-secondary small" id="leftHint"></div>
+                </div>
+
+                <div id="productAccordion" class="accordion">
+                  <div class="text-center text-secondary py-4">読み込み中...</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- 右：詳細／原文編集 -->
+          <div class="col-12 col-lg-7">
+            <div class="sticky-pane">
+              <div class="card shadow-sm">
+                <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
+                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                      <div class="h5 m-0">意見詳細</div>
+                      <div class="text-secondary small">あなたが編集できるのは原文（title/body/part/visibility/post_type）のみです。デベロッパー側の進捗（status_dev）と公開可否（visibility_dev）、および公開内容（public_*）は参照のみです。</div>
+                    </div>
+                    <div class="text-secondary small">
+                      <span id="detailMeta">未選択</span>
+                    </div>
+                  </div>
+
+                  <div id="detailEmpty" class="text-secondary">
+                    左の一覧から意見を選択してください。
+                  </div>
+
+                  <div id="detailWrap" class="d-none">
+
+                    <!-- 状態（ステータス／公開設定） -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                      <div class="fw-semibold mb-2">公開状態</div>
+
+                      <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                          <div class="small text-secondary">status（審査状態）</div>
+                          <div class="mono" id="statusText">-</div>
+                          <div class="text-secondary small mt-1" id="statusHint"></div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label class="small text-secondary" for="visibility">公開設定（visibility）</label>
+                          <select id="visibility" class="form-select">
+                            <option value="public">public（公開）</option>
+                            <option value="private">private（非公開）</option>
+                          </select>
+                          <div class="text-secondary small mt-1">private の投稿は他ユーザーには表示されません（投票対象にもなりません）。</div>
+                        </div>
+                      </div>
+
+                      <div class="mt-3 border-top pt-3" id="devStateWrap" style="display:none;">
+                        <div class="fw-semibold mb-2">デベロッパー側（参考）</div>
+
+                        <div class="row g-3">
+                          <div class="col-12 col-md-6">
+                            <div class="small text-secondary">status_dev（採用/進捗）</div>
+                            <div class="mono" id="statusDevText">-</div>
+                            <div class="text-secondary small mt-1" id="devStatusHint"></div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <div class="small text-secondary">visibility_dev（公開可否）</div>
+                            <div class="mono" id="visibilityDevText">-</div>
+                            <div class="text-secondary small mt-1" id="devVisibilityHint"></div>
+                          </div>
+                        </div>
+
+                        <div class="text-secondary small mt-2">あなたの visibility が public でも、visibility_dev が private の間は公開されません。</div>
+                      </div>
+
+                      <div class="mt-3">
+                        <div class="small text-secondary">商品</div>
+                        <div class="mono" id="detailProductText">-</div>
+                      </div>
+
+                      <div class="mt-2">
+                        <div class="small text-secondary">投稿ID</div>
+                        <div class="mono" id="detailPostId">-</div>
+                      </div>
+
+                      <div class="mt-2">
+                        <div class="small text-secondary">日時</div>
+                        <div class="text-secondary small">作成：<span id="createdAt">-</span> ／ 更新：<span id="updatedAt">-</span></div>
+                      </div>
+
+                      <div class="mt-2" id="approvedWrap" style="display:none;">
+                        <div class="small text-secondary">承認</div>
+                        <div class="text-secondary small">承認日時：<span id="approvedAt">-</span></div>
+                      </div>
+                    </div>
+
+                    <!-- 原文（編集可） -->
+                    <div class="border rounded p-3 mb-3">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">あなたの原文（編集可）</div>
+                        <div class="text-secondary small">
+                          <label class="me-2" for="postType">タイプ</label>
+                          <select id="postType" class="form-select form-select-sm d-inline-block" style="width:auto;">
+                            <option value="improve">改善</option>
+                            <option value="good">良かった点</option>
+                            <option value="guide">ガイド要望</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <hr class="my-3">
+
+                      <div class="mb-3">
+                        <label class="form-label" for="partSelect">部位</label>
+                        <select id="partSelect" class="form-select">
+                          <option value="">読み込み中...</option>
+                        </select>
+                        <div class="char-hint mt-1">部位を選べない場合は下の「その他（自由入力）」を使用してください。</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="partFreeText">その他（自由入力）</label>
+                        <input id="partFreeText" class="form-control" type="text" maxlength="64" placeholder="例：胸ベルトの金具、内装の仕切り など">
+                        <div class="d-flex justify-content-end">
+                          <div class="char-hint"><span id="partFreeTextCount">0</span>/64</div>
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="title">タイトル</label>
+                        <input id="title" class="form-control" type="text" maxlength="200">
+                        <div class="d-flex justify-content-end">
+                          <div class="char-hint"><span id="titleCount">0</span>/200</div>
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label" for="body">本文</label>
+                        <textarea id="body" class="form-control" rows="14"></textarea>
+                      </div>
+
+                      <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
+                        <button id="btnSave" class="btn btn-primary" type="button">
+                          <i class="bi bi-save"></i> 更新する
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- 公開内容（参照のみ） -->
+                    <div class="border rounded p-3">
+                      <div class="fw-semibold">公開内容（参照のみ）</div>
+                      <div class="text-secondary small">公開表示は public_* を参照します。未設定の場合は、審査中（status が new/updated）または非公開（visibility / visibility_dev が private）である可能性があります。</div>
+
+                      <hr class="my-3">
+
+                      <div class="mb-2">
+                        <div class="small text-secondary">部位（公開）</div>
+                        <div class="mono" id="publicPartText">-</div>
+                      </div>
+
+                      <div class="mb-2">
+                        <div class="small text-secondary">タイトル（公開）</div>
+                        <input id="publicTitle" class="form-control textarea-readonly" type="text" readonly>
+                      </div>
+
+                      <div>
+                        <div class="small text-secondary">本文（公開）</div>
+                        <textarea id="publicBody" class="form-control textarea-readonly" rows="10" readonly></textarea>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ▼ 共通フッターを読み込み -->
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/common.js"></script>
+
+  <script>
+    // === ユーティリティ ===
+    const qs = name => new URL(window.location.href).searchParams.get(name) || '';
+    const el = (id) => document.getElementById(id);
+
+    const escapeHtml = (s) => {
+      return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[c]));
+    };
+
+    const fmtDateTime = (iso) => {
+      if (!iso) return '';
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return String(iso);
+        return d.toLocaleString();
+      } catch {
+        return String(iso);
+      }
+    };
+
+    const clearAlert = () => {
+      const box = el('messageArea');
+      const text = el('messageText');
+      if (!box || !text) return;
+      box.className = 'alert d-none';
+      text.textContent = '';
+    };
+
+    const showAlert = (type, msg) => {
+      const box = el('messageArea');
+      const text = el('messageText');
+      if (!box || !text) return;
+
+      const klass = (type === 'success') ? 'alert-success'
+                  : (type === 'warning') ? 'alert-warning'
+                  : (type === 'info') ? 'alert-info'
+                  : 'alert-danger';
+
+      box.className = 'alert ' + klass;
+      text.textContent = msg || '';
+      el('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const buildBoardUrl = (productCode) => {
+      const p = encodeURIComponent(productCode || '');
+      return `/feedback_board.html?product_code=${p}`;
+    };
+
+    // CSS.escape の簡易フォールバック（data-* セレクタ用）
+    const cssEscape = (s) => {
+      try {
+        if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
+      } catch (_) {}
+      // フォールバック：属性セレクタ（\"...\"）内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
+      const str = String(s ?? '');
+      return str
+        .replace(/\/g, '\\')
+        .replace(/\"/g, '\"');
+    };
+
+    // === 状態 ===
+    const focusProductCode = (qs('product_code') || '').trim();
+
+    let me = null; // { customer_id, email, nickname }
+
+    // dashboard から
+    let products = []; // [{product_code, product_name}]
+    let postsByProduct = new Map(); // product_code => posts[]
+    let postTotal = 0;
+
+    // 詳細
+    let selectedPostId = null;
+    let selectedProductCode = '';
+    let selectedPost = null;
+
+    // parts キャッシュ
+    const partsCache = new Map(); // product_code => grouped parts
+
+    // === UI：文字数カウント ===
+    const bindCharCount = () => {
+      const title = el('title');
+      const titleCount = el('titleCount');
+      const partFree = el('partFreeText');
+      const partFreeCount = el('partFreeTextCount');
+
+      const update = () => {
+        if (title && titleCount) titleCount.textContent = String((title.value || '').length);
+        if (partFree && partFreeCount) partFreeCount.textContent = String((partFree.value || '').length);
+      };
+
+      title?.addEventListener('input', update);
+      partFree?.addEventListener('input', update);
+      update();
+    };
+
+    const renderHeaderSummary = () => {
+      el('postTotal') && (el('postTotal').textContent = String(postTotal));
+      el('productCount') && (el('productCount').textContent = String(products.length));
+
+      const hint = el('leftHint');
+      if (hint) {
+        hint.textContent = products.length ? ('商品数：' + String(products.length)) : '';
+      }
+
+      const wrap = el('loginBadgeWrap');
+      if (wrap) {
+        if (me && me.email) {
+          wrap.style.display = '';
+          el('loginEmail') && (el('loginEmail').textContent = String(me.email));
+        } else {
+          wrap.style.display = 'none';
+        }
+      }
+
+      const bcItem = el('breadcrumbBoardItem');
+      const bcLink = el('breadcrumbBoard');
+      if (bcItem && bcLink) {
+        if (focusProductCode) {
+          bcLink.href = buildBoardUrl(focusProductCode);
+          bcItem.classList.remove('d-none');
+        } else {
+          bcItem.classList.add('d-none');
+        }
+      }
+    };
+
+    const renderProducts = () => {
+      const acc = el('productAccordion');
+      if (!acc) return;
+
+      if (!products.length) {
+        acc.innerHTML = '<div class="text-center text-secondary py-4">投稿がありません。</div>';
+        return;
+      }
+
+      let html = '';
+
+      for (let i = 0; i < products.length; i++) {
+        const p = products[i];
+        const code = String(p.product_code || '');
+        const name = String(p.product_name || '');
+        const items = postsByProduct.get(code) || [];
+
+        const headingId = 'heading_' + i;
+        const collapseId = 'collapse_' + i;
+
+        const count = items.length;
+        const badge = count
+          ? `<span class="badge text-bg-primary ms-2">${count}</span>`
+          : `<span class="badge text-bg-secondary ms-2">0</span>`;
+
+        // 表示：対象がある商品は展開。focusProductCode があればその商品も展開。
+        const isShow = (count > 0) || (focusProductCode && focusProductCode === code);
+        const expanded = isShow ? 'true' : 'false';
+        const showClass = isShow ? 'show' : '';
+        const collapsedClass = isShow ? '' : 'collapsed';
+
+        let bodyHtml = '';
+        if (!count) {
+          bodyHtml = '<div class="text-secondary">この商品の投稿はありません。</div>';
+        } else {
+          let rows = '';
+          for (const it of items) {
+            const postId = it.post_id;
+            const stRaw = String(it.status || '-');
+            const stLc = stRaw.toLowerCase();
+
+            // ユーザー側：status は審査状態（new / updated / done）
+            let stBadgeClass = 'text-bg-secondary';
+            if (stLc === 'new') stBadgeClass = 'text-bg-warning';
+            else if (stLc === 'updated') stBadgeClass = 'text-bg-success';
+            else if (stLc === 'done') stBadgeClass = 'text-bg-info';
+
+            const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stRaw)}</span>`;
+
+            // デベロッパー側（参考）：status_dev / visibility_dev（返ってくる場合のみ表示）
+            const stDevRaw = String(it.status_dev || it.statusDev || '');
+            const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
+            let devBadges = '';
+            if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevRaw)}</span>`;
+            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;
+
+            const vis = String(it.visibility || 'public');
+            const visBadge = vis === 'private'
+              ? '<span class="badge text-bg-secondary ms-2 align-middle">private</span>'
+              : '<span class="badge text-bg-success ms-2 align-middle">public</span>';
+
+            const title = it.title || '';
+            const part = it.part_code || it.part_free_text || '';
+            const updatedAt = fmtDateTime(it.updated_at || it.created_at || '');
+            const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
+
+            rows += `
+              <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}" data-product-code="${escapeHtml(code)}">
+                <td class="mono text-nowrap">${escapeHtml(postId)}</td>
+                <td>
+                  <div class="small text-secondary text-truncate" style="max-width: 26rem;">
+                    <span class="mono">${escapeHtml(part)}</span>
+                  </div>
+                  <div class="fw-semibold text-truncate" style="max-width: 26rem;">
+                    ${escapeHtml(title)}${stBadge}${visBadge}${devBadges}
+                  </div>
+                </td>
+                <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
+              </tr>
+            `;
+          }
+
+          bodyHtml = `
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+              <div>
+                <span class="fw-semibold">${escapeHtml(name || code || '-')}</span>
+                <span class="badge bg-secondary fw-normal ms-2">${escapeHtml(code)}</span>
+              </div>
+              <div>
+                <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildBoardUrl(code))}">フィードバックボード</a>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-nowrap" style="width:4.4rem;">ID</th>
+                    <th class="text-center">意見</th>
+                    <th class="col-hide-sm text-nowrap" style="width:11.5rem;">更新日時</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+
+        const safeName = name ? escapeHtml(name) : '<span class="text-secondary small ms-2">（商品名未設定）</span>';
+
+        html += `
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="${escapeHtml(headingId)}">
+              <button class="accordion-button ${collapsedClass}" type="button" data-product-code="${escapeHtml(code)}" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
+                <span class="mono me-2">${escapeHtml(code)}</span>
+                <span class="me-2">${safeName}</span>
+                ${badge}
+              </button>
+            </h2>
+            <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}">
+              <div class="accordion-body">
+                ${bodyHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      acc.innerHTML = html;
+
+      acc.querySelectorAll('tr.row-clickable').forEach(tr => {
+        tr.addEventListener('click', async () => {
+          const postId = tr.getAttribute('data-post-id');
+          const pc = tr.getAttribute('data-product-code') || '';
+          if (!postId) return;
+          await loadPostDetail(Number(postId), String(pc));
+          renderProducts();
+        });
+      });
+    };
+
+    const renderPartsSelect = (partsGrouped, selectedCode) => {
+      const sel = el('partSelect');
+      if (!sel) return;
+
+      if (!partsGrouped || !partsGrouped.length) {
+        sel.innerHTML = '<option value="">部位がありません</option>';
+        return;
+      }
+
+      let html = '<option value="">（未選択）</option>';
+      for (const cat of partsGrouped) {
+        const label = escapeHtml(cat.category_name || 'その他');
+        html += `<optgroup label="${label}">`;
+        for (const p of (cat.parts || [])) {
+          const code = String(p.part_code || '');
+          const name = String(p.part_name_ja || code);
+          html += `<option value="${escapeHtml(code)}">${escapeHtml(name)} (${escapeHtml(code)})</option>`;
+        }
+        html += '</optgroup>';
+      }
+
+      sel.innerHTML = html;
+      if (selectedCode) sel.value = String(selectedCode);
+    };
+
+    const setStatusHint = (status) => {
+      const st = String(status || '').toLowerCase();
+      const hint = el('statusHint');
+      if (!hint) return;
+
+      if (st === 'new') hint.textContent = '新規投稿です。審査中のため公開内容（public_*）は未設定の可能性があります。';
+      else if (st === 'updated') hint.textContent = '原文を更新しました。再審査中のため公開内容（public_*）は自動では更新されません。';
+      else if (st === 'done') hint.textContent = '審査が完了しました。公開されるかどうかは「あなたの visibility」と「デベロッパー側 visibility_dev」で決まります。';
+      else hint.textContent = '';
+    };
+
+    const setDevStatusHint = (statusDev) => {
+      const st = String(statusDev || '').toLowerCase();
+      const hint = el('devStatusHint');
+      if (!hint) return;
+
+      if (st === 'reviewing') hint.textContent = '検討中です。';
+      else if (st === 'planned') hint.textContent = '対応予定です（採用）。';
+      else if (st === 'shipped') hint.textContent = '対応済みです（採用）。';
+      else if (st === 'rejected') hint.textContent = '不採用です。';
+      else hint.textContent = '';
+    };
+
+    const setDevVisibilityHint = (visDev) => {
+      const v = String(visDev || '').toLowerCase();
+      const hint = el('devVisibilityHint');
+      if (!hint) return;
+
+      if (v === 'public') hint.textContent = '公開可です。';
+      else if (v === 'private') hint.textContent = '非公開です（他ユーザーには表示されません）。';
+      else hint.textContent = '';
+    };
+
+    const renderDetail = () => {
+      const empty = el('detailEmpty');
+      const wrap = el('detailWrap');
+      const meta = el('detailMeta');
+      const btnScroll = el('btnScrollToDetail');
+
+      if (!selectedPost) {
+        empty && empty.classList.remove('d-none');
+        wrap && wrap.classList.add('d-none');
+        meta && (meta.textContent = '未選択');
+        btnScroll && (btnScroll.disabled = true);
+        return;
+      }
+
+      empty && empty.classList.add('d-none');
+      wrap && wrap.classList.remove('d-none');
+      btnScroll && (btnScroll.disabled = false);
+
+      meta && (meta.textContent = `ID: ${selectedPost.post_id}`);
+
+      el('detailPostId') && (el('detailPostId').textContent = String(selectedPost.post_id || '-'));
+
+      const code = String(selectedPost.product_code || selectedProductCode || '');
+      const p = products.find(x => String(x.product_code || '') === code);
+      const name = p ? String(p.product_name || '') : '';
+      el('detailProductText') && (el('detailProductText').textContent = name ? `${name} / ${code}` : (code || '-'));
+
+      const status = String(selectedPost.status || '-');
+      el('statusText') && (el('statusText').textContent = status);
+      setStatusHint(status);
+
+      // デベロッパー側（参考）
+      const stDev = String(selectedPost.status_dev || selectedPost.statusDev || '');
+      const visDev = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '');
+      const devWrap = el('devStateWrap');
+      if (devWrap) {
+        if (stDev || visDev) {
+          devWrap.style.display = '';
+          el('statusDevText') && (el('statusDevText').textContent = stDev || '-');
+          el('visibilityDevText') && (el('visibilityDevText').textContent = visDev || '-');
+          setDevStatusHint(stDev);
+          setDevVisibilityHint(visDev);
+        } else {
+          devWrap.style.display = 'none';
+        }
+      }
+
+      const vis = String(selectedPost.visibility || 'public');
+      el('visibility') && (el('visibility').value = vis);
+
+      const pt = String(selectedPost.post_type || 'improve');
+      el('postType') && (el('postType').value = pt);
+
+      el('createdAt') && (el('createdAt').textContent = fmtDateTime(selectedPost.created_at || ''));
+      el('updatedAt') && (el('updatedAt').textContent = fmtDateTime(selectedPost.updated_at || ''));
+
+      const approvedWrap = el('approvedWrap');
+      const approvedAt = selectedPost.approved_at || '';
+      if (approvedWrap) {
+        if (approvedAt) {
+          approvedWrap.style.display = '';
+          el('approvedAt') && (el('approvedAt').textContent = fmtDateTime(approvedAt));
+        } else {
+          approvedWrap.style.display = 'none';
+        }
+      }
+
+      // 原文
+      el('title') && (el('title').value = String(selectedPost.title || ''));
+      el('body') && (el('body').value = String(selectedPost.body || ''));
+
+      const partCode = String(selectedPost.part_code || '');
+      const partFree = String(selectedPost.part_free_text || '');
+
+      const sel = el('partSelect');
+      const free = el('partFreeText');
+      if (sel) sel.value = partCode;
+      if (free) free.value = partFree;
+
+      // 公開内容（参照）
+      el('publicTitle') && (el('publicTitle').value = String(selectedPost.public_title || ''));
+      el('publicBody') && (el('publicBody').value = String(selectedPost.public_body || ''));
+      el('publicPartText') && (el('publicPartText').textContent = String(selectedPost.public_part_code || '-') || '-');
+
+      bindCharCount();
+    };
+
+    const syncPartInputState = () => {
+      const sel = el('partSelect');
+      const free = el('partFreeText');
+      if (!sel || !free) return;
+
+      const v = String(sel.value || '').trim();
+      if (v) {
+        free.disabled = true;
+        free.classList.add('textarea-readonly');
+      } else {
+        free.disabled = false;
+        free.classList.remove('textarea-readonly');
+      }
+
+      bindCharCount();
+    };
+
+    // === API ===
+    const loadMe = async () => {
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/customer/me', { method: 'GET' });
+        me = res || null;
+      } catch (e) {
+        me = null;
+      }
+    };
+
+    const loadDashboard = async () => {
+      const acc = el('productAccordion');
+      acc && (acc.innerHTML = '<div class="text-center text-secondary py-4">読み込み中...</div>');
+
+      try {
+        // JWT が無い場合は common.js の挙動に任せる
+        try {
+          const token = (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) ? (localStorage.getItem(ADDEVA.LS.authToken) || '') : '';
+          if (!token || (typeof ADDEVA.isJwtExpired === 'function' && ADDEVA.isJwtExpired(token))) {
+            if (window.ADDEVA && typeof ADDEVA._handleAuthFailure === 'function') {
+              ADDEVA._handleAuthFailure('startup: token missing/expired');
+              return;
+            }
+          }
+        } catch (_) {}
+
+        await loadMe();
+
+        const res = await ADDEVA.apiFetch('/api/addeva/user_opinion/dashboard', {
+          method: 'POST',
+          body: {
+            focusProductCode: focusProductCode || null
+          }
+        });
+
+        const rawProducts = (res && res.products) ? res.products : [];
+        products = (Array.isArray(rawProducts) ? rawProducts : []).map(v => ({
+          product_code: String(v.product_code || v.productCode || ''),
+          product_name: String(v.product_name || v.productName || ''),
+        })).filter(x => x.product_code);
+
+        postTotal = Number(res && (res.post_total ?? res.postTotal) ? (res.post_total ?? res.postTotal) : 0) || 0;
+
+        postsByProduct = new Map();
+        const by = res && (res.posts_by_product_code || res.postsByProductCode) ? (res.posts_by_product_code || res.postsByProductCode) : null;
+
+        if (by && typeof by === 'object' && !Array.isArray(by)) {
+          Object.keys(by).forEach(code => {
+            const arr = Array.isArray(by[code]) ? by[code] : [];
+            postsByProduct.set(String(code), arr);
+          });
+        } else {
+          const all = res && (res.posts || res.post_list) ? (res.posts || res.post_list) : [];
+          const arrAll = Array.isArray(all) ? all : [];
+          for (const it of arrAll) {
+            const code = String(it.product_code || it.productCode || '');
+            if (!code) continue;
+            if (!postsByProduct.has(code)) postsByProduct.set(code, []);
+            postsByProduct.get(code).push(it);
+          }
+        }
+
+        // products の順序に合わせて空配列を作る
+        for (const p of products) {
+          const code = String(p.product_code || '');
+          if (!postsByProduct.has(code)) postsByProduct.set(code, []);
+        }
+
+        renderHeaderSummary();
+        renderProducts();
+        clearAlert();
+
+      } catch (e) {
+        console.error(e);
+        products = [];
+        postsByProduct = new Map();
+        postTotal = 0;
+        renderHeaderSummary();
+        renderProducts();
+        showAlert('danger', e && e.message ? e.message : '投稿一覧の取得に失敗しました。');
+      }
+    };
+
+    const loadPartsForProduct = async (productCode) => {
+      const pc = String(productCode || '').trim();
+      if (!pc) return [];
+      if (partsCache.has(pc)) return partsCache.get(pc);
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
+          method: 'POST',
+          body: { productCode: pc, grouped: true }
+        });
+        const parts = Array.isArray(res) ? res : [];
+        partsCache.set(pc, parts);
+        return parts;
+      } catch (e) {
+        console.error(e);
+        partsCache.set(pc, []);
+        return [];
+      }
+    };
+
+    const loadPostDetail = async (postId, productCode, opts = {}) => {
+      selectedPostId = postId;
+      selectedProductCode = String(productCode || '').trim();
+      selectedPost = null;
+      renderDetail();
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/user_opinion/post_detail', {
+          method: 'POST',
+          body: { postId: Number(postId) }
+        });
+
+        selectedPost = res || null;
+
+        // parts
+        const pc = String((selectedPost && selectedPost.product_code) ? selectedPost.product_code : selectedProductCode || '').trim();
+        const parts = await loadPartsForProduct(pc);
+        renderPartsSelect(parts, String((selectedPost && selectedPost.part_code) ? selectedPost.part_code : ''));
+
+        renderDetail();
+        syncPartInputState();
+        clearAlert();
+
+        if (!opts || !opts.skipScrollToDetail) {
+          (el('detailWrap') || el('detailEmpty'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        if (!opts || !opts.skipFocus) {
+          setTimeout(() => {
+            try { el('title')?.focus({ preventScroll: true }); } catch (_) {}
+          }, 0);
+        }
+
+      } catch (e) {
+        console.error(e);
+        selectedPost = null;
+        showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
+        renderDetail();
+      }
+    };
+
+    const doSave = async () => {
+      if (!selectedPost || !selectedPost.post_id) {
+        showAlert('warning', '更新対象の意見を選択してください。');
+        return;
+      }
+
+      const btn = el('btnSave');
+      btn && (btn.disabled = true);
+
+      try {
+        const title = el('title') ? String(el('title').value || '').trim() : '';
+        const body = el('body') ? String(el('body').value || '').trim() : '';
+        const postType = el('postType') ? String(el('postType').value || '').trim() : 'improve';
+        const visibility = el('visibility') ? String(el('visibility').value || '').trim() : 'public';
+
+        const partCode = el('partSelect') ? String(el('partSelect').value || '').trim() : '';
+        const partFreeText = el('partFreeText') ? String(el('partFreeText').value || '').trim() : '';
+
+        if (!title) {
+          showAlert('warning', 'タイトルを入力してください。');
+          return;
+        }
+        if (!body) {
+          showAlert('warning', '本文を入力してください。');
+          return;
+        }
+        if (!partCode && !partFreeText) {
+          showAlert('warning', '部位を選択するか、「その他（自由入力）」を入力してください。');
+          return;
+        }
+        if (partCode && partFreeText) {
+          // UI上は無効化しているが保険
+          showAlert('warning', '部位を選択した場合は「その他（自由入力）」は空にしてください。');
+          return;
+        }
+
+        const res = await ADDEVA.apiFetch('/api/addeva/user_opinion/update', {
+          method: 'POST',
+          body: {
+            postId: Number(selectedPost.post_id),
+            title,
+            body,
+            postType,
+            visibility,
+            partCode: partCode || null,
+            partFreeText: partFreeText || null,
+          }
+        });
+
+        showAlert('success', `更新しました（ID=${res.post_id}, status=${res.status}）。`);
+
+        const keepPostId = Number(selectedPost.post_id);
+        const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
+
+        await loadDashboard();
+        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e && e.message ? e.message : '更新に失敗しました。');
+      } finally {
+        btn && (btn.disabled = false);
+      }
+    };
+
+    // === UI バインド ===
+    const bindUI = () => {
+      el('btnReload')?.addEventListener('click', async () => {
+        clearAlert();
+        await loadDashboard();
+      });
+
+      el('btnScrollToDetail')?.addEventListener('click', () => {
+        el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      el('btnSave')?.addEventListener('click', doSave);
+
+      el('partSelect')?.addEventListener('change', () => {
+        syncPartInputState();
+      });
+
+      // Ctrl/Cmd+Enter で更新
+      el('body')?.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          doSave();
+        }
+      });
+    };
+
+    // === 初期化 ===
+    (async () => {
+      bindUI();
+      await loadDashboard();
+      renderDetail();
+      bindCharCount();
+      syncPartInputState();
+    })();
+  </script>
+</body>
+</html>
