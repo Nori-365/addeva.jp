@@ -363,11 +363,11 @@
       try {
         if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
       } catch (_) {}
-      // フォールバック：属性セレクタ（"...") 内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
+      // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
       const str = String(s ?? '');
       return str
-        .replace(/\/g, '\\')
-        .replace(/"/g, '\"');
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"');
     };
 
     // === 状態 ===
@@ -986,4 +986,3 @@
   </script>
 </body>
 </html>
-
