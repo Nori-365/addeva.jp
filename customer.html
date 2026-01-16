@@ -348,6 +348,9 @@
         const topBar = document.getElementById('customerTopBar');
         if (topBar) {
           topBar.innerHTML = `
+            <a id="opinionManageButtonTop" class="btn btn-outline-primary btn-sm" href="/user_opinion_manage.html" role="button">
+              <i class="bi bi-card-checklist me-1"></i>自分の意見管理
+            </a>
             <a id="developerButtonTop" class="btn btn-outline-primary btn-sm d-none" href="#" role="button">
               <i class="bi bi-gear me-1"></i>デベロッパー管理
             </a>
@@ -631,4 +634,3 @@
   </script>
 </body>
 </html>
-
