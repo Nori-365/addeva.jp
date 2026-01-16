@@ -332,9 +332,10 @@
         if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
       } catch (_) {}
       // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
-      return String(s ?? '')
-        .replace(/\/g, '\\')
-        .replace(/"/g, '\"');
+      const str = String(s ?? '');
+      return str
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"');
     };
 
     // 保存後：左の一覧（該当行があればその行、無ければ該当 product のヘッダー）へジャンプ
