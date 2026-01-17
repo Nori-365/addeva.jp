@@ -102,6 +102,19 @@
           </ol>
         </nav>
 
+        <!-- 右上アクション（デベロッパー管理＋自分の意見管理＋ログアウト） -->
+        <div id="feedbackTopBar" class="d-flex justify-content-end align-items-center gap-2 mb-2">
+          <span id="developerButtonTop" class="btn btn-outline-secondary btn-sm disabled" role="button" aria-disabled="true" aria-current="page" tabindex="-1">
+            <i class="bi bi-gear me-1"></i>デベロッパー管理
+          </span>
+          <a id="opinionManageButtonTop" class="btn btn-outline-primary btn-sm" href="/user_opinion_manage.html" role="button">
+            <i class="bi bi-card-checklist me-1"></i>自分の意見管理
+          </a>
+          <button id="logoutButtonTop" class="btn btn-outline-secondary btn-sm" type="button">
+            <i class="bi bi-box-arrow-right me-1"></i>ログアウト
+          </button>
+        </div>
+
         <!-- メッセージ表示エリア -->
         <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
           <div class="d-flex align-items-start justify-content-between gap-3">
@@ -1011,6 +1024,7 @@
 
     // === UI バインド ===
     const bindUI = () => {
+
       el('btnReload')?.addEventListener('click', async () => {
         clearAlert();
         await loadDashboard();
@@ -1028,6 +1042,22 @@
           doPublish();
         }
       });
+
+      // ログアウト
+      const logoutBtn = el('logoutButtonTop');
+      if (logoutBtn && logoutBtn.dataset.bound !== '1') {
+        logoutBtn.addEventListener('click', () => {
+          try {
+            if (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) {
+              localStorage.removeItem(ADDEVA.LS.authToken);
+            } else {
+              localStorage.removeItem('authToken');
+            }
+          } catch (_) {}
+          window.location.href = '/customer.html?mode=login';
+        });
+        logoutBtn.dataset.bound = '1';
+      }
     };
 
     // === スクロール制御（PC） ===
