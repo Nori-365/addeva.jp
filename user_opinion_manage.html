@@ -91,7 +91,7 @@
 
         <!-- ページヘッダー -->
         <div class="mb-4">
-          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+          <div id="introMessage" class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
             <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">あなたが投稿した意見を一覧で確認し、原文（title/body/part 等）を修正できます。</div>
             <div class="mt-1 text-secondary">
               公開表示は public_* を参照します。公開されるのは「あなたの visibility=public」かつ「デベロッパー側 visibility_dev=public」の投稿のみです。あなたが原文を修正すると status は updated になり、再承認が必要です。
@@ -341,15 +341,34 @@
       }
     };
 
-    const clearAlert = () => {
+    // 初期表示の説明（青枠）は、初回だけ表示（以降は非表示にする）
+    const hideIntroMessage = () => {
+      const intro = el('introMessage');
+      if (intro) intro.classList.add('d-none');
+    };
+
+    // alert の自動消去/ロック（success を「一瞬で消さない」ため）
+    let _alertLockUntil = 0;
+    let _alertTimer = null;
+
+    const clearAlert = (force = false) => {
+      if (!force && Date.now() < _alertLockUntil) return;
+
       const box = el('messageArea');
       const text = el('messageText');
       if (!box || !text) return;
+
       box.className = 'alert d-none';
       text.textContent = '';
+
+      _alertLockUntil = 0;
+      if (_alertTimer) {
+        clearTimeout(_alertTimer);
+        _alertTimer = null;
+      }
     };
 
-    const showAlert = (type, msg) => {
+    const showAlert = (type, msg, opts = {}) => {
       const box = el('messageArea');
       const text = el('messageText');
       if (!box || !text) return;
@@ -361,7 +380,30 @@
 
       box.className = 'alert ' + klass;
       text.textContent = msg || '';
-      el('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
+
+      // クリックで閉じる（強制）
+      el('messageCloseBtn')?.addEventListener('click', () => clearAlert(true), { once: true });
+
+      // success は数秒表示してから自動消去（その間は clearAlert() を無効化）
+      if (_alertTimer) {
+        clearTimeout(_alertTimer);
+        _alertTimer = null;
+      }
+
+      const autoHideMs = (typeof opts.autoHideMs === 'number')
+        ? Math.max(0, opts.autoHideMs)
+        : (type === 'success' ? 5000 : 0);
+
+      if (autoHideMs > 0) {
+        _alertLockUntil = Date.now() + autoHideMs;
+        _alertTimer = setTimeout(() => {
+          clearAlert(true);
+        }, autoHideMs);
+      } else {
+        _alertLockUntil = 0;
+      }
+
+      hideIntroMessage();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -797,7 +839,7 @@
       }
     };
 
-    const loadDashboard = async () => {
+    const loadDashboard = async (opts = {}) => {
       const acc = el('productAccordion');
       acc && (acc.innerHTML = '<div class="text-center text-secondary py-4">読み込み中...</div>');
 
@@ -861,7 +903,7 @@
         // デベロッパー権限がある場合のみ「デベロッパー管理」ボタンを表示
         await loadDeveloperTopButton(products.map(p => p.product_code));
 
-        clearAlert();
+        if (!opts || !opts.preserveAlert) clearAlert();
 
       } catch (e) {
         console.error(e);
@@ -907,6 +949,7 @@
         });
 
         selectedPost = res || null;
+        hideIntroMessage();
 
         // parts
         const pc = String((selectedPost && selectedPost.product_code) ? selectedPost.product_code : selectedProductCode || '').trim();
@@ -915,7 +958,7 @@
 
         renderDetail();
         syncPartInputState();
-        clearAlert();
+        if (!opts || !opts.preserveAlert) clearAlert();
 
         if (!opts || !opts.skipScrollToDetail) {
           (el('detailWrap') || el('detailEmpty'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -987,8 +1030,8 @@
       const keepPostId = Number(selectedPost.post_id);
       const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
 
-      await loadDashboard();
-      await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
+      await loadDashboard({ preserveAlert: true });
+      await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true, preserveAlert: true });
     };
 
     const doSave = async () => {
@@ -1032,8 +1075,8 @@
         const keepPostId = Number(selectedPost.post_id);
         const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
 
-        await loadDashboard();
-        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
+        await loadDashboard({ preserveAlert: true });
+        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true, preserveAlert: true });
 
       } catch (e) {
         console.error(e);
@@ -1046,7 +1089,7 @@
     // === UI バインド ===
     const bindUI = () => {
       el('btnReload')?.addEventListener('click', async () => {
-        clearAlert();
+        clearAlert(true);
         await loadDashboard();
       });
 
@@ -1097,3 +1140,4 @@
   </script>
 </body>
 </html>
+
