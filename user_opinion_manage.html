@@ -176,7 +176,7 @@
                           <label class="me-1 ms-2" for="postType">タイプ</label>
                           <select id="postType" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="improve">改善</option>
-                            <option value="good">良かった点</option>
+                            <option value="praise">良かった点</option>
                             <option value="guide">ガイド要望</option>
                           </select>
                         </div>
@@ -735,7 +735,8 @@
       const vis = String(selectedPost.visibility || 'public');
       el('visibility') && (el('visibility').value = vis);
 
-      const pt = String(selectedPost.post_type || 'improve');
+      let pt = String(selectedPost.post_type || 'improve');
+      if (pt === 'good') pt = 'praise'; // 互換（旧値）
       el('postType') && (el('postType').value = pt);
 
       el('createdAt') && (el('createdAt').textContent = fmtDateTime(selectedPost.created_at || ''));
@@ -1002,7 +1003,8 @@
       try {
         const title = el('title') ? String(el('title').value || '').trim() : '';
         const body = el('body') ? String(el('body').value || '').trim() : '';
-        const postType = el('postType') ? String(el('postType').value || '').trim() : 'improve';
+        let postType = el('postType') ? String(el('postType').value || '').trim() : 'improve';
+        if (postType === 'good') postType = 'praise'; // 互換（旧値）
         const visibility = el('visibility') ? String(el('visibility').value || '').trim() : 'public';
 
         if (!title) {
