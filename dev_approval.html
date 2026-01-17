@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html><!-- canvas-update-test -->
 <html lang="ja">
 <head>
   <!-- ▼ 共通ヘッダーのhead-common.htmlを読み込み -->
@@ -821,6 +821,25 @@
           if (!pendingByProduct.has(code)) pendingByProduct.set(code, []);
         }
 
+        // 部位管理ボタン：初期表示でも product_code が決まっているなら有効化する
+        if (isDeveloper) {
+          const defaultPcForParts = (() => {
+            if (focusProductCode) return String(focusProductCode).trim();
+            if (selectedProductCode) return String(selectedProductCode).trim();
+            // 承認待ちがある商品を優先、それ以外は先頭
+            for (const pp of products) {
+              const c = String(pp.product_code || '').trim();
+              if (!c) continue;
+              const arr = pendingByProduct.get(c) || [];
+              if (arr.length > 0) return c;
+            }
+            return (products[0] && products[0].product_code) ? String(products[0].product_code).trim() : '';
+          })();
+          setPartsRegistButton(defaultPcForParts);
+        } else {
+          setPartsRegistButton('');
+        }
+
         // 表示
         renderHeaderSummary();
         renderProducts();
@@ -840,6 +859,7 @@
         products = [];
         pendingByProduct = new Map();
         pendingTotal = 0;
+        setPartsRegistButton('');
         renderHeaderSummary();
         renderProducts();
         showAlert('danger', e && e.message ? e.message : '承認待ち情報の取得に失敗しました。');
@@ -1145,3 +1165,4 @@
   </script>
 </body>
 </html>
+
