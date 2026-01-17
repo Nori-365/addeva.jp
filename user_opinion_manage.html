@@ -447,6 +447,7 @@
 
     // parts キャッシュ
     const partsCache = new Map(); // product_code => grouped parts
+    const partNameCache = new Map(); // product_code => Map(part_code => part_name_ja)
 
     // === UI：文字数カウント ===
     const bindCharCount = () => {
@@ -558,7 +559,19 @@
               : '<span class="badge text-bg-success ms-2 align-middle">public</span>';
 
             const title = it.title || '';
-            const part = it.part_code || it.part_free_text || '';
+
+            const partCode = String(it.part_code || it.partCode || '');
+            const partNameJa = String(it.part_name_ja || it.partNameJa || '');
+            const partFree = String(it.part_free_text || it.partFreeText || '');
+
+            // 部位名は API（dashboard）が返す前提：part_name_ja を優先表示
+            let partLabel = '';
+            if (partCode) {
+              partLabel = partNameJa ? partNameJa : partCode;
+            } else {
+              partLabel = partFree || '';
+            }
+
             const updatedAt = fmtDateTime(it.updated_at || it.created_at || '');
             const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
 
@@ -567,7 +580,7 @@
                 <td class="mono text-nowrap">${escapeHtml(postId)}</td>
                 <td>
                   <div class="small text-secondary text-truncate" style="max-width: 26rem;">
-                    <span class="mono">${escapeHtml(part)}</span>
+                    <span>${escapeHtml(partLabel)}</span>
                   </div>
                   <div class="fw-semibold text-truncate" style="max-width: 26rem;">
                     ${escapeHtml(title)}${stBadge}${visBadge}${devBadges}
@@ -770,14 +783,30 @@
       el('body') && (el('body').value = String(selectedPost.body || ''));
 
       const partCode = String(selectedPost.part_code || '');
-      const partFree = String(selectedPost.part_free_text || '');
-      const partDisp = partCode ? partCode : (partFree || '-');
+      const partNameJa = String(selectedPost.part_name_ja || selectedPost.partNameJa || '');
+      const partFree = String(selectedPost.part_free_text || selectedPost.partFreeText || '');
+
+      let partDisp = '-';
+      if (partCode) {
+        partDisp = partNameJa ? partNameJa : partCode;
+      } else if (partFree) {
+        partDisp = partFree;
+      }
+
       el('originalPartText') && (el('originalPartText').textContent = String(partDisp));
 
       // 公開内容（参照）
       el('publicTitle') && (el('publicTitle').value = String(selectedPost.public_title || ''));
       el('publicBody') && (el('publicBody').value = String(selectedPost.public_body || ''));
-      el('publicPartText') && (el('publicPartText').textContent = String(selectedPost.public_part_code || '-') || '-');
+
+      const pubPartCode = String(selectedPost.public_part_code || selectedPost.public_partCode || '');
+      const pubPartNameJa = String(selectedPost.public_part_name_ja || selectedPost.publicPartNameJa || '');
+
+      let pubPartDisp = '-';
+      if (pubPartCode) {
+        pubPartDisp = pubPartNameJa ? pubPartNameJa : pubPartCode;
+      }
+      el('publicPartText') && (el('publicPartText').textContent = String(pubPartDisp || '-'));
 
       bindCharCount();
     };
@@ -867,6 +896,8 @@
           if (!postsByProduct.has(code)) postsByProduct.set(code, []);
         }
 
+        // 部位名（part_name_ja）は dashboard API が返す前提（追加の parts/list 呼び出しは行わない）
+
         renderHeaderSummary();
         renderProducts();
 
@@ -889,7 +920,23 @@
     const loadPartsForProduct = async (productCode) => {
       const pc = String(productCode || '').trim();
       if (!pc) return [];
-      if (partsCache.has(pc)) return partsCache.get(pc);
+
+      if (partsCache.has(pc)) {
+        // 旧キャッシュ（partNameCache が無い）への互換
+        if (!partNameCache.has(pc)) {
+          const grouped = partsCache.get(pc) || [];
+          const m = new Map();
+          for (const cat of grouped) {
+            for (const p of (cat && cat.parts) ? cat.parts : []) {
+              const c = String(p.part_code || '');
+              if (!c) continue;
+              m.set(c, String(p.part_name_ja || c));
+            }
+          }
+          partNameCache.set(pc, m);
+        }
+        return partsCache.get(pc);
+      }
 
       try {
         const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
@@ -898,10 +945,23 @@
         });
         const parts = Array.isArray(res) ? res : [];
         partsCache.set(pc, parts);
+
+        // part_code -> part_name_ja の高速参照Mapを作る
+        const m = new Map();
+        for (const cat of parts) {
+          for (const p of (cat && cat.parts) ? cat.parts : []) {
+            const c = String(p.part_code || '');
+            if (!c) continue;
+            m.set(c, String(p.part_name_ja || c));
+          }
+        }
+        partNameCache.set(pc, m);
+
         return parts;
       } catch (e) {
         console.error(e);
         partsCache.set(pc, []);
+        partNameCache.set(pc, new Map());
         return [];
       }
     };
@@ -921,10 +981,7 @@
         selectedPost = res || null;
         hideIntroMessage();
 
-        // parts
-        const pc = String((selectedPost && selectedPost.product_code) ? selectedPost.product_code : selectedProductCode || '').trim();
-        const parts = await loadPartsForProduct(pc);
-        renderPartsSelect(parts, String((selectedPost && selectedPost.part_code) ? selectedPost.part_code : ''));
+        // 部位名（part_name_ja）は post_detail API が返す前提（追加の parts/list 呼び出しは行わない）
 
         renderDetail();
         syncPartInputState();
@@ -1110,4 +1167,3 @@
   </script>
 </body>
 </html>
-
