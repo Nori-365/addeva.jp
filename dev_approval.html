@@ -144,6 +144,9 @@
             </div>
 
             <div class="d-flex align-items-center gap-2">
+                            <a id="btnPartsRegist" class="btn btn-outline-secondary disabled" href="#" role="button" aria-disabled="true">
+                <i class="bi bi-tags me-1"></i>部位管理
+              </a>
               <button id="btnReload" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-clockwise"></i> 更新
               </button>
@@ -348,6 +351,26 @@
     const buildBoardUrl = (productCode) => {
       const p = encodeURIComponent(productCode || '');
       return `/feedback_board.html?product_code=${p}`;
+    };
+
+    const buildPartsRegistUrl = (productCode) => {
+      const p = encodeURIComponent(productCode || '');
+      return `/dev_parts_regist.html?product_code=${p}`;
+    };
+
+    const setPartsRegistButton = (productCode) => {
+      const a = el('btnPartsRegist');
+      if (!a) return;
+      const pc = String(productCode || '').trim();
+      if (!pc) {
+        a.href = '#';
+        a.setAttribute('aria-disabled', 'true');
+        a.classList.add('disabled');
+        return;
+      }
+      a.href = buildPartsRegistUrl(pc);
+      a.setAttribute('aria-disabled', 'false');
+      a.classList.remove('disabled');
     };
     // CSS.escape の簡易フォールバック（data-* セレクタ用）
     const cssEscape = (s) => {
@@ -846,6 +869,7 @@
     const loadPostDetail = async (postId, productCode, opts = {}) => {
       selectedPostId = postId;
       selectedProductCode = String(productCode || '').trim();
+      setPartsRegistButton(selectedProductCode || focusProductCode);
       selectedPost = null;
       hasPublicPartCode = false;
       renderDetail();
@@ -1058,6 +1082,10 @@
         });
         logoutBtn.dataset.bound = '1';
       }
+
+
+      // 部位管理ボタン（初期状態）
+      setPartsRegistButton(selectedProductCode || focusProductCode);
     };
 
     // === スクロール制御（PC） ===
