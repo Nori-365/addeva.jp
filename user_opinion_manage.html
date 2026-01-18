@@ -554,8 +554,8 @@
             // ユーザー側：status は審査状態（new / updated / done）
             // ・new と updated は同じ色（黄色）
             let stBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
-            if (stDispLc === 'new') stBadgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
-            else if (stDispLc === 'updated') stBadgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+            if (stDispLc === 'new') stBadgeClass = 'bg-warning text-dark';
+            else if (stDispLc === 'updated') stBadgeClass = 'bg-warning text-dark';
             else if (stDispLc === 'done') stBadgeClass = 'bg-info-subtle text-info border border-info-subtle';
 
             const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stDisp)}</span>`;
