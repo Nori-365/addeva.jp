@@ -94,7 +94,7 @@
           <div id="introMessage" class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
             <div class="fw-bold" style="font-size: 1.4rem; line-height: 1.35;">あなたが投稿した意見を一覧で確認し、原文（title/body/part 等）を修正できます。</div>
             <div class="mt-1 text-secondary">
-              公開表示は public_* を参照します。公開されるのは「あなたの visibility=public」かつ「デベロッパー側 visibility_dev=public」の投稿のみです。あなたが原文を修正すると status は updated になり、再承認が必要です。
+              公開表示は public_* を参照します。公開されるのは「あなたの visibility=public」かつ「デベロッパー側 visibility_dev=public」の投稿のみです。開発者がまだ審査・公開していない間は、あなたが原文を修正しても status は new のままです。開発者の審査・公開後に原文を修正した場合は status が updated になり、再承認が必要です。
             </div>
           </div>
 
@@ -122,7 +122,7 @@
 
         <div class="row g-4">
           <!-- 左：投稿一覧 -->
-          <div class="col-12 col-lg-5">
+          <div class="col-12 col-lg-6">
             <div class="card shadow-sm">
               <div class="card-body p-4 panel-scroll" id="leftPanelScroll">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
@@ -142,7 +142,7 @@
           </div>
 
           <!-- 右：詳細／原文編集 -->
-          <div class="col-12 col-lg-7">
+          <div class="col-12 col-lg-6">
             <div class="sticky-pane">
               <div class="card shadow-sm">
                 <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
@@ -519,8 +519,8 @@
 
         const count = items.length;
         const badge = count
-          ? `<span class="badge text-bg-primary ms-2">${count}</span>`
-          : `<span class="badge text-bg-secondary ms-2">0</span>`;
+          ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2">${count}</span>`
+          : `<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-2">0</span>`;
 
         // 表示：対象がある商品は展開。focusProductCode があればその商品も展開。
         const isShow = (count > 0) || (focusProductCode && focusProductCode === code);
@@ -538,33 +538,52 @@
             const stRaw = String(it.status || '-');
             const stLc = stRaw.toLowerCase();
 
-            // ユーザー側：status は審査状態（new / updated / done）
-            let stBadgeClass = 'text-bg-secondary';
-            if (stLc === 'new') stBadgeClass = 'text-bg-warning';
-            else if (stLc === 'updated') stBadgeClass = 'text-bg-success';
-            else if (stLc === 'done') stBadgeClass = 'text-bg-info';
-
-            const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stRaw)}</span>`;
-
             // デベロッパー側（参考）：status_dev / visibility_dev（返ってくる場合のみ表示）
             const stDevRaw = String(it.status_dev || it.statusDev || '');
             const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
+
+            // 「開発者がまだ審査・公開していない間は new のまま」表示に寄せる
+            const approvedAtRaw = String(it.approved_at || it.approvedAt || '');
+            const hasPublic = Boolean(it.public_title || it.publicTitle || it.public_body || it.publicBody || it.public_part_code || it.publicPartCode);
+            const hasDevTouched = Boolean(approvedAtRaw) || Boolean(stDevRaw) || Boolean(visDevRaw) || hasPublic;
+
+            let stDisp = stRaw;
+            if (stLc === 'updated' && !hasDevTouched) stDisp = 'new';
+            const stDispLc = String(stDisp || '').toLowerCase();
+
+            // ユーザー側：status は審査状態（new / updated / done）
+            // ・new と updated は同じ色（黄色）
+            let stBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
+            if (stDispLc === 'new') stBadgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+            else if (stDispLc === 'updated') stBadgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+            else if (stDispLc === 'done') stBadgeClass = 'bg-info-subtle text-info border border-info-subtle';
+
+            const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stDisp)}</span>`;
             let devBadges = '';
-            if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevRaw)}</span>`;
+
+            // 表示ラベル（reviewing だけ日本語化：確認中）
+            const stDevLc = stDevRaw.toLowerCase();
+            let stDevLabel = stDevRaw;
+            if (stDevLc === 'reviewing') stDevLabel = '確認中';
+            else if (stDevLc === 'planned') stDevLabel = '対応予定';
+            else if (stDevLc === 'shipped') stDevLabel = '対応済み';
+            else if (stDevLc === 'rejected') stDevLabel = '不採用';
+
+            if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevLabel)}</span>`;
             if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;            const vis = String(it.visibility || 'public');
             const visBadge = vis === 'private'
-              ? '<span class="badge text-bg-secondary ms-2 align-middle">private</span>'
-              : '<span class="badge text-bg-success ms-2 align-middle">public</span>';
+              ? '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-2 align-middle">private</span>'
+              : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 align-middle">public</span>';
 
             // 投稿タイプ（improve / praise / guide）を左一覧にも表示する
             let pt = String(it.post_type || it.postType || '').toLowerCase();
             if (pt === 'good') pt = 'praise'; // 互換（旧値）
 
             let typeLabel = '';
-            let typeBadgeClass = 'text-bg-secondary';
-            if (pt === 'improve') { typeLabel = '改善'; typeBadgeClass = 'text-bg-danger'; }
-            else if (pt === 'praise') { typeLabel = 'Good'; typeBadgeClass = 'text-bg-success'; }
-            else if (pt === 'guide') { typeLabel = 'ガイド'; typeBadgeClass = 'text-bg-info'; }
+            let typeBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
+            if (pt === 'improve') { typeLabel = '改善'; typeBadgeClass = 'bg-danger-subtle text-danger border border-danger-subtle'; }
+            else if (pt === 'praise') { typeLabel = 'Good'; typeBadgeClass = 'bg-success-subtle text-success border border-success-subtle'; }
+            else if (pt === 'guide') { typeLabel = 'ガイド'; typeBadgeClass = 'bg-info-subtle text-info border border-info-subtle'; }
 
             const typeBadge = typeLabel
               ? `<span class="badge ${typeBadgeClass} ms-2 align-middle">${escapeHtml(typeLabel)}</span>`
@@ -607,7 +626,7 @@
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
               <div>
                 <span class="fw-semibold">${escapeHtml(name || code || '-')}</span>
-                <span class="badge bg-secondary fw-normal ms-2">${escapeHtml(code)}</span>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle fw-normal ms-2">${escapeHtml(code)}</span>
               </div>
               <div>
                 <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildBoardUrl(code))}">フィードバックボード</a>
@@ -705,7 +724,7 @@
       const hint = el('devStatusHint');
       if (!hint) return;
 
-      if (st === 'reviewing') hint.textContent = '検討中です。';
+      if (st === 'reviewing') hint.textContent = '確認中です。';
       else if (st === 'planned') hint.textContent = '対応予定です（採用）。';
       else if (st === 'shipped') hint.textContent = '対応済みです（採用）。';
       else if (st === 'rejected') hint.textContent = '不採用です。';
@@ -749,9 +768,20 @@
       const name = p ? String(p.product_name || '') : '';
       el('detailProductText') && (el('detailProductText').textContent = name ? `${name} / ${code}` : (code || '-'));
 
-      const status = String(selectedPost.status || '-');
-      el('statusText') && (el('statusText').textContent = status);
-      setStatusHint(status);
+      // status 表示（開発者がまだ審査・公開していない間は new のまま）
+      const statusRaw = String(selectedPost.status || '-');
+      const statusLc = statusRaw.toLowerCase();
+      const stDevForStatus = String(selectedPost.status_dev || selectedPost.statusDev || '');
+      const visDevForStatus = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '');
+      const approvedAtForStatus = String(selectedPost.approved_at || selectedPost.approvedAt || '');
+      const hasPublicForStatus = Boolean(selectedPost.public_title || selectedPost.publicTitle || selectedPost.public_body || selectedPost.publicBody || selectedPost.public_part_code || selectedPost.publicPartCode);
+      const hasDevTouchedForStatus = Boolean(approvedAtForStatus) || Boolean(stDevForStatus) || Boolean(visDevForStatus) || hasPublicForStatus;
+
+      let statusDisp = statusRaw;
+      if (statusLc === 'updated' && !hasDevTouchedForStatus) statusDisp = 'new';
+
+      el('statusText') && (el('statusText').textContent = statusDisp);
+      setStatusHint(statusDisp);
 
       // デベロッパー側（参考）
       const stDev = String(selectedPost.status_dev || selectedPost.statusDev || '');
@@ -760,7 +790,13 @@
       if (devWrap) {
         if (stDev || visDev) {
           devWrap.style.display = '';
-          el('statusDevText') && (el('statusDevText').textContent = stDev || '-');
+          let stDevDisp = stDev;
+          const stDevLc = String(stDevDisp || '').toLowerCase();
+          if (stDevLc === 'reviewing') stDevDisp = '確認中';
+          else if (stDevLc === 'planned') stDevDisp = '対応予定';
+          else if (stDevLc === 'shipped') stDevDisp = '対応済み';
+          else if (stDevLc === 'rejected') stDevDisp = '不採用';
+          el('statusDevText') && (el('statusDevText').textContent = stDevDisp || '-');
           el('visibilityDevText') && (el('visibilityDevText').textContent = visDev || '-');
           setDevStatusHint(stDev);
           setDevVisibilityHint(visDev);
@@ -1179,3 +1215,4 @@
   </script>
 </body>
 </html>
+
