@@ -303,13 +303,6 @@
                       <div id="privateOpinionNotice" class="alert alert-warning py-2 px-3 mb-3 d-none" role="alert">
                         この意見は非公開（visibility=private）として投稿されています。内容確認はできますが、この画面では「承認して公開」はできません。
                       </div>
-
-                      <div class="mb-3" id="publicPartWrap" style="display:none;">
-                        <label class="form-label" for="publicPartSelect">部位（公開）</label>
-                        <select id="publicPartSelect" class="form-select">
-                          <option value="">読み込み中...</option>
-                        </select>
-                        <div class="char-hint mt-1" id="publicPartHint"></div>
                       </div>
 
                       <div class="mb-3" id="publicPostTypeWrap" style="display:none;">
@@ -552,14 +545,12 @@
     // エンドポイント互換
     let supportsPostDetailById = false;
     let supportsPublishById = false;
-    let supportsPublicPartCode = false;
     let supportsPublicPostType = false;
 
     // 詳細
     let selectedPostId = null;
     let selectedProductCode = '';
     let selectedPost = null;
-    let hasPublicPartCode = false;
     let hasPublicPostType = false;
 
     // parts キャッシュ
@@ -859,34 +850,6 @@
       if (freeInput) freeInput.value = free || '-';
     };
 
-    const renderPartsSelect = (partsGrouped, selectedCode) => {
-      const sel = el('publicPartSelect');
-      if (!sel) return;
-
-      if (!partsGrouped || !partsGrouped.length) {
-        sel.innerHTML = '<option value="">部位がありません</option>';
-        return;
-      }
-
-      let html = '<option value="">（未選択）</option>';
-      for (const cat of partsGrouped) {
-        const label = escapeHtml(cat.category_name || 'その他');
-        html += `<optgroup label="${label}">`;
-        for (const p of (cat.parts || [])) {
-          const code = String(p.part_code || '');
-          const name = String(p.part_name_ja || code);
-          html += `<option value="${escapeHtml(code)}">${escapeHtml(name)} (${escapeHtml(code)})</option>`;
-        }
-        html += '</optgroup>';
-      }
-
-      sel.innerHTML = html;
-      if (selectedCode) sel.value = String(selectedCode);
-
-      const hint = el('publicPartHint');
-      if (hint) hint.textContent = '';
-    };
-
     const renderDetail = () => {
       const empty = el('detailEmpty');
       const wrap = el('detailWrap');
@@ -981,12 +944,6 @@
         visDevSel.disabled = true;
       }
 
-      // public_part_code
-      const partWrap = el('publicPartWrap');
-      if (partWrap) {
-        partWrap.style.display = hasPublicPartCode ? '' : 'none';
-      }
-
       const ptWrap = el('publicPostTypeWrap');
       if (ptWrap) {
         ptWrap.style.display = hasPublicPostType ? '' : 'none';
@@ -1042,7 +999,6 @@
         const caps = (res && res.capabilities) ? res.capabilities : {};
         supportsPostDetailById = !!caps.supports_post_detail_by_id;
         supportsPublishById = !!caps.supports_publish_by_id;
-        supportsPublicPartCode = !!caps.supports_public_part_code;
         supportsPublicPostType = !!caps.supports_public_post_type;
 
         // developer
@@ -1163,7 +1119,7 @@
       selectedProductCode = String(productCode || '').trim();
       setPartsRegistButton(selectedProductCode || focusProductCode);
       selectedPost = null;
-      hasPublicPartCode = false;
+      hasPublicPostType = false;
       renderDetail();
 
       try {
@@ -1191,9 +1147,6 @@
 
         selectedPost = res || null;
         // capabilities は API で返る想定。未提供の場合は dashboard の capability をフォールバックする。
-        hasPublicPartCode = (selectedPost && selectedPost.capabilities && typeof selectedPost.capabilities.has_public_part_code === 'boolean')
-          ? selectedPost.capabilities.has_public_part_code
-          : supportsPublicPartCode;
         hasPublicPostType = (selectedPost && selectedPost.capabilities && typeof selectedPost.capabilities.has_public_post_type === 'boolean')
           ? selectedPost.capabilities.has_public_post_type
           : supportsPublicPostType;
@@ -1202,14 +1155,6 @@
         {
           const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
           if (pc) await loadPartsForProduct(pc);
-        }
-
-        // public_part_code を使うときのみ部位一覧を取得
-        if (hasPublicPartCode) {
-          const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
-          const parts = await loadPartsForProduct(pc);
-          const defaultCode = (selectedPost.effective_public_part_code || '').trim();
-          renderPartsSelect(parts, defaultCode);
         }
 
         renderDetail();
@@ -1273,34 +1218,29 @@
           publicPostType = v ? v : null;
         }
 
-        // 公開部位（public_part_code）
-        let publicPartCode = null;
-        if (hasPublicPartCode) {
-          const sel = el('publicPartSelect');
-          const v = sel ? String(sel.value || '').trim() : '';
-          publicPartCode = v ? v : null;
-
-          const originalPartCode = (selectedPost.original_part_code || '').trim();
-          const originalFree = (selectedPost.original_part_free_text || '').trim();
-          const effective = (selectedPost.effective_public_part_code || '').trim();
-
-          // 原文が「その他（自由入力）」で、公開側の部位が未確定のままは NG
-          if (!publicPartCode && !effective && !originalPartCode && originalFree) {
-            showAlert('warning', '公開側の部位を選択してください。');
-            btn && (btn.disabled = false);
-            return;
+        // 部位再分類（part_code）: 共通項目の部位選択を part_code に反映する（仕様：newPartCode -> part_code）
+        let newPartCodeSpecified = false;
+        let newPartCode = null;
+        const commonPartSel = el('commonPartSelect');
+        if (commonPartSel) {
+          const orig = String(commonPartSel.dataset.origCode || '').trim();
+          const val = String(commonPartSel.value || '').trim();
+          const chosen = (!val || val === OTHER_PART_VALUE) ? '' : val;
+          if (orig !== chosen) {
+            newPartCodeSpecified = true;
+            newPartCode = chosen ? chosen : null;
           }
         }
 
-        // payload を一度作ってから、必要な項目だけ追加（古いAPIで余計な項目を送らないため）
+        // payload を一度作ってから、必要な項目だけ追加（余計な項目を送らないため）
         const payloadBase = {
           publicTitle,
           publicBody,
-          publicPartCode,
           newStatus,
           visibilityDev,
         };
         if (publicPostType) payloadBase.publicPostType = publicPostType;
+        if (newPartCodeSpecified) payloadBase.newPartCode = newPartCode;
 
         let res = null;
 
