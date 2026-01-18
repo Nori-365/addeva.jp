@@ -37,8 +37,9 @@
 
     @media (max-width: 575.98px) {
       .label-desktop { display: none; }
-      .label-mobile { display: inline; }
+      .label-mobile { display: none; }
       .label-posttype { display: none !important; }
+      .label-visibility { display: none !important; }
     }
 
     @media (max-width: 991.98px) {
@@ -174,7 +175,7 @@
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div class="fw-semibold">あなたの原文（編集可）</div>
                         <div class="text-secondary small d-flex align-items-center justify-content-end flex-wrap gap-2">
-                          <label class="me-1" for="visibility"><span class="label-desktop">公開設定</span><span class="label-mobile">設定</span></label>
+                          <label class="me-1 label-visibility" for="visibility"><span class="label-desktop">公開設定</span></label>
                           <select id="visibility" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="public">public（公開）</option>
                             <option value="private">private（非公開）</option>
@@ -532,7 +533,6 @@
 
             const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stDisp)}</span>`;
             let devBadges = '';
-
             // 表示ラベル（reviewing だけ日本語化：確認中）
             const stDevLc = stDevRaw.toLowerCase();
             let stDevLabel = stDevRaw;
@@ -541,8 +541,23 @@
             else if (stDevLc === 'shipped') stDevLabel = '対応済み';
             else if (stDevLc === 'rejected') stDevLabel = '不採用';
 
-            if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevLabel)}</span>`;
-            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;            const vis = String(it.visibility || 'public');
+            // デベロッパー側（参考）の表示方針
+            // ・確認中（reviewing）のときは、それだけ表示（dev:private 等は出さない）
+            // ・審査が完了した後は、公開/非公開（visibility_dev）を示すバッジを1つだけ表示
+            const visDevLc = String(visDevRaw || '').toLowerCase();
+            const devVisLabel = (visDevLc === 'public') ? '公開'
+                              : (visDevLc === 'private') ? '非公開'
+                              : '';
+
+            if (stDevRaw && stDevLc === 'reviewing') {
+              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(stDevLabel)}</span>`;
+            } else if (devVisLabel) {
+              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(devVisLabel)}</span>`;
+            } else if (stDevRaw) {
+              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(stDevLabel)}</span>`;
+            }
+
+            const vis = String(it.visibility || 'public');
             const visBadge = vis === 'private'
               ? '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-2 align-middle">private</span>'
               : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 align-middle">public</span>';
@@ -1207,3 +1222,4 @@
   </script>
 </body>
 </html>
+
