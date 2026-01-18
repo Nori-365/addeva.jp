@@ -551,12 +551,21 @@
             const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
             let devBadges = '';
             if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevRaw)}</span>`;
-            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;
+            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;$1
 
-            const vis = String(it.visibility || 'public');
-            const visBadge = vis === 'private'
-              ? '<span class="badge text-bg-secondary ms-2 align-middle">private</span>'
-              : '<span class="badge text-bg-success ms-2 align-middle">public</span>';
+            // 投稿タイプ（improve / praise / guide）を左一覧にも表示する
+            let pt = String(it.post_type || it.postType || '').toLowerCase();
+            if (pt === 'good') pt = 'praise'; // 互換（旧値）
+
+            let typeLabel = '';
+            let typeBadgeClass = 'text-bg-secondary';
+            if (pt === 'improve') { typeLabel = '改善'; typeBadgeClass = 'text-bg-danger'; }
+            else if (pt === 'praise') { typeLabel = 'Good'; typeBadgeClass = 'text-bg-success'; }
+            else if (pt === 'guide') { typeLabel = 'ガイド'; typeBadgeClass = 'text-bg-info'; }
+
+            const typeBadge = typeLabel
+              ? `<span class="badge ${typeBadgeClass} ms-2 align-middle">${escapeHtml(typeLabel)}</span>`
+              : '';
 
             const title = it.title || '';
 
@@ -583,7 +592,7 @@
                     <span>${escapeHtml(partLabel)}</span>
                   </div>
                   <div class="fw-semibold text-truncate" style="max-width: 26rem;">
-                    ${escapeHtml(title)}${stBadge}${visBadge}${devBadges}
+                    ${escapeHtml(title)}${stBadge}${visBadge}${typeBadge}${devBadges}
                   </div>
                 </td>
                 <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
@@ -1167,3 +1176,4 @@
   </script>
 </body>
 </html>
+
