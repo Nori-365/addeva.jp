@@ -229,79 +229,43 @@
 
 
 
-                    <!-- 状態（ステータス／公開設定） -->
-                    <div class="border rounded p-3 mb-3 bg-light">
-                      <div class="fw-semibold mb-2">公開状態</div>
+                    <!-- 公開情報 -->
+                    <div class="border rounded p-3 mb-3 bg-light" id="publicInfoPanel" style="display:none;">
+                      <div class="fw-semibold mb-2">公開情報</div>
 
                       <div class="row g-3">
-                        <div class="col-12">
+                        <div class="col-12 col-md-6">
                           <div class="small text-secondary">status（審査状態）</div>
                           <div class="mono" id="statusText">-</div>
-                          <div class="text-secondary small mt-1" id="statusHint"></div>
                         </div>
-                      </div>
-
-                      <div class="mt-3 border-top pt-3" id="devStateWrap" style="display:none;">
-                        <div class="fw-semibold mb-2">デベロッパー側（参考）</div>
-
-                        <div class="row g-3">
-                          <div class="col-12 col-md-6">
-                            <div class="small text-secondary">status_dev（採用/進捗）</div>
-                            <div class="mono" id="statusDevText">-</div>
-                            <div class="text-secondary small mt-1" id="devStatusHint"></div>
-                          </div>
-                          <div class="col-12 col-md-6">
-                            <div class="small text-secondary">visibility_dev（公開可否）</div>
-                            <div class="mono" id="visibilityDevText">-</div>
-                            <div class="text-secondary small mt-1" id="devVisibilityHint"></div>
-                          </div>
+                        <div class="col-12 col-md-6">
+                          <div class="small text-secondary">公開可否</div>
+                          <div class="mono" id="publicAllowedText">-</div>
                         </div>
-
-                        <div class="text-secondary small mt-2">あなたの visibility が public でも、visibility_dev が private の間は公開されません。</div>
-                      </div>
-
-                      <div class="mt-3">
-                        <div class="small text-secondary">商品</div>
-                        <div class="mono" id="detailProductText">-</div>
-                      </div>
-
-                      <div class="mt-2">
-                        <div class="small text-secondary">投稿ID</div>
-                        <div class="mono" id="detailPostId">-</div>
-                      </div>
-
-                      <div class="mt-2">
-                        <div class="small text-secondary">日時</div>
-                        <div class="text-secondary small">作成：<span id="createdAt">-</span> ／ 更新：<span id="updatedAt">-</span></div>
-                      </div>
-
-                      <div class="mt-2" id="approvedWrap" style="display:none;">
-                        <div class="small text-secondary">承認</div>
-                        <div class="text-secondary small">承認日時：<span id="approvedAt">-</span></div>
                       </div>
                     </div>
 
-                    <!-- 公開内容（参照のみ） -->
-                    <div class="border rounded p-3">
-                      <div class="fw-semibold">公開内容（参照のみ）</div>
-                      <div class="text-secondary small">公開表示は public_* を参照します。未設定の場合は、審査中（status が new/updated）または非公開（visibility / visibility_dev が private）である可能性があります。</div>
+                    <!-- 内容（公開） -->
 
-                      <hr class="my-3">
 
-                      <div class="mb-2">
+                    <div class="border rounded p-3" id="publicContentPanel" style="display:none;">
+                      <div class="fw-semibold">内容</div>
+
+                      <div class="mt-3">
                         <div class="small text-secondary">部位（公開）</div>
                         <div class="mono" id="publicPartText">-</div>
                       </div>
 
-                      <div class="mb-2">
+                      <div class="mt-2">
                         <div class="small text-secondary">タイトル（公開）</div>
                         <input id="publicTitle" class="form-control textarea-readonly" type="text" readonly>
                       </div>
 
-                      <div>
+                      <div class="mt-2">
                         <div class="small text-secondary">本文（公開）</div>
                         <textarea id="publicBody" class="form-control textarea-readonly" rows="10" readonly></textarea>
                       </div>
+                    </div>
                     </div>
 
                   </div>
@@ -767,7 +731,17 @@
       wrap && wrap.classList.remove('d-none');
       btnScroll && (btnScroll.disabled = false);
 
-      meta && (meta.textContent = `ID: ${selectedPost.post_id}`);
+      {
+        const codeForMeta = String(selectedPost.product_code || selectedProductCode || '');
+        const pForMeta = products.find(x => String(x.product_code || '') === codeForMeta);
+        const nameForMeta = pForMeta ? String(pForMeta.product_name || '') : '';
+        const updatedForMeta = fmtDateTime(selectedPost.updated_at || '');
+        const parts = [`ID: ${selectedPost.post_id}`];
+        if (nameForMeta) parts.push(nameForMeta);
+        if (codeForMeta) parts.push(codeForMeta);
+        if (updatedForMeta) parts.push(`更新: ${updatedForMeta}`);
+        meta && (meta.textContent = parts.join(' / '));
+      }
 
       el('detailPostId') && (el('detailPostId').textContent = String(selectedPost.post_id || '-'));
 
@@ -779,8 +753,8 @@
       // status 表示（開発者がまだ審査・公開していない間は new のまま）
       const statusRaw = String(selectedPost.status || '-');
       const statusLc = statusRaw.toLowerCase();
-      const stDevForStatus = String(selectedPost.status_dev || selectedPost.statusDev || '');
-      const visDevForStatus = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '');
+      const stDevForStatus = String(selectedPost.status_dev || selectedPost.statusDev || '').toLowerCase();
+      const visDevForStatus = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '').toLowerCase();
       const approvedAtForStatus = String(selectedPost.approved_at || selectedPost.approvedAt || '');
       const hasPublicForStatus = Boolean(selectedPost.public_title || selectedPost.publicTitle || selectedPost.public_body || selectedPost.publicBody || selectedPost.public_part_code || selectedPost.publicPartCode);
       const hasDevTouchedForStatus = Boolean(approvedAtForStatus) || Boolean(stDevForStatus) || Boolean(visDevForStatus) || hasPublicForStatus;
@@ -788,30 +762,31 @@
       let statusDisp = statusRaw;
       if (statusLc === 'updated' && !hasDevTouchedForStatus) statusDisp = 'new';
 
-      el('statusText') && (el('statusText').textContent = statusDisp);
-      setStatusHint(statusDisp);
+      const statusDispLc = String(statusDisp || '').toLowerCase();
+      const statusDispJa =
+        (statusDispLc === 'new') ? '審査中' :
+        (statusDispLc === 'updated') ? '再審査中' :
+        (statusDispLc === 'done') ? '審査完了' :
+        (statusDispLc === 'cancel') ? '取消' :
+        (statusDispLc === 'delete') ? '取消' :
+        statusDisp;
 
-      // デベロッパー側（参考）
-      const stDev = String(selectedPost.status_dev || selectedPost.statusDev || '');
-      const visDev = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '');
-      const devWrap = el('devStateWrap');
-      if (devWrap) {
-        if (stDev || visDev) {
-          devWrap.style.display = '';
-          let stDevDisp = stDev;
-          const stDevLc = String(stDevDisp || '').toLowerCase();
-          if (stDevLc === 'reviewing') stDevDisp = '確認中';
-          else if (stDevLc === 'planned') stDevDisp = '対応予定';
-          else if (stDevLc === 'shipped') stDevDisp = '対応済み';
-          else if (stDevLc === 'rejected') stDevDisp = '不採用';
-          el('statusDevText') && (el('statusDevText').textContent = stDevDisp || '-');
-          el('visibilityDevText') && (el('visibilityDevText').textContent = visDev || '-');
-          setDevStatusHint(stDev);
-          setDevVisibilityHint(visDev);
-        } else {
-          devWrap.style.display = 'none';
-        }
+      el('statusText') && (el('statusText').textContent = statusDispJa);
+
+      // 公開可否（結論のみ）
+      const userVisLc = String(selectedPost.visibility || 'public').toLowerCase();
+      const devVisLc = visDevForStatus;
+      const allowed = (userVisLc === 'public' && devVisLc === 'public') ? '公開' : '非公開';
+      el('publicAllowedText') && (el('publicAllowedText').textContent = allowed);
+
+      // 「ユーザーが非公開 かつ デベロッパーも非公開」のときのみ、公開情報は非表示
+      const publicInfoPanel = el('publicInfoPanel');
+      if (publicInfoPanel) {
+        const hidePanel = (userVisLc === 'private' && devVisLc === 'private');
+        publicInfoPanel.style.display = hidePanel ? 'none' : '';
       }
+
+
 
       const vis = String(selectedPost.visibility || 'public');
       el('visibility') && (el('visibility').value = vis);
@@ -863,6 +838,15 @@
         pubPartDisp = pubPartNameJa ? pubPartNameJa : pubPartCode;
       }
       el('publicPartText') && (el('publicPartText').textContent = String(pubPartDisp || '-'));
+
+      // 「内容（公開）」は public_* が存在するときだけ表示
+      const publicContentPanel = el('publicContentPanel');
+      if (publicContentPanel) {
+        const hasPublic = Boolean(pubPartCode)
+          || Boolean(String(selectedPost.public_title || '').trim())
+          || Boolean(String(selectedPost.public_body || '').trim());
+        publicContentPanel.style.display = hasPublic ? '' : 'none';
+      }
 
       bindCharCount();
     };
