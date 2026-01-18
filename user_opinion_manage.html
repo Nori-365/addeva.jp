@@ -33,6 +33,14 @@
 
     .char-hint { font-size: .85rem; color: #6c757d; }
 
+    .label-mobile { display: none; }
+
+    @media (max-width: 575.98px) {
+      .label-desktop { display: none; }
+      .label-mobile { display: inline; }
+      .label-posttype { display: none !important; }
+    }
+
     @media (max-width: 991.98px) {
       .sticky-pane { position: static; top: auto; }
     }
@@ -148,8 +156,7 @@
                 <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
-                      <div class="h5 m-0">意見詳細</div>
-                      <div class="text-secondary small">あなたが編集できるのは原文（title/body/part/visibility/post_type）のみです。デベロッパー側の進捗（status_dev）と公開可否（visibility_dev）、および公開内容（public_*）は参照のみです。</div>
+                      $1
                     </div>
                     <div class="text-secondary small">
                       <span id="detailMeta">未選択</span>
@@ -167,13 +174,13 @@
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div class="fw-semibold">あなたの原文（編集可）</div>
                         <div class="text-secondary small d-flex align-items-center justify-content-end flex-wrap gap-2">
-                          <label class="me-1" for="visibility">公開設定</label>
+                          <label class="me-1" for="visibility"><span class="label-desktop">公開設定</span><span class="label-mobile">設定</span></label>
                           <select id="visibility" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="public">public（公開）</option>
                             <option value="private">private（非公開）</option>
                           </select>
 
-                          <label class="me-1 ms-2" for="postType">タイプ</label>
+                          <label class="me-1 ms-2 label-posttype" for="postType">タイプ</label>
                           <select id="postType" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="improve">改善</option>
                             <option value="praise">良かった点</option>
@@ -189,9 +196,6 @@
                       <div class="mb-3">
                         <div class="small text-secondary">部位（固定）</div>
                         <div class="mono" id="originalPartText">-</div>
-                        <div class="text-secondary small mt-1">部位は変更できません。必要な場合は「意見を取消」後、正しい部位で投稿してください。</div>
-                      </div>
-                        </div>
                       </div>
 
                       <div class="mb-3">
@@ -216,7 +220,11 @@
                           <i class="bi bi-save"></i> 更新する
                         </button>
                       </div>
-                      <div class="text-secondary small mt-2">※「意見を取消」は元に戻せません。部位間違い等で投稿を取り下げる場合にのみ使用してください。</div>
+
+                      <div class="text-secondary small mt-2">
+                        <div>※部位の変更はできません。部位を変更する場合は「意見を取消」後に、正しい部位で投稿してください。</div>
+                        <div>※公開されたご意見の場合、修正しても審査が完了するまでは反映されません。</div>
+                      </div>
                     </div>
 
 
