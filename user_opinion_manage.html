@@ -551,7 +551,10 @@
             const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
             let devBadges = '';
             if (stDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(stDevRaw)}</span>`;
-            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;$1
+            if (visDevRaw) devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">dev:${escapeHtml(visDevRaw)}</span>`;            const vis = String(it.visibility || 'public');
+            const visBadge = vis === 'private'
+              ? '<span class="badge text-bg-secondary ms-2 align-middle">private</span>'
+              : '<span class="badge text-bg-success ms-2 align-middle">public</span>';
 
             // 投稿タイプ（improve / praise / guide）を左一覧にも表示する
             let pt = String(it.post_type || it.postType || '').toLowerCase();
@@ -1176,4 +1179,3 @@
   </script>
 </body>
 </html>
-
