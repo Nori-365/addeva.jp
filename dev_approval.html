@@ -144,7 +144,7 @@
             </div>
 
             <div class="d-flex align-items-center gap-2">
-                            <a id="btnPartsRegist" class="btn btn-outline-secondary disabled" href="#" role="button" aria-disabled="true">
+              <a id="btnPartsRegist" class="btn btn-outline-secondary disabled" href="#" role="button" aria-disabled="true">
                 <i class="bi bi-tags me-1"></i>部位管理
               </a>
               <button id="btnReload" class="btn btn-outline-primary">
@@ -188,7 +188,7 @@
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
                       <div class="h5 m-0">意見詳細</div>
-                      <div class="text-secondary small">原文は編集不可。公開内容（public_*）のみ編集できます。</div>
+                      <div class="text-secondary small">上段：共通情報／中段：お客様入力（編集不可）／下段：デベロッパー入力（公開内容）</div>
                     </div>
                     <div class="text-secondary small">
                       <span id="detailMeta">未選択</span>
@@ -200,42 +200,103 @@
                   </div>
 
                   <div id="detailWrap" class="d-none">
-                    <!-- 原文 -->
-                    <div class="border rounded p-3 mb-3 bg-light">
-                      <div class="fw-semibold mb-2">お客様の原文（編集不可）</div>
 
-                      <div class="mb-2">
-                        <div class="small text-secondary">商品</div>
-                        <div class="mono" id="detailProductText">-</div>
+                    <!-- 上段：共通項目（商品関連） -->
+                    <div class="border rounded p-3 mb-3">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">共通項目</div>
+                        <div class="small text-secondary" id="commonTopBadges">
+                          <span id="commonStatusDevBadgeWrap"></span>
+                        </div>
                       </div>
 
-                      <div class="mb-2">
-                        <div class="small text-secondary">部位（原文）</div>
-                        <div class="mono" id="origPartText">-</div>
-                      </div>
+                      <hr class="my-3">
 
-                      <div class="mb-2">
-                        <div class="small text-secondary">タイトル（原文）</div>
-                        <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
-                      </div>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <div class="small text-secondary">商品</div>
+                          <div class="mono" id="detailProductText">-</div>
+                        </div>
 
-                      <div>
-                        <div class="small text-secondary">本文（原文）</div>
-                        <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
+                        <div class="col-6 col-md-4">
+                          <div class="small text-secondary">投稿ID</div>
+                          <div class="mono" id="commonPostId">-</div>
+                        </div>
+
+                        <div class="col-6 col-md-4">
+                          <div class="small text-secondary">顧客ID</div>
+                          <div class="mono" id="commonCustomerId">-</div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                          <div class="small text-secondary">更新日時</div>
+                          <div class="mono" id="commonUpdatedAt">-</div>
+                        </div>
+
+                        <div class="col-6 col-md-4">
+                          <div class="small text-secondary">部位コード（part_code）</div>
+                          <div class="mono" id="commonPartCode">-</div>
+                        </div>
+
+                        <div class="col-6 col-md-8">
+                          <div class="small text-secondary">自由入力（part_free_text）</div>
+                          <div class="mono" id="commonPartFreeText">-</div>
+                        </div>
                       </div>
                     </div>
 
-                    <!-- 公開内容 -->
+                    <!-- 中段：お客様入力（読み取り専用） -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">お客様の入力（編集不可）</div>
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                          <span class="small text-secondary">status：</span><span id="origStatusBadgeWrap">-</span>
+                          <span class="small text-secondary ms-2">visibility：</span><span id="origVisibilityBadgeWrap">-</span>
+                        </div>
+                      </div>
+
+                      <hr class="my-3">
+
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <div class="small text-secondary">意見タイプ（post_type）</div>
+                          <div class="mono" id="origPostTypeText">-</div>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="small text-secondary">部位（お客様入力）</div>
+                          <div class="mono" id="origPartText">-</div>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="small text-secondary">タイトル（原文）</div>
+                          <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="small text-secondary">本文（原文）</div>
+                          <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 下段：デベロッパー入力（公開内容 public_*） -->
                     <div class="border rounded p-3">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div class="fw-semibold">公開内容（public_*）</div>
-                        <div class="text-secondary small">
-                          <span>status：</span>
+                        <div class="fw-semibold">デベロッパー入力（公開内容 public_*）</div>
+                        <div class="text-secondary small d-flex align-items-center flex-wrap gap-2">
+                          <span>進捗（status_dev）：</span>
                           <select id="publishStatus" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="reviewing">reviewing（検討中）</option>
                             <option value="planned">planned（対応予定）</option>
                             <option value="shipped">shipped（対応済み）</option>
                             <option value="rejected">rejected（不採用）</option>
+                          </select>
+
+                          <span class="ms-2">公開可否（visibility_dev）：</span>
+                          <select id="visibilityDev" class="form-select form-select-sm d-inline-block" style="width:auto;" disabled>
+                            <option value="private">private（非公開）</option>
+                            <option value="public">public（公開）</option>
                           </select>
                         </div>
                       </div>
@@ -279,6 +340,7 @@
                         </button>
                       </div>
                     </div>
+
                   </div>
 
                 </div>
@@ -372,6 +434,7 @@
       a.setAttribute('aria-disabled', 'false');
       a.classList.remove('disabled');
     };
+
     // CSS.escape の簡易フォールバック（data-* セレクタ用）
     const cssEscape = (s) => {
       try {
@@ -380,8 +443,8 @@
       // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
       const str = String(s ?? '');
       return str
-        .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"');
+        .replace(/\/g, '\\')
+        .replace(/"/g, '\"');
     };
 
     // 値のゆらぎを吸収（古い値・互換値）
@@ -393,11 +456,56 @@
       return '';
     };
 
+    const labelPostTypeJa = (v) => {
+      const s = normalizePostType(v);
+      if (s === 'improve') return 'improve（改善）';
+      if (s === 'praise') return 'praise（良かった点）';
+      if (s === 'guide') return 'guide（ガイド要望）';
+      return '';
+    };
+
     const normalizeDevStatus = (v) => {
       const s = String(v ?? '').toLowerCase().trim();
       if (!s) return '';
       if (s === 'reviewing' || s === 'planned' || s === 'shipped' || s === 'rejected') return s;
       return '';
+    };
+
+    const renderCustomerStatusBadge = (stRaw) => {
+      const st = String(stRaw || '').trim();
+      const lc = st.toLowerCase();
+      let cls = 'text-bg-secondary';
+      if (lc === 'new') cls = 'text-bg-warning';
+      else if (lc === 'updated') cls = 'text-bg-success';
+      else if (lc === 'done') cls = 'text-bg-secondary';
+      else if (lc === 'cancel' || lc === 'canceled' || lc === 'cancelled') cls = 'text-bg-danger';
+      const label = st ? escapeHtml(st) : '-';
+      return `<span class="badge ${cls}">${label}</span>`;
+    };
+
+    const renderVisibilityBadge = (visRaw) => {
+      const vis = String(visRaw || '').trim();
+      const lc = vis.toLowerCase();
+      let cls = 'text-bg-secondary';
+      if (lc === 'public') cls = 'text-bg-primary';
+      else if (lc === 'private') cls = 'text-bg-secondary';
+      const label = vis ? escapeHtml(vis) : '-';
+      return `<span class="badge ${cls}">${label}</span>`;
+    };
+
+    const renderDevStatusBadge = (v) => {
+      const s = normalizeDevStatus(v);
+      if (!s) return '';
+      const label = (s === 'reviewing') ? 'reviewing'
+                  : (s === 'planned') ? 'planned'
+                  : (s === 'shipped') ? 'shipped'
+                  : 'rejected';
+      let cls = 'text-bg-secondary';
+      if (s === 'reviewing') cls = 'text-bg-info';
+      else if (s === 'planned') cls = 'text-bg-primary';
+      else if (s === 'shipped') cls = 'text-bg-success';
+      else if (s === 'rejected') cls = 'text-bg-danger';
+      return `<span class="badge ${cls}">status_dev: ${escapeHtml(label)}</span>`;
     };
 
     // 保存後：左の一覧（該当行があればその行、無ければ該当 product のヘッダー）へジャンプ
@@ -680,29 +788,78 @@
 
       meta && (meta.textContent = `ID: ${selectedPost.post_id} / 顧客ID: ${selectedPost.customer_id}`);
 
-      // 商品情報（最低限 product_code は出す）
+      // 共通：商品情報（最低限 product_code は出す）
       const prodTxt = el('detailProductText');
       const code = String(selectedPost.product_code || selectedProductCode || '');
       const p = products.find(x => String(x.product_code || '') === code);
       const name = p ? String(p.product_name || '') : '';
       prodTxt && (prodTxt.textContent = name ? `${name} / ${code}` : (code || '-'));
 
+      // 共通：post_id / customer_id / updated_at
+      el('commonPostId') && (el('commonPostId').textContent = String(selectedPost.post_id ?? '-'));
+      el('commonCustomerId') && (el('commonCustomerId').textContent = String(selectedPost.customer_id ?? '-'));
+      el('commonUpdatedAt') && (el('commonUpdatedAt').textContent = fmtDateTime(selectedPost.updated_at || selectedPost.created_at || '') || '-');
+
+      // 共通：part_code / part_free_text（現状はAPI返却名に揺れがあるためフォールバックあり）
+      const partCode = String(
+        selectedPost.part_code ||
+        selectedPost.partCode ||
+        selectedPost.original_part_code ||
+        ''
+      ).trim();
+      const partFree = String(
+        selectedPost.part_free_text ||
+        selectedPost.partFreeText ||
+        selectedPost.original_part_free_text ||
+        ''
+      ).trim();
+      el('commonPartCode') && (el('commonPartCode').textContent = partCode || '-');
+      el('commonPartFreeText') && (el('commonPartFreeText').textContent = partFree || '-');
+
+      // お客様側：status / visibility / post_type
+      const statusRaw = String(selectedPost.status || '').trim();
+      const visRaw = String(selectedPost.visibility || selectedPost.original_visibility || '').trim();
+      const postTypeRaw = (selectedPost.original_post_type || selectedPost.post_type || selectedPost.postType || '');
+
+      el('origStatusBadgeWrap') && (el('origStatusBadgeWrap').innerHTML = renderCustomerStatusBadge(statusRaw));
+      el('origVisibilityBadgeWrap') && (el('origVisibilityBadgeWrap').innerHTML = renderVisibilityBadge(visRaw));
+      el('origPostTypeText') && (el('origPostTypeText').textContent = labelPostTypeJa(postTypeRaw) || (postTypeRaw ? String(postTypeRaw) : '-'));
+
+      // お客様入力：部位（表示用）
       const origPartText = el('origPartText');
-      const origTitle = el('origTitle');
-      const origBody = el('origBody');
-
-      const publicTitle = el('publicTitle');
-      const publicBody = el('publicBody');
-
-      const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || '';
+      const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || selectedPost.part_code || selectedPost.part_free_text || '';
       origPartText && (origPartText.textContent = originalPart ? String(originalPart) : '-');
 
-      origTitle && (origTitle.value = String(selectedPost.original_title || ''));
-      origBody && (origBody.value = String(selectedPost.original_body || ''));
+      // 原文
+      const origTitle = el('origTitle');
+      const origBody = el('origBody');
+      origTitle && (origTitle.value = String(selectedPost.original_title || selectedPost.title || ''));
+      origBody && (origBody.value = String(selectedPost.original_body || selectedPost.body || ''));
 
       // public_* の入力欄は、既に値があるならそれ、無いなら原文（フォールバック）を表示
-      publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || ''));
-      publicBody && (publicBody.value = String(selectedPost.effective_public_body || ''));
+      const publicTitle = el('publicTitle');
+      const publicBody = el('publicBody');
+      publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || selectedPost.public_title || selectedPost.publicTitle || selectedPost.original_title || selectedPost.title || ''));
+      publicBody && (publicBody.value = String(selectedPost.effective_public_body || selectedPost.public_body || selectedPost.publicBody || selectedPost.original_body || selectedPost.body || ''));
+
+      // デベロッパー側：status_dev（バッジ＆セレクト）
+      const stSel = el('publishStatus');
+      if (stSel) {
+        const st = normalizeDevStatus(selectedPost.status_dev || selectedPost.statusDev || '');
+        stSel.value = st || 'reviewing';
+        el('commonStatusDevBadgeWrap') && (el('commonStatusDevBadgeWrap').innerHTML = renderDevStatusBadge(stSel.value));
+      }
+
+      // visibility_dev（今は見た目のみ）
+      const visDevSel = el('visibilityDev');
+      if (visDevSel) {
+        const v = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '').trim().toLowerCase();
+        if (v === 'public' || v === 'private') {
+          visDevSel.value = v;
+        } else {
+          visDevSel.value = 'private';
+        }
+      }
 
       // public_part_code
       const partWrap = el('publicPartWrap');
@@ -733,13 +890,6 @@
           );
           ptSel.value = cur || fallback || 'improve';
         }
-      }
-
-      // status セレクト（既存値があれば反映）
-      const stSel = el('publishStatus');
-      if (stSel) {
-        const st = normalizeDevStatus(selectedPost.status_dev || selectedPost.statusDev || '');
-        stSel.value = st || 'reviewing';
       }
 
       bindCharCount();
@@ -1103,7 +1253,6 @@
         logoutBtn.dataset.bound = '1';
       }
 
-
       // 部位管理ボタン（初期状態）
       setPartsRegistButton(selectedProductCode || focusProductCode);
     };
@@ -1165,4 +1314,3 @@
   </script>
 </body>
 </html>
-
