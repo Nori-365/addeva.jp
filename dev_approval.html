@@ -233,14 +233,20 @@
                           <div class="mono" id="commonUpdatedAt">-</div>
                         </div>
 
-                        <div class="col-6 col-md-4">
-                          <div class="small text-secondary">部位コード（part_code）</div>
-                          <div class="mono" id="commonPartCode">-</div>
+                        <div class="col-12 col-md-6">
+                          <label class="form-label small text-secondary" for="commonPartSelect">部位（part_code）</label>
+                          <div class="input-group input-group-sm">
+                            <select id="commonPartSelect" class="form-select form-select-sm">
+                              <option value="">読み込み中...</option>
+                            </select>
+                            <button id="commonPartEditBtn" class="btn btn-outline-secondary" type="button" disabled>変更</button>
+                          </div>
+                          <div class="char-hint mt-1" id="commonPartHint"></div>
                         </div>
 
-                        <div class="col-6 col-md-8">
-                          <div class="small text-secondary">自由入力（part_free_text）</div>
-                          <div class="mono" id="commonPartFreeText">-</div>
+                        <div class="col-12 col-md-6" id="commonPartFreeWrap" style="display:none;">
+                          <label class="form-label small text-secondary" for="commonPartFreeText">自由入力（part_free_text）</label>
+                          <input id="commonPartFreeText" class="form-control form-control-sm textarea-readonly" type="text" readonly>
                         </div>
                       </div>
                     </div>
@@ -455,6 +461,10 @@
       if (s === 'praise' || s === 'improve' || s === 'guide') return s;
       return '';
     };
+
+    // feedback.html と同じ「その他」値
+    const OTHER_PART_VALUE = '__other__';
+    const OTHER_PART_LABEL = 'その他（部位が見当たらない）';
 
     const labelPostTypeJa = (v) => {
       const s = normalizePostType(v);
@@ -740,6 +750,118 @@
       update();
     };
 
+    const buildPartSelectOptionsHtml = (partsGrouped) => {
+      if (!partsGrouped || !partsGrouped.length) {
+        return `<option value="">部位がありません</option><option value="${escapeHtml(OTHER_PART_VALUE)}">${escapeHtml(OTHER_PART_LABEL)}</option>`;
+      }
+
+      let html = '<option value="">部位を選択してください</option>';
+      for (const cat of partsGrouped) {
+        const label = escapeHtml(cat.category_name || 'その他');
+        html += `<optgroup label="${label}">`;
+        for (const p of (cat.parts || [])) {
+          const code = String(p.part_code || '').trim();
+          const name = String(p.part_name_ja || code).trim();
+          html += `<option value="${escapeHtml(code)}">${escapeHtml(name)}（${escapeHtml(code)}）</option>`;
+        }
+        html += '</optgroup>';
+      }
+      html += `<option value="${escapeHtml(OTHER_PART_VALUE)}">${escapeHtml(OTHER_PART_LABEL)}</option>`;
+      return html;
+    };
+
+    const fillCommonPartSelectIfNeeded = (productCode) => {
+      const sel = el('commonPartSelect');
+      if (!sel) return;
+
+      const pc = String(productCode || '').trim();
+      const cached = pc ? partsCache.get(pc) : null;
+
+      // product が変わった時だけ options を作り直す
+      const samePc = (sel.dataset.productCode === pc);
+      const alreadyFilled = (sel.dataset.filled === '1');
+      if (samePc && alreadyFilled) return;
+
+      if (!pc) {
+        sel.innerHTML = '<option value="">（商品未選択）</option>';
+        sel.dataset.productCode = '';
+        sel.dataset.filled = '1';
+        return;
+      }
+
+      if (!cached) {
+        sel.innerHTML = '<option value="">読み込み中...</option>';
+        sel.dataset.productCode = pc;
+        sel.dataset.filled = '0';
+        return;
+      }
+
+      sel.innerHTML = buildPartSelectOptionsHtml(cached);
+      sel.dataset.productCode = pc;
+      sel.dataset.filled = '1';
+    };
+
+    const applyCommonPartUi = (productCode, partCode, partFreeText) => {
+      fillCommonPartSelectIfNeeded(productCode);
+
+      const sel = el('commonPartSelect');
+      const btn = el('commonPartEditBtn');
+      const hint = el('commonPartHint');
+      const freeWrap = el('commonPartFreeWrap');
+      const freeInput = el('commonPartFreeText');
+
+      if (hint) hint.textContent = '';
+      if (!sel) return;
+
+      const code = String(partCode || '').trim();
+      const free = String(partFreeText || '').trim();
+
+      // 元値を保持（変更ボタンや、"その他"表示に利用）
+      sel.dataset.origCode = code;
+      sel.dataset.origFree = free;
+
+      const optionsReady = (sel.dataset.filled === '1');
+      sel.dataset.editing = '0';
+
+      if (btn) {
+        btn.style.display = code ? '' : 'none';
+        btn.disabled = (!code || !optionsReady);
+        btn.textContent = '変更';
+        btn.dataset.editing = '0';
+      }
+
+      if (code) {
+        sel.value = code;
+        const matched = (sel.value === code);
+
+        // 初期はロック（ただし「変更」ボタンで解除可能）
+        sel.disabled = true;
+
+        if (freeWrap) freeWrap.style.display = 'none';
+        if (freeInput) freeInput.value = '';
+
+        if (!matched && hint) {
+          hint.textContent = `部位一覧に存在しない部位コードです（${code}）。「変更」で再分類してください。`;
+        }
+        return;
+      }
+
+      // part_code が NULL の場合（feedback.html の「その他」相当）
+      sel.value = OTHER_PART_VALUE;
+      sel.disabled = false;
+      sel.dataset.editing = '1';
+
+      if (btn) {
+        btn.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = '変更';
+        btn.dataset.editing = '0';
+      }
+
+      if (freeWrap) freeWrap.style.display = '';
+      if (freeInput) freeInput.value = free || '-';
+    };
+
     const renderPartsSelect = (partsGrouped, selectedCode) => {
       const sel = el('publicPartSelect');
       if (!sel) return;
@@ -813,8 +935,7 @@
         selectedPost.original_part_free_text ||
         ''
       ).trim();
-      el('commonPartCode') && (el('commonPartCode').textContent = partCode || '-');
-      el('commonPartFreeText') && (el('commonPartFreeText').textContent = partFree || '-');
+      applyCommonPartUi(code, partCode, partFree);
 
       // お客様側：status / visibility / post_type
       const statusRaw = String(selectedPost.status || '').trim();
@@ -1076,6 +1197,12 @@
           ? selectedPost.capabilities.has_public_post_type
           : supportsPublicPostType;
 
+        // 共通：部位一覧は常に取得（common パネルの部位Selectに使用）
+        {
+          const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
+          if (pc) await loadPartsForProduct(pc);
+        }
+
         // public_part_code を使うときのみ部位一覧を取得
         if (hasPublicPartCode) {
           const pc = String(selectedPost.product_code || selectedProductCode || '').trim();
@@ -1255,6 +1382,80 @@
 
       // 部位管理ボタン（初期状態）
       setPartsRegistButton(selectedProductCode || focusProductCode);
+
+      // 共通：部位（part_code）変更ボタン（ロック解除 → 選び直し）
+      const commonPartBtn = el('commonPartEditBtn');
+      if (commonPartBtn && commonPartBtn.dataset.bound !== '1') {
+        commonPartBtn.addEventListener('click', () => {
+          const sel = el('commonPartSelect');
+          const btn = el('commonPartEditBtn');
+          const hint = el('commonPartHint');
+          const freeWrap = el('commonPartFreeWrap');
+          const freeInput = el('commonPartFreeText');
+          if (!sel || !btn) return;
+
+          const isEditing = (sel.dataset.editing === '1');
+
+          if (!isEditing) {
+            // 変更開始（ロック解除）
+            sel.disabled = false;
+            sel.dataset.editing = '1';
+            btn.textContent = '固定';
+            btn.dataset.editing = '1';
+            if (hint) hint.textContent = '部位を選び直してください（変更後は「固定」でロックできます）。';
+
+            // "その他" の場合は自由入力を見せる（読み取り専用）
+            if (String(sel.value || '').trim() === OTHER_PART_VALUE) {
+              const free = String(sel.dataset.origFree || '').trim();
+              if (freeWrap) freeWrap.style.display = '';
+              if (freeInput) freeInput.value = free || '-';
+            }
+
+            try { sel.focus({ preventScroll: true }); } catch (_) {}
+            return;
+          }
+
+          // 固定（ロック）
+          sel.disabled = true;
+          sel.dataset.editing = '0';
+          btn.textContent = '変更';
+          btn.dataset.editing = '0';
+          if (hint) hint.textContent = '';
+        });
+        commonPartBtn.dataset.bound = '1';
+      }
+
+      // 変更中に「その他」を選んだ場合は自由入力を表示（読み取り専用）
+      const commonPartSel = el('commonPartSelect');
+      if (commonPartSel && commonPartSel.dataset.bound !== '1') {
+        commonPartSel.addEventListener('change', () => {
+          const sel = el('commonPartSelect');
+          const freeWrap = el('commonPartFreeWrap');
+          const freeInput = el('commonPartFreeText');
+          if (!sel) return;
+
+          const val = String(sel.value || '').trim();
+          const free = String(sel.dataset.origFree || '').trim();
+          const origCode = String(sel.dataset.origCode || '').trim();
+
+          if (val === OTHER_PART_VALUE) {
+            if (freeWrap) freeWrap.style.display = '';
+            if (freeInput) freeInput.value = free || '-';
+            return;
+          }
+
+          // 元々 "その他" 投稿（origCode 空）なら、再分類後も自由入力は参考として残す
+          if (!origCode && free) {
+            if (freeWrap) freeWrap.style.display = '';
+            if (freeInput) freeInput.value = free || '-';
+            return;
+          }
+
+          if (freeWrap) freeWrap.style.display = 'none';
+          if (freeInput) freeInput.value = '';
+        });
+        commonPartSel.dataset.bound = '1';
+      }
     };
 
     // === スクロール制御（PC） ===
