@@ -159,7 +159,7 @@
 
         <div class="row g-4">
           <!-- 左：商品別 承認待ち一覧 -->
-          <div class="col-12 col-lg-5">
+          <div class="col-12 col-lg-6">
             <div class="card shadow-sm">
               <div class="card-body p-4 panel-scroll" id="leftPanelScroll">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
@@ -181,7 +181,7 @@
           </div>
 
           <!-- 右：詳細／公開内容編集 -->
-          <div class="col-12 col-lg-7">
+          <div class="col-12 col-lg-6">
             <div class="sticky-pane">
               <div class="card shadow-sm">
                 <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
@@ -213,11 +213,6 @@
                       <hr class="my-3">
 
                       <div class="row g-3">
-                        <div class="col-12">
-                          <div class="small text-secondary">商品</div>
-                          <div class="mono" id="detailProductText">-</div>
-                        </div>
-
                         <div class="col-6 col-md-4">
                           <div class="small text-secondary">投稿ID</div>
                           <div class="mono" id="commonPostId">-</div>
@@ -234,6 +229,9 @@
                         </div>
 
                         <div class="col-12 col-md-6">
+                          <div class="small text-secondary">商品</div>
+                          <div class="mono mb-2" id="detailProductText">-</div>
+
                           <label class="form-label small text-secondary" for="commonPartSelect">部位（part_code）</label>
                           <div class="input-group input-group-sm">
                             <select id="commonPartSelect" class="form-select form-select-sm">
@@ -268,13 +266,7 @@
                           <div class="small text-secondary">意見タイプ（post_type）</div>
                           <div class="mono" id="origPostTypeText">-</div>
                         </div>
-
-                        <div class="col-12">
-                          <div class="small text-secondary">部位（お客様入力）</div>
-                          <div class="mono" id="origPartText">-</div>
-                        </div>
-
-                        <div class="col-12">
+<div class="col-12">
                           <div class="small text-secondary">タイトル（原文）</div>
                           <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
                         </div>
@@ -945,13 +937,7 @@
       el('origStatusBadgeWrap') && (el('origStatusBadgeWrap').innerHTML = renderCustomerStatusBadge(statusRaw));
       el('origVisibilityBadgeWrap') && (el('origVisibilityBadgeWrap').innerHTML = renderVisibilityBadge(visRaw));
       el('origPostTypeText') && (el('origPostTypeText').textContent = labelPostTypeJa(postTypeRaw) || (postTypeRaw ? String(postTypeRaw) : '-'));
-
-      // お客様入力：部位（表示用）
-      const origPartText = el('origPartText');
-      const originalPart = selectedPost.original_part_code || selectedPost.original_part_free_text || selectedPost.part_code || selectedPost.part_free_text || '';
-      origPartText && (origPartText.textContent = originalPart ? String(originalPart) : '-');
-
-      // 原文
+// 原文
       const origTitle = el('origTitle');
       const origBody = el('origBody');
       origTitle && (origTitle.value = String(selectedPost.original_title || selectedPost.title || ''));
@@ -1400,9 +1386,9 @@
             // 変更開始（ロック解除）
             sel.disabled = false;
             sel.dataset.editing = '1';
-            btn.textContent = '固定';
+            btn.textContent = 'ロック';
             btn.dataset.editing = '1';
-            if (hint) hint.textContent = '部位を選び直してください（変更後は「固定」でロックできます）。';
+            if (hint) hint.textContent = '部位を選び直してください（変更後は「ロック」で確定します）。';
 
             // "その他" の場合は自由入力を見せる（読み取り専用）
             if (String(sel.value || '').trim() === OTHER_PART_VALUE) {
@@ -1415,7 +1401,7 @@
             return;
           }
 
-          // 固定（ロック）
+          // ロック（確定）
           sel.disabled = true;
           sel.dataset.editing = '0';
           btn.textContent = '変更';
@@ -1494,8 +1480,8 @@
         if (!deltaY) return;
 
         let box = null;
-        if (target.closest('.col-lg-7')) box = rightBox;
-        else if (target.closest('.col-lg-5')) box = leftBox;
+        if (target.closest('#rightPanelScroll')) box = rightBox;
+        else if (target.closest('#leftPanelScroll')) box = leftBox;
         else return;
 
         if (canScroll(box, deltaY)) {
