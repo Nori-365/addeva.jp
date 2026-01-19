@@ -1046,18 +1046,20 @@
       const visDevSel = el('visibilityDev');
       const visDevHint = el('visibilityDevLockHint');
       if (visDevSel) {
-        const devVisRaw = String(selectedPost.visibility_dev || selectedPost.visibilityDev || '').trim().toLowerCase();
-        let devVis = (devVisRaw === 'private') ? 'private' : (devVisRaw === 'public') ? 'public' : '';
-        if (!devVis) devVis = isCustomerPublic ? 'public' : 'private';
+        // 初期値は「お客様の visibility」に合わせる。
+        // - お客様が private：visibility_dev は private 固定（変更不可）
+        // - お客様が public：visibility_dev の初期値は public（毎回の選び直しを不要にする）
+        // 例外：status_dev が rejected の場合は安全側で private を初期値とする。
 
-        // お客様が private の場合：visibility_dev は private 固定（変更不可）
+        const stDev = normalizeDevStatus(selectedPost.status_dev || selectedPost.statusDev || '');
+
         if (!isCustomerPublic) {
-          devVis = 'private';
           visDevSel.value = 'private';
           visDevSel.disabled = true;
           if (visDevHint) visDevHint.classList.remove('d-none');
         } else {
-          visDevSel.value = devVis;
+          const initialVisDev = (stDev === 'rejected') ? 'private' : 'public';
+          visDevSel.value = initialVisDev;
           visDevSel.disabled = !isDeveloper;
           if (visDevHint) visDevHint.classList.add('d-none');
         }
