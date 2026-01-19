@@ -105,10 +105,10 @@
 
         <!-- ページヘッダー -->
         <div class="mb-4">
-          <div class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
-            <div class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;">部位コード（part_code）を登録・修正できます（Developer）。</div>
-            <div class="mt-1 text-secondary">
-              ここで登録した部位は、意見入力・投票・承認画面の部位選択に使用されます。
+          <div id="topNotice" class="mb-3 d-none">
+            <div id="topNoticeBox" class="p-3 bg-light border rounded border-start border-3 border-primary">
+              <div id="topNoticeTitle" class="fw-bold" style="font-size: 1.35rem; line-height: 1.35;"></div>
+              <div id="topNoticeBody" class="mt-1 text-secondary"></div>
             </div>
           </div>
 
@@ -282,7 +282,57 @@
       text.textContent = '';
     };
 
+    // 上部固定（説明/成功）メッセージ
+    const clearTopNotice = () => {
+      const wrap = el('topNotice');
+      const box = el('topNoticeBox');
+      const title = el('topNoticeTitle');
+      const body = el('topNoticeBody');
+      if (!wrap || !box || !title || !body) return;
+      wrap.classList.add('d-none');
+      box.className = 'p-3 bg-light border rounded border-start border-3 border-primary';
+      title.textContent = '';
+      body.textContent = '';
+      body.className = 'mt-1 text-secondary';
+    };
+
+    const showTopNotice = (type, titleText, bodyText) => {
+      // 他メッセージ（alert）は消す
+      clearAlert();
+
+      const wrap = el('topNotice');
+      const box = el('topNoticeBox');
+      const title = el('topNoticeTitle');
+      const body = el('topNoticeBody');
+      if (!wrap || !box || !title || !body) return;
+
+      const t = String(type || 'info');
+
+      if (t === 'success') {
+        box.className = 'p-3 bg-success-subtle border rounded border-start border-3 border-success';
+        body.className = 'mt-1 text-success-emphasis';
+      } else if (t === 'warning') {
+        box.className = 'p-3 bg-warning-subtle border rounded border-start border-3 border-warning';
+        body.className = 'mt-1 text-warning-emphasis';
+      } else if (t === 'danger') {
+        box.className = 'p-3 bg-danger-subtle border rounded border-start border-3 border-danger';
+        body.className = 'mt-1 text-danger-emphasis';
+      } else {
+        box.className = 'p-3 bg-light border rounded border-start border-3 border-primary';
+        body.className = 'mt-1 text-secondary';
+      }
+
+      title.textContent = String(titleText || '');
+      body.textContent = String(bodyText || '');
+
+      wrap.classList.remove('d-none');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const showAlert = (type, msg) => {
+      // 上部固定メッセージ（説明/成功）は消す
+      clearTopNotice();
+
       const box = el('messageArea');
       const text = el('messageText');
       if (!box || !text) return;
@@ -335,6 +385,8 @@
     // === API ===
     // 画面に必要な情報をまとめて返す（商品情報＋権限＋部位一覧）
     const loadDashboard = async () => {
+      // 表示更新時は、上部固定メッセージ（説明/成功）を消す
+      clearTopNotice();
       // 初期リンク
       el('productCodeChip') && (el('productCodeChip').textContent = productCode || '-');
       el('breadcrumbBoard') && (el('breadcrumbBoard').href = buildBoardUrl(productCode));
@@ -616,7 +668,6 @@
 
         await upsertPart(payload);
 
-        showAlert('success', `保存しました（${partCode}）。`);
         await loadDashboard();
 
         // 保存後：可能なら選択を維持
@@ -624,6 +675,9 @@
         selectedKey = newKey;
         selectedBefore = { categoryName, partCode };
         renderParts();
+
+        // 成功メッセージは、上部固定エリアへ（次回の表示更新まで残す）
+        showTopNotice('success', '保存しました。', `保存しました（${partCode}）。`);
 
       } catch (e) {
         console.error(e);
@@ -672,7 +726,15 @@
       bindUI();
       await loadDashboard();
       resetForm();
+
+      // 初期表示の一回目だけ：説明メッセージを表示（表示更新で消える）
+      showTopNotice(
+        'info',
+        '部位コード（part_code）を登録・修正できます（Developer）。',
+        'ここで登録した部位は、意見入力・投票・承認画面の部位選択に使用されます。'
+      );
     })();
   </script>
 </body>
 </html>
+
