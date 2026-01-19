@@ -176,7 +176,7 @@
                 </div>
 
                 <div class="mt-2 text-secondary small">
-                  ※ 一覧の最上段「新しい部位を登録する」をクリックすると、右側が新規登録モードになります。
+                  ※ 一覧の一番下の「新しい部位を登録する」をクリックすると、右側が新規登録モードになります。
                 </div>
               </div>
             </div>
@@ -187,12 +187,16 @@
             <div class="sticky-pane">
               <div class="card shadow-sm">
                 <div class="card-body p-3 p-md-4 panel-scroll" id="rightPanelScroll">
+                  <div id="editPanelTop"></div>
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
                       <div class="h5 m-0">登録・修正</div>
                       <div class="text-secondary small">part_code は英小文字/数字/_ のみ（3〜32文字）。</div>
                     </div>
-                    <div class="text-secondary small" id="editMode">新規登録</div>
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="text-secondary small" id="editMode">新規登録</div>
+                      <button id="btnToNewMode" class="btn btn-outline-secondary btn-sm" type="button" disabled>新規登録へ</button>
+                    </div>
                   </div>
 
                   <form id="partForm" novalidate>
@@ -303,6 +307,20 @@
 
     const isValidPartCode = (s) => /^[a-z0-9_]{3,32}$/.test(String(s || '').trim());
 
+    // モバイル時：編集パネルへジャンプ（固定ヘッダー分のオフセット込み）
+    const jumpToEditor = () => {
+      try {
+        const isMobile = window.matchMedia('(max-width: 991.98px)').matches;
+        if (!isMobile) return;
+
+        const target = el('editPanelTop') || el('rightPanelScroll') || el('partForm');
+        if (!target) return;
+
+        const y = target.getBoundingClientRect().top + window.pageYOffset - 96;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      } catch (_) {}
+    };
+
     // === 状態 ===
     let isDeveloper = false;
     let developerRole = '';
@@ -387,6 +405,9 @@
           showAlert('danger', 'デベロッパー権限がありません。');
           el('btnReload') && (el('btnReload').disabled = true);
           el('btnSave') && (el('btnSave').disabled = true);
+          el('btnReset') && (el('btnReset').disabled = true);
+          el('btnNewPart') && (el('btnNewPart').disabled = true);
+          el('btnToNewMode') && (el('btnToNewMode').disabled = true);
           el('searchInput') && (el('searchInput').disabled = true);
           el('filterActive') && (el('filterActive').disabled = true);
           return;
@@ -432,17 +453,22 @@
 
       countEl && (countEl.textContent = String(view.length));
 
-      // 先頭：新規登録（1行の高さで表示）
-      let html = `
-        <tr class="row-clickable row-new" id="rowNewPart">
-          <td colspan="5">
-            <i class="bi bi-plus-circle me-1"></i>新しい部位を登録する
-          </td>
-        </tr>
-      `;
+      // 一覧の一番下に「新しい部位を登録する」を出す
+      const newRowHtml = isDeveloper
+        ? `
+          <tr class="row-clickable row-new" id="rowNewPart">
+            <td colspan="5">
+              <i class="bi bi-plus-circle me-1"></i>新しい部位を登録する
+            </td>
+          </tr>
+        `
+        : '';
+
+      let html = '';
 
       if (!view.length) {
         html += '<tr><td colspan="5" class="text-center text-secondary py-4">該当する部位がありません。</td></tr>';
+        html += newRowHtml;
         tbody.innerHTML = html;
       } else {
         for (const x of view) {
@@ -467,15 +493,11 @@
           `;
         }
 
+        html += newRowHtml;
         tbody.innerHTML = html;
       }
 
-      // クリック：新規
-      el('rowNewPart')?.addEventListener('click', () => {
-        resetForm();
-      });
-
-      // クリック：編集
+      // クリック：編集（部位を選択 → 編集パネルへジャンプ）
       tbody.querySelectorAll('tr.row-clickable[data-key]').forEach(tr => {
         tr.addEventListener('click', () => {
           const key = tr.getAttribute('data-key');
@@ -488,12 +510,19 @@
           selectedBefore = { categoryName: String(hit.category_name || ''), partCode: String(hit.part_code || '') };
           fillForm(hit);
           renderParts();
+          jumpToEditor();
         });
+      });
+
+      // クリック：新規登録（一覧の一番下）
+      tbody.querySelector('#rowNewPart')?.addEventListener('click', () => {
+        resetForm({ focus: true, scroll: true, jump: true });
       });
     };
 
     const fillForm = (p) => {
       el('editMode') && (el('editMode').textContent = '修正モード');
+      el('btnToNewMode') && (el('btnToNewMode').disabled = false);
 
       el('fCategoryName') && (el('fCategoryName').value = String(p.category_name || ''));
       el('fPartCode') && (el('fPartCode').value = String(p.part_code || ''));
@@ -504,11 +533,12 @@
       el('fIsActive') && (el('fIsActive').checked = !!p.is_active);
     };
 
-    const resetForm = () => {
+    const resetForm = (opts = {}) => {
       selectedKey = null;
       selectedBefore = { categoryName: '', partCode: '' };
 
       el('editMode') && (el('editMode').textContent = '新規登録');
+      el('btnToNewMode') && (el('btnToNewMode').disabled = true);
 
       el('fCategoryName') && (el('fCategoryName').value = '');
       el('fPartCode') && (el('fPartCode').value = '');
@@ -518,6 +548,21 @@
       el('fIsActive') && (el('fIsActive').checked = true);
 
       renderParts();
+
+      if (opts && (opts.jump || opts.focus || opts.scroll)) {
+        try {
+          if (opts.jump) {
+            jumpToEditor();
+          }
+          if (opts.scroll) {
+            const rp = el('rightPanelScroll');
+            if (rp) rp.scrollTop = 0;
+          }
+          if (opts.focus) {
+            el('fCategoryName')?.focus();
+          }
+        } catch (_) {}
+      }
     };
 
     // === 操作 ===
@@ -596,7 +641,11 @@
       });
 
       el('partForm')?.addEventListener('submit', saveOne);
-      el('btnReset')?.addEventListener('click', resetForm);
+      el('btnReset')?.addEventListener('click', () => resetForm({ focus: true, scroll: true }));
+
+      // 新規登録
+      el('btnNewPart')?.addEventListener('click', () => resetForm({ focus: true, scroll: true }));
+      el('btnToNewMode')?.addEventListener('click', () => resetForm({ focus: true, scroll: true, jump: true }));
 
       el('searchInput')?.addEventListener('input', renderParts);
       el('filterActive')?.addEventListener('change', renderParts);
