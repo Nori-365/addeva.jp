@@ -281,6 +281,7 @@
                             <button id="commonPartEditBtn" class="btn btn-outline-secondary" type="button" disabled>変更</button>
                           </div>
                           <div class="char-hint mt-1" id="commonPartHint"></div>
+                          <div id="commonPartWarn" class="alert alert-warning py-2 px-3 mt-2 mb-0 d-none" role="alert" aria-live="polite" aria-atomic="true"></div>
                         </div>
 
                         <div class="col-12 col-md-6" id="commonPartFreeWrap" style="display:none;">
@@ -783,8 +784,12 @@
           const postId = tr.getAttribute('data-post-id');
           const pc = tr.getAttribute('data-product-code') || '';
           if (!postId) return;
+
+          // 左側の開閉状態を壊さないため、ここでは一覧を再描画しない（選択行のハイライトだけ更新）
+          acc.querySelectorAll('tr.row-clickable.table-primary').forEach(x => x.classList.remove('table-primary'));
+          tr.classList.add('table-primary');
+
           await loadPostDetail(Number(postId), String(pc));
-          renderProducts();
         });
       });
     };
@@ -913,6 +918,69 @@
       if (freeInput) freeInput.value = free || '-';
     };
 
+    const setCommonPartWarning = (msg) => {
+      const warn = el('commonPartWarn');
+      const sel = el('commonPartSelect');
+
+      if (warn) {
+        if (msg) {
+          warn.textContent = msg;
+          warn.classList.remove('d-none');
+        } else {
+          warn.textContent = '';
+          warn.classList.add('d-none');
+        }
+      }
+
+      if (sel) {
+        if (msg) sel.classList.add('is-invalid');
+        else sel.classList.remove('is-invalid');
+      }
+    };
+
+    // 部位（part_code）が「その他/未選択」の場合に、承認（公開）をHTML側でブロックする（暫定）
+    const validateCommonPartGuard = (opts = {}) => {
+      const sel = el('commonPartSelect');
+      if (!sel || !selectedPost) {
+        setCommonPartWarning('');
+        return true;
+      }
+
+      const optionsReady = (sel.dataset.filled === '1');
+      const val = String(sel.value || '').trim();
+      const isOther = (!val || val === OTHER_PART_VALUE);
+
+      // 公開できるか（private はそもそも承認不可）
+      const visRaw = String(selectedPost.visibility || selectedPost.original_visibility || '').trim();
+      const customerVisLc = String(visRaw || '').trim().toLowerCase();
+      const isPublicOpinion = (!customerVisLc || customerVisLc === 'public');
+
+      let ok = true;
+      let msg = '';
+
+      if (!optionsReady) {
+        ok = false;
+        msg = '部位一覧を取得中です。読み込み完了後に部位を選択してください。';
+      } else if (isOther) {
+        ok = false;
+        msg = '部位が「その他」または未選択です。承認して公開する前に、正しい部位を選択してください。必要なら先に「部位管理」で部位を追加してください。';
+      }
+
+      setCommonPartWarning(msg);
+
+      const publishBtn = el('btnPublish');
+      if (publishBtn) {
+        // 既存条件（developer / public）に加えて、部位未確定はブロック
+        publishBtn.disabled = (!isDeveloper || !isPublicOpinion || !ok);
+      }
+
+      if (!ok && opts && opts.showAlert) {
+        showAlert('warning', msg);
+      }
+
+      return ok;
+    };
+
     const renderDetail = () => {
       const empty = el('detailEmpty');
       const wrap = el('detailWrap');
@@ -959,6 +1027,7 @@
         ''
       ).trim();
       applyCommonPartUi(code, partCode, partFree);
+      validateCommonPartGuard();
 
       // お客様側：status / visibility / post_type
       const statusRaw = String(selectedPost.status || '').trim();
@@ -1240,6 +1309,12 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
       const btn = el('btnPublish');
       btn && (btn.disabled = true);
 
+      // 部位が「その他/未選択」の場合は、ここでブロック（暫定：HTML側ガード）
+      if (!validateCommonPartGuard({ showAlert: true })) {
+        btn && (btn.disabled = false);
+        return;
+      }
+
       try {
         const stSel = el('publishStatus');
         const newStatus = stSel ? String(stSel.value || '').trim() : 'reviewing';
@@ -1437,14 +1512,12 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
       const commonPartSel = el('commonPartSelect');
       if (commonPartSel && commonPartSel.dataset.bound !== '1') {
         commonPartSel.addEventListener('change', () => {
-          const sel = el('commonPartSelect');
+          const val = commonPartSel.value;
+          const origCode = commonPartSel.dataset.origCode || '';
+          const free = commonPartSel.dataset.origFree || '';
+
           const freeWrap = el('commonPartFreeWrap');
           const freeInput = el('commonPartFreeText');
-          if (!sel) return;
-
-          const val = String(sel.value || '').trim();
-          const free = String(sel.dataset.origFree || '').trim();
-          const origCode = String(sel.dataset.origCode || '').trim();
 
           if (val === OTHER_PART_VALUE) {
             if (freeWrap) freeWrap.style.display = '';
@@ -1462,6 +1535,9 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
           if (freeWrap) freeWrap.style.display = 'none';
           if (freeInput) freeInput.value = '';
         });
+
+        // 既存ハンドラの return 有無に関係なく、毎回ガード判定を更新
+        commonPartSel.addEventListener('change', () => { validateCommonPartGuard(); });
         commonPartSel.dataset.bound = '1';
       }
     };
