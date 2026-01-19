@@ -317,14 +317,7 @@
                         </div>
                       </div>
 
-                      <hr class="my-3">
-
-                      <div id="privateOpinionNotice" class="alert alert-warning py-2 px-3 mb-3 d-none" role="alert">
-                        この意見は非公開（visibility=private）として投稿されています。内容確認はできますが、この画面では「承認して公開」はできません。
-                      </div>
-                      </div>
-
-                      <div class="mb-3" id="publicPostTypeWrap" style="display:none;">
+                      <hr class="my-3">$1$2 style="display:none;">
                         <label class="form-label" for="publicPostType">タイプ（公開）</label>
                         <select id="publicPostType" class="form-select">
                           <option value="improve">改善</option>
@@ -1159,8 +1152,7 @@
       } catch (e) {
         console.error(e);
         selectedPost = null;
-        hasPublicPartCode = false;
-        showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
+showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
         renderDetail();
       }
     };
