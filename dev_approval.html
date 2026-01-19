@@ -369,7 +369,7 @@
 
                       <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
                         <button id="btnPublish" class="btn btn-primary" type="button">
-                          <i class="bi bi-check2-circle"></i> 承認して公開
+                          <i class="bi bi-check2-circle"></i> 保存して公開
                         </button>
                       </div>
                     </div>
@@ -979,6 +979,20 @@
       return ok;
     };
 
+    // 右下ボタン文言は visibility_dev の選択に合わせて表示する
+    // - visibility_dev=public  : 「保存して公開」
+    // - visibility_dev=private : 「公開しないで完了」
+    const updatePublishButtonLabelByVisibility = () => {
+      const b = el('btnPublish');
+      if (!b) return;
+      const v = String(el('visibilityDev')?.value || 'public').trim().toLowerCase();
+      if (v === 'private') {
+        b.innerHTML = '<i class="bi bi-check2-circle"></i> 公開しないで完了';
+      } else {
+        b.innerHTML = '<i class="bi bi-check2-circle"></i> 保存して公開';
+      }
+    };
+
     const renderDetail = () => {
       const empty = el('detailEmpty');
       const wrap = el('detailWrap');
@@ -1065,24 +1079,8 @@
         }
       }
 
-      // ボタン文言を状況に応じて更新
-      const updatePublishButtonLabel = () => {
-        const b = el('btnPublish');
-        if (!b) return;
-        const st = String(el('publishStatus')?.value || 'reviewing').trim().toLowerCase();
-        const v = String(el('visibilityDev')?.value || 'public').trim().toLowerCase();
-
-        if (!isCustomerPublic) {
-          b.innerHTML = '<i class="bi bi-check2-circle"></i> 確定（非公開）';
-          return;
-        }
-        if (st === 'rejected' || v === 'private') {
-          b.innerHTML = '<i class="bi bi-x-circle"></i> 否認して非公開';
-          return;
-        }
-        b.innerHTML = '<i class="bi bi-check2-circle"></i> 承認して公開';
-      };
-      updatePublishButtonLabel();
+      // ボタン文言は visibility_dev に合わせて更新
+      updatePublishButtonLabelByVisibility();
 
       // 部位ガード（最終状態を反映）
       validateCommonPartGuard();
@@ -1481,14 +1479,8 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
             visDevSel.value = 'private';
           }
 
-          // ボタン文言を更新
-          const b = el('btnPublish');
-          if (b) {
-            const v = String(el('visibilityDev')?.value || 'public').trim().toLowerCase();
-            if (!isCustomerPublic) b.innerHTML = '<i class="bi bi-check2-circle"></i> 確定（非公開）';
-            else if (String(stSel.value || '').trim().toLowerCase() === 'rejected' || v === 'private') b.innerHTML = '<i class="bi bi-x-circle"></i> 否認して非公開';
-            else b.innerHTML = '<i class="bi bi-check2-circle"></i> 承認して公開';
-          }
+          // 右下ボタン文言を更新（visibility_dev に追従）
+          updatePublishButtonLabelByVisibility();
         });
         stSel.dataset.bound = '1';
       }
@@ -1497,15 +1489,8 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
       const visDevSel = el('visibilityDev');
       if (visDevSel && visDevSel.dataset.bound !== '1') {
         visDevSel.addEventListener('change', () => {
-          const visRaw = String(selectedPost?.visibility || selectedPost?.original_visibility || '').trim().toLowerCase();
-          const isCustomerPublic = (!visRaw || visRaw === 'public');
-          const st = String(el('publishStatus')?.value || 'reviewing').trim().toLowerCase();
-          const v = String(visDevSel.value || 'public').trim().toLowerCase();
-          const b = el('btnPublish');
-          if (!b) return;
-          if (!isCustomerPublic) b.innerHTML = '<i class="bi bi-check2-circle"></i> 確定（非公開）';
-          else if (st === 'rejected' || v === 'private') b.innerHTML = '<i class="bi bi-x-circle"></i> 否認して非公開';
-          else b.innerHTML = '<i class="bi bi-check2-circle"></i> 承認して公開';
+          // 右下ボタン文言を更新（visibility_dev に追従）
+          updatePublishButtonLabelByVisibility();
         });
         visDevSel.dataset.bound = '1';
       }
