@@ -96,6 +96,9 @@
       white-space: nowrap;
     }
 
+    /* アクセスガード（暫定：HTML側で操作を無効化） */
+    .guard-disabled { pointer-events: none; opacity: .55; }
+
     /* PC：左右ペインを独立スクロールにして、右（編集ボード）上でホイールすると右がスクロールされるようにする */
     @media (min-width: 992px) {
       .panel-scroll {
@@ -144,6 +147,25 @@
             <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
           </div>
         </div>
+
+        <!-- アクセスガード（暫定：HTML側で操作を無効化） -->
+        <div id="accessGuardChecking" class="alert alert-info d-flex align-items-center gap-2 mb-3" role="alert" aria-live="polite" aria-atomic="true">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <div>権限を確認しています。確認が完了するまで操作できません。</div>
+        </div>
+
+        <div id="accessGuardDenied" class="d-none mb-4" aria-live="assertive" aria-atomic="true">
+          <div class="p-4 border rounded bg-light border-start border-3 border-danger">
+            <div class="fw-bold" style="font-size: 1.2rem; line-height: 1.35;">このページはデベロッパー専用です。</div>
+            <div class="mt-1 text-secondary">デベロッパー権限が確認できませんでした。ログイン状態、または対象商品の権限（developer / admin）をご確認ください。</div>
+            <div class="mt-3 d-flex flex-wrap gap-2">
+              <a class="btn btn-outline-secondary" href="/customer.html">ユーザーサポートへ戻る</a>
+              <a class="btn btn-danger" href="/customer.html?mode=login">ログインし直す</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="pageMain">
 
         <!-- ページヘッダー -->
         <div class="mb-4">
@@ -355,6 +377,7 @@
               </div>
             </div>
           </div>
+        </div>
 
         </div>
 
@@ -372,6 +395,49 @@
     // === ユーティリティ ===
     const qs = name => new URL(window.location.href).searchParams.get(name) || '';
     const el = (id) => document.getElementById(id);
+
+    const setGuardState = (state, reason) => {
+      const checking = el('accessGuardChecking');
+      const denied = el('accessGuardDenied');
+      const main = el('pageMain');
+
+      if (state === 'checking') {
+        if (checking) checking.classList.remove('d-none');
+        if (denied) denied.classList.add('d-none');
+        if (main) {
+          main.classList.remove('d-none');
+          main.classList.add('guard-disabled');
+        }
+        // 主要ボタンは一旦ロック（権限確認完了後に解除）
+        if (el('btnReload')) el('btnReload').disabled = true;
+        if (el('btnScrollToDetail')) el('btnScrollToDetail').disabled = true;
+        if (el('btnPublish')) el('btnPublish').disabled = true;
+        if (el('publishStatus')) el('publishStatus').disabled = true;
+        if (el('commonPartEditBtn')) el('commonPartEditBtn').disabled = true;
+        return;
+      }
+
+      if (state === 'denied') {
+        if (checking) checking.classList.add('d-none');
+        if (denied) denied.classList.remove('d-none');
+        if (main) {
+          main.classList.add('d-none');
+          main.classList.remove('guard-disabled');
+        }
+        showAlert('danger', reason || 'デベロッパー権限がありません。');
+        return;
+      }
+
+      // ok
+      if (checking) checking.classList.add('d-none');
+      if (denied) denied.classList.add('d-none');
+      if (main) {
+        main.classList.remove('d-none');
+        main.classList.remove('guard-disabled');
+      }
+      if (el('btnReload')) el('btnReload').disabled = false;
+    };
+
 
     const escapeHtml = (s) => {
       return String(s ?? '').replace(/[&<>"']/g, (c) => ({
@@ -970,7 +1036,10 @@
     };
 
     // === API 呼び出し ===
+
     const loadDashboard = async () => {
+      setGuardState('checking');
+
       // 初期表示
       const acc = el('productAccordion');
       acc && (acc.innerHTML = '<div class="text-center text-secondary py-4">読み込み中...</div>');
@@ -1050,13 +1119,16 @@
 
         // 権限なし
         if (!isDeveloper) {
-          showAlert('danger', 'デベロッパー権限がありません。');
+          setGuardState('denied', 'デベロッパー権限がありません。');
           el('btnReload') && (el('btnReload').disabled = true);
           el('btnPublish') && (el('btnPublish').disabled = true);
           el('publishStatus') && (el('publishStatus').disabled = true);
           el('visibilityDev') && (el('visibilityDev').disabled = true);
           return;
         }
+
+        // 権限OK
+        setGuardState('ok');
 
       } catch (e) {
         console.error(e);
@@ -1067,7 +1139,7 @@
         pendingTotal = 0;
         renderHeaderSummary();
         renderProducts();
-        showAlert('danger', e && e.message ? e.message : '承認待ち情報の取得に失敗しました。');
+        setGuardState('denied', e && e.message ? e.message : '承認待ち情報の取得に失敗しました。');
       }
     };
 
@@ -1444,6 +1516,7 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
     // === 初期化 ===
     (async () => {
       bindUI();
+      setGuardState('checking');
       initWheelRouting();
       await loadDashboard();
       renderDetail();
