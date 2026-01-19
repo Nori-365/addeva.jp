@@ -74,7 +74,7 @@
       transform: translateY(-1px);
     }
 
-    /* 左リスト：商品ヘッダー内にアクション（部位管理）を置く */
+    /* 左リスト：商品ヘッダー内にアクション（部位管理／フィードバック）を置く */
     .product-acc-header {
       display: flex;
       align-items: stretch;
@@ -83,10 +83,17 @@
     .product-acc-header .accordion-button {
       flex: 1 1 auto;
     }
-    .product-acc-header .header-action {
+    .product-acc-header .header-actions {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
       white-space: nowrap;
       align-self: center;
       margin-right: .25rem;
+    }
+    .product-acc-header .header-actions .btn {
+      white-space: nowrap;
     }
 
     /* PC：左右ペインを独立スクロールにして、右（編集ボード）上でホイールすると右がスクロールされるようにする */
@@ -661,16 +668,6 @@
           }
 
           bodyHtml = `
-            <div class="product-head mb-2">
-              <div class="product-title">
-                <span class="name">${escapeHtml(name || code || '-')}</span>
-                <span class="badge bg-secondary fw-normal">${escapeHtml(code)}</span>
-              </div>
-              <div class="product-actions">
-                <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildBoardUrl(code))}">フィードバックボード</a>
-              </div>
-            </div>
-
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-0">
                 <thead>
@@ -699,9 +696,14 @@
                 <span class="me-2">${safeName}</span>
                 ${badge}
               </button>
-              <a class="btn btn-sm btn-outline-secondary header-action" href="${escapeHtml(buildPartsRegistUrl(code))}" aria-label="部位管理を開く">
-                <i class="bi bi-tags me-1"></i>部位管理
-              </a>
+              <div class="header-actions">
+                <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildBoardUrl(code))}" aria-label="フィードバックボードを開く">
+                  <i class="bi bi-window-stack me-1"></i>フィードバックボード
+                </a>
+                <a class="btn btn-sm btn-outline-secondary" href="${escapeHtml(buildPartsRegistUrl(code))}" aria-label="部位管理を開く">
+                  <i class="bi bi-tags me-1"></i>部位管理
+                </a>
+              </div>
             </h2>
             <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}">
               <div class="accordion-body">
