@@ -74,6 +74,21 @@
       transform: translateY(-1px);
     }
 
+    /* 左リスト：商品ヘッダー内にアクション（部位管理）を置く */
+    .product-acc-header {
+      display: flex;
+      align-items: stretch;
+      gap: .5rem;
+    }
+    .product-acc-header .accordion-button {
+      flex: 1 1 auto;
+    }
+    .product-acc-header .header-action {
+      white-space: nowrap;
+      align-self: center;
+      margin-right: .25rem;
+    }
+
     /* PC：左右ペインを独立スクロールにして、右（編集ボード）上でホイールすると右がスクロールされるようにする */
     @media (min-width: 992px) {
       .panel-scroll {
@@ -144,9 +159,6 @@
             </div>
 
             <div class="d-flex align-items-center gap-2">
-              <a id="btnPartsRegist" class="btn btn-outline-secondary disabled" href="#" role="button" aria-disabled="true">
-                <i class="bi bi-tags me-1"></i>部位管理
-              </a>
               <button id="btnReload" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-clockwise"></i> 更新
               </button>
@@ -412,21 +424,6 @@
     const buildPartsRegistUrl = (productCode) => {
       const p = encodeURIComponent(productCode || '');
       return `/dev_parts_regist.html?product_code=${p}`;
-    };
-
-    const setPartsRegistButton = (productCode) => {
-      const a = el('btnPartsRegist');
-      if (!a) return;
-      const pc = String(productCode || '').trim();
-      if (!pc) {
-        a.href = '#';
-        a.setAttribute('aria-disabled', 'true');
-        a.classList.add('disabled');
-        return;
-      }
-      a.href = buildPartsRegistUrl(pc);
-      a.setAttribute('aria-disabled', 'false');
-      a.classList.remove('disabled');
     };
 
     // CSS.escape の簡易フォールバック（data-* セレクタ用）
@@ -696,12 +693,15 @@
 
         html += `
           <div class="accordion-item">
-            <h2 class="accordion-header" id="${escapeHtml(headingId)}">
+            <h2 class="accordion-header product-acc-header" id="${escapeHtml(headingId)}">
               <button class="accordion-button ${collapsedClass}" type="button" data-product-code="${escapeHtml(code)}" data-bs-toggle="collapse" data-bs-target="#${escapeHtml(collapseId)}" aria-expanded="${expanded}" aria-controls="${escapeHtml(collapseId)}">
                 <span class="mono me-2">${escapeHtml(code)}</span>
                 <span class="me-2">${safeName}</span>
                 ${badge}
               </button>
+              <a class="btn btn-sm btn-outline-secondary header-action" href="${escapeHtml(buildPartsRegistUrl(code))}" aria-label="部位管理を開く">
+                <i class="bi bi-tags me-1"></i>部位管理
+              </a>
             </h2>
             <div id="${escapeHtml(collapseId)}" class="accordion-collapse collapse ${showClass}" aria-labelledby="${escapeHtml(headingId)}">
               <div class="accordion-body">
@@ -1047,25 +1047,6 @@
           if (!pendingByProduct.has(code)) pendingByProduct.set(code, []);
         }
 
-        // 部位管理ボタン：初期表示でも product_code が決まっているなら有効化する
-        if (isDeveloper) {
-          const defaultPcForParts = (() => {
-            if (focusProductCode) return String(focusProductCode).trim();
-            if (selectedProductCode) return String(selectedProductCode).trim();
-            // 承認待ちがある商品を優先、それ以外は先頭
-            for (const pp of products) {
-              const c = String(pp.product_code || '').trim();
-              if (!c) continue;
-              const arr = pendingByProduct.get(c) || [];
-              if (arr.length > 0) return c;
-            }
-            return (products[0] && products[0].product_code) ? String(products[0].product_code).trim() : '';
-          })();
-          setPartsRegistButton(defaultPcForParts);
-        } else {
-          setPartsRegistButton('');
-        }
-
         // 表示
         renderHeaderSummary();
         renderProducts();
@@ -1087,7 +1068,6 @@
         products = [];
         pendingByProduct = new Map();
         pendingTotal = 0;
-        setPartsRegistButton('');
         renderHeaderSummary();
         renderProducts();
         showAlert('danger', e && e.message ? e.message : '承認待ち情報の取得に失敗しました。');
@@ -1117,7 +1097,6 @@
     const loadPostDetail = async (postId, productCode, opts = {}) => {
       selectedPostId = postId;
       selectedProductCode = String(productCode || '').trim();
-      setPartsRegistButton(selectedProductCode || focusProductCode);
       selectedPost = null;
       hasPublicPostType = false;
       renderDetail();
@@ -1343,7 +1322,6 @@
       }
 
       // 部位管理ボタン（初期状態）
-      setPartsRegistButton(selectedProductCode || focusProductCode);
 
       // 共通：部位（part_code）変更ボタン（ロック解除 → 選び直し）
       const commonPartBtn = el('commonPartEditBtn');
