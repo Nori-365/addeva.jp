@@ -672,11 +672,11 @@
         return;
       }
 
-      if (partCode === OTHER_PART_VALUE) {
-        wrap.innerHTML = '<div class="text-center p-4 bg-light rounded"><p class="text-secondary mb-1">「その他（部位が見当たらない）」が選択されています。</p><p class="text-secondary mb-0">この部位には既存のご意見一覧は表示されません。必要に応じて下のフォームからご意見を追加してください。</p></div>';
-        return;
-      }
-
+      // NOTE:
+      // ・partCode="__other__" は「その他（部位が見当たらない）」を意味します。
+      // ・DB上は part_code が NULL になるため、API側(/api/addeva/feedback/part_posts)で
+      //   "__other__" を受けた場合は part_code IS NULL に切り替えて取得する想定です。
+      // ・フロントは "__other__" をそのまま送ります（特別扱いしない）。
       wrap.innerHTML = '<div class="text-center p-4"><div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
       try {
