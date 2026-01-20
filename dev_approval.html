@@ -271,8 +271,6 @@
                       </div>
                     </div>
 
-                    
-
                     <!-- 上段：共通項目（商品関連） -->
                     <div class="border rounded p-3 mb-3">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -322,8 +320,6 @@
                       </div>
                     </div>
 
-                    
-
                     <!-- 下段：デベロッパー入力（公開内容 public_*） -->
                     <div class="border rounded p-3 mb-3">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -348,6 +344,17 @@
 
                       <hr class="my-3">
 
+                      <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="char-hint">
+                          公開内容（public_*）は自動コピーしません。必要な場合は右のボタンで原文をコピーしてから編集してください。
+                        </div>
+                        <div>
+                          <button id="btnCopyOriginalToPublic" class="btn btn-sm btn-outline-secondary" type="button" disabled>
+                            <i class="bi bi-clipboard-plus me-1"></i>原文を公開にコピー
+                          </button>
+                        </div>
+                      </div>
+
                       <div class="mb-3" id="publicPostTypeWrap" style="display:none;">
                         <label class="form-label" for="publicPostType">タイプ（公開）</label>
                         <select id="publicPostType" class="form-select">
@@ -360,7 +367,7 @@
 
                       <div class="mb-3">
                         <label class="form-label" for="publicTitle">タイトル（公開）</label>
-                        <input id="publicTitle" class="form-control" type="text" maxlength="200">
+                        <input id="publicTitle" class="form-control" type="text" maxlength="200" placeholder="公開用タイトル（未入力の場合は空欄のまま）">
                         <div class="d-flex justify-content-end">
                           <div class="char-hint"><span id="publicTitleCount">0</span>/200</div>
                         </div>
@@ -368,7 +375,7 @@
 
                       <div class="mb-3">
                         <label class="form-label" for="publicBody">本文（公開）</label>
-                        <textarea id="publicBody" class="form-control" rows="16"></textarea>
+                        <textarea id="publicBody" class="form-control" rows="16" placeholder="公開用本文（未入力の場合は空欄のまま）"></textarea>
                       </div>
                     </div>
 
@@ -381,10 +388,18 @@
 
                       <hr class="my-3">
 
+                      <div class="mb-3">
+                        <label class="form-label" for="devCommentTemplate">返信テンプレート</label>
+                        <select id="devCommentTemplate" class="form-select form-select-sm" disabled>
+                          <option value="">（テンプレートを読み込みます）</option>
+                        </select>
+                        <div class="char-hint mt-1">/dev_reply_message/{customerid}.txt の各行がテンプレートです（1行=1テンプレート）。</div>
+                      </div>
+
                       <div class="mb-0">
                         <label class="form-label" for="devComment">返信メッセージ</label>
                         <textarea id="devComment" class="form-control" rows="5" placeholder="例：ご意見ありがとうございます。確認のうえ、対応方針をご連絡します。"></textarea>
-                        <div class="char-hint mt-1">※ 返信が不要な場合は空欄のまま保存できます。</div>
+                        <div class="char-hint mt-1">※ 返信が不要な場合は空欄のまま保存できます。テンプレート選択時、既に入力がある場合は末尾に追記します。</div>
                       </div>
                     </div>
 
@@ -438,6 +453,8 @@
         if (el('publishStatus')) el('publishStatus').disabled = true;
         if (el('commonPartEditBtn')) el('commonPartEditBtn').disabled = true;
         if (el('devComment')) el('devComment').disabled = true;
+        if (el('devCommentTemplate')) el('devCommentTemplate').disabled = true;
+        if (el('btnCopyOriginalToPublic')) el('btnCopyOriginalToPublic').disabled = true;
         return;
       }
 
@@ -450,6 +467,8 @@
         }
         showAlert('danger', reason || 'デベロッパー権限がありません。');
         if (el('devComment')) el('devComment').disabled = true;
+        if (el('devCommentTemplate')) el('devCommentTemplate').disabled = true;
+        if (el('btnCopyOriginalToPublic')) el('btnCopyOriginalToPublic').disabled = true;
         return;
       }
 
@@ -557,8 +576,8 @@
       // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
       const str = String(s ?? '');
       return str
-        .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"');
+        .replace(/\/g, '\\')
+        .replace(/"/g, '\"');
     };
 
     // 値のゆらぎを吸収（古い値・互換値）
@@ -650,6 +669,143 @@
       }
     };
 
+    // 返信テンプレート（/dev_reply_message/{customerid}.txt）
+    const replyTemplateCache = new Map(); // customer_id => { path, templates: [] }
+    const REPLY_TEMPLATE_DIRS = ['/dev_reply_message', '/repy_message', '/reply_message']; // 互換：ユーザー指定優先 + 誤記揺れ吸収
+
+    const parseReplyTemplates = (txt) => {
+      const lines = String(txt || '').split(/
+?
+/).map(s => String(s || '').trim());
+      return lines.filter(s => s && !s.startsWith('#'));
+    };
+
+    const loadReplyTemplatesForCustomer = async (customerId) => {
+      const cid = String(customerId ?? '').trim();
+      if (!cid) return [];
+
+      if (replyTemplateCache.has(cid)) {
+        return replyTemplateCache.get(cid).templates || [];
+      }
+
+      for (const dir of REPLY_TEMPLATE_DIRS) {
+        const url = `${dir}/${encodeURIComponent(cid)}.txt`;
+        try {
+          const r = await fetch(url, { cache: 'no-cache' });
+          if (!r.ok) continue;
+          const t = await r.text();
+          const templates = parseReplyTemplates(t);
+          replyTemplateCache.set(cid, { path: url, templates });
+          return templates;
+        } catch (_) {
+          // ignore
+        }
+      }
+
+      replyTemplateCache.set(cid, { path: '', templates: [] });
+      return [];
+    };
+
+    const setDevCommentTemplateSelect = (state, templates) => {
+      const sel = el('devCommentTemplate');
+      if (!sel) return;
+
+      if (!isDeveloper) {
+        sel.innerHTML = '<option value="">（テンプレートはデベロッパーのみ使用できます）</option>';
+        sel.disabled = true;
+        return;
+      }
+
+      if (state === 'loading') {
+        sel.innerHTML = '<option value="">読み込み中...</option>';
+        sel.disabled = true;
+        return;
+      }
+
+      const list = Array.isArray(templates) ? templates : [];
+      if (!list.length) {
+        sel.innerHTML = '<option value="">テンプレートなし</option>';
+        sel.disabled = true;
+        return;
+      }
+
+      let html = '<option value="">テンプレートを選択してください</option>';
+      for (let i = 0; i < list.length; i++) {
+        const s = String(list[i] || '').trim();
+        if (!s) continue;
+        const label = (s.length > 80) ? (s.slice(0, 80) + '…') : s;
+        html += `<option value="${escapeHtml(s)}">${escapeHtml(label)}</option>`;
+      }
+      sel.innerHTML = html;
+      sel.disabled = false;
+      sel.value = '';
+    };
+
+    const applyDevCommentTemplate = (tpl) => {
+      const ta = el('devComment');
+      if (!ta) return;
+      const add = String(tpl || '').trim();
+      if (!add) return;
+
+      const cur = String(ta.value || '').trim();
+      if (!cur) {
+        ta.value = add;
+      } else {
+        ta.value = cur + "
+
+" + add;
+      }
+
+      try { ta.focus({ preventScroll: true }); } catch (_) {}
+    };
+
+    const setupDevCommentTemplatesForSelectedPost = async () => {
+      const sel = el('devCommentTemplate');
+      if (!sel) return;
+
+      if (!selectedPost) {
+        setDevCommentTemplateSelect('empty', []);
+        return;
+      }
+
+      const cid = selectedPost.customer_id;
+      if (!cid) {
+        setDevCommentTemplateSelect('empty', []);
+        return;
+      }
+
+      setDevCommentTemplateSelect('loading');
+      const templates = await loadReplyTemplatesForCustomer(cid);
+      setDevCommentTemplateSelect('ready', templates);
+    };
+
+    const fillPublicFromOriginal = () => {
+      if (!selectedPost) {
+        showAlert('warning', '意見を選択してください。');
+        return;
+      }
+
+      const ot = el('origTitle');
+      const ob = el('origBody');
+      const pt = el('origPostTypeText');
+
+      const pubT = el('publicTitle');
+      const pubB = el('publicBody');
+
+      if (pubT && ot) pubT.value = String(ot.value || '');
+      if (pubB && ob) pubB.value = String(ob.value || '');
+
+      // 公開タイプは「原文の post_type」を可能なら反映（分類の初期化）。未対応なら触らない。
+      if (hasPublicPostType) {
+        const ptSel = el('publicPostType');
+        const raw = (selectedPost.original_post_type || selectedPost.post_type || selectedPost.postType || '');
+        const v = normalizePostType(raw);
+        if (ptSel && v) ptSel.value = v;
+      }
+
+      bindCharCount();
+      try { pubT?.focus({ preventScroll: true }); } catch (_) {}
+    };
 
     // === 状態 ===
     const focusProductCode = (qs('product_code') || '').trim(); // 互換：特定商品へフォーカスしたい時のみ使用
@@ -856,7 +1012,11 @@
       const update = () => {
         c.textContent = String((t.value || '').length);
       };
-      t.addEventListener('input', update);
+
+      if (t.dataset.bound !== '1') {
+        t.addEventListener('input', update);
+        t.dataset.bound = '1';
+      }
       update();
     };
 
@@ -1004,7 +1164,6 @@
       const val = String(sel.value || '').trim();
       const isOther = (!val || val === OTHER_PART_VALUE);
 
-      // お客様の公開/非公開に関わらず、部位が確定していれば保存（確定）できる。
       let ok = true;
       let msg = '';
 
@@ -1020,7 +1179,6 @@
 
       const publishBtn = el('btnPublish');
       if (publishBtn) {
-        // 既存条件（developer）に加えて、部位未確定はブロック
         publishBtn.disabled = (!isDeveloper || !ok);
       }
 
@@ -1032,8 +1190,6 @@
     };
 
     // 右下ボタン文言は visibility_dev の選択に合わせて表示する
-    // - visibility_dev=public  : 「保存して公開」
-    // - visibility_dev=private : 「公開しないで完了」
     const updatePublishButtonLabelByVisibility = () => {
       const b = el('btnPublish');
       if (!b) return;
@@ -1056,6 +1212,11 @@
         wrap && wrap.classList.add('d-none');
         meta && (meta.textContent = '未選択');
         btnScroll && (btnScroll.disabled = true);
+
+        // テンプレートUI
+        setDevCommentTemplateSelect('empty', []);
+        if (el('btnCopyOriginalToPublic')) el('btnCopyOriginalToPublic').disabled = true;
+
         return;
       }
 
@@ -1077,7 +1238,7 @@
       el('commonCustomerId') && (el('commonCustomerId').textContent = String(selectedPost.customer_id ?? '-'));
       el('commonUpdatedAt') && (el('commonUpdatedAt').textContent = fmtDateTime(selectedPost.updated_at || selectedPost.created_at || '') || '-');
 
-      // 共通：part_code / part_free_text（現状はAPI返却名に揺れがあるためフォールバックあり）
+      // 共通：part_code / part_free_text
       const partCode = String(
         selectedPost.part_code ||
         selectedPost.partCode ||
@@ -1109,14 +1270,13 @@
       const publishBtn = el('btnPublish');
       if (publishBtn) publishBtn.disabled = (!isDeveloper);
 
+      // 原文→公開コピー
+      const copyBtn = el('btnCopyOriginalToPublic');
+      if (copyBtn) copyBtn.disabled = !isDeveloper;
+
       const visDevSel = el('visibilityDev');
       const visDevHint = el('visibilityDevLockHint');
       if (visDevSel) {
-        // 初期値は「お客様の visibility」に合わせる。
-        // - お客様が private：visibility_dev は private 固定（変更不可）
-        // - お客様が public：visibility_dev の初期値は public（毎回の選び直しを不要にする）
-        // 例外：status_dev が rejected の場合は安全側で private を初期値とする。
-
         const stDev = normalizeDevStatus(selectedPost.status_dev || selectedPost.statusDev || '');
 
         if (!isCustomerPublic) {
@@ -1136,17 +1296,19 @@
 
       // 部位ガード（最終状態を反映）
       validateCommonPartGuard();
-// 原文
+
+      // 原文
       const origTitle = el('origTitle');
       const origBody = el('origBody');
       origTitle && (origTitle.value = String(selectedPost.original_title || selectedPost.title || ''));
       origBody && (origBody.value = String(selectedPost.original_body || selectedPost.body || ''));
 
-      // public_* の入力欄は、既に値があるならそれ、無いなら原文（フォールバック）を表示
+      // public_* の入力欄は「自動コピーしない」方針。
+      // 既に public_* がある場合のみ表示し、無い場合は空欄で開始する。
       const publicTitle = el('publicTitle');
       const publicBody = el('publicBody');
-      publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || selectedPost.public_title || selectedPost.publicTitle || selectedPost.original_title || selectedPost.title || ''));
-      publicBody && (publicBody.value = String(selectedPost.effective_public_body || selectedPost.public_body || selectedPost.publicBody || selectedPost.original_body || selectedPost.body || ''));
+      publicTitle && (publicTitle.value = String(selectedPost.public_title || selectedPost.publicTitle || ''));
+      publicBody && (publicBody.value = String(selectedPost.public_body || selectedPost.publicBody || ''));
 
       // デベロッパー返信（dev_comment）
       const devComment = el('devComment');
@@ -1164,30 +1326,23 @@
         el('commonStatusDevBadgeWrap') && (el('commonStatusDevBadgeWrap').innerHTML = renderDevStatusBadge(stSel.value));
       }
 
-      // visibility_dev は、お客様の visibility に応じて renderDetail 内で制御する（ここでは何もしない）
-
       const ptWrap = el('publicPostTypeWrap');
       if (ptWrap) {
         ptWrap.style.display = hasPublicPostType ? '' : 'none';
       }
 
-      // タイプ（公開）
+      // タイプ（公開）も「自動コピーしない」方針。
+      // public_post_type がある場合のみ採用し、無い場合は improve を初期値とする。
       if (hasPublicPostType) {
         const ptSel = el('publicPostType');
         if (ptSel) {
           const cur = normalizePostType(
-            selectedPost.effective_public_post_type ||
             selectedPost.public_post_type ||
             selectedPost.publicPostType ||
             ''
           );
-          const fallback = normalizePostType(
-            selectedPost.original_post_type ||
-            selectedPost.post_type ||
-            selectedPost.postType ||
-            ''
-          );
-          ptSel.value = cur || fallback || 'improve';
+          ptSel.value = cur || 'improve';
+          ptSel.disabled = !isDeveloper;
         }
       }
 
@@ -1285,6 +1440,8 @@
           el('publishStatus') && (el('publishStatus').disabled = true);
           el('visibilityDev') && (el('visibilityDev').disabled = true);
           el('devComment') && (el('devComment').disabled = true);
+          el('devCommentTemplate') && (el('devCommentTemplate').disabled = true);
+          el('btnCopyOriginalToPublic') && (el('btnCopyOriginalToPublic').disabled = true);
           return;
         }
 
@@ -1357,7 +1514,6 @@
         }
 
         selectedPost = res || null;
-        // capabilities は API で返る想定。未提供の場合は dashboard の capability をフォールバックする。
         hasPublicPostType = (selectedPost && selectedPost.capabilities && typeof selectedPost.capabilities.has_public_post_type === 'boolean')
           ? selectedPost.capabilities.has_public_post_type
           : supportsPublicPostType;
@@ -1369,6 +1525,9 @@
         }
 
         renderDetail();
+
+        // 返信テンプレート
+        await setupDevCommentTemplatesForSelectedPost();
 
         // 選択した意見が右側（編集ボード）に表示されたら、先頭へスクロール
         if (!opts || !opts.skipScrollToDetail) {
@@ -1388,7 +1547,7 @@
       } catch (e) {
         console.error(e);
         selectedPost = null;
-showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
+        showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗しました。');
         renderDetail();
       }
     };
@@ -1527,6 +1686,28 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
 
       el('btnPublish')?.addEventListener('click', doPublish);
 
+      // 原文→公開コピー
+      const copyBtn = el('btnCopyOriginalToPublic');
+      if (copyBtn && copyBtn.dataset.bound !== '1') {
+        copyBtn.addEventListener('click', () => {
+          if (!isDeveloper) return;
+          fillPublicFromOriginal();
+        });
+        copyBtn.dataset.bound = '1';
+      }
+
+      // 返信テンプレート選択
+      const tplSel = el('devCommentTemplate');
+      if (tplSel && tplSel.dataset.bound !== '1') {
+        tplSel.addEventListener('change', () => {
+          const v = String(tplSel.value || '').trim();
+          if (!v) return;
+          applyDevCommentTemplate(v);
+          tplSel.value = '';
+        });
+        tplSel.dataset.bound = '1';
+      }
+
       // status_dev を変更したら、上段バッジも追従（見た目の一貫性）
       const stSel = el('publishStatus');
       if (stSel && stSel.dataset.bound !== '1') {
@@ -1552,7 +1733,6 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
       const visDevSel = el('visibilityDev');
       if (visDevSel && visDevSel.dataset.bound !== '1') {
         visDevSel.addEventListener('change', () => {
-          // 右下ボタン文言を更新（visibility_dev に追従）
           updatePublishButtonLabelByVisibility();
         });
         visDevSel.dataset.bound = '1';
@@ -1586,8 +1766,6 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
         });
         logoutBtn.dataset.bound = '1';
       }
-
-      // 部位管理ボタン（初期状態）
 
       // 共通：部位（part_code）変更ボタン（ロック解除 → 選び直し）
       const commonPartBtn = el('commonPartEditBtn');
@@ -1666,7 +1844,6 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
     };
 
     // === スクロール制御（PC） ===
-    // 目的：右（編集ボード）上でホイール/トラックパッド操作したときに、左の一覧ではなく右ペインが優先的にスクロールされるようにする。
     const initWheelRouting = () => {
       const leftBox = el('leftPanelScroll');
       const rightBox = el('rightPanelScroll');
