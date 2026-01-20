@@ -399,7 +399,7 @@
                       <div class="mb-0">
                         <label class="form-label" for="devComment">返信メッセージ</label>
                         <textarea id="devComment" class="form-control" rows="5" placeholder="例：ご意見ありがとうございます。確認のうえ、対応方針をご連絡します。"></textarea>
-                        <div class="char-hint mt-1">※ 返信が不要な場合は空欄のまま保存できます。テンプレート選択時、既に入力がある場合は末尾に追記します。</div>
+                        <div class="char-hint mt-1">※ 返信が不要な場合は空欄のまま保存できます。テンプレート選択時は、内容を入れ替えます（追記しません）。</div>
                       </div>
                     </div>
 
@@ -744,16 +744,11 @@
     const applyDevCommentTemplate = (tpl) => {
       const ta = el('devComment');
       if (!ta) return;
-      const add = String(tpl || '').trim();
-      if (!add) return;
+      const next = String(tpl || '').trim();
+      if (!next) return;
 
-      const cur = String(ta.value || '').trim();
-      const lf = String.fromCharCode(10);
-      if (!cur) {
-        ta.value = add;
-      } else {
-        ta.value = cur + lf + lf + add;
-      }
+      // 要件：テンプレートを再選択したら「入れ替え」。追記はしない。
+      ta.value = next;
 
       try { ta.focus({ preventScroll: true }); } catch (_) {}
     };
