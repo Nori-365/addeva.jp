@@ -485,15 +485,27 @@
       }
     };
 
+    // === メッセージ制御（タイマー禁止）===
+    // 要件
+    // ・初期メッセージは「初回のみ」。最初の表示更新で消す。
+    // ・メッセージは「次の表示更新」まで保持する（時間で消さない）。
+    // ・保存後の内部更新（loadDashboard→loadPostDetail 等）では、keepMessage=true で保持する。
+    const __msg = {
+      isInitial: false,
+      hold: false,
+    };
+
     const clearAlert = () => {
       const box = el('messageArea');
       const text = el('messageText');
       if (!box || !text) return;
       box.className = 'alert d-none';
       text.textContent = '';
+      __msg.isInitial = false;
+      __msg.hold = false;
     };
 
-    const showAlert = (type, msg) => {
+    const showAlert = (type, msg, opts = {}) => {
       const box = el('messageArea');
       const text = el('messageText');
       if (!box || !text) return;
@@ -505,8 +517,26 @@
 
       box.className = 'alert ' + klass;
       text.textContent = msg || '';
+
+      __msg.isInitial = !!opts.isInitial;
+      __msg.hold = !!opts.hold;
+
       el('messageCloseBtn')?.addEventListener('click', clearAlert, { once: true });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 既存挙動は維持（ジャンプ調査中のため、ここは変えない）
+      if (!opts.noScroll) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    // 「表示更新」の開始を宣言する。
+    // keepMessage=true の場合は、同一処理内の内部更新とみなし、メッセージを消さない。
+    const beginDisplayUpdate = (opts = {}) => {
+      const keepMessage = !!opts.keepMessage;
+      if (keepMessage) return;
+
+      // 初期メッセージも含めて、表示更新タイミングで消す
+      clearAlert();
     };
 
     const buildBoardUrl = (productCode) => {
@@ -1166,7 +1196,8 @@
 
     // === API 呼び出し ===
 
-    const loadDashboard = async () => {
+    const loadDashboard = async (opts = {}) => {
+      beginDisplayUpdate({ keepMessage: !!opts.keepMessage });
       setGuardState('checking');
 
       // 初期表示
@@ -1294,6 +1325,8 @@
     };
 
     const loadPostDetail = async (postId, productCode, opts = {}) => {
+      beginDisplayUpdate({ keepMessage: !!(opts && opts.keepMessage) });
+
       selectedPostId = postId;
       selectedProductCode = String(productCode || '').trim();
       selectedPost = null;
@@ -1336,7 +1369,6 @@
         }
 
         renderDetail();
-        clearAlert();
 
         // 選択した意見が右側（編集ボード）に表示されたら、先頭へスクロール
         if (!opts || !opts.skipScrollToDetail) {
@@ -1466,13 +1498,13 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
         const keepPostId = Number(selectedPost.post_id);
         const keepProductCode = String(selectedPost.product_code || selectedProductCode || '').trim();
 
-        await loadDashboard();
+        await loadDashboard({ keepMessage: true });
 
         // 保存後：左の一覧へジャンプ（該当行が消えている場合は product のヘッダーへ）
         scrollToEditedList(keepProductCode, keepPostId);
 
         // 詳細も再読込（ただし保存後は一覧側を見たいので、右ペインへの自動スクロール/フォーカスは抑止）
-        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true });
+        await loadPostDetail(keepPostId, keepProductCode, { skipScrollToDetail: true, skipFocus: true, keepMessage: true });
 
       } catch (e) {
         console.error(e);
@@ -1486,7 +1518,6 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
     const bindUI = () => {
 
       el('btnReload')?.addEventListener('click', async () => {
-        clearAlert();
         await loadDashboard();
       });
 
