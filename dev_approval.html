@@ -242,6 +242,35 @@
 
                   <div id="detailWrap" class="d-none">
 
+                    <!-- 中段：お客様入力（読み取り専用） -->
+                    <div class="border rounded p-3 mb-3 bg-light">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">お客様の入力（編集不可）</div>
+                        <div class="d-flex align-items-center flex-wrap gap-2">
+                          <span class="small text-secondary">status：</span><span id="origStatusBadgeWrap">-</span>
+                          <span class="small text-secondary ms-2">visibility：</span><span id="origVisibilityBadgeWrap">-</span>
+                        </div>
+                      </div>
+
+                      <hr class="my-3">
+
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <div class="small text-secondary">意見タイプ（post_type）</div>
+                          <div class="mono" id="origPostTypeText">-</div>
+                        </div>
+                        <div class="col-12">
+                          <div class="small text-secondary">タイトル（原文）</div>
+                          <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
+                        </div>
+
+                        <div class="col-12">
+                          <div class="small text-secondary">本文（原文）</div>
+                          <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
+                        </div>
+                      </div>
+                    </div>\n\n                    
+
                     <!-- 上段：共通項目（商品関連） -->
                     <div class="border rounded p-3 mb-3">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -289,36 +318,7 @@
                           <input id="commonPartFreeText" class="form-control form-control-sm textarea-readonly" type="text" readonly>
                         </div>
                       </div>
-                    </div>
-
-                    <!-- 中段：お客様入力（読み取り専用） -->
-                    <div class="border rounded p-3 mb-3 bg-light">
-                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <div class="fw-semibold">お客様の入力（編集不可）</div>
-                        <div class="d-flex align-items-center flex-wrap gap-2">
-                          <span class="small text-secondary">status：</span><span id="origStatusBadgeWrap">-</span>
-                          <span class="small text-secondary ms-2">visibility：</span><span id="origVisibilityBadgeWrap">-</span>
-                        </div>
-                      </div>
-
-                      <hr class="my-3">
-
-                      <div class="row g-3">
-                        <div class="col-12">
-                          <div class="small text-secondary">意見タイプ（post_type）</div>
-                          <div class="mono" id="origPostTypeText">-</div>
-                        </div>
-                        <div class="col-12">
-                          <div class="small text-secondary">タイトル（原文）</div>
-                          <input id="origTitle" class="form-control textarea-readonly" type="text" readonly>
-                        </div>
-
-                        <div class="col-12">
-                          <div class="small text-secondary">本文（原文）</div>
-                          <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
-                        </div>
-                      </div>
-                    </div>
+                    </div>\n\n                    
 
                     <!-- 下段：デベロッパー入力（公開内容 public_*） -->
                     <div class="border rounded p-3">
