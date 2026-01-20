@@ -269,7 +269,9 @@
                           <textarea id="origBody" class="form-control textarea-readonly" rows="12" readonly></textarea>
                         </div>
                       </div>
-                    </div>\n\n                    
+                    </div>
+
+                    
 
                     <!-- 上段：共通項目（商品関連） -->
                     <div class="border rounded p-3 mb-3">
@@ -318,10 +320,12 @@
                           <input id="commonPartFreeText" class="form-control form-control-sm textarea-readonly" type="text" readonly>
                         </div>
                       </div>
-                    </div>\n\n                    
+                    </div>
+
+                    
 
                     <!-- 下段：デベロッパー入力（公開内容 public_*） -->
-                    <div class="border rounded p-3">
+                    <div class="border rounded p-3 mb-3">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div class="fw-semibold">デベロッパー入力（公開内容 public_*）</div>
                         <div class="text-secondary small d-flex align-items-center flex-wrap gap-2">
@@ -366,12 +370,28 @@
                         <label class="form-label" for="publicBody">本文（公開）</label>
                         <textarea id="publicBody" class="form-control" rows="16"></textarea>
                       </div>
+                    </div>
 
-                      <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
-                        <button id="btnPublish" class="btn btn-primary" type="button">
-                          <i class="bi bi-check2-circle"></i> 保存して公開
-                        </button>
+                    <!-- デベロッパー返信（dev_comment） -->
+                    <div class="border rounded p-3 mb-3" id="devCommentBlock">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">デベロッパー返信</div>
+                        <div class="small text-secondary">お客様への返信メッセージ（dev_comment）</div>
                       </div>
+
+                      <hr class="my-3">
+
+                      <div class="mb-0">
+                        <label class="form-label" for="devComment">返信メッセージ</label>
+                        <textarea id="devComment" class="form-control" rows="5" placeholder="例：ご意見ありがとうございます。確認のうえ、対応方針をご連絡します。"></textarea>
+                        <div class="char-hint mt-1">※ 返信が不要な場合は空欄のまま保存できます。</div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-end flex-wrap gap-2">
+                      <button id="btnPublish" class="btn btn-primary" type="button">
+                        <i class="bi bi-check2-circle"></i> 保存して公開
+                      </button>
                     </div>
 
                   </div>
@@ -417,6 +437,7 @@
         if (el('btnPublish')) el('btnPublish').disabled = true;
         if (el('publishStatus')) el('publishStatus').disabled = true;
         if (el('commonPartEditBtn')) el('commonPartEditBtn').disabled = true;
+        if (el('devComment')) el('devComment').disabled = true;
         return;
       }
 
@@ -428,6 +449,7 @@
           main.classList.remove('guard-disabled');
         }
         showAlert('danger', reason || 'デベロッパー権限がありません。');
+        if (el('devComment')) el('devComment').disabled = true;
         return;
       }
 
@@ -1096,6 +1118,13 @@
       publicTitle && (publicTitle.value = String(selectedPost.effective_public_title || selectedPost.public_title || selectedPost.publicTitle || selectedPost.original_title || selectedPost.title || ''));
       publicBody && (publicBody.value = String(selectedPost.effective_public_body || selectedPost.public_body || selectedPost.publicBody || selectedPost.original_body || selectedPost.body || ''));
 
+      // デベロッパー返信（dev_comment）
+      const devComment = el('devComment');
+      if (devComment) {
+        devComment.value = String(selectedPost.dev_comment || selectedPost.devComment || '');
+        devComment.disabled = !isDeveloper;
+      }
+
       // デベロッパー側：status_dev（バッジ＆セレクト）
       const stSel = el('publishStatus');
       if (stSel) {
@@ -1224,6 +1253,7 @@
           el('btnPublish') && (el('btnPublish').disabled = true);
           el('publishStatus') && (el('publishStatus').disabled = true);
           el('visibilityDev') && (el('visibilityDev').disabled = true);
+          el('devComment') && (el('devComment').disabled = true);
           return;
         }
 
@@ -1364,6 +1394,7 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
 
         const publicTitle = el('publicTitle') ? String(el('publicTitle').value || '') : '';
         const publicBody = el('publicBody') ? String(el('publicBody').value || '') : '';
+        const devComment = el('devComment') ? String(el('devComment').value || '') : '';
 
         // 公開タイプ（public_post_type）
         let publicPostType = null;
@@ -1391,6 +1422,7 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
         const payloadBase = {
           publicTitle,
           publicBody,
+          devComment,
           newStatus,
           visibilityDev,
         };
@@ -1497,6 +1529,12 @@ showAlert('danger', e && e.message ? e.message : '意見詳細の取得に失敗
 
       // Ctrl/Cmd+Enter で承認（公開）
       el('publicBody')?.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          doPublish();
+        }
+      });
+
+      el('devComment')?.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           doPublish();
         }
