@@ -575,9 +575,9 @@
       } catch (_) {}
       // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
       const str = String(s ?? '');
-      return str
-        .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"');
+      const bs = String.fromCharCode(92); // \
+      const dq = String.fromCharCode(34); // "
+      return str.replaceAll(bs, bs + bs).replaceAll(dq, bs + dq);
     };
 
     // 値のゆらぎを吸収（古い値・互換値）
@@ -674,9 +674,9 @@
     const REPLY_TEMPLATE_DIRS = ['/dev_reply_message', '/repy_message', '/reply_message']; // 互換：ユーザー指定優先 + 誤記揺れ吸収
 
     const parseReplyTemplates = (txt) => {
-      const lines = String(txt || '').split(/
-?
-/).map(s => String(s || '').trim());
+      const lf = String.fromCharCode(10);
+      const cr = String.fromCharCode(13);
+      const lines = String(txt || '').split(lf).map(s => String(s || '').replaceAll(cr, '').trim());
       return lines.filter(s => s && !s.startsWith('#'));
     };
 
@@ -748,12 +748,11 @@
       if (!add) return;
 
       const cur = String(ta.value || '').trim();
+      const lf = String.fromCharCode(10);
       if (!cur) {
         ta.value = add;
       } else {
-        ta.value = cur + "
-
-" + add;
+        ta.value = cur + lf + lf + add;
       }
 
       try { ta.focus({ preventScroll: true }); } catch (_) {}
