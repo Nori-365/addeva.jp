@@ -459,6 +459,12 @@
         ? `<p class="small text-secondary mb-2">ニックネーム: ${escapeHtml(p.nickname)}</p>`
         : '';
 
+      // 部位名（表示用）：APIが part_name_ja を返す前提（その他の場合は自由入力部位名を入れて返す）
+      const partName = String(p.part_name_ja || '').trim();
+      const partLine = partName
+        ? `<p class="small text-secondary mb-2">部位: ${escapeHtml(partName)}</p>`
+        : '';
+
       const voteHint = canVote ? 'クリックで投票/取消' : (isPrivate ? '非公開のため投票不可' : '審査中は投票不可');
 
       return `
@@ -482,6 +488,7 @@
           </div>
 
           <div class="post-card-bottom mt-2">
+            ${partLine}
             ${nickLine}
             <h3 class="h6 mb-2">${escapeHtml(title)}</h3>
             <p class="mb-0" style="white-space:pre-wrap;">${escapeHtml(p.body)}</p>
