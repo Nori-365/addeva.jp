@@ -33,15 +33,6 @@
 
     .char-hint { font-size: .85rem; color: #6c757d; }
 
-    .label-mobile { display: none; }
-
-    @media (max-width: 575.98px) {
-      .label-desktop { display: none; }
-      .label-mobile { display: none; }
-      .label-posttype { display: none !important; }
-      .label-visibility { display: none !important; }
-    }
-
     @media (max-width: 991.98px) {
       .sticky-pane { position: static; top: auto; }
     }
@@ -90,11 +81,34 @@
           </button>
         </div>
 
-        <!-- メッセージ表示エリア -->
+        <!-- メッセージ表示エリア（汎用 alert） -->
         <div id="messageArea" class="alert d-none" role="alert" aria-live="polite" aria-atomic="true">
           <div class="d-flex align-items-start justify-content-between gap-3">
             <div id="messageText" class="flex-grow-1"></div>
             <button type="button" class="btn-close" aria-label="閉じる" id="messageCloseBtn"></button>
+          </div>
+        </div>
+
+        <!-- ▼ デベロッパー返信（未読時 Top 通知：既読にするまで消えない） -->
+        <div id="devReplyTopNotice" class="d-none mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+          <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+            <div class="flex-grow-1">
+              <div class="fw-bold" style="font-size: 1.25rem; line-height: 1.35;">
+                開発者から返信があります
+                <span id="devReplyTopUnreadBadge" class="badge bg-danger ms-2">未読</span>
+              </div>
+              <div id="devReplyTopMeta" class="mt-1 text-secondary small"></div>
+              <div id="devReplyTopBody" class="mt-2" style="white-space: pre-wrap;"></div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <button id="btnDevReplyGoDetail" class="btn btn-outline-primary btn-sm" type="button">
+                <i class="bi bi-chat-dots me-1"></i>返信を見る
+              </button>
+              <button id="btnDevReplyMarkRead" class="btn btn-primary btn-sm" type="button">
+                <i class="bi bi-check2-circle me-1"></i>既読にする
+              </button>
+            </div>
           </div>
         </div>
 
@@ -156,9 +170,9 @@
               <div class="card shadow-sm">
                 <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                      <div>
-                        <div class="h5 m-0">意見詳細</div>
-                      </div>
+                    <div>
+                      <div class="h5 m-0">意見詳細</div>
+                    </div>
                     <div class="text-secondary small">
                       <span id="detailMeta">未選択</span>
                     </div>
@@ -175,13 +189,13 @@
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div class="fw-semibold">あなたの原文（編集可）</div>
                         <div class="text-secondary small d-flex align-items-center justify-content-end flex-wrap gap-2">
-                          <label class="me-1 label-visibility" for="visibility"><span class="label-desktop">公開設定</span></label>
+                          <label class="me-1" for="visibility"><span class="d-none d-sm-inline">公開設定</span></label>
                           <select id="visibility" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="public">public（公開）</option>
                             <option value="private">private（非公開）</option>
                           </select>
 
-                          <label class="me-1 ms-2 label-posttype" for="postType">タイプ</label>
+                          <label class="me-1 ms-2" for="postType">タイプ</label>
                           <select id="postType" class="form-select form-select-sm d-inline-block" style="width:auto;">
                             <option value="improve">改善</option>
                             <option value="praise">良かった点</option>
@@ -228,7 +242,17 @@
                       </div>
                     </div>
 
-
+                    <!-- ▼ デベロッパー返信（返信が無い場合は非表示） -->
+                    <div class="border rounded p-3 mb-3" id="devReplyPanel" style="display:none;">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="fw-semibold">デベロッパー返信</div>
+                        <div>
+                          <span id="devReplyUnreadBadge" class="badge bg-danger d-none">未読</span>
+                        </div>
+                      </div>
+                      <div id="devReplyMeta" class="text-secondary small mt-1"></div>
+                      <textarea id="devCommentText" class="form-control textarea-readonly mt-2" rows="7" readonly></textarea>
+                    </div>
 
                     <!-- 公開情報 -->
                     <div class="border rounded p-3 mb-3 bg-light" id="publicInfoPanel" style="display:none;">
@@ -247,8 +271,6 @@
                     </div>
 
                     <!-- 内容（公開） -->
-
-
                     <div class="border rounded p-3" id="publicContentPanel" style="display:none;">
                       <div class="fw-semibold">内容</div>
 
@@ -266,7 +288,6 @@
                         <div class="small text-secondary">本文（公開）</div>
                         <textarea id="publicBody" class="form-control textarea-readonly" rows="10" readonly></textarea>
                       </div>
-                    </div>
                     </div>
 
                   </div>
@@ -311,6 +332,17 @@
         return d.toLocaleString();
       } catch {
         return String(iso);
+      }
+    };
+
+    const parseDate = (iso) => {
+      if (!iso) return null;
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return null;
+        return d;
+      } catch {
+        return null;
       }
     };
 
@@ -391,18 +423,6 @@
       }
     }
 
-    // CSS.escape の簡易フォールバック（data-* セレクタ用）
-    const cssEscape = (s) => {
-      try {
-        if (window.CSS && typeof CSS.escape === 'function') return CSS.escape(String(s ?? ''));
-      } catch (_) {}
-      // フォールバック：属性セレクタ（"...")内で安全に使うため、バックスラッシュとダブルクォートだけをエスケープする。
-      const str = String(s ?? '');
-      return str
-        .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"');
-    };
-
     // === 状態 ===
     const focusProductCode = (qs('product_code') || '').trim();
 
@@ -418,24 +438,124 @@
     let selectedProductCode = '';
     let selectedPost = null;
 
-    // parts キャッシュ
-    const partsCache = new Map(); // product_code => grouped parts
-    const partNameCache = new Map(); // product_code => Map(part_code => part_name_ja)
+    // === dev_comment（デベロッパー返信） ===
+    const hasDevComment = (post) => {
+      const t = String(post?.dev_comment ?? post?.devComment ?? '').trim();
+      return Boolean(t);
+    };
+
+    const isDevCommentUnread = (post) => {
+      if (!hasDevComment(post)) return false;
+      const readAt = post?.dev_comment_read_at ?? post?.devCommentReadAt ?? null;
+      const updAt = post?.dev_comment_updated_at ?? post?.devCommentUpdatedAt ?? null;
+
+      // 1) read_at が NULL なら未読
+      if (!readAt) return true;
+
+      // 2) updated_at が read_at より新しければ未読
+      const dRead = parseDate(readAt);
+      const dUpd = parseDate(updAt);
+      if (!dRead) return true;           // read_at が壊れているなら安全側（未読）
+      if (!dUpd) return false;           // updated_at が無いなら「既読済み」を優先
+      return dUpd.getTime() > dRead.getTime();
+    };
+
+    const hideDevReplyTopNotice = () => {
+      const box = el('devReplyTopNotice');
+      if (box) box.classList.add('d-none');
+      el('devReplyTopMeta') && (el('devReplyTopMeta').textContent = '');
+      el('devReplyTopBody') && (el('devReplyTopBody').textContent = '');
+    };
+
+    const renderDevReplyPanels = () => {
+      // 詳細未選択時は非表示
+      if (!selectedPost) {
+        hideDevReplyTopNotice();
+        const p = el('devReplyPanel');
+        if (p) p.style.display = 'none';
+        return;
+      }
+
+      const devText = String(selectedPost.dev_comment ?? selectedPost.devComment ?? '').trim();
+      const hasText = Boolean(devText);
+
+      // 返信ブロック（右ペイン指定位置）
+      const panel = el('devReplyPanel');
+      if (panel) {
+        if (!hasText) {
+          panel.style.display = 'none';
+        } else {
+          panel.style.display = '';
+          el('devCommentText') && (el('devCommentText').value = devText);
+
+          const updAt = selectedPost.dev_comment_updated_at ?? selectedPost.devCommentUpdatedAt ?? null;
+          const readAt = selectedPost.dev_comment_read_at ?? selectedPost.devCommentReadAt ?? null;
+
+          const metaParts = [];
+          if (updAt) metaParts.push('返信日時: ' + fmtDateTime(updAt));
+          if (readAt) metaParts.push('既読日時: ' + fmtDateTime(readAt));
+          el('devReplyMeta') && (el('devReplyMeta').textContent = metaParts.join(' / '));
+
+          const unread = isDevCommentUnread(selectedPost);
+          const badge = el('devReplyUnreadBadge');
+          if (badge) badge.classList.toggle('d-none', !unread);
+        }
+      }
+
+      // Top 通知（未読時のみ）
+      if (hasText && isDevCommentUnread(selectedPost)) {
+        const top = el('devReplyTopNotice');
+        top && top.classList.remove('d-none');
+
+        const updAt = selectedPost.dev_comment_updated_at ?? selectedPost.devCommentUpdatedAt ?? null;
+        el('devReplyTopMeta') && (el('devReplyTopMeta').textContent = updAt ? ('返信日時: ' + fmtDateTime(updAt)) : '');
+
+        // 長文でも読めるように、Top は本文をそのまま表示（改行保持）
+        el('devReplyTopBody') && (el('devReplyTopBody').textContent = devText);
+      } else {
+        hideDevReplyTopNotice();
+      }
+    };
+
+    const markDevCommentRead = async () => {
+      if (!selectedPost || !selectedPost.post_id) return;
+      if (!hasDevComment(selectedPost)) return;
+
+      const postId = Number(selectedPost.post_id);
+      const btn = el('btnDevReplyMarkRead');
+      if (btn) btn.disabled = true;
+
+      try {
+        const res = await ADDEVA.apiFetch('/api/addeva/user_opinion/mark_dev_comment_read', {
+          method: 'POST',
+          body: { postId }
+        });
+
+        // 期待：res.dev_comment_read_at または res.devCommentReadAt
+        const readAt = (res && (res.dev_comment_read_at ?? res.devCommentReadAt)) ? (res.dev_comment_read_at ?? res.devCommentReadAt) : null;
+        selectedPost.dev_comment_read_at = readAt || new Date().toISOString();
+
+        renderDevReplyPanels();
+        showAlert('success', '既読にしました。');
+
+      } catch (e) {
+        console.error(e);
+        showAlert('danger', e && e.message ? e.message : '既読更新に失敗しました。');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    };
 
     // === UI：文字数カウント ===
     const bindCharCount = () => {
       const title = el('title');
       const titleCount = el('titleCount');
-      const partFree = el('partFreeText');
-      const partFreeCount = el('partFreeTextCount');
 
       const update = () => {
         if (title && titleCount) titleCount.textContent = String((title.value || '').length);
-        if (partFree && partFreeCount) partFreeCount.textContent = String((partFree.value || '').length);
       };
 
       title?.addEventListener('input', update);
-      partFree?.addEventListener('input', update);
       update();
     };
 
@@ -515,7 +635,6 @@
             const stDevRaw = String(it.status_dev || it.statusDev || '');
             const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
 
-            // 「開発者がまだ審査・公開していない間は new のまま」表示に寄せる
             const approvedAtRaw = String(it.approved_at || it.approvedAt || '');
             const hasPublic = Boolean(it.public_title || it.publicTitle || it.public_body || it.publicBody || it.public_part_code || it.publicPartCode);
             const hasDevTouched = Boolean(approvedAtRaw) || Boolean(stDevRaw) || Boolean(visDevRaw) || hasPublic;
@@ -524,16 +643,14 @@
             if (stLc === 'updated' && !hasDevTouched) stDisp = 'new';
             const stDispLc = String(stDisp || '').toLowerCase();
 
-            // ユーザー側：status は審査状態（new / updated / done）
-            // ・new と updated は同じ色（黄色）
             let stBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
             if (stDispLc === 'new') stBadgeClass = 'bg-warning text-dark';
             else if (stDispLc === 'updated') stBadgeClass = 'bg-warning text-dark';
             else if (stDispLc === 'done') stBadgeClass = 'bg-info-subtle text-info border border-info-subtle';
 
             const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stDisp)}</span>`;
+
             let devBadges = '';
-            // 表示ラベル（reviewing だけ日本語化：確認中）
             const stDevLc = stDevRaw.toLowerCase();
             let stDevLabel = stDevRaw;
             if (stDevLc === 'reviewing') stDevLabel = '確認中';
@@ -541,9 +658,6 @@
             else if (stDevLc === 'shipped') stDevLabel = '対応済み';
             else if (stDevLc === 'rejected') stDevLabel = '不採用';
 
-            // デベロッパー側（参考）の表示方針
-            // ・確認中（reviewing）のときは、それだけ表示（dev:private 等は出さない）
-            // ・審査が完了した後は、公開/非公開（visibility_dev）を示すバッジを1つだけ表示
             const visDevLc = String(visDevRaw || '').toLowerCase();
             const devVisLabel = (visDevLc === 'public') ? '公開'
                               : (visDevLc === 'private') ? '非公開'
@@ -562,9 +676,8 @@
               ? '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-2 align-middle">private</span>'
               : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 align-middle">public</span>';
 
-            // 投稿タイプ（improve / praise / guide）を左一覧にも表示する
             let pt = String(it.post_type || it.postType || '').toLowerCase();
-            if (pt === 'good') pt = 'praise'; // 互換（旧値）
+            if (pt === 'good') pt = 'praise';
 
             let typeLabel = '';
             let typeBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
@@ -582,7 +695,6 @@
             const partNameJa = String(it.part_name_ja || it.partNameJa || '');
             const partFree = String(it.part_free_text || it.partFreeText || '');
 
-            // 部位名は API（dashboard）が返す前提：part_name_ja を優先表示
             let partLabel = '';
             if (partCode) {
               partLabel = partNameJa ? partNameJa : partCode;
@@ -670,64 +782,6 @@
       });
     };
 
-    const renderPartsSelect = (partsGrouped, selectedCode) => {
-      const sel = el('partSelect');
-      if (!sel) return;
-
-      if (!partsGrouped || !partsGrouped.length) {
-        sel.innerHTML = '<option value="">部位がありません</option>';
-        return;
-      }
-
-      let html = '<option value="">（未選択）</option>';
-      for (const cat of partsGrouped) {
-        const label = escapeHtml(cat.category_name || 'その他');
-        html += `<optgroup label="${label}">`;
-        for (const p of (cat.parts || [])) {
-          const code = String(p.part_code || '');
-          const name = String(p.part_name_ja || code);
-          html += `<option value="${escapeHtml(code)}">${escapeHtml(name)} (${escapeHtml(code)})</option>`;
-        }
-        html += '</optgroup>';
-      }
-
-      sel.innerHTML = html;
-      if (selectedCode) sel.value = String(selectedCode);
-    };
-
-    const setStatusHint = (status) => {
-      const st = String(status || '').toLowerCase();
-      const hint = el('statusHint');
-      if (!hint) return;
-
-      if (st === 'new') hint.textContent = '新規投稿です。審査中のため公開内容（public_*）は未設定の可能性があります。';
-      else if (st === 'updated') hint.textContent = '原文を更新しました。再審査中のため公開内容（public_*）は自動では更新されません。';
-      else if (st === 'done') hint.textContent = '審査が完了しました。公開されるかどうかは「あなたの visibility」と「デベロッパー側 visibility_dev」で決まります。';
-      else hint.textContent = '';
-    };
-
-    const setDevStatusHint = (statusDev) => {
-      const st = String(statusDev || '').toLowerCase();
-      const hint = el('devStatusHint');
-      if (!hint) return;
-
-      if (st === 'reviewing') hint.textContent = '確認中です。';
-      else if (st === 'planned') hint.textContent = '対応予定です（採用）。';
-      else if (st === 'shipped') hint.textContent = '対応済みです（採用）。';
-      else if (st === 'rejected') hint.textContent = '不採用です。';
-      else hint.textContent = '';
-    };
-
-    const setDevVisibilityHint = (visDev) => {
-      const v = String(visDev || '').toLowerCase();
-      const hint = el('devVisibilityHint');
-      if (!hint) return;
-
-      if (v === 'public') hint.textContent = '公開可です。';
-      else if (v === 'private') hint.textContent = '非公開です（他ユーザーには表示されません）。';
-      else hint.textContent = '';
-    };
-
     const renderDetail = () => {
       const empty = el('detailEmpty');
       const wrap = el('detailWrap');
@@ -739,6 +793,9 @@
         wrap && wrap.classList.add('d-none');
         meta && (meta.textContent = '未選択');
         btnScroll && (btnScroll.disabled = true);
+        hideDevReplyTopNotice();
+        const p = el('devReplyPanel');
+        if (p) p.style.display = 'none';
         return;
       }
 
@@ -757,13 +814,6 @@
         if (updatedForMeta) parts.push(`更新: ${updatedForMeta}`);
         meta && (meta.textContent = parts.join(' / '));
       }
-
-      el('detailPostId') && (el('detailPostId').textContent = String(selectedPost.post_id || '-'));
-
-      const code = String(selectedPost.product_code || selectedProductCode || '');
-      const p = products.find(x => String(x.product_code || '') === code);
-      const name = p ? String(p.product_name || '') : '';
-      el('detailProductText') && (el('detailProductText').textContent = name ? `${name} / ${code}` : (code || '-'));
 
       // status 表示（開発者がまだ審査・公開していない間は new のまま）
       const statusRaw = String(selectedPost.status || '-');
@@ -788,10 +838,15 @@
 
       el('statusText') && (el('statusText').textContent = statusDispJa);
 
-      // 公開可否（結論のみ）
+      // 公開可否（NULL は未設定として扱う）
       const userVisLc = String(selectedPost.visibility || 'public').toLowerCase();
       const devVisLc = visDevForStatus;
-      const allowed = (userVisLc === 'public' && devVisLc === 'public') ? '公開' : '非公開';
+      let allowed = '非公開';
+      if (!devVisLc) {
+        allowed = '未設定';
+      } else {
+        allowed = (userVisLc === 'public' && devVisLc === 'public') ? '公開' : '非公開';
+      }
       el('publicAllowedText') && (el('publicAllowedText').textContent = allowed);
 
       // 「ユーザーが非公開 かつ デベロッパーも非公開」のときのみ、公開情報は非表示
@@ -801,28 +856,12 @@
         publicInfoPanel.style.display = hidePanel ? 'none' : '';
       }
 
-
-
       const vis = String(selectedPost.visibility || 'public');
       el('visibility') && (el('visibility').value = vis);
 
       let pt = String(selectedPost.post_type || 'improve');
-      if (pt === 'good') pt = 'praise'; // 互換（旧値）
+      if (pt === 'good') pt = 'praise';
       el('postType') && (el('postType').value = pt);
-
-      el('createdAt') && (el('createdAt').textContent = fmtDateTime(selectedPost.created_at || ''));
-      el('updatedAt') && (el('updatedAt').textContent = fmtDateTime(selectedPost.updated_at || ''));
-
-      const approvedWrap = el('approvedWrap');
-      const approvedAt = selectedPost.approved_at || '';
-      if (approvedWrap) {
-        if (approvedAt) {
-          approvedWrap.style.display = '';
-          el('approvedAt') && (el('approvedAt').textContent = fmtDateTime(approvedAt));
-        } else {
-          approvedWrap.style.display = 'none';
-        }
-      }
 
       // 原文
       el('title') && (el('title').value = String(selectedPost.title || ''));
@@ -838,14 +877,13 @@
       } else if (partFree) {
         partDisp = partFree;
       }
-
       el('originalPartText') && (el('originalPartText').textContent = String(partDisp));
 
       // 公開内容（参照）
       el('publicTitle') && (el('publicTitle').value = String(selectedPost.public_title || ''));
       el('publicBody') && (el('publicBody').value = String(selectedPost.public_body || ''));
 
-      const pubPartCode = String(selectedPost.public_part_code || selectedPost.public_partCode || '');
+      const pubPartCode = String(selectedPost.public_part_code || selectedPost.publicPartCode || '');
       const pubPartNameJa = String(selectedPost.public_part_name_ja || selectedPost.publicPartNameJa || '');
 
       let pubPartDisp = '-';
@@ -863,22 +901,8 @@
         publicContentPanel.style.display = hasPublic ? '' : 'none';
       }
 
-      bindCharCount();
-    };
-
-    const syncPartInputState = () => {
-      const sel = el('partSelect');
-      const free = el('partFreeText');
-      if (!sel || !free) return;
-
-      const v = String(sel.value || '').trim();
-      if (v) {
-        free.disabled = true;
-        free.classList.add('textarea-readonly');
-      } else {
-        free.disabled = false;
-        free.classList.remove('textarea-readonly');
-      }
+      // デベロッパー返信
+      renderDevReplyPanels();
 
       bindCharCount();
     };
@@ -945,13 +969,10 @@
           }
         }
 
-        // products の順序に合わせて空配列を作る
         for (const p of products) {
           const code = String(p.product_code || '');
           if (!postsByProduct.has(code)) postsByProduct.set(code, []);
         }
-
-        // 部位名（part_name_ja）は dashboard API が返す前提（追加の parts/list 呼び出しは行わない）
 
         renderHeaderSummary();
         renderProducts();
@@ -972,55 +993,6 @@
       }
     };
 
-    const loadPartsForProduct = async (productCode) => {
-      const pc = String(productCode || '').trim();
-      if (!pc) return [];
-
-      if (partsCache.has(pc)) {
-        // 旧キャッシュ（partNameCache が無い）への互換
-        if (!partNameCache.has(pc)) {
-          const grouped = partsCache.get(pc) || [];
-          const m = new Map();
-          for (const cat of grouped) {
-            for (const p of (cat && cat.parts) ? cat.parts : []) {
-              const c = String(p.part_code || '');
-              if (!c) continue;
-              m.set(c, String(p.part_name_ja || c));
-            }
-          }
-          partNameCache.set(pc, m);
-        }
-        return partsCache.get(pc);
-      }
-
-      try {
-        const res = await ADDEVA.apiFetch('/api/addeva/feedback/parts/list', {
-          method: 'POST',
-          body: { productCode: pc, grouped: true }
-        });
-        const parts = Array.isArray(res) ? res : [];
-        partsCache.set(pc, parts);
-
-        // part_code -> part_name_ja の高速参照Mapを作る
-        const m = new Map();
-        for (const cat of parts) {
-          for (const p of (cat && cat.parts) ? cat.parts : []) {
-            const c = String(p.part_code || '');
-            if (!c) continue;
-            m.set(c, String(p.part_name_ja || c));
-          }
-        }
-        partNameCache.set(pc, m);
-
-        return parts;
-      } catch (e) {
-        console.error(e);
-        partsCache.set(pc, []);
-        partNameCache.set(pc, new Map());
-        return [];
-      }
-    };
-
     const loadPostDetail = async (postId, productCode, opts = {}) => {
       selectedPostId = postId;
       selectedProductCode = String(productCode || '').trim();
@@ -1036,10 +1008,7 @@
         selectedPost = res || null;
         hideIntroMessage();
 
-        // 部位名（part_name_ja）は post_detail API が返す前提（追加の parts/list 呼び出しは行わない）
-
         renderDetail();
-        syncPartInputState();
         if (!opts || !opts.preserveAlert) clearAlert();
 
         if (!opts || !opts.skipScrollToDetail) {
@@ -1090,7 +1059,6 @@
       } catch (e) {
         console.error(e);
         try {
-          // fallback：取消ステータス未対応の場合でも、最低限「非公開」で取り下げ扱い
           await ADDEVA.apiFetch('/api/addeva/user_opinion/update', {
             method: 'POST',
             body: {
@@ -1129,7 +1097,7 @@
         const title = el('title') ? String(el('title').value || '').trim() : '';
         const body = el('body') ? String(el('body').value || '').trim() : '';
         let postType = el('postType') ? String(el('postType').value || '').trim() : 'improve';
-        if (postType === 'good') postType = 'praise'; // 互換（旧値）
+        if (postType === 'good') postType = 'praise';
         const visibility = el('visibility') ? String(el('visibility').value || '').trim() : 'public';
 
         if (!title) {
@@ -1180,12 +1148,7 @@
       });
 
       el('btnCancel')?.addEventListener('click', doCancel);
-
       el('btnSave')?.addEventListener('click', doSave);
-
-      el('partSelect')?.addEventListener('change', () => {
-        syncPartInputState();
-      });
 
       // Ctrl/Cmd+Enter で更新
       el('body')?.addEventListener('keydown', (e) => {
@@ -1193,6 +1156,28 @@
           doSave();
         }
       });
+
+      // Top 通知：返信を見る
+      const goBtn = el('btnDevReplyGoDetail');
+      if (goBtn && goBtn.dataset.bound !== '1') {
+        goBtn.addEventListener('click', () => {
+          // 右ペインの返信ブロックへ
+          const p = el('devReplyPanel');
+          if (p && p.style.display !== 'none') {
+            p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+        goBtn.dataset.bound = '1';
+      }
+
+      // Top 通知：既読にする
+      const readBtn = el('btnDevReplyMarkRead');
+      if (readBtn && readBtn.dataset.bound !== '1') {
+        readBtn.addEventListener('click', markDevCommentRead);
+        readBtn.dataset.bound = '1';
+      }
 
       // ログアウト
       const logoutBtn = el('logoutButtonTop');
@@ -1217,9 +1202,7 @@
       await loadDashboard();
       renderDetail();
       bindCharCount();
-      syncPartInputState();
     })();
   </script>
 </body>
 </html>
-
