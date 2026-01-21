@@ -89,29 +89,6 @@
           </div>
         </div>
 
-        <!-- ▼ デベロッパー返信（未読時 Top 通知：既読にするまで消えない） -->
-        <div id="devReplyTopNotice" class="d-none mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
-          <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
-            <div class="flex-grow-1">
-              <div class="fw-bold" style="font-size: 1.25rem; line-height: 1.35;">
-                開発者から返信があります
-                <span id="devReplyTopUnreadBadge" class="badge bg-danger ms-2">未読</span>
-              </div>
-              <div id="devReplyTopMeta" class="mt-1 text-secondary small"></div>
-              <div id="devReplyTopBody" class="mt-2" style="white-space: pre-wrap;"></div>
-            </div>
-
-            <div class="d-flex align-items-center gap-2">
-              <button id="btnDevReplyGoDetail" class="btn btn-outline-primary btn-sm" type="button">
-                <i class="bi bi-chat-dots me-1"></i>返信を見る
-              </button>
-              <button id="btnDevReplyMarkRead" class="btn btn-primary btn-sm" type="button">
-                <i class="bi bi-check2-circle me-1"></i>既読にする
-              </button>
-            </div>
-          </div>
-        </div>
-
         <!-- ページヘッダー -->
         <div class="mb-4">
           <div id="introMessage" class="mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
@@ -169,6 +146,30 @@
             <div class="sticky-pane">
               <div class="card shadow-sm">
                 <div class="card-body p-4 panel-scroll" id="rightPanelScroll">
+
+                  <!-- ▼ デベロッパー返信（未読時：この位置に常時表示／既読にするまで消えない） -->
+                  <div id="devReplyTopNotice" class="d-none mb-3 p-3 bg-light border rounded border-start border-3 border-primary">
+                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+                      <div class="flex-grow-1">
+                        <div class="fw-bold" style="font-size: 1.25rem; line-height: 1.35;">
+                          開発者から返信があります
+                          <span id="devReplyTopUnreadBadge" class="badge bg-danger ms-2">未読</span>
+                        </div>
+                        <div id="devReplyTopMeta" class="mt-1 text-secondary small"></div>
+                        <div id="devReplyTopBody" class="mt-2" style="white-space: pre-wrap;"></div>
+                      </div>
+
+                      <div class="d-flex align-items-center gap-2">
+                        <button id="btnDevReplyGoDetail" class="btn btn-outline-primary btn-sm" type="button">
+                          <i class="bi bi-chat-dots me-1"></i>返信を見る
+                        </button>
+                        <button id="btnDevReplyMarkRead" class="btn btn-primary btn-sm" type="button">
+                          <i class="bi bi-check2-circle me-1"></i>既読にする
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                     <div>
                       <div class="h5 m-0">意見詳細</div>
