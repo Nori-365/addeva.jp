@@ -246,8 +246,11 @@
                     <div class="border rounded p-3 mb-3" id="devReplyPanel" style="display:none;">
                       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div class="fw-semibold">デベロッパー返信</div>
-                        <div>
+                        <div class="d-flex align-items-center gap-2">
                           <span id="devReplyUnreadBadge" class="badge bg-danger d-none">未読</span>
+                          <button id="btnDevReplyMarkReadInPanel" class="btn btn-outline-primary btn-sm" type="button" disabled>
+                            <i class="bi bi-check2-circle me-1"></i>既読にする
+                          </button>
                         </div>
                       </div>
                       <div id="devReplyMeta" class="text-secondary small mt-1"></div>
@@ -484,6 +487,8 @@
       if (panel) {
         if (!hasText) {
           panel.style.display = 'none';
+          const btnPanel = el('btnDevReplyMarkReadInPanel');
+          if (btnPanel) btnPanel.disabled = true;
         } else {
           panel.style.display = '';
           el('devCommentText') && (el('devCommentText').value = devText);
@@ -499,6 +504,9 @@
           const unread = isDevCommentUnread(selectedPost);
           const badge = el('devReplyUnreadBadge');
           if (badge) badge.classList.toggle('d-none', !unread);
+
+          const btnPanel = el('btnDevReplyMarkReadInPanel');
+          if (btnPanel) btnPanel.disabled = !unread;
         }
       }
 
@@ -522,8 +530,10 @@
       if (!hasDevComment(selectedPost)) return;
 
       const postId = Number(selectedPost.post_id);
-      const btn = el('btnDevReplyMarkRead');
-      if (btn) btn.disabled = true;
+      const topBtn = el('btnDevReplyMarkRead');
+      const panelBtn = el('btnDevReplyMarkReadInPanel');
+      if (topBtn) topBtn.disabled = true;
+      if (panelBtn) panelBtn.disabled = true;
 
       try {
         const res = await ADDEVA.apiFetch('/api/addeva/user_opinion/mark_dev_comment_read', {
@@ -541,8 +551,10 @@
       } catch (e) {
         console.error(e);
         showAlert('danger', e && e.message ? e.message : '既読更新に失敗しました。');
-      } finally {
-        if (btn) btn.disabled = false;
+            } finally {
+        const unread = (selectedPost && hasDevComment(selectedPost)) ? isDevCommentUnread(selectedPost) : false;
+        if (topBtn) topBtn.disabled = !unread;
+        if (panelBtn) panelBtn.disabled = !unread;
       }
     };
 
@@ -1177,6 +1189,13 @@
       if (readBtn && readBtn.dataset.bound !== '1') {
         readBtn.addEventListener('click', markDevCommentRead);
         readBtn.dataset.bound = '1';
+      }
+
+      // 右ペイン：既読にする（未読のときだけ押せる）
+      const readBtnPanel = el('btnDevReplyMarkReadInPanel');
+      if (readBtnPanel && readBtnPanel.dataset.bound !== '1') {
+        readBtnPanel.addEventListener('click', markDevCommentRead);
+        readBtnPanel.dataset.bound = '1';
       }
 
       // ログアウト
