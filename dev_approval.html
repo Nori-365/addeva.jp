@@ -434,6 +434,48 @@
     const qs = name => new URL(window.location.href).searchParams.get(name) || '';
     const el = (id) => document.getElementById(id);
 
+    // common.js 側の実装差異（token がグローバルに無い等）を吸収して JWT を取得する
+    const getAuthTokenSafe = () => {
+      try {
+        if (typeof token !== 'undefined' && token) return String(token);
+      } catch (_) {}
+
+      try {
+        if (window.ADDEVA && typeof ADDEVA.getAuthToken === 'function') {
+          const t = ADDEVA.getAuthToken();
+          if (t) return String(t);
+        }
+      } catch (_) {}
+
+      try {
+        const k = (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) ? ADDEVA.LS.authToken : 'authToken';
+        const t = localStorage.getItem(k);
+        if (t) return String(t);
+      } catch (_) {}
+
+      return '';
+    };
+
+    const parseJwtPayloadSafe = (jwt) => {
+      try {
+        const parts = String(jwt || '').split('.');
+        if (parts.length < 2) return null;
+        const b64u = String(parts[1] || '');
+        if (!b64u) return null;
+
+        const b64 = b64u.replace(/-/g, '+').replace(/_/g, '/');
+        const pad = b64 + '==='.slice((b64.length + 3) % 4);
+
+        // UTF-8 対応の decode（customer_id は通常 ASCII だが、一般化しておく）
+        const bin = atob(pad);
+        const json = decodeURIComponent(Array.from(bin, c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
+        return JSON.parse(json);
+      } catch (_) {
+        return null;
+      }
+    };
+
+
     const setGuardState = (state, reason) => {
       const checking = el('accessGuardChecking');
       const denied = el('accessGuardDenied');
@@ -1357,23 +1399,20 @@
       try {
         // JWT が無い場合は common.js の挙動に任せる（あれば）
         try {
-// 返信テンプレートは「ログイン中デベロッパー単位」なので、JWTから customer_id を抽出して保持する
-          if (!loginCustomerId && token) {
-            try {
-              const parts = String(token).split('.');
-              if (parts.length >= 2) {
-                const b64 = String(parts[1] || '').replace(/-/g, '+').replace(/_/g, '/');
-                const pad = b64 + '==='.slice((b64.length + 3) % 4);
-                const json = decodeURIComponent(Array.from(atob(pad), c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
-                const payload = JSON.parse(json);
-                const cid = payload.customer_id || payload.customerId || payload.user_id || payload.userId || payload.sub || '';
-                if (cid !== null && cid !== undefined && String(cid).trim() !== '') {
-                  loginCustomerId = String(cid).trim();
-                }
+          const t = getAuthTokenSafe();
+
+          // 返信テンプレートは「ログイン中デベロッパー単位」なので、JWTから customer_id を抽出して保持する
+          if (!loginCustomerId && t) {
+            const payload = parseJwtPayloadSafe(t);
+            if (payload) {
+              const cid = payload.customer_id || payload.customerId || payload.user_id || payload.userId || payload.sub || '';
+              if (cid !== null && cid !== undefined && String(cid).trim() !== '') {
+                loginCustomerId = String(cid).trim();
               }
-            } catch (_) {}
+            }
           }
-          if (!token || (typeof ADDEVA.isJwtExpired === 'function' && ADDEVA.isJwtExpired(token))) {
+
+          if (!t || (typeof ADDEVA.isJwtExpired === 'function' && ADDEVA.isJwtExpired(t))) {
             if (window.ADDEVA && typeof ADDEVA._handleAuthFailure === 'function') {
               ADDEVA._handleAuthFailure('startup: token missing/expired');
               return;
@@ -1395,6 +1434,14 @@
         // developer
         developerRole = (res && res.role) ? String(res.role) : '';
         isDeveloper = !!(res && (res.is_developer || developerRole));
+
+        // common.js 由来の JWT 解析が失敗するケース向け：APIレスポンス側にログインIDが含まれていれば採用する
+        if (!loginCustomerId && res) {
+          const cid = res.login_customer_id || res.loginCustomerId || res.developer_customer_id || res.developerCustomerId || res.customer_id || res.customerId || '';
+          if (cid !== null && cid !== undefined && String(cid).trim() !== '') {
+            loginCustomerId = String(cid).trim();
+          }
+        }
 
         // products
         const rawProducts = (res && (res.products || res.developer_products || res.product_list)) ? (res.products || res.developer_products || res.product_list) : [];
@@ -1454,6 +1501,10 @@
           el('btnCopyOriginalToPublic') && (el('btnCopyOriginalToPublic').disabled = true);
           return;
         }
+
+        // 権限OK（ガード解除）
+        setGuardState('ok');
+
         // 返信テンプレートは「ログイン中デベロッパー単位」。
         // 初回ロードで先読みし、見つからない場合はここで通知する（編集途中の再読込を避ける）。
         try {
