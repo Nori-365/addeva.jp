@@ -393,7 +393,7 @@
                         <select id="devCommentTemplate" class="form-select form-select-sm" disabled>
                           <option value="">（テンプレートを読み込みます）</option>
                         </select>
-                        <div class="char-hint mt-1">/dev_reply_message/{customerid}.txt の各行がテンプレートです（1行=1テンプレート）。</div>
+                        <div class="char-hint mt-1">/dev_reply_message/{developer_customer_id}.txt の各行がテンプレートです（1行=1テンプレート）。</div>
                       </div>
 
                       <div class="mb-0">
@@ -762,7 +762,7 @@
         return;
       }
 
-      const cid = selectedPost.customer_id;
+      const cid = loginCustomerId; // テンプレートは投稿者ではなく、ログイン中デベロッパー単位
       if (!cid) {
         setDevCommentTemplateSelect('empty', []);
         return;
@@ -806,6 +806,7 @@
 
     let isDeveloper = false;
     let developerRole = '';
+    let loginCustomerId = ''; // ログイン中ユーザー（デベロッパー）の customer_id（返信テンプレートの所有者）
 
     // dashboard から
     let products = []; // [{product_code, product_name}]
@@ -1356,7 +1357,22 @@
       try {
         // JWT が無い場合は common.js の挙動に任せる（あれば）
         try {
-          const token = (window.ADDEVA && ADDEVA.LS && ADDEVA.LS.authToken) ? (localStorage.getItem(ADDEVA.LS.authToken) || '') : '';
+// 返信テンプレートは「ログイン中デベロッパー単位」なので、JWTから customer_id を抽出して保持する
+          if (!loginCustomerId && token) {
+            try {
+              const parts = String(token).split('.');
+              if (parts.length >= 2) {
+                const b64 = String(parts[1] || '').replace(/-/g, '+').replace(/_/g, '/');
+                const pad = b64 + '==='.slice((b64.length + 3) % 4);
+                const json = decodeURIComponent(Array.from(atob(pad), c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0')).join(''));
+                const payload = JSON.parse(json);
+                const cid = payload.customer_id || payload.customerId || payload.user_id || payload.userId || payload.sub || '';
+                if (cid !== null && cid !== undefined && String(cid).trim() !== '') {
+                  loginCustomerId = String(cid).trim();
+                }
+              }
+            } catch (_) {}
+          }
           if (!token || (typeof ADDEVA.isJwtExpired === 'function' && ADDEVA.isJwtExpired(token))) {
             if (window.ADDEVA && typeof ADDEVA._handleAuthFailure === 'function') {
               ADDEVA._handleAuthFailure('startup: token missing/expired');
@@ -1438,9 +1454,19 @@
           el('btnCopyOriginalToPublic') && (el('btnCopyOriginalToPublic').disabled = true);
           return;
         }
-
-        // 権限OK
-        setGuardState('ok');
+        // 返信テンプレートは「ログイン中デベロッパー単位」。
+        // 初回ロードで先読みし、見つからない場合はここで通知する（編集途中の再読込を避ける）。
+        try {
+          if (loginCustomerId) {
+            await loadReplyTemplatesForCustomer(loginCustomerId);
+            const cached = replyTemplateCache.get(String(loginCustomerId));
+            if (!cached || !cached.path) {
+              showAlert('warning', `返信テンプレートファイルが見つかりません（/dev_reply_message/${loginCustomerId}.txt）。`, { noScroll: true, isInitial: true });
+            }
+          } else {
+            showAlert('warning', '返信テンプレート用のログインIDが取得できませんでした（JWTのcustomer_id等）。', { noScroll: true, isInitial: true });
+          }
+        } catch (_) {}
 
       } catch (e) {
         console.error(e);
