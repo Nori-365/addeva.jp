@@ -1225,5 +1225,280 @@
       bindCharCount();
     })();
   </script>
+<!-- ADDEVA: unread notice patch start -->
+<script>
+(function(){
+  'use strict';
+
+  const NOTICE_CONTAINER_ID = 'addevaDevReplyNotice';
+  const LEFT_BADGE_CLASS = 'addeva-unread-badge';
+  const DEBUG = new URLSearchParams(location.search).get('debug') === '1';
+
+  function log(){
+    if (!DEBUG) return;
+    try {
+      const args = Array.prototype.slice.call(arguments);
+      args.unshift('[unreadNotice]');
+      // eslint-disable-next-line no-console
+      console.log.apply(console, args);
+    } catch (_) {}
+  }
+
+  function escapeHtml(v){
+    const s = (v === null || v === undefined) ? '' : String(v);
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function truncateTitle(title, maxChars){
+    const t = (title === null || title === undefined) ? '' : String(title).trim();
+    const maxLen = (typeof maxChars === 'number' && maxChars > 0) ? maxChars : 40;
+    if (!t) return '（タイトルなし）';
+    const chars = Array.from(t);
+    if (chars.length <= maxLen) return t;
+    return chars.slice(0, maxLen).join('') + '…';
+  }
+
+  function getPostId(item){
+    if (!item) return null;
+    return item.post_id ?? item.postId ?? item.postID ?? item.id ?? null;
+  }
+
+  function getTitle(item){
+    if (!item) return '';
+    return item.title ?? item.original_title ?? item.public_title ?? '';
+  }
+
+  function getDevCommentUpdatedAt(item){
+    if (!item) return null;
+    return item.dev_comment_updated_at ?? item.devCommentUpdatedAt ?? item.dev_comment_updatedAt ?? null;
+  }
+
+  function parseDateMillis(v){
+    if (!v) return 0;
+    const ms = Date.parse(v);
+    return Number.isFinite(ms) ? ms : 0;
+  }
+
+  function ensureNoticeContainer(){
+    let container = document.getElementById(NOTICE_CONTAINER_ID);
+    if (container) return container;
+
+    // Prefer an existing top-message frame if the page has one.
+    const existingFrame = document.querySelector(
+      '#topMessage, #topMessageBox, #top-message, #messageBox, #messageArea, .top-message, .topMessage, .topMessageBox'
+    );
+
+    container = document.createElement('div');
+    container.id = NOTICE_CONTAINER_ID;
+    container.className = 'alert alert-info mb-3';
+    container.style.display = 'none';
+
+    if (existingFrame) {
+      existingFrame.appendChild(container);
+      return container;
+    }
+
+    // Fallback: insert just under the "意見詳細" heading.
+    const headings = Array.from(document.querySelectorAll('h1, h2, h3, .h1, .h2, .h3'));
+    const detailHeading = headings.find(el => (el.textContent || '').trim().includes('意見詳細'));
+    if (detailHeading && detailHeading.parentNode) {
+      detailHeading.insertAdjacentElement('afterend', container);
+      return container;
+    }
+
+    // Final fallback: insert at the top of body.
+    document.body.insertAdjacentElement('afterbegin', container);
+    return container;
+  }
+
+  function removeExistingUnreadBadges(){
+    document.querySelectorAll('.' + LEFT_BADGE_CLASS).forEach(el => el.remove());
+  }
+
+  function decorateLeftPane(items){
+    if (!Array.isArray(items)) return;
+
+    const unreadSet = new Set(
+      items
+        .filter(it => it && it.is_dev_comment_unread === true)
+        .map(it => String(getPostId(it)))
+        .filter(v => v && v !== 'null' && v !== 'undefined')
+    );
+
+    removeExistingUnreadBadges();
+
+    // Most pages render rows with data-post-id; support a few variants.
+    const rowEls = Array.from(document.querySelectorAll('[data-post-id], [data-postid], [data-post_id]'));
+
+    rowEls.forEach(row => {
+      const id = row.getAttribute('data-post-id') || row.getAttribute('data-postid') || row.getAttribute('data-post_id');
+      if (!id) return;
+      if (!unreadSet.has(String(id))) return;
+
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-danger ms-2 ' + LEFT_BADGE_CLASS;
+      badge.textContent = '未読';
+
+      // Prefer attaching near the title if a child exists.
+      const titleEl = row.querySelector('.title, .item-title, .post-title') || row;
+      titleEl.appendChild(badge);
+    });
+  }
+
+  function openPostById(postId){
+    const pid = (postId === null || postId === undefined) ? '' : String(postId);
+    if (!pid) return;
+
+    // 1) Simulate left-pane row click (best: uses existing selection logic).
+    const row = document.querySelector('[data-post-id="' + pid + '"], [data-postid="' + pid + '"], [data-post_id="' + pid + '"]');
+    if (row && typeof row.click === 'function') {
+      row.click();
+      return;
+    }
+
+    // 2) If the page exposes an explicit selector, try it.
+    if (typeof window.selectPostById === 'function') {
+      window.selectPostById(pid);
+      return;
+    }
+    if (typeof window.openPostDetailById === 'function') {
+      window.openPostDetailById(pid);
+      return;
+    }
+    if (typeof window.loadPostDetailById === 'function') {
+      window.loadPostDetailById(pid);
+      return;
+    }
+
+    log('No known open handler for postId:', pid);
+  }
+
+  function renderUnreadNotice(dashboard){
+    const container = ensureNoticeContainer();
+
+    const items = Array.isArray(dashboard?.items)
+      ? dashboard.items
+      : (Array.isArray(dashboard?.list) ? dashboard.list : []);
+
+    const unreadItems = items.filter(it => it && it.is_dev_comment_unread === true);
+
+    const count = (typeof dashboard?.unread_dev_comment_count === 'number')
+      ? dashboard.unread_dev_comment_count
+      : unreadItems.length;
+
+    if (!count || count <= 0) {
+      container.style.display = 'none';
+      container.innerHTML = '';
+      return;
+    }
+
+    unreadItems.sort((a, b) => {
+      const am = parseDateMillis(getDevCommentUpdatedAt(a));
+      const bm = parseDateMillis(getDevCommentUpdatedAt(b));
+      return bm - am;
+    });
+
+    const top3 = unreadItems.slice(0, 3);
+
+    let html = '';
+    html += '<div class="fw-semibold mb-2">' +
+      'デベロッパーから ' + escapeHtml(count) + ' 件のご意見に対し返信がありました。（最新順）' +
+      '</div>';
+
+    top3.forEach(it => {
+      const pid = getPostId(it);
+      const title = truncateTitle(getTitle(it), 40);
+      html += '<div class="d-flex flex-wrap align-items-center gap-2 mb-1">' +
+        '<div>ID ' + escapeHtml(pid) + '：' + escapeHtml(title) + '</div>' +
+        '<button type="button" class="btn btn-link p-0" data-action="open-post" data-post-id="' + escapeHtml(pid) + '">［詳しく見る］</button>' +
+        '</div>';
+    });
+
+    if (count > 3) {
+      html += '<div class="text-muted mt-1">' +
+        'ほか ' + escapeHtml(count - 3) + ' 件（左の一覧に『未読』バッジで表示）' +
+        '</div>';
+    }
+
+    container.innerHTML = html;
+    container.style.display = '';
+
+    if (!container.__addevaUnreadNoticeClickBound) {
+      container.addEventListener('click', function(ev){
+        const btn = ev.target && ev.target.closest ? ev.target.closest('[data-action="open-post"]') : null;
+        if (!btn) return;
+        const pid = btn.getAttribute('data-post-id');
+        if (!pid) return;
+        ev.preventDefault();
+        openPostById(pid);
+      });
+      container.__addevaUnreadNoticeClickBound = true;
+    }
+  }
+
+  function onDashboardRendered(dashboard){
+    // Delay to ensure the page finishes its synchronous render.
+    setTimeout(function(){
+      try { decorateLeftPane(Array.isArray(dashboard?.items) ? dashboard.items : (Array.isArray(dashboard?.list) ? dashboard.list : [])); } catch (_) {}
+      try { renderUnreadNotice(dashboard); } catch (_) {}
+    }, 0);
+  }
+
+  function patchApiFetch(){
+    if (!window.ADDEVA || typeof window.ADDEVA.apiFetch !== 'function') return false;
+    if (window.ADDEVA.apiFetch.__addevaUnreadNoticePatched) return true;
+
+    const original = window.ADDEVA.apiFetch;
+
+    const wrapped = async function(){
+      const args = arguments;
+      const result = await original.apply(this, args);
+      try {
+        const path = args && args.length ? args[0] : '';
+        if (typeof path === 'string' && path.indexOf('/api/addeva/user_opinion/dashboard') !== -1) {
+          window.__addevaLastUserOpinionDashboard = result;
+          onDashboardRendered(result);
+        }
+      } catch (e) {
+        log('dashboard hook error:', e);
+      }
+      return result;
+    };
+
+    wrapped.__addevaUnreadNoticePatched = true;
+    window.ADDEVA.apiFetch = wrapped;
+    log('patched window.ADDEVA.apiFetch');
+    return true;
+  }
+
+  function waitForApiFetchAndPatch(){
+    let tries = 0;
+    const maxTries = 120; // ~6s
+    const timer = setInterval(function(){
+      tries += 1;
+      if (patchApiFetch()) {
+        clearInterval(timer);
+        return;
+      }
+      if (tries >= maxTries) {
+        clearInterval(timer);
+        log('apiFetch not found; patch skipped');
+      }
+    }, 50);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitForApiFetchAndPatch);
+  } else {
+    waitForApiFetchAndPatch();
+  }
+})();
+</script>
+<!-- ADDEVA: unread notice patch end -->
 </body>
 </html>
