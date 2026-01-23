@@ -767,54 +767,56 @@
           let rows = '';
           for (const it of items) {
             const postId = it.post_id;
-            const stRaw = String(it.status || '-');
+
+            // ===== バッジ表示ルール（ユーザー向け簡略版） =====
+            // ・private：常に表示（ユーザーの visibility=private の場合のみ）
+            // ・public：公開後のみ表示（ユーザー visibility=public かつ 開発者 visibility_dev=public の場合）
+            // ・new / updated：ユーザーが追加・更新してから開発者が審査するまでの間のみ表示
+            // ・確認中：new / updated と同じ期間のみ表示
+            // ・未読：開発者返信が未読の間のみ表示
+            // ・done：一覧バッジとしては表示しない（内部判定には使用してよい）
+
+            const stRaw = String(it.status || '');
             const stLc = stRaw.toLowerCase();
 
-            // デベロッパー側（参考）：status_dev / visibility_dev（返ってくる場合のみ表示）
-            const stDevRaw = String(it.status_dev || it.statusDev || '');
+            // 開発者側（公開後判定に使用）
             const visDevRaw = String(it.visibility_dev || it.visibilityDev || '');
+            const visDevLc = visDevRaw.toLowerCase();
 
+            // 開発者が触ったか（updated→new の補正にのみ使用）
+            const stDevRaw = String(it.status_dev || it.statusDev || '');
             const approvedAtRaw = String(it.approved_at || it.approvedAt || '');
             const hasPublic = Boolean(it.public_title || it.publicTitle || it.public_body || it.publicBody || it.public_part_code || it.publicPartCode);
             const hasDevTouched = Boolean(approvedAtRaw) || Boolean(stDevRaw) || Boolean(visDevRaw) || hasPublic;
 
+            // updated でも、開発者未タッチなら一覧上は new として扱う（審査前の更新は new に統一）
             let stDisp = stRaw;
             if (stLc === 'updated' && !hasDevTouched) stDisp = 'new';
             const stDispLc = String(stDisp || '').toLowerCase();
 
-            let stBadgeClass = 'bg-secondary-subtle text-secondary border border-secondary-subtle';
-            if (stDispLc === 'new') stBadgeClass = 'bg-warning text-dark';
-            else if (stDispLc === 'updated') stBadgeClass = 'bg-warning text-dark';
-            else if (stDispLc === 'done') stBadgeClass = 'bg-info-subtle text-info border border-info-subtle';
+            // new / updated（審査待ち）だけ表示
+            const showPending = (stDispLc === 'new' || stDispLc === 'updated');
 
-            const stBadge = `<span class="badge ${stBadgeClass} ms-2 align-middle">${escapeHtml(stDisp)}</span>`;
+            const statusBadge = showPending
+              ? `<span class="badge bg-warning text-dark ms-2 align-middle">${escapeHtml(stDisp)}</span>`
+              : '';
 
-            let devBadges = '';
-            const stDevLc = stDevRaw.toLowerCase();
-            let stDevLabel = stDevRaw;
-            if (stDevLc === 'reviewing') stDevLabel = '確認中';
-            else if (stDevLc === 'planned') stDevLabel = '対応予定';
-            else if (stDevLc === 'shipped') stDevLabel = '対応済み';
-            else if (stDevLc === 'rejected') stDevLabel = '不採用';
+            const confirmBadge = showPending
+              ? `<span class="badge bg-light text-dark border ms-2 align-middle">確認中</span>`
+              : '';
 
-            const visDevLc = String(visDevRaw || '').toLowerCase();
-            const devVisLabel = (visDevLc === 'public') ? '公開'
-                              : (visDevLc === 'private') ? '非公開'
-                              : '';
+            // visibility
+            const userVisLc = String(it.visibility || 'public').toLowerCase();
+            const isPublished = (userVisLc === 'public' && visDevLc === 'public');
 
-            if (stDevRaw && stDevLc === 'reviewing') {
-              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(stDevLabel)}</span>`;
-            } else if (devVisLabel) {
-              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(devVisLabel)}</span>`;
-            } else if (stDevRaw) {
-              devBadges += `<span class="badge bg-light text-dark border ms-2 align-middle">${escapeHtml(stDevLabel)}</span>`;
-            }
-
-            const vis = String(it.visibility || 'public');
-            const visBadge = vis === 'private'
+            const visBadge = (userVisLc === 'private')
               ? '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle ms-2 align-middle">private</span>'
-              : '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 align-middle">public</span>';
+              : (isPublished
+                  ? '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 align-middle">public</span>'
+                  : ''
+                );
 
+            // タイプ（常に表示）
             let pt = String(it.post_type || it.postType || '').toLowerCase();
             if (pt === 'good') pt = 'praise';
 
@@ -826,6 +828,11 @@
 
             const typeBadge = typeLabel
               ? `<span class="badge ${typeBadgeClass} ms-2 align-middle">${escapeHtml(typeLabel)}</span>`
+              : '';
+
+            // 未読（一覧では1行目に寄せる）
+            const unreadBadge = getIsDevCommentUnread(it)
+              ? '<span class="badge bg-danger ms-2 align-middle">未読</span>'
               : '';
 
             const title = it.title || '';
@@ -844,19 +851,15 @@
             const updatedAt = fmtDateTime(it.updated_at || it.created_at || '');
             const isActive = (selectedPostId && Number(selectedPostId) === Number(postId));
 
-            const unreadBadge = getIsDevCommentUnread(it)
-              ? '<span class="badge bg-danger ms-2 align-middle">未読</span>'
-              : '';
-
             rows += `
               <tr class="row-clickable ${isActive ? 'table-primary' : ''}" data-post-id="${escapeHtml(postId)}" data-product-code="${escapeHtml(code)}">
                 <td class="mono text-nowrap">${escapeHtml(postId)}</td>
                 <td>
                   <div class="small text-secondary text-truncate" style="max-width: 26rem;">
-                    <span>${escapeHtml(partLabel)}</span>${stBadge}${visBadge}
+                    <span>${escapeHtml(partLabel)}</span>${visBadge}${statusBadge}${confirmBadge}${unreadBadge}
                   </div>
                   <div class="fw-semibold text-truncate" style="max-width: 26rem;">
-                    ${escapeHtml(title)}${typeBadge}${devBadges}${unreadBadge}
+                    ${escapeHtml(title)}${typeBadge}
                   </div>
                 </td>
                 <td class="col-hide-sm"><span class="text-secondary small">${escapeHtml(updatedAt)}</span></td>
