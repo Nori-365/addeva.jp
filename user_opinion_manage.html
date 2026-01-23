@@ -574,9 +574,9 @@
       for (const u of top3) {
         const title = (String(u.title || '').trim()) ? String(u.title || '').trim() : '（タイトルなし）';
         html += `
-          <div class="d-flex align-items-center flex-wrap gap-1 mb-1">
-            <div class="text-truncate" style="max-width: 36rem;">ID ${escapeHtml(u.postId)}：${escapeHtml(title)}</div>
-            <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2" data-action="open-unread-post" data-post-id="${escapeHtml(u.postId)}" data-product-code="${escapeHtml(u.productCode)}">詳しく見る</button>
+          <div class="mb-1">
+            <span class="text-truncate d-inline-block align-middle" style="max-width: 36rem; vertical-align: middle;">ID ${escapeHtml(u.postId)}：${escapeHtml(title)}</span>
+            <button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 ms-2 align-baseline" data-action="open-unread-post" data-post-id="${escapeHtml(u.postId)}" data-product-code="${escapeHtml(u.productCode)}">詳しく見る</button>
           </div>
         `;
       }
@@ -1313,19 +1313,23 @@
         }
       });
 
-      // ページ上部まとめ通知：詳しく見る
+      // ページ上部まとめ通知：詳しく見る（選択→「返信を見る」と同じ場所へ）
       const globalNotice = el('devReplyGlobalNotice');
       if (globalNotice && globalNotice.dataset.bound !== '1') {
         globalNotice.addEventListener('click', async (ev) => {
-          const btn = ev.target && ev.target.closest ? ev.target.closest('[data-action="open-unread-post"]') : null;
+          const btn = (ev.target && ev.target.closest) ? ev.target.closest('[data-action="open-unread-post"]') : null;
           if (!btn) return;
           ev.preventDefault();
+
           const pid = Number(btn.getAttribute('data-post-id') || 0);
           const pc = String(btn.getAttribute('data-product-code') || '');
           if (!pid) return;
+
           await loadPostDetail(pid, pc, { preserveAlert: true, skipScrollToDetail: true, skipFocus: true });
-          // 詳しく見るは「返信を見る」と同じ場所へ飛ばす
-          setTimeout(scrollToDevReplyDetail, 0);
+
+          // 詳しく見るは「返信を見る」と同じ場所へ
+          setTimeout(() => scrollToDevReplyDetail(), 0);
+
           renderProducts();
           renderGlobalDevReplyNotice();
         });
@@ -1335,12 +1339,9 @@
       // Top 通知：返信を見る
       const goBtn = el('btnDevReplyGoDetail');
       if (goBtn && goBtn.dataset.bound !== '1') {
-        goBtn.addEventListener('click', () => {
+        goBtn.addEventListener('click', (ev) => {
+          ev.preventDefault();
           scrollToDevReplyDetail();
-        });
-          } else {
-            el('detailWrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
         });
         goBtn.dataset.bound = '1';
       }
