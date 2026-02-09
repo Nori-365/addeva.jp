@@ -17,6 +17,7 @@
     .prod-hero{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:12px}
     .thumbs img{cursor:pointer;border-radius:8px;border:1px solid var(--line)}
     .thumbs img.active{outline:2px solid rgba(21,71,181,.85)}
+    .hover-shadow:hover { box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important; transition: all .2s; }
   </style>
 
   <!-- Product JSON-LD -->
@@ -129,12 +130,33 @@
                 <small class="text-danger">※現在、入荷待ちです。</small>
               </div>
             </div>
+            
+            <!-- 簡易サイズリンク（テキストのみ） -->
+            <div class="mb-4 text-center">
+              <a href="#size-compare" class="small text-secondary text-decoration-underline">他のサイズと比較する</a>
+            </div>
 
             <div class="notice mt-3">
               <p class="mb-0 small">
                 ※ 機内持ち込みの可否は航空会社・路線（座席数）により異なる場合があります。<br>
               </p>
             </div>
+            
+            <!-- UrbanFlex レコメンド -->
+            <div class="mt-5 p-3 border rounded-3 bg-white shadow-sm position-relative">
+              <span class="badge bg-primary position-absolute top-0 start-0 m-2">セットで快適</span>
+              <div class="d-flex align-items-center gap-3">
+                <div style="width: 80px; flex-shrink: 0;">
+                  <img src="/assets/img/items/urbanflex/2R-18.png" class="img-fluid rounded" alt="UrbanFlex">
+                </div>
+                <div>
+                  <h6 class="fw-bold mb-1">ADDEVA UrbanFlex</h6>
+                  <p class="small text-muted mb-2 line-clamp-2">スーツケースに固定して移動できる、防水・軽量ビジネスリュック。</p>
+                  <a href="/product/urbanflex/" class="btn btn-sm btn-outline-dark stretched-link">詳細を見る</a>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -156,6 +178,70 @@
                 <tr><th>素材</th><td>表生地:1680Dポリエステル<br/>裏生地:200Dポリエステル<br/>伸縮ハンドル:アルミ<br/>補強材:、ABSハニカム、EVA、PVC</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+        
+        <!-- ===== サイズ比較＆リンク ===== -->
+        <div class="mt-5 pt-5 border-top" id="size-compare">
+          <div class="kicker">COMPARE</div>
+          <h2 class="h3 mb-4">サイズ比較・バリエーション</h2>
+          
+          <!-- 比較画像（PCでも100%表示） -->
+          <div class="mb-5">
+            <img src="/assets/img/items/bsc20/size_compare.png" alt="BSC-20 サイズ比較（横型・SS・S・M）" class="img-fluid w-100 rounded shadow-sm">
+          </div>
+
+          <!-- 他サイズへのリンク（サムネイル版） -->
+          <div class="mb-4">
+            <p class="small fw-bold mb-3 text-secondary text-center">ご希望のサイズをお選びください</p>
+            <div class="row row-cols-4 g-2">
+              <!-- 横型 (現在地) -->
+              <div class="col">
+                <div class="card h-100 text-center p-2 border-2 border-dark bg-light" style="opacity: 0.8;">
+                  <div class="position-relative">
+                    <img src="/assets/img/items/bsc20/BSC20_size_01.jpg" class="img-fluid mb-2 rounded" alt="横型">
+                    <span class="position-absolute top-50 start-50 translate-middle badge bg-dark">現在地</span>
+                  </div>
+                  <div class="card-body p-0">
+                    <small class="fw-bold text-dark d-block">横型</small>
+                    <small class="text-muted" style="font-size:0.75rem">1-2泊</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SS -->
+              <div class="col">
+                <a href="ss.html" class="card h-100 text-center p-2 text-decoration-none border hover-shadow">
+                  <img src="/assets/img/items/bsc20/BSC20_size_02.jpg" class="img-fluid mb-2 rounded" alt="SS">
+                  <div class="card-body p-0">
+                    <small class="fw-bold text-dark d-block">SS</small>
+                    <small class="text-muted" style="font-size:0.75rem">1-2泊</small>
+                  </div>
+                </a>
+              </div>
+
+              <!-- S -->
+              <div class="col">
+                <a href="s.html" class="card h-100 text-center p-2 text-decoration-none border hover-shadow">
+                  <img src="/assets/img/items/bsc20/BSC20_size_03.jpg" class="img-fluid mb-2 rounded" alt="S">
+                  <div class="card-body p-0">
+                    <small class="fw-bold text-dark d-block">S</small>
+                    <small class="text-muted" style="font-size:0.75rem">2-3泊</small>
+                  </div>
+                </a>
+              </div>
+
+              <!-- M -->
+              <div class="col">
+                <a href="m.html" class="card h-100 text-center p-2 text-decoration-none border hover-shadow">
+                  <img src="/assets/img/items/bsc20/BSC20_size_04.jpg" class="img-fluid mb-2 rounded" alt="M">
+                  <div class="card-body p-0">
+                    <small class="fw-bold text-dark d-block">M</small>
+                    <small class="text-muted" style="font-size:0.75rem">4-6泊</small>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
