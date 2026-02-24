@@ -20,7 +20,7 @@ body{
 .container-narrow{max-width:var(--maxw)}
 
 /* Header */
-.navbar-brand{font-weight:700;letter-spacing:-0.02em;color:var(--ink)}
+.navbar-brand{font-weight:600;letter-spacing:-0.02em;color:var(--ink)}
 .navbar-dark .navbar-nav .nav-link{color:var(--ink)}
 .navbar-dark .navbar-toggler{border-color:rgba(0,0,0,.25)}
 .navbar-dark .navbar-toggler-icon{
