@@ -1,4 +1,5 @@
 /* ADDEVA minimal styles (v3.8): Bootstrap以外はこの1枚のみ */
+
 :root{
   --bg:#fff;
   --bg-soft:#f7f9fc;
@@ -25,6 +26,7 @@ body{
 .navbar-dark .navbar-toggler-icon{
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0,0.9)' stroke-width='2' stroke-linecap='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E")
 }
+
 /* ブランドロゴの色を固定（hoverで白く消えないように） */
 .site-header .navbar.navbar-dark{
   --bs-navbar-brand-color: var(--ink);
@@ -33,18 +35,23 @@ body{
 
 /* ===== ブランドサイズ最適化 ===== */
 .site-header .navbar-brand{
-  display:inline-flex; align-items:flex-end;
+  display:inline-flex; align-items:center;
   gap:0;
   line-height:1; padding-block:.25rem;
-  font-size:clamp(1.25rem, 1.0rem + .7vw, 1.7rem);
-  letter-spacing:0;
+  font-size:clamp(1.4rem, 1.1rem + .8vw, 1.85rem);
+  letter-spacing:-0.02em;
 }
-.site-header .navbar-brand .brand-text{ letter-spacing:.12em; }
+
+.site-header .navbar-brand .brand-text{ 
+  letter-spacing:-0.01em; 
+  text-transform: uppercase;
+}
+
 .site-header .navbar-brand .brand-reg{
-  font-size:.56em;
+  font-size:.52em;
   align-self:flex-start;
-  transform: translate(-0.20em, -0.22em);
-  margin-left:0; letter-spacing:0; opacity:.9;
+  transform: translate(-0.1em, 0.15em);
+  margin-left:0; letter-spacing:0; opacity:.8;
 }
 
 /* 固定ヘッダー */
@@ -56,6 +63,7 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 @media (max-width: 991.98px){
   body{ padding-top: calc(var(--header-mobile) + env(safe-area-inset-top, 0)); }
 }
+
 /* アンカーでヘッダーに隠れない対策 */
 [id]{ scroll-margin-top: var(--header-desktop); }
 @media (max-width: 991.98px){
@@ -130,7 +138,6 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   background:#fff;
   opacity:.55;
   margin:0 4px;
-
   /* 見た目は細いけどタップしやすくする工夫 */
   padding:6px 0;               /* 当たり判定を上下に拡大 */
   background-clip:content-box; /* パディング分は透明にして細く見せる */
