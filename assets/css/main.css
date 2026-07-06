@@ -225,18 +225,31 @@ section.section{
   border-top:1px solid var(--line);
 }
 
-/* === Brand セクション ===
-   以前は #brand.section の上ボーダーを消していたが、
-   BSC-20ページではブランド紹介をページ途中に移動したため、
-   通常セクションと同じく区切り線を表示する。
-*/
+/* 固定ヘッダー直下は、ヘッダー側の下線だけを使う。
+   これでTopメニュー下の二重線を防ぐ。 */
+main > section.section:first-of-type{
+  border-top:0 !important;
+}
+
+/* === Brand 親ページ共通：brand セクションは上ボーダーを消す ===
+   他ページへの影響を避けるため、この指定は維持する。 */
 #brand.section{
+  border-top:0 !important;
+}
+
+/* 個別に上線を復活させたいセクション用 */
+.section.section-border-top{
   border-top:1px solid var(--line) !important;
 }
 
-/* 必要に応じて、HTML側で class="section section-border-top" を使う場合の補助 */
-.section.section-border-top{
+/* #brand かつ section-border-top の場合だけ、上の #brand 指定より優先して線を出す */
+#brand.section.section-border-top{
   border-top:1px solid var(--line) !important;
+}
+
+/* 個別に上線を消したいセクション用 */
+.section.section-no-border-top{
+  border-top:0 !important;
 }
 
 .section .kicker{font-size:.92rem;letter-spacing:.14em;text-transform:uppercase;color:#5b738a}
