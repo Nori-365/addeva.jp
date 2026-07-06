@@ -1,4 +1,4 @@
-/* ADDEVA minimal styles (v3.8): Bootstrap以外はこの1枚のみ */
+/* ADDEVA minimal styles (v3.9): Bootstrap以外はこの1枚のみ */
 
 :root{
   --bg:#fff;
@@ -144,7 +144,6 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 #heroCarousel .carousel-indicators .active{ opacity:1; }
 
-
 /* 矢印（常時表示・視認性UP） */
 #heroCarousel .carousel-control-prev,
 #heroCarousel .carousel-control-next{
@@ -221,10 +220,23 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
 }
 
 /* Sections */
-section.section{padding:48px 0;border-top:1px solid var(--line)}
-/* === Brand 親ページ共通：brand セクションは上ボーダーを消す === */
+section.section{
+  padding:48px 0;
+  border-top:1px solid var(--line);
+}
+
+/* === Brand セクション ===
+   以前は #brand.section の上ボーダーを消していたが、
+   BSC-20ページではブランド紹介をページ途中に移動したため、
+   通常セクションと同じく区切り線を表示する。
+*/
 #brand.section{
-  border-top: 0 !important;
+  border-top:1px solid var(--line) !important;
+}
+
+/* 必要に応じて、HTML側で class="section section-border-top" を使う場合の補助 */
+.section.section-border-top{
+  border-top:1px solid var(--line) !important;
 }
 
 .section .kicker{font-size:.92rem;letter-spacing:.14em;text-transform:uppercase;color:#5b738a}
