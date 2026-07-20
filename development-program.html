@@ -1,133 +1,99 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <!-- 共通Head読込 -->
   <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Primary SEO -->
   <title>商品開発参加プログラム｜ADDEVA（アデバ）公式</title>
   <meta name="description" content="ADDEVAの対象製品をご購入いただいた方限定の商品開発参加プログラムです。簡単なアンケートやご意見を、商品の改良や次の商品開発に活用します。">
-
-  <!-- Canonical -->
   <link rel="canonical" href="https://addeva.jp/development-program.html">
-
-  <!-- Robots -->
   <meta name="robots" content="index,follow,max-image-preview:large">
 
-  <!-- Icons -->
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/main.css?v=3.9">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ADDEVA">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:url" content="https://addeva.jp/development-program.html">
   <meta property="og:title" content="商品開発参加プログラム｜ADDEVA（アデバ）公式">
   <meta property="og:description" content="簡単なアンケートに答えるだけでも参加できます。あなたの声を、次の商品に反映させませんか？">
-  <meta property="og:image" content="https://addeva.jp/assets/img/og/ogp_top.jpg">
-  <meta property="og:image:alt" content="ADDEVA 商品開発参加プログラム">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="商品開発参加プログラム｜ADDEVA（アデバ）公式">
-  <meta name="twitter:description" content="簡単なアンケートに答えるだけでも参加できます。あなたの声を、次の商品に反映させませんか？">
-  <meta name="twitter:image" content="https://addeva.jp/assets/img/og/ogp_top.jpg">
-
-  <!-- 構造化データ（WebPage / Breadcrumb） -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": "https://addeva.jp/development-program.html#webpage",
-        "url": "https://addeva.jp/development-program.html",
-        "name": "商品開発参加プログラム｜ADDEVA（アデバ）公式",
-        "description": "ADDEVAの対象製品をご購入いただいた方限定の商品開発参加プログラムです。簡単なアンケートやご意見を、商品の改良や次の商品開発に活用します。",
-        "isPartOf": {
-          "@type": "WebSite",
-          "@id": "https://addeva.jp/#website",
-          "url": "https://addeva.jp/",
-          "name": "ADDEVA® 公式"
-        },
-        "about": {
-          "@type": "Brand",
-          "name": "ADDEVA"
-        },
-        "inLanguage": "ja-JP"
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": "https://addeva.jp/development-program.html#breadcrumb",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "ホーム",
-            "item": "https://addeva.jp/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "商品開発参加プログラム",
-            "item": "https://addeva.jp/development-program.html"
-          }
-        ]
-      }
-    ]
-  }
-  </script>
+  <meta property="og:image" content="https://addeva.jp/assets/img/addeva_top.jpg">
 
   <style>
-    .page-hero{ padding:28px 0 18px; }
-
-    .program-intro{
-      max-width:860px;
-      margin-inline:auto;
+    .page-hero{padding:24px 0 14px}
+    .program-visual{
+      border-radius:1rem;
+      overflow:hidden;
+      min-height:260px;
+      background:#eef2f5;
     }
-
-    .program-note{
-      max-width:760px;
-      margin-inline:auto;
+    .program-visual img{
+      width:100%;
+      height:100%;
+      min-height:260px;
+      object-fit:cover;
+      display:block;
     }
-
-    .program-entry{
-      max-width:900px;
-      margin-inline:auto;
+    .program-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.45rem .8rem;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      font-weight:600;
+      font-size:.92rem;
     }
-
-    .program-entry .card-body{
-      padding:2rem;
+    .program-copy h2{
+      font-size:clamp(1.8rem,4.8vw,3rem);
+      line-height:1.25;
     }
-
+    .entry-card{
+      border:1px solid var(--line);
+      border-radius:1rem;
+      background:#fff;
+      height:100%;
+    }
+    .entry-card .card-body{padding:1.5rem}
+    .entry-icon{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef4ff;
+      color:#0d6efd;
+      font-size:1.4rem;
+    }
     @media (min-width:992px){
-      .page-hero{ padding:44px 0 22px; }
+      .page-hero{padding:36px 0 16px}
+      .program-visual,
+      .program-visual img{min-height:360px}
     }
-
     @media (max-width:767.98px){
-      .page-hero{ padding:18px 0 12px; }
-      .page-hero .kicker{ margin-bottom:.25rem; }
-      .page-hero h1{ line-height:1.3; }
-      .program-entry .card-body{ padding:1.5rem; }
+      .page-hero{padding:16px 0 10px}
+      .program-copy{text-align:center}
+      .program-badge{font-size:.86rem}
+      .program-visual,
+      .program-visual img{min-height:220px}
+      .entry-card .card-body{padding:1.25rem}
     }
   </style>
 </head>
 
 <body>
-  <!-- 共通ヘッダー -->
   <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
 
   <main>
-    <!-- ページ見出し -->
     <section class="page-hero">
       <div class="container container-narrow">
         <nav aria-label="breadcrumb">
@@ -141,69 +107,83 @@
       </div>
     </section>
 
-    <!-- プログラム案内と入口 -->
     <section class="section bg-light">
       <div class="container container-narrow">
-        <div class="program-intro text-center">
-          <div class="program-note alert alert-light border mb-4" role="note">
-            ※当プログラムは、<strong>ADDEVAの該当製品をご購入いただいた方限定の特典プログラム</strong>となります。
-          </div>
-
-          <h2 class="mb-3">簡単なアンケートに答えるだけでも参加できます。</h2>
-          <p class="lead mb-5">
-            あなたの声を、次の商品に反映させませんか？
-          </p>
-        </div>
-
-        <div class="program-entry row row-cols-1 row-cols-md-2 g-4">
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body text-center d-flex flex-column">
-                <i class="bi bi-box-arrow-in-right fs-1 text-primary mb-3" aria-hidden="true"></i>
-                <h2 class="h4 mb-3">登録済みの方</h2>
-                <p class="mb-4">
-                  ご登録済みのメールアドレスとパスワードでログインしてください。
-                </p>
-                <div class="mt-auto">
-                  <a href="/customer.html?mode=login" class="btn btn-primary btn-lg w-100">
-                    ログインして参加する
-                  </a>
-                </div>
-              </div>
+        <div class="row g-4 align-items-center">
+          <div class="col-12 col-lg-6">
+            <div class="program-visual shadow-sm">
+              <img src="/assets/img/addeva_top.jpg"
+                   alt="ADDEVA UrbanFlexを使用するビジネスパーソン"
+                   loading="eager">
             </div>
           </div>
 
-          <div class="col">
-            <div class="card h-100 shadow-sm border-0">
-              <div class="card-body text-center d-flex flex-column">
-                <i class="bi bi-person-plus fs-1 text-primary mb-3" aria-hidden="true"></i>
-                <h2 class="h4 mb-3">はじめての方</h2>
-                <p class="mb-4">
-                  はじめに購入製品を登録し、お客様IDとパスワードを作成してください。
-                </p>
-                <div class="mt-auto">
-                  <a href="/register.html" class="btn btn-outline-primary btn-lg w-100">
-                    製品を登録して参加する
-                  </a>
+          <div class="col-12 col-lg-6">
+            <div class="program-copy">
+              <div class="program-badge mb-3">
+                <i class="bi bi-stars" aria-hidden="true"></i>
+                ご購入者限定の特典プログラム
+              </div>
+
+              <h2 class="mb-3">あなたの声を、<br class="d-none d-lg-block">次の商品へ。</h2>
+
+              <p class="lead mb-3">
+                簡単なアンケートに答えるだけでも参加できます。
+              </p>
+
+              <p class="mb-4">
+                ※当プログラムは、ADDEVAの該当製品をご購入いただいた方限定の特典プログラムです。
+              </p>
+
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="entry-card">
+                    <div class="card-body d-flex flex-column">
+                      <div class="entry-icon mb-3">
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+                      </div>
+                      <h3 class="h5">登録済みの方</h3>
+                      <p class="small text-secondary mb-3">
+                        メールアドレスとパスワードでログインしてください。
+                      </p>
+                      <a href="/customer.html?mode=login" class="btn btn-primary w-100 mt-auto">
+                        ログインして参加する
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="entry-card">
+                    <div class="card-body d-flex flex-column">
+                      <div class="entry-icon mb-3">
+                        <i class="bi bi-person-plus" aria-hidden="true"></i>
+                      </div>
+                      <h3 class="h5">はじめての方</h3>
+                      <p class="small text-secondary mb-3">
+                        購入製品を登録して、お客様IDを作成してください。
+                      </p>
+                      <a href="/register.html" class="btn btn-outline-primary w-100 mt-auto">
+                        製品を登録して参加する
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <p class="small text-secondary mt-3 mb-0">
+                製品登録には、Amazonの注文番号などの購入情報が必要です。
+              </p>
             </div>
           </div>
         </div>
-
-        <p class="small text-secondary text-center mt-4 mb-0">
-          製品登録には、Amazonの注文番号などの購入情報が必要です。
-        </p>
       </div>
     </section>
   </main>
 
-  <!-- 共通フッター -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- インクルードローダー -->
   <script>
     (function () {
       async function includeFragments() {
@@ -211,10 +191,9 @@
         await Promise.all([...nodes].map(async (el) => {
           const file = el.getAttribute('data-include');
           try {
-            const resp = await fetch(file, { cache: 'no-cache' });
+            const resp = await fetch(file, { cache:'no-cache' });
             if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
-            const html = await resp.text();
-            el.outerHTML = html;
+            el.outerHTML = await resp.text();
           } catch (e) {
             console.error('Include failed:', file, e);
           }
