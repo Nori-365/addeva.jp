@@ -13,6 +13,45 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
+<!-- UrbanFlex：商品開発参加プログラムへの導線 -->
+<style>
+  .urbanflex-program-notice {
+    padding: .7rem 1rem .65rem;
+    text-align: center;
+    font-size: .92rem;
+    line-height: 1.6;
+    color: #6c757d;
+    background: #fff;
+  }
+  .urbanflex-program-notice a {
+    font-weight: 600;
+    text-underline-offset: .18em;
+  }
+  @media (max-width: 575.98px) {
+    .urbanflex-program-notice {
+      padding: .65rem 1rem .6rem;
+      font-size: .84rem;
+    }
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    if (path !== '/product/urbanflex') return;
+
+    const hero = document.querySelector('.uf-hero');
+    if (hero && !document.querySelector('.urbanflex-program-notice')) {
+      const notice = document.createElement('div');
+      notice.className = 'urbanflex-program-notice';
+      notice.innerHTML = '※ UrbanFlexは、ご購入者限定の <a href="/development-program.html">商品開発参加プログラム</a> の対象商品です。';
+      hero.parentNode.insertBefore(notice, hero);
+    }
+
+    const oldEntry = document.getElementById('customer-service-entry');
+    if (oldEntry) oldEntry.remove();
+  });
+</script>
+
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
