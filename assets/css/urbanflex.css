@@ -58,6 +58,16 @@
   */
 }
 
+/* スマホ固定CTA：Amazonボタン文字の縦位置をわずかに下げる */
+.sticky-cta .btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1.25;
+  padding-top:.56rem;
+  padding-bottom:.44rem;
+}
+
 /* スマホ微調整 */
 @media (max-width: 575.98px){
   .uf-hero .copy{
