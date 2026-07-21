@@ -13,6 +13,31 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
+<!-- UrbanFlexページ：ページ内インデックスを簡潔化 -->
+<script>
+  (() => {
+    if (location.pathname !== '/product/urbanflex/' &&
+        location.pathname !== '/product/urbanflex/index.html') return;
+
+    const updateUrbanFlexSubnav = () => {
+      const nav = document.querySelector('nav.subnav-shadow ul.nav');
+      if (!nav) return;
+
+      nav.innerHTML = `
+        <li class="nav-item"><a class="nav-link px-2" href="#">UrbanFlexトップ</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#compare">比較表</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#faq">FAQ</a></li>
+      `;
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateUrbanFlexSubnav);
+    } else {
+      updateUrbanFlexSubnav();
+    }
+  })();
+</script>
+
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
