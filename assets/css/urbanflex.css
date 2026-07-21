@@ -1,10 +1,18 @@
 /* ===============================
    assets/css/urbanflex.css  (v1.4d)
-   Scope: .uf-hero 以下のみ
+   UrbanFlexページ専用
+   - stickyサブナビの固定範囲をbody高で制限しない
    - 眉は Top と同じ高さに維持（56px上限）
    - 下グループは最下寄せ＋少し上げて見せる
    - タイトルだけ微下げ
    =============================== */
+
+/* stickyサブナビの固定範囲をbody高で制限しない */
+html,
+body{
+  height:auto;
+  min-height:100%;
+}
 
 /* 背景画像をクリアに（main.css の scale を打消し） */
 .uf-hero .bg-wrap .uf-bg{
