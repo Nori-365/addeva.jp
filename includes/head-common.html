@@ -13,27 +13,53 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
-<!-- UrbanFlexページ：ページ内インデックスを簡潔化 -->
+<!-- UrbanFlexページ：ページ内インデックスとスマホ追従範囲を調整 -->
+<style>
+  @media (max-width: 991.98px) {
+    nav.subnav-shadow.uf-subnav-ended {
+      position: static !important;
+    }
+  }
+</style>
 <script>
   (() => {
     if (location.pathname !== '/product/urbanflex/' &&
         location.pathname !== '/product/urbanflex/index.html') return;
 
-    const updateUrbanFlexSubnav = () => {
-      const nav = document.querySelector('nav.subnav-shadow ul.nav');
-      if (!nav) return;
+    const setupUrbanFlexSubnav = () => {
+      const subnav = document.querySelector('nav.subnav-shadow');
+      const nav = subnav?.querySelector('ul.nav');
+      const common = document.querySelector('#common');
+      if (!subnav || !nav) return;
 
       nav.innerHTML = `
-        <li class="nav-item"><a class="nav-link px-2" href="#">UrbanFlexトップ</a></li>
         <li class="nav-item"><a class="nav-link px-2" href="#compare">比較表</a></li>
+        <li class="nav-item"><a class="nav-link px-2" href="#options">オプション</a></li>
         <li class="nav-item"><a class="nav-link px-2" href="#faq">FAQ</a></li>
       `;
+
+      if (!common) return;
+
+      const updateStickyRange = () => {
+        if (window.innerWidth > 991.98) {
+          subnav.classList.remove('uf-subnav-ended');
+          return;
+        }
+
+        const headerOffset = 56;
+        const commonTop = common.getBoundingClientRect().top;
+        subnav.classList.toggle('uf-subnav-ended', commonTop <= headerOffset);
+      };
+
+      window.addEventListener('scroll', updateStickyRange, { passive: true });
+      window.addEventListener('resize', updateStickyRange);
+      updateStickyRange();
     };
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', updateUrbanFlexSubnav);
+      document.addEventListener('DOMContentLoaded', setupUrbanFlexSubnav);
     } else {
-      updateUrbanFlexSubnav();
+      setupUrbanFlexSubnav();
     }
   })();
 </script>
