@@ -235,27 +235,31 @@
         spinner?.classList.remove('d-none');
 
         try {
+          const res = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
           let data = null;
 
-          // common.js が読み込まれていれば、APIキー付与などを共通処理に任せる
-          if (window.ADDEVA && typeof window.ADDEVA.apiFetch === 'function') {
-            data = await window.ADDEVA.apiFetch(API_ENDPOINT, { method: 'POST', body: payload });
-          } else {
-            // フォールバック（x-api-key が必須な構成の場合は common.js を必ず読み込んでください）
-            const res = await fetch(API_ENDPOINT, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-
-            try { data = await res.json(); } catch (_) { data = null; }
-
-            if (!res.ok) {
-              const msg = (data && (data.detail || data.message)) ? (data.detail || data.message) : '送信に失敗しました。時間をおいて再度お試しください。';
-              throw new Error(msg);
-            }
+          try {
+            data = await res.json();
+          } catch (_) {
+            data = null;
           }
 
+          if (!res.ok) {
+            const msg =
+              data && (data.detail || data.message)
+                ? data.detail || data.message
+                : '送信に失敗しました。時間をおいて再度お試しください。';
+
+            throw new Error(msg);
+          }
+          
           const ticket = data && (data.ticket_id || data.id || data.reference);
           saveLast(ticket || '', payload);
 
