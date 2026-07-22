@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1660 2016" role="img" aria-labelledby="title desc">
+  <title id="title">UrbanFlex 3WAY usage labels</title>
+  <desc id="desc">3WAY、バックパック、ビジネスバッグ、ショルダーバッグ、キャリーオンの表示ラベル</desc>
+
+  <g fill="#082b52" font-family="Arial, 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif">
+    <text x="830" y="142" text-anchor="middle" font-size="150" font-weight="800" letter-spacing="16">3WAY</text>
+    <text x="830" y="235" text-anchor="middle" font-size="72" font-weight="650" letter-spacing="2">+ Carry on</text>
+
+    <g font-weight="700">
+      <text x="72" y="355" font-size="56" letter-spacing="1">BACKPACK</text>
+      <text x="72" y="430" font-size="50">リュック</text>
+
+      <text x="868" y="355" font-size="56" letter-spacing="1">BRIEFCASE</text>
+      <text x="868" y="430" font-size="50">ビジネス</text>
+      <text x="868" y="492" font-size="50">バッグ</text>
+
+      <text x="72" y="1192" font-size="52" letter-spacing="1">SHOULDER BAG</text>
+      <text x="72" y="1267" font-size="50">ショルダー</text>
+      <text x="72" y="1329" font-size="50">バッグ</text>
+
+      <text x="868" y="1192" font-size="56" letter-spacing="1">CARRY ON</text>
+      <text x="868" y="1267" font-size="50">キャリー</text>
+      <text x="868" y="1329" font-size="50">オン</text>
+    </g>
+  </g>
+</svg>
