@@ -124,7 +124,7 @@ body{
 
 /* 3WAY + Carry on */
 .uf-modes-title{
-  top:2.5%;
+  top:1.2%;
   left:50%;
   width:90%;
   transform:translateX(-50%);
@@ -141,7 +141,7 @@ body{
 }
 
 .uf-modes-title-main{
-  font-size:clamp(2rem, 3.8vw, 3.35rem);
+  font-size:clamp(2rem, 3.4vw, 3rem);
   font-weight:800;
   letter-spacing:.08em;
 }
