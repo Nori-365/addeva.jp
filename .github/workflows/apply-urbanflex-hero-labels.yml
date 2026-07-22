@@ -1,20 +1,22 @@
 name: Apply UrbanFlex hero text overlay
 
 on:
-  push:
-    paths:
-      - '.github/workflows/apply-urbanflex-hero-labels.yml'
+  pull_request:
+    types: [opened]
+    branches: [main]
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.head_ref == 'urbanflex-hero-overlay-trigger'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out trigger branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Update UrbanFlex hero
@@ -26,6 +28,7 @@ jobs:
           html_path = Path('product/urbanflex/index.html')
           css_path = Path('assets/css/urbanflex.css')
           workflow_path = Path('.github/workflows/apply-urbanflex-hero-labels.yml')
+          trigger_path = Path('.github/urbanflex-overlay-trigger.txt')
 
           html = html_path.read_text(encoding='utf-8')
 
@@ -217,16 +220,20 @@ jobs:
 
           css_path.write_text(css, encoding='utf-8')
 
-          # Remove this one-time workflow after applying the requested edit.
+          # Remove the one-time trigger and workflow from the branch.
+          if trigger_path.exists():
+              trigger_path.unlink()
           if workflow_path.exists():
               workflow_path.unlink()
           PY
 
-      - name: Commit changes
+      - name: Commit changes to trigger branch
         shell: bash
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Add HTML labels to UrbanFlex hero modes"
-          git push origin HEAD:main
+          git push origin HEAD:"${BRANCH_NAME}"
