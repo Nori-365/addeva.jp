@@ -1,10 +1,11 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.4d)
+   assets/css/urbanflex.css  (v1.5)
    UrbanFlexページ専用
    - stickyサブナビの固定範囲をbody高で制限しない
    - 眉は Top と同じ高さに維持（56px上限）
    - 下グループは最下寄せ＋少し上げて見せる
    - タイトルだけ微下げ
+   - 右ヒーローに3WAY用途ラベルを重ねる
    =============================== */
 
 /* stickyサブナビの固定範囲をbody高で制限しない */
@@ -64,6 +65,29 @@ body{
   /* さらに数pxだけ上げたい時は以下の1行を有効化
      transform: translateY(-6px);
   */
+}
+
+/* 右ヒーロー：元画像とは別レイヤーで文字を重ねる */
+.uf-hero .row > .col-12.col-lg-5{
+  position:relative;
+  isolation:isolate;
+}
+
+.uf-hero .row > .col-12.col-lg-5 > img{
+  position:relative;
+  z-index:1;
+}
+
+.uf-hero .row > .col-12.col-lg-5::after{
+  content:"";
+  position:absolute;
+  inset:1rem;
+  z-index:2;
+  pointer-events:none;
+  background-image:url('/assets/img/urbanflex/urbanflex_hero_labels.svg?v=20260722');
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:100% 100%;
 }
 
 /* スマホ固定CTA：Amazonボタン文字の縦位置をわずかに下げる */
