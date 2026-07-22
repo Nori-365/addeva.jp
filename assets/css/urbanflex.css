@@ -124,7 +124,7 @@ body{
 
 /* 3WAY + Carry on */
 .uf-modes-title{
-  top:1.2%;
+  top:0%;
   left:50%;
   width:90%;
   transform:translateX(-50%);
@@ -173,13 +173,13 @@ body{
 
 /* 左上：バックパック */
 .uf-mode-backpack{
-  top:18.5%;
+  top:17.3%;
   left:3.2%;
 }
 
 /* 右上：ビジネスバッグ */
 .uf-mode-briefcase{
-  top:18.5%;
+  top:17.3%;
   left:53.2%;
 }
 
@@ -198,7 +198,7 @@ body{
 /* 最下部の注意書き */
 .uf-modes-note{
   right:2.4%;
-  bottom:1.15%;
+  bottom:.25%%;
   left:2.4%;
   font-size:clamp(.68rem, .9vw, .82rem);
   font-weight:700;
