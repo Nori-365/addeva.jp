@@ -1,11 +1,11 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.5)
+   assets/css/urbanflex.css  (v1.6)
    UrbanFlexページ専用
    - stickyサブナビの固定範囲をbody高で制限しない
    - 眉は Top と同じ高さに維持（56px上限）
    - 下グループは最下寄せ＋少し上げて見せる
    - タイトルだけ微下げ
-   - 右ヒーローに3WAY用途ラベルを重ねる
+   - 右ヒーローの文字をSEO対応のHTMLで配置
    =============================== */
 
 /* stickyサブナビの固定範囲をbody高で制限しない */
@@ -17,7 +17,10 @@ body{
 
 /* 背景画像をクリアに（main.css の scale を打消し） */
 .uf-hero .bg-wrap .uf-bg{
-  position:absolute; inset:0; width:100%; height:100%;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
   object-position:35% 50%;
   transform:none !important;
@@ -27,7 +30,10 @@ body{
 
 /* オーバーレイ（可読性確保） */
 .uf-hero .uf-tint{
-  position:absolute; inset:0; z-index:1; pointer-events:none;
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
   background:linear-gradient(
     90deg,
     rgba(0,0,0,.46) 0%,
@@ -42,52 +48,163 @@ body{
 /* 配置：眉の高さと下セットの余白を決定 */
 .uf-hero .copy{
   /* 眉の高さ：Top と同じ基準（min 24px / pref 5vw / max 56px） */
-  padding-top: clamp(24px, 5vw, 56px);
+  padding-top:clamp(24px, 5vw, 56px);
 
-  /* 下セット（リード＋ボタン）との離れ：数値を大きくすると“少し上”に見える */
-  padding-bottom: clamp(18px, 2.4vw, 28px);
+  /* 下セット（リード＋ボタン）との離れ */
+  padding-bottom:clamp(18px, 2.4vw, 28px);
 
   display:flex;
   flex-direction:column;
-  justify-content:flex-start;   /* 上は固定 */
+  justify-content:flex-start;
   gap:12px;
 }
 
 /* 見出しのみ微調整（眉は動かさない） */
 .uf-hero .uf-title{
-  transform: translateY(12px);  /* 下げたいほど数値を大きく */
+  transform:translateY(12px);
 }
 
 /* 下グループ（リード＋ボタン）を最下に寄せる */
 .uf-hero .uf-sub{
   margin-top:auto;
-  display:flex; flex-direction:column; gap:.5rem;
-  /* さらに数pxだけ上げたい時は以下の1行を有効化
-     transform: translateY(-6px);
-  */
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
 }
 
-/* 右ヒーロー：元画像とは別レイヤーで文字を重ねる */
-.uf-hero .row > .col-12.col-lg-5{
+/* ==================================================
+   右ヒーロー
+   画像上の文字をDOM上のHTMLテキストとして配置
+   ================================================== */
+
+.uf-modes-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:clamp(300px, 38vw, 520px);
+  padding:1rem;
+  overflow:hidden;
+  background:#f2f6f7;
+}
+
+/*
+  画像と文字の座標基準。
+  文字の位置は、この要素内の比率で指定する。
+*/
+.uf-modes-canvas{
   position:relative;
-  isolation:isolate;
+  width:100%;
 }
 
-.uf-hero .row > .col-12.col-lg-5 > img{
-  position:relative;
-  z-index:1;
+/* 右側の4分割画像 */
+.uf-modes-image{
+  display:block;
+  width:100%;
+  height:auto;
 }
 
-.uf-hero .row > .col-12.col-lg-5::after{
-  content:"";
+/* タイトル・各ラベル・注意書きの共通設定 */
+.uf-modes-title,
+.uf-mode-label,
+.uf-modes-note{
   position:absolute;
-  inset:1rem;
   z-index:2;
-  pointer-events:none;
-  background-image:url('/assets/img/urbanflex/urbanflex_hero_labels.svg?v=20260722-2');
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:100% 100%;
+  margin:0;
+  color:#082b52;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans JP",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    sans-serif;
+  text-shadow:0 1px 2px rgba(255,255,255,.9);
+}
+
+/* 3WAY + Carry on */
+.uf-modes-title{
+  top:2.5%;
+  left:50%;
+  width:90%;
+  transform:translateX(-50%);
+  text-align:center;
+  line-height:1.05;
+  white-space:nowrap;
+}
+
+.uf-modes-title-main,
+.uf-modes-title-sub,
+.uf-mode-en,
+.uf-mode-jp{
+  display:block;
+}
+
+.uf-modes-title-main{
+  font-size:clamp(2rem, 3.8vw, 3.35rem);
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+.uf-modes-title-sub{
+  margin-top:.08em;
+  font-size:clamp(.95rem, 1.65vw, 1.45rem);
+  font-weight:700;
+}
+
+/* 4つの使用スタイル */
+.uf-mode-label{
+  width:42%;
+  line-height:1.15;
+  font-weight:700;
+}
+
+.uf-mode-en{
+  font-size:clamp(.72rem, 1.05vw, .98rem);
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+
+.uf-mode-jp{
+  margin-top:.38em;
+  font-size:clamp(.68rem, .95vw, .9rem);
+  line-height:1.22;
+}
+
+/* 左上：バックパック */
+.uf-mode-backpack{
+  top:18.5%;
+  left:3.2%;
+}
+
+/* 右上：ビジネスバッグ */
+.uf-mode-briefcase{
+  top:18.5%;
+  left:53.2%;
+}
+
+/* 左下：ショルダーバッグ */
+.uf-mode-shoulder{
+  top:59.2%;
+  left:3.2%;
+}
+
+/* 右下：キャリーオン */
+.uf-mode-carry{
+  top:59.2%;
+  left:53.2%;
+}
+
+/* 最下部の注意書き */
+.uf-modes-note{
+  right:2.4%;
+  bottom:1.15%;
+  left:2.4%;
+  font-size:clamp(.68rem, .9vw, .82rem);
+  font-weight:700;
+  line-height:1.35;
+  text-align:center;
+  white-space:nowrap;
 }
 
 /* スマホ固定CTA：Amazonボタン文字の縦位置をわずかに下げる */
@@ -101,10 +218,34 @@ body{
 }
 
 /* スマホ微調整 */
-@media (max-width: 575.98px){
+@media (max-width:575.98px){
+
   .uf-hero .copy{
-    padding-top: 28px;
-    padding-bottom: 20px; /* SPはやや上げ目 */
+    padding-top:28px;
+    padding-bottom:20px;
   }
-  .uf-hero .uf-title{ transform: translateY(6px); }
+
+  .uf-hero .uf-title{
+    transform:translateY(6px);
+  }
+
+  .uf-modes-panel{
+    min-height:0;
+    padding:.75rem;
+  }
+
+  .uf-mode-en{
+    font-size:clamp(.65rem, 3vw, .8rem);
+  }
+
+  .uf-mode-jp{
+    font-size:clamp(.61rem, 2.7vw, .76rem);
+  }
+
+  .uf-modes-note{
+    right:1.5%;
+    bottom:1%;
+    left:1.5%;
+    font-size:clamp(.6rem, 2.45vw, .72rem);
+  }
 }
