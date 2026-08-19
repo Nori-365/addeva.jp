@@ -1,5 +1,5 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.7)
+   assets/css/urbanflex.css  (v1.8)
    UrbanFlexページ専用
    - stickyサブナビの固定範囲をbody高で制限しない
    - 眉は Top と同じ高さに維持（56px上限）
@@ -76,7 +76,8 @@ body{
 .uf-hero .uf-sub a[href="#size-3rex40"].btn{
   position:relative;
   display:block;
-  width:clamp(180px, 40%, 240px);
+  width:clamp(220px, 50%, 285px);
+  margin-left:auto;
   aspect-ratio:2048 / 505;
   padding:0 !important;
   overflow:hidden;
@@ -277,7 +278,9 @@ body{
   }
 
   .uf-hero .uf-sub a[href="#size-3rex40"].btn{
-    width:clamp(170px, 54vw, 220px);
+    width:clamp(190px, 60vw, 235px);
+    margin-right:auto;
+    margin-left:auto;
   }
 
   .uf-modes-panel{
