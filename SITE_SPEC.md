@@ -21,6 +21,7 @@
 ## 現在の主要ページ
 - `/index.html`：トップページ
 - `/company.html`：会社概要
+- `/contents/index.html`：動画コンテンツ一覧
 
 ## 主な共通ファイル
 - `/assets/css/main.css`
