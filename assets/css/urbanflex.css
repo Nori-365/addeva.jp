@@ -84,7 +84,7 @@ body{
   border:0 !important;
   border-radius:0 !important;
   background:
-    url("/assets/img/items/urbanflex/amazon_more_cta.png")
+    url("/assets/img/items/urbanflex/amazon_more_cta2.png")
     center / contain no-repeat !important;
   box-shadow:none !important;
   color:transparent !important;
@@ -99,7 +99,7 @@ body{
   position:absolute;
   inset:0;
   background:
-    url("/assets/img/items/urbanflex/amazon_more_cta_hover.png")
+    url("/assets/img/items/urbanflex/amazon_more_cta_hover2.png")
     center / contain no-repeat;
   opacity:0;
   transition:opacity .14s ease;
