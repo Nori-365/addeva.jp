@@ -1,5 +1,5 @@
 /* ===============================
-   assets/css/urbanflex.css  (v1.6)
+   assets/css/urbanflex.css  (v1.7)
    UrbanFlexページ専用
    - stickyサブナビの固定範囲をbody高で制限しない
    - 眉は Top と同じ高さに維持（56px上限）
@@ -70,6 +70,53 @@ body{
   display:flex;
   flex-direction:column;
   gap:.5rem;
+}
+
+/* Hero CTA：通常画像とホバー画像を切り替え */
+.uf-hero .uf-sub a[href="#size-3rex40"].btn{
+  position:relative;
+  display:block;
+  width:clamp(180px, 40%, 240px);
+  aspect-ratio:2048 / 505;
+  padding:0 !important;
+  overflow:hidden;
+  border:0 !important;
+  border-radius:0 !important;
+  background:
+    url("/assets/img/items/urbanflex/amazon_more_cta.png")
+    center / contain no-repeat !important;
+  box-shadow:none !important;
+  color:transparent !important;
+  font-size:0;
+  line-height:0;
+  text-indent:-9999px;
+  transition:transform .16s ease;
+}
+
+.uf-hero .uf-sub a[href="#size-3rex40"].btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    url("/assets/img/items/urbanflex/amazon_more_cta_hover.png")
+    center / contain no-repeat;
+  opacity:0;
+  transition:opacity .14s ease;
+}
+
+.uf-hero .uf-sub a[href="#size-3rex40"].btn:hover,
+.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible{
+  transform:translateY(-1px);
+}
+
+.uf-hero .uf-sub a[href="#size-3rex40"].btn:hover::after,
+.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible::after{
+  opacity:1;
+}
+
+.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible{
+  outline:2px solid rgba(175,214,255,.95);
+  outline-offset:3px;
 }
 
 /* ==================================================
@@ -227,6 +274,10 @@ body{
 
   .uf-hero .uf-title{
     transform:translateY(6px);
+  }
+
+  .uf-hero .uf-sub a[href="#size-3rex40"].btn{
+    width:clamp(170px, 54vw, 220px);
   }
 
   .uf-modes-panel{
