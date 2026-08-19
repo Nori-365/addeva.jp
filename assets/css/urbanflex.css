@@ -73,7 +73,7 @@ body{
 }
 
 /* Hero CTA：通常画像とホバー画像を切り替え */
-.uf-hero .uf-sub a[href="#size-3rex40"].btn{
+.uf-hero .uf-sub .btn{
   position:relative;
   display:block;
   width:clamp(220px, 50%, 285px);
@@ -94,7 +94,7 @@ body{
   transition:transform .16s ease;
 }
 
-.uf-hero .uf-sub a[href="#size-3rex40"].btn::after{
+.uf-hero .uf-sub .btn::after{
   content:"";
   position:absolute;
   inset:0;
@@ -105,17 +105,17 @@ body{
   transition:opacity .14s ease;
 }
 
-.uf-hero .uf-sub a[href="#size-3rex40"].btn:hover,
-.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible{
+.uf-hero .uf-sub .btn:hover,
+.uf-hero .uf-sub .btn:focus-visible{
   transform:translateY(-1px);
 }
 
-.uf-hero .uf-sub a[href="#size-3rex40"].btn:hover::after,
-.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible::after{
+.uf-hero .uf-sub .btn:hover::after,
+.uf-hero .uf-sub .btn:focus-visible::after{
   opacity:1;
 }
 
-.uf-hero .uf-sub a[href="#size-3rex40"].btn:focus-visible{
+.uf-hero .uf-sub .btn:focus-visible{
   outline:2px solid rgba(175,214,255,.95);
   outline-offset:3px;
 }
@@ -277,7 +277,7 @@ body{
     transform:translateY(6px);
   }
 
-  .uf-hero .uf-sub a[href="#size-3rex40"].btn{
+  .uf-hero .uf-sub .btn{
     width:clamp(190px, 60vw, 235px);
     margin-right:auto;
     margin-left:auto;
