@@ -13,13 +13,31 @@
 - PostgreSQL操作：pgAdmin 4
 - WinSCPで可能な操作は、原則としてコマンド操作よりWinSCPを優先
 
-<!-- 2026-08-19追加提案 -->
 ## sitemap.xml 管理ルール
 - `/sitemap.xml` は、現在意図している公開URLを確認するための基準として使用する。
 - 既存ページのファイル名・ディレクトリ・URLを変更する場合は、意図しないURL変更になっていないか `/sitemap.xml` と照合する。
-- 公開ページを新規作成、削除、またはURL変更した場合は、同じ作業内で `/sitemap.xml` も更新し、実際のサイト構成と一致させる。
+- 検索対象ページを新規作成、削除、またはURL変更した場合は、同じ作業内で `/sitemap.xml` も更新し、実際のサイト構成と一致させる。
 
-<!-- 2026-08-19追加提案 -->
+### sitemap.xml 非掲載ページ
+以下のページは、検索結果への掲載を目的としないため、意図的に `/sitemap.xml` へ掲載しない。
+
+#### noindex ページ
+- `/contact.html`：問い合わせフォーム
+- `/contact_thanks.html`：問い合わせ完了
+- `/register.html`：製品登録
+
+#### 認証・ユーザー機能
+- `/customer.html`
+- `/feedback_board.html`
+- `/feedback.html`
+- `/user_opinion_manage.html`
+
+#### 管理機能
+- `/dev_approval.html`
+- `/dev_parts_regist.html`
+
+- 原則として、検索結果への掲載を目的としないフォーム、完了画面、認証後ページ、管理画面は `/sitemap.xml` に掲載しない。
+
 ## 画像・バイナリファイルの更新
 - 画像等のバイナリファイルは、原則としてユーザーがGitHubへアップロードする。
 - GPTはユーザーによるアップロード完了後、GitHub上のファイルを確認してHTML / CSS等の修正を行う。
