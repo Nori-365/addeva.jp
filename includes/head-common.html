@@ -27,6 +27,13 @@
         location.pathname !== '/product/urbanflex/index.html') return;
 
     const setupUrbanFlexSubnav = () => {
+      const heroCta = document.querySelector('.uf-hero .uf-sub .btn');
+      if (heroCta) {
+        heroCta.href = 'https://www.amazon.co.jp/dp/B0FS7F83QY';
+        heroCta.target = '_blank';
+        heroCta.rel = 'noopener';
+      }
+
       const subnav = document.querySelector('nav.subnav-shadow');
       const nav = subnav?.querySelector('ul.nav');
       const common = document.querySelector('#common');
