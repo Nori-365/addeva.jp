@@ -64,6 +64,24 @@
   })();
 </script>
 
+<!-- BSC-20サイズ別ページ：シリーズ共通情報をシリーズTOPから再利用 -->
+<script>
+  (() => {
+    const sizePages = new Set([
+      '/product/bsc20/ss.html',
+      '/product/bsc20/yoko.html',
+      '/product/bsc20/s.html',
+      '/product/bsc20/m.html'
+    ]);
+    if (!sizePages.has(location.pathname)) return;
+
+    const script = document.createElement('script');
+    script.src = '/product/bsc20/bsc20-common.js?v=1';
+    script.defer = true;
+    document.head.appendChild(script);
+  })();
+</script>
+
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
