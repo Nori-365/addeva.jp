@@ -335,3 +335,31 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
     font-size: clamp(11px, 1.2vw, 13px);
   }
 }
+
+/* ===== TOP CONTENTS：一覧ページより小さく、横に複数見せる ===== */
+#contents .row.flex-nowrap.overflow-x-auto > article{
+  flex:0 0 40%;
+  width:40%;
+  max-width:40%;
+}
+@media (min-width:576px){
+  #contents .row.flex-nowrap.overflow-x-auto > article{
+    flex-basis:31%;
+    width:31%;
+    max-width:31%;
+  }
+}
+@media (min-width:768px){
+  #contents .row.flex-nowrap.overflow-x-auto > article{
+    flex-basis:27%;
+    width:27%;
+    max-width:27%;
+  }
+}
+@media (min-width:992px){
+  #contents .row.flex-nowrap.overflow-x-auto > article{
+    flex-basis:23%;
+    width:23%;
+    max-width:23%;
+  }
+}
