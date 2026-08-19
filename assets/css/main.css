@@ -363,3 +363,135 @@ footer{border-top:1px solid var(--line);padding:26px 0 60px;color:#6b7280}
     max-width:23%;
   }
 }
+
+/* ===== TOP CONTENTS：カテゴリ全体を「1つの大きなボタン」として見せる ===== */
+#contents > .container-narrow > a[href^="/contents/#"]{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+  border-radius:14px;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+#contents > .container-narrow > a[href^="/contents/#"]:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 34px rgba(17,24,39,.10);
+}
+
+/* 下部の半透明パネル */
+#contents > .container-narrow > a[href^="/contents/#"]::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:41%;
+  z-index:5;
+  pointer-events:none;
+  background:rgba(255,255,255,.90);
+  border-top:1px solid rgba(17,24,39,.55);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+}
+
+/* パネルのメインコピー */
+#contents > .container-narrow > a[href^="/contents/#"]::after{
+  content:"ADDEVA動画コンテンツをチェック！";
+  position:absolute;
+  left:50%;
+  bottom:26%;
+  z-index:6;
+  width:92%;
+  transform:translateX(-50%);
+  text-align:center;
+  color:#111;
+  font-size:clamp(19px,2.35vw,31px);
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:.01em;
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+/* 既存の「すべて見る →」を、説明文＋CTAの描画領域として再利用 */
+#contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:4.5%;
+  z-index:6;
+  height:17%;
+  margin:0;
+  color:transparent !important;
+  font-size:0 !important;
+  pointer-events:none;
+}
+#contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary::before{
+  content:"すべての製品活用動画をまとめてご覧いただけます。";
+  position:absolute;
+  left:50%;
+  top:0;
+  width:94%;
+  transform:translateX(-50%);
+  text-align:center;
+  color:#222;
+  font-size:clamp(11px,1.25vw,15px);
+  font-weight:500;
+  line-height:1.35;
+  white-space:nowrap;
+}
+#contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary::after{
+  content:"動画一覧を見る";
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:clamp(180px,27vw,300px);
+  min-height:44px;
+  padding:.72rem 2rem;
+  border-radius:999px;
+  color:#111;
+  background:linear-gradient(135deg,#ffd85a,#f3bf39);
+  box-shadow:0 7px 18px rgba(179,124,0,.18);
+  font-size:clamp(13px,1.35vw,16px);
+  font-weight:800;
+  line-height:1;
+  white-space:nowrap;
+}
+
+/* overlay配下の動画タイトルは薄くして「個別リンク」ではなくプレビューに見せる */
+#contents > .container-narrow > a[href^="/contents/#"] .row article h4{
+  transition:opacity .18s ease;
+}
+#contents > .container-narrow > a[href^="/contents/#"]:hover .row article h4{
+  opacity:.58;
+}
+
+@media (max-width:767.98px){
+  #contents > .container-narrow > a[href^="/contents/#"]::before{
+    height:45%;
+  }
+  #contents > .container-narrow > a[href^="/contents/#"]::after{
+    bottom:28.5%;
+    width:96%;
+    font-size:clamp(16px,5vw,21px);
+    white-space:normal;
+  }
+  #contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary{
+    bottom:4%;
+    height:19%;
+  }
+  #contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary::before{
+    width:90%;
+    font-size:clamp(10px,3vw,13px);
+    white-space:normal;
+  }
+  #contents > .container-narrow > a[href^="/contents/#"] > .d-flex .link-secondary::after{
+    min-width:min(72vw,260px);
+    min-height:40px;
+    padding:.62rem 1.4rem;
+    font-size:13px;
+  }
+}
