@@ -1,0 +1,1 @@
+Video thumbnails for /contents/ and TOP page. Original JPEG assets are used without recompression.
