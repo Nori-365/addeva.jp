@@ -13,6 +13,101 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
+<!-- 共通ヘッダー：ページタイトル表示と固定ヘッダー高さを同期 -->
+<style>
+  nav.subnav-shadow{
+    top:var(--addeva-header-height, var(--header-desktop, 64px)) !important;
+  }
+</style>
+<script>
+  (() => {
+    const normalizePath = (pathname) => {
+      if (pathname === '/index.html') return '/';
+      return pathname.replace(/\/index\.html$/, '/');
+    };
+
+    const path = normalizePath(location.pathname);
+
+    /* TOPはindex.html側のH1をそのまま共通ヘッダーへ移動する既存処理を使用 */
+    if (path === '/') return;
+
+    const pageLabels = {
+      '/company.html': '会社概要',
+      '/support-guide.html': '製品保証・アフターサポート',
+      '/quality-support.html': '品質・サポート',
+      '/b2b.html': '法人向けバッグOEM・ODM',
+      '/faq.html': 'よくあるご質問',
+      '/contents/': 'CONTENTS',
+      '/development-program.html': '商品開発参加プログラム',
+      '/product/urbanflex/': 'ADDEVA UrbanFlex',
+      '/product/urbanflex/pc_organizer.html': 'PCオーガナイザー',
+      '/product/bsc20/': 'Beatas BSC-20',
+      '/product/bsc20/yoko.html': 'BSC-20 横型（SS相当）',
+      '/product/bsc20/ss.html': 'BSC-20 SS',
+      '/product/bsc20/s.html': 'BSC-20 S',
+      '/product/bsc20/m.html': 'BSC-20 M',
+      '/contact.html': 'お問い合わせ',
+      '/customer.html': 'ユーザーサポート',
+      '/register.html': '製品登録',
+      '/privacy-policy.html': 'プライバシーポリシー',
+      '/terms.html': '利用規約'
+    };
+
+    const resolvePageLabel = () => {
+      if (pageLabels[path]) return pageLabels[path];
+
+      const h1 = document.querySelector('main h1');
+      const h1Text = h1?.textContent?.replace(/\s+/g, ' ').trim();
+      if (h1Text) return h1Text;
+
+      const titleHead = document.title.split(/[｜|]/)[0]?.trim();
+      return titleHead || '';
+    };
+
+    const mountPageLabel = () => {
+      const header = document.querySelector('header.site-header');
+      const slot = header?.querySelector('.header-h1-slot');
+      if (!header || !slot) return false;
+      if (slot.dataset.pageLabelMounted === '1') return true;
+
+      const label = resolvePageLabel();
+      if (!label) return false;
+
+      const node = document.createElement('div');
+      node.className = 'header-page-label';
+      node.textContent = label;
+      slot.appendChild(node);
+      slot.dataset.pageLabelMounted = '1';
+      header.classList.add('has-page-h1');
+
+      const syncHeaderOffset = () => {
+        const height = Math.ceil(header.getBoundingClientRect().height);
+        document.documentElement.style.setProperty('--addeva-header-height', `${height}px`);
+        document.body.style.paddingTop = `calc(${height}px + env(safe-area-inset-top, 0px))`;
+      };
+
+      requestAnimationFrame(syncHeaderOffset);
+      window.addEventListener('resize', syncHeaderOffset, { passive:true });
+      return true;
+    };
+
+    const start = () => {
+      if (mountPageLabel()) return;
+
+      const observer = new MutationObserver(() => {
+        if (mountPageLabel()) observer.disconnect();
+      });
+      observer.observe(document.documentElement, { childList:true, subtree:true });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start, { once:true });
+    } else {
+      start();
+    }
+  })();
+</script>
+
 <!-- UrbanFlexページ：ページ内インデックスとスマホ追従範囲を調整 -->
 <style>
   @media (max-width: 991.98px) {
@@ -53,7 +148,8 @@
           return;
         }
 
-        const headerOffset = 56;
+        const header = document.querySelector('header.site-header');
+        const headerOffset = header ? Math.ceil(header.getBoundingClientRect().height) : 56;
         const commonTop = common.getBoundingClientRect().top;
         subnav.classList.toggle('uf-subnav-ended', commonTop <= headerOffset);
       };
