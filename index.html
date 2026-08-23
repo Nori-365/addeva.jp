@@ -27,6 +27,31 @@
   <!-- Bootstrap Icons を使用しているため、必要に応じてここで読み込むか、head-common.html に組み込んでください -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+  <!-- TOPページH1：JSが無効でも本文先頭に見えるフォールバック -->
+  <style>
+    #top-page-h1{
+      margin:0;
+      font-size:.78rem;
+      font-weight:500;
+      line-height:1.25;
+      letter-spacing:.02em;
+      color:#555;
+    }
+    body > #top-page-h1{
+      max-width:var(--maxw);
+      margin:0 auto;
+      padding:4px 12px;
+      text-align:right;
+    }
+    @media (max-width: 991.98px){
+      body > #top-page-h1{
+        font-size:.70rem;
+        text-align:center;
+        white-space:nowrap;
+      }
+    }
+  </style>
+
 
   <!-- Open Graph -->
   <meta property="og:site_name" content="ADDEVA">
@@ -41,6 +66,37 @@
 <body>
   <!-- ▼ 共通ヘッダーを読み込み -->
   <div data-include="/includes/header.html" class="site-header" aria-busy="true"></div>
+
+  <!-- HTML上では常に存在させ、共通ヘッダー読込後にH1スロットへ移動する -->
+  <h1 id="top-page-h1">ビジネスリュック・トラベルバッグの販売</h1>
+  <script>
+    (() => {
+      const mountTopPageH1 = () => {
+        const h1 = document.getElementById('top-page-h1');
+        const slot = document.querySelector('.header-h1-slot');
+        const header = document.querySelector('header.site-header');
+        if (!h1 || !slot || !header) return false;
+
+        slot.appendChild(h1);
+        header.classList.add('has-page-h1');
+
+        const syncHeaderOffset = () => {
+          const height = Math.ceil(header.getBoundingClientRect().height);
+          document.body.style.paddingTop = `calc(${height}px + env(safe-area-inset-top, 0px))`;
+        };
+        requestAnimationFrame(syncHeaderOffset);
+        window.addEventListener('resize', syncHeaderOffset, { passive:true });
+        return true;
+      };
+
+      if (mountTopPageH1()) return;
+
+      const observer = new MutationObserver(() => {
+        if (mountTopPageH1()) observer.disconnect();
+      });
+      observer.observe(document.documentElement, { childList:true, subtree:true });
+    })();
+  </script>
 
   <main>
     <!-- =========================
