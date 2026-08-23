@@ -22,6 +22,8 @@
 以下のページは、検索結果への掲載を目的としないため、意図的に `/sitemap.xml` へ掲載しない。
 
 #### noindex ページ
+- `/privacy-policy.html`：プライバシーポリシー
+- `/terms.html`：利用規約
 - `/contact.html`：問い合わせフォーム
 - `/contact_thanks.html`：問い合わせ完了
 - `/register.html`：製品登録
