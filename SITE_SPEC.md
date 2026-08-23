@@ -57,8 +57,8 @@
 
 ## 主な共通ファイル
 - `/assets/css/main.css`
-- `/includes/head-common.html`
-- `/includes/header.html`
+- `/includes/head-common.html`：共通ヘッダーのページラベル表示と固定ヘッダー高さの同期も管理する。
+- `/includes/header.html`：TOPはH1、その他ページはページラベルを共通のタイトル帯へ表示する。
 - `/includes/footer.html`
 
 ## 商品固有ファイルの管理ルール
