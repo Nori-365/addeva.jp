@@ -6,7 +6,8 @@
       color:#555;
     }
 
-    .site-header.has-page-h1 .header-h1-slot h1{
+    .site-header.has-page-h1 .header-h1-slot h1,
+    .site-header.has-page-h1 .header-h1-slot .header-page-label{
       margin:0;
       font-size:.78rem;
       font-weight:500;
@@ -77,11 +78,14 @@
         border-bottom:0;
         text-align:center;
       }
-      .site-header.has-page-h1 .header-h1-slot #top-page-h1{
+      .site-header.has-page-h1 .header-h1-slot #top-page-h1,
+      .site-header.has-page-h1 .header-h1-slot .header-page-label{
         color:#f4f1e8;
         font-size:.70rem;
         font-weight:400;
         white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
       }
       .site-header.has-page-h1 .navbar-brand{
         grid-column:1;
@@ -105,7 +109,7 @@
         <span class="brand-text">ADDEVA</span><span class="brand-reg">®</span>
       </a>
 
-      <!-- TOPなど、必要なページだけH1をここへ移動して表示 -->
+      <!-- TOPはH1、その他ページはページラベルをここへ表示 -->
       <div class="header-h1-slot"></div>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="メニュー">
