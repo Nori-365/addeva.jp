@@ -1,0 +1,48 @@
+name: Fix UrbanFlex hero once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-urbanflex-hero-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Restore UrbanFlex hero visual markup
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('product/urbanflex/index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''          <div class="uf-head">
+            <h1 class="eyebrow">3WAYビジネスリュック・ビジネスバッグ｜ADDEVA UrbanFlex</h1>
+            <div class="uf-title">2アクションで<br/>ビジネスバッグ。</div>
+          </div>'''
+          new = '''          <div class="uf-head">
+            <div class="eyebrow">Flagship – ADDEVA UrbanFlex</div>
+            <h1 class="uf-title">2アクションで<br/>ビジネスバッグ。</h1>
+          </div>'''
+          count = s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly 1 hero block, found {count}')
+          s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit repair and remove one-shot workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/fix-urbanflex-hero-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Restore UrbanFlex hero visual hierarchy'
+          git push origin main
