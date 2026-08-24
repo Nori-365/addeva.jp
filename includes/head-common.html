@@ -139,6 +139,16 @@ src="https://www.facebook.com/tr?id=27594113103600058&ev=PageView&noscript=1"
     if (location.pathname !== '/product/urbanflex/' &&
         location.pathname !== '/product/urbanflex/index.html') return;
 
+    /* UrbanFlexページ内のAmazon遷移をMeta Pixelへ送信 */
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest('a[href*="amazon.co.jp"]');
+      if (!link) return;
+      if (typeof window.fbq === 'function') {
+        window.fbq('trackCustom', 'AmazonOutboundClick');
+      }
+    });
+
     const setupUrbanFlexSubnav = () => {
       const heroCta = document.querySelector('.uf-hero .uf-sub .btn');
       if (heroCta) {
