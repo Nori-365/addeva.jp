@@ -56,7 +56,28 @@
     /* 注意 */
     .notice { border-left:4px solid #54b2a9; background:#f5fbfa; padding:1rem 1.25rem; border-radius:.5rem; }
 
-    @media (max-width: 992px){ .pg-gallery .main { margin-bottom: .75rem; } }
+    /* UrbanFlex本体ページと共通デザインのスマホ用固定購入ボタン */
+    .sticky-cta {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(5px);
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding: 12px 16px;
+      z-index: 2000;
+      box-shadow: 0 -2px 10px rgba(0,0,0,.05);
+      display: none;
+      animation: slideUp 0.5s ease-out;
+    }
+    @media (max-width: 991.98px) {
+      .pg-gallery .main { margin-bottom: .75rem; }
+      .sticky-cta { display: block; }
+      body { padding-bottom: 70px; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -108,7 +129,7 @@
             </figure>
           </div>
 
-          <!-- 右：コピー（中間CTAは置かない） -->
+          <!-- 右：商品説明とUrbanFlex共通デザインの購入ボタン -->
           <div class="col-12 col-lg-5 d-flex">
             <div class="hero-copy d-flex flex-column justify-content-center">
               <div>
@@ -121,6 +142,11 @@
                   <li>セット運用設計：PC＋周辺機器をまとめて移動、バッグの入れ替えもラク</li>
                   <li>トラベル最適：バッテリー搭載機器を一括管理、空港の保安検査がスムーズ</li>
                 </ul>
+                <div class="mt-3 p-3 bg-light rounded-3 border">
+                  <a href="https://www.amazon.co.jp/dp/B0FVD2GCMW" class="btn btn-warning w-100 fw-bold text-dark border-warning shadow-sm" target="_blank" rel="noopener">
+                    Amazonでもっと見る
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -231,8 +257,9 @@
             <div class="border rounded-3 p-3 h-100">
               <h3 class="h6 mb-1">Amazon（FBA）</h3>
               <p class="mb-2 small text-body-secondary">在庫はAmazon倉庫から出荷。最短で翌日お届け。</p>
-              <a class="btn btn-dark w-100" href="#" target="_blank" rel="noopener" aria-disabled="true">Amazonで購入</a>
-              <!-- TODO: 商品ページURLが確定したら href を差し替え -->
+              <a href="https://www.amazon.co.jp/dp/B0FVD2GCMW" class="btn btn-warning w-100 fw-bold text-dark border-warning shadow-sm" target="_blank" rel="noopener">
+                Amazonでもっと見る
+              </a>
             </div>
           </div>
           <!-- BASE -->
@@ -258,6 +285,19 @@
 
   <!-- 共通フッター（※パスは /footer.html） -->
   <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <!-- UrbanFlex本体ページと共通デザインのスマホ用固定追従ボタン -->
+  <div class="sticky-cta">
+    <div class="d-flex align-items-center justify-content-between gap-3">
+      <div class="lh-1">
+        <span class="d-block small text-muted fw-bold" style="font-size:0.7rem;">ADDEVA UrbanFlex</span>
+        <span class="d-block fw-bold text-dark">PCオーガナイザー</span>
+      </div>
+      <a href="https://www.amazon.co.jp/dp/B0FVD2GCMW" target="_blank" rel="noopener" class="btn btn-warning fw-bold text-dark rounded-pill shadow-sm flex-grow-1" style="max-width: 240px;">
+        Amazonでもっと見る
+      </a>
+    </div>
+  </div>
 
   <!-- 構造化データ -->
   <script type="application/ld+json">
