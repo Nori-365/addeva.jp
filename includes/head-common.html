@@ -13,7 +13,7 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
-<!-- Meta Pixel Code: GA4送信との競合切り分けのため、window.load後3秒で起動 -->
+<!-- Meta Pixel Code: GA4送信との競合切り分けのため、window.load後2秒で起動 -->
 <script>
   (() => {
     const loadMetaPixel = () => {
@@ -33,7 +33,7 @@
     };
 
     const scheduleMetaPixel = () => {
-      window.setTimeout(loadMetaPixel, 3000);
+      window.setTimeout(loadMetaPixel, 2000);
     };
 
     if (document.readyState === 'complete') {
