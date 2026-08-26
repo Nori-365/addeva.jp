@@ -13,7 +13,37 @@
   gtag('config', 'G-NB1CETQNJY');
 </script>
 
-<!-- Meta Pixel Code temporarily removed for second GA4/Instagram isolation test -->
+<!-- Meta Pixel Code: GA4送信との競合切り分けのため、window.load後3秒で起動 -->
+<script>
+  (() => {
+    const loadMetaPixel = () => {
+      if (typeof window.fbq === 'function') return;
+
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+
+      fbq('init', '27594113103600058');
+      fbq('track', 'PageView');
+    };
+
+    const scheduleMetaPixel = () => {
+      window.setTimeout(loadMetaPixel, 3000);
+    };
+
+    if (document.readyState === 'complete') {
+      scheduleMetaPixel();
+    } else {
+      window.addEventListener('load', scheduleMetaPixel, { once: true });
+    }
+  })();
+</script>
+<!-- End delayed Meta Pixel Code -->
 
 <!-- 共通ヘッダー：ページタイトル表示と固定ヘッダー高さを同期 -->
 <style>
