@@ -158,6 +158,18 @@
       const target = event.target instanceof Element ? event.target : null;
       const link = target?.closest('a[href*="amazon.co.jp"]');
       if (!link) return;
+
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'urbanflex_amazon_click', {
+            destination: 'amazon',
+            product: 'urbanflex'
+          });
+        }
+      } catch (error) {
+        console.warn('GA4 event failed:', error);
+      }
+
       if (typeof window.fbq === 'function') {
         window.fbq('trackCustom', 'AmazonOutboundClick');
       }
