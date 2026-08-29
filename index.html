@@ -51,25 +51,26 @@
       }
     }
 
-    /* TOP CONTENTS 2段目：上段と同じ「カテゴリ全体が1つのボタン」の見せ方を半幅で再現 */
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6{
+    /* TOP CONTENTS 下段専用：上段ボタングループと同じ見た目を半幅で再現 */
+    #contents .contents-half-col{
       display:flex;
       min-width:0;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a{
+    #contents .contents-half-btn{
       position:relative;
       overflow:hidden;
       isolation:isolate;
       border-radius:14px;
       transition:transform .18s ease, box-shadow .18s ease;
       flex:1 1 auto;
+      width:100%;
       min-width:0;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a:hover{
+    #contents .contents-half-btn:hover{
       transform:translateY(-2px);
       box-shadow:0 14px 34px rgba(17,24,39,.10);
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a::before{
+    #contents .contents-half-btn::before{
       content:"";
       position:absolute;
       left:0;
@@ -83,39 +84,39 @@
       backdrop-filter:blur(2px);
       -webkit-backdrop-filter:blur(2px);
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a::after{
+    #contents .contents-half-btn::after{
       content:"ADDEVA動画コンテンツをチェック！";
       position:absolute;
       left:50%;
-      bottom:27%;
+      bottom:26%;
       z-index:6;
       width:94%;
       transform:translateX(-50%);
       text-align:center;
       color:#111;
-      font-size:clamp(16px,1.8vw,22px);
+      font-size:clamp(16px,1.7vw,22px);
       font-weight:800;
       line-height:1.25;
       letter-spacing:.01em;
       white-space:normal;
       pointer-events:none;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"]::after{
+    #contents .contents-half-btn.contents-half-column::after{
       content:"ADDEVA読み物コンテンツをチェック！";
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary{
+    #contents .contents-half-btn > .d-flex .link-secondary{
       position:absolute;
       left:0;
       right:0;
       bottom:4.5%;
       z-index:6;
-      height:18%;
+      height:17%;
       margin:0;
       color:transparent !important;
       font-size:0 !important;
       pointer-events:none;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary::before{
+    #contents .contents-half-btn > .d-flex .link-secondary::before{
       content:"すべての製品活用動画をまとめてご覧いただけます。";
       position:absolute;
       left:50%;
@@ -124,15 +125,15 @@
       transform:translateX(-50%);
       text-align:center;
       color:#222;
-      font-size:clamp(10px,1.05vw,13px);
+      font-size:clamp(10px,1vw,13px);
       font-weight:500;
       line-height:1.35;
       white-space:normal;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"] > .d-flex .link-secondary::before{
+    #contents .contents-half-btn.contents-half-column > .d-flex .link-secondary::before{
       content:"バッグ選びに役立つ読み物コンテンツをご覧いただけます。";
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary::after{
+    #contents .contents-half-btn > .d-flex .link-secondary::after{
       content:"動画一覧を見る";
       position:absolute;
       left:50%;
@@ -153,76 +154,65 @@
       line-height:1;
       white-space:nowrap;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"] > .d-flex .link-secondary::after{
+    #contents .contents-half-btn.contents-half-column > .d-flex .link-secondary::after{
       content:"記事を読む";
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a .row article h4,
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a .row article p{
+    #contents .contents-half-btn .row article h4,
+    #contents .contents-half-btn .row article p{
       transition:opacity .18s ease;
     }
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a:hover .row article h4,
-    #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a:hover .row article p{
+    #contents .contents-half-btn:hover .row article h4,
+    #contents .contents-half-btn:hover .row article p{
       opacity:.58;
     }
 
-    /* 旅の知識：中の動画カード自体は、上段の動画1個と同じ見かけ幅にする */
+    /* PCでは下段1グループ＝上段動画2個分。旅の動画1個は上段動画1個と同程度の幅。 */
     @media (min-width:768px){
-      #contents > .container-narrow > .row.g-4{
-        align-items:stretch !important;
-      }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/#travel"] .row.flex-nowrap.overflow-x-auto > article{
+      #contents .contents-half-travel .row.flex-nowrap.overflow-x-auto > article{
         flex:0 0 54%;
         width:54%;
         max-width:54%;
       }
-      /* 読み物は横長画像を2動画分の横幅で見せる */
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"] .row.flex-nowrap.overflow-x-auto > article{
+      #contents .contents-half-column .row.flex-nowrap.overflow-x-auto > article{
         flex:0 0 100%;
         width:100%;
         max-width:100%;
       }
     }
     @media (min-width:992px){
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/#travel"] .row.flex-nowrap.overflow-x-auto > article{
+      #contents .contents-half-travel .row.flex-nowrap.overflow-x-auto > article{
         flex-basis:46%;
         width:46%;
         max-width:46%;
       }
     }
     @media (max-width:767.98px){
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a::before{
+      #contents .contents-half-btn::before{
         height:45%;
       }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a::after{
+      #contents .contents-half-btn::after{
         bottom:28.5%;
         width:96%;
         font-size:clamp(16px,5vw,21px);
       }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary{
+      #contents .contents-half-btn > .d-flex .link-secondary{
         bottom:4%;
         height:19%;
       }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary::before{
+      #contents .contents-half-btn > .d-flex .link-secondary::before{
         width:90%;
         font-size:clamp(10px,3vw,13px);
       }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a > .d-flex .link-secondary::after{
+      #contents .contents-half-btn > .d-flex .link-secondary::after{
         min-width:min(72vw,260px);
         min-height:40px;
         padding:.62rem 1.4rem;
         font-size:13px;
       }
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"] .row.flex-nowrap.overflow-x-auto > article{
+      #contents .contents-half-column .row.flex-nowrap.overflow-x-auto > article{
         flex:0 0 84%;
         width:84%;
         max-width:84%;
-      }
-    }
-    @media (min-width:576px) and (max-width:767.98px){
-      #contents > .container-narrow > .row.g-4 > .col-12.col-md-6 > a[href="/contents/multi-room-business-bag.html"] .row.flex-nowrap.overflow-x-auto > article{
-        flex-basis:65%;
-        width:65%;
-        max-width:65%;
       }
     }
   </style>
@@ -507,10 +497,10 @@
           </div>
         </a>
 
-        <!-- 2段目：既存ボタングループの設計のまま、2つを半幅で配置 -->
-        <div class="row g-4 align-items-start">
-          <div class="col-12 col-md-6">
-            <a href="/contents/#travel" class="d-block text-dark text-decoration-none" aria-label="旅の知識コンテンツ一覧を見る">
+        <!-- 2段目：上段と同じボタンスタイルを、2動画分ずつの半幅で配置 -->
+        <div class="row g-4 align-items-stretch">
+          <div class="col-12 col-md-6 contents-half-col">
+            <a href="/contents/#travel" class="contents-half-btn contents-half-travel d-block text-dark text-decoration-none" aria-label="旅の知識コンテンツ一覧を見る">
               <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
                 <div>
                   <div class="small text-secondary">TRAVEL</div>
@@ -531,8 +521,8 @@
             </a>
           </div>
 
-          <div class="col-12 col-md-6">
-            <a href="/contents/multi-room-business-bag.html" class="d-block text-dark text-decoration-none" aria-label="マルチルーム・ビジネスバッグを考える を読む">
+          <div class="col-12 col-md-6 contents-half-col">
+            <a href="/contents/multi-room-business-bag.html" class="contents-half-btn contents-half-column d-block text-dark text-decoration-none" aria-label="マルチルーム・ビジネスバッグを考える を読む">
               <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
                 <div>
                   <div class="small text-secondary">COLUMN</div>
@@ -542,7 +532,7 @@
               </div>
 
               <div class="row flex-nowrap overflow-x-auto g-3 pb-2" aria-label="読み物コンテンツ一覧">
-                <article class="col-12 col-sm-10 col-md-12 col-lg-10 flex-shrink-0">
+                <article class="col-12 flex-shrink-0">
                   <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="1ルーム・2ルーム・3ルームのマルチルームビジネスバッグ構造比較" class="w-100 rounded-3 border" style="aspect-ratio:4/3;object-fit:cover" loading="lazy">
                   <h4 class="h6 mt-2 mb-1">マルチルーム・ビジネスバッグを考える</h4>
                   <p class="small text-secondary mb-0">2ルーム・3ルームのメリットと選び方</p>
