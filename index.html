@@ -198,44 +198,25 @@
       }
     }
 
-    /* 横長の記事画像を、内容を切らずに動画と同じ縦長カードへ収める */
+    /* 読み物は横長画像の比率を活かし、右側のグループ幅いっぱいに表示 */
+    #contents .contents-group-reading .row.flex-nowrap.overflow-x-auto > article{
+      flex:0 0 100%;
+      width:100%;
+      max-width:100%;
+    }
     #contents .reading-thumb{
-      position:relative;
       overflow:hidden;
-      aspect-ratio:9/16;
+      width:100%;
+      aspect-ratio:4/3;
       border:1px solid var(--bs-border-color);
       border-radius:var(--bs-border-radius-lg);
-      background:#e9ecef;
-    }
-    #contents .reading-thumb::before{
-      content:"";
-      position:absolute;
-      inset:-12%;
-      background-image:var(--reading-image);
-      background-size:cover;
-      background-position:center;
-      filter:blur(14px);
-      opacity:.58;
-      transform:scale(1.08);
-    }
-    #contents .reading-thumb::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,.08);
+      background:#fff;
     }
     #contents .reading-thumb img{
-      position:absolute;
-      z-index:1;
-      left:6%;
-      top:50%;
-      width:88%;
-      height:auto;
-      max-height:88%;
+      display:block;
+      width:100%;
+      height:100%;
       object-fit:contain;
-      transform:translateY(-50%);
-      border-radius:.45rem;
-      box-shadow:0 8px 22px rgba(0,0,0,.22);
     }
 
     @media (max-width:767.98px){
@@ -587,7 +568,7 @@
 
               <div class="row flex-nowrap overflow-x-auto g-3 pb-2" aria-label="読み物コンテンツ一覧">
                 <article class="col-7 col-sm-5 col-md-4 col-lg-3 flex-shrink-0">
-                  <div class="reading-thumb" style="--reading-image:url('/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg')">
+                  <div class="reading-thumb">
                     <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="1ルーム・2ルーム・3ルームのマルチルームビジネスバッグ構造比較" loading="lazy">
                   </div>
                   <h4 class="h6 mt-2 mb-0">マルチルーム・ビジネスバッグを考える</h4>
