@@ -188,6 +188,13 @@ body{ padding-top: calc(var(--header-desktop) + env(safe-area-inset-top, 0)); }
   min-height: clamp(360px, 56svh, 640px);
 }
 
+/* スマホでは画像比率に高さを合わせ、Hero下の不要な空白をなくす */
+@media (max-width: 767.98px){
+  #heroCarousel .carousel-item{
+    min-height:0;
+  }
+}
+
 /* === BSC-20：可変比率（等高）ユーティリティ ================= */
 .sq-wrap{
   width:100%;
