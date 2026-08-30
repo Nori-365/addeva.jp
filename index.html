@@ -127,7 +127,7 @@
       white-space:nowrap;
     }
     #contents .contents-group-btn.contents-group-reading > .d-flex .link-secondary::before{
-      content:"2ルーム・3ルームの違いや、マルチルームビジネスバッグの選び方を解説します。";
+      content:"ビジネスバッグの歴史や構造、選び方を開発者の視点から考えます。";
     }
     #contents .contents-group-btn > .d-flex .link-secondary::after{
       content:"動画一覧を見る";
@@ -151,7 +151,7 @@
       white-space:nowrap;
     }
     #contents .contents-group-btn.contents-group-reading > .d-flex .link-secondary::after{
-      content:"記事を読む";
+      content:"読み物一覧を見る";
     }
     #contents .contents-group-btn .row article h4{
       transition:opacity .18s ease;
@@ -198,21 +198,23 @@
       }
     }
 
-    /* 読み物は横長画像の比率を活かし、右側のグループ幅いっぱいに表示 */
-    #contents .contents-group-reading .row.flex-nowrap.overflow-x-auto > article{
-      flex:0 0 100%;
-      width:100%;
-      max-width:100%;
+    /* 読み物は3記事の実画像を、切り抜かず3:2で並べる */
+    #contents .reading-preview-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:.55rem;
+      padding:.75rem 0 1.25rem;
     }
-    #contents .reading-thumb{
+    #contents .reading-preview-thumb{
       overflow:hidden;
       width:100%;
-      aspect-ratio:4/3;
+      aspect-ratio:3/2;
       border:1px solid var(--bs-border-color);
       border-radius:var(--bs-border-radius-lg);
       background:#fff;
+      box-shadow:0 5px 14px rgba(17,24,39,.08);
     }
-    #contents .reading-thumb img{
+    #contents .reading-preview-thumb img{
       display:block;
       width:100%;
       height:100%;
@@ -249,10 +251,9 @@
         width:40%;
         max-width:40%;
       }
-      #contents .contents-half-col .contents-group-reading .row.flex-nowrap.overflow-x-auto > article{
-        flex:0 0 100%;
-        width:100%;
-        max-width:100%;
+      #contents .reading-preview-grid{
+        gap:.4rem;
+        padding:.65rem 0 1rem;
       }
     }
     /* Hero直下：開発コンセプト（高さを抑えたメッセージ帯） */
@@ -615,22 +616,25 @@
           </div>
 
           <div class="col-12 col-md-6 contents-half-col">
-            <a href="/contents/multi-room-business-bag.html" class="contents-group-btn contents-group-reading d-block text-dark text-decoration-none" aria-label="マルチルーム・ビジネスバッグを考える を読む">
+            <a href="/contents/#column" class="contents-group-btn contents-group-reading d-block text-dark text-decoration-none" aria-label="読み物コンテンツ一覧を見る">
               <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
                 <div>
                   <div class="small text-secondary">COLUMN</div>
-                  <h3 class="h4 mb-0">マルチルーム・ビジネスバッグを考える</h3>
+                  <h3 class="h4 mb-0">読み物コンテンツ</h3>
                 </div>
-                <span class="small link-secondary text-nowrap">読む →</span>
+                <span class="small link-secondary text-nowrap">一覧を見る →</span>
               </div>
 
-              <div class="row flex-nowrap overflow-x-auto g-3 pb-2" aria-label="読み物コンテンツ一覧">
-                <article class="col-7 col-sm-5 col-md-4 col-lg-3 flex-shrink-0">
-                  <div class="reading-thumb">
-                    <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="1ルーム・2ルーム・3ルームのマルチルームビジネスバッグ構造比較" loading="lazy">
-                  </div>
-                  <h4 class="h6 mt-2 mb-0">マルチルーム・ビジネスバッグを考える</h4>
-                </article>
+              <div class="reading-preview-grid" aria-label="読み物コンテンツ 3記事">
+                <div class="reading-preview-thumb">
+                  <img src="/assets/img/contents/3way-business-bag-vs-backpack/7.jpg" alt="3WAYビジネスバッグと3WAYビジネスリュックを考える" loading="lazy">
+                </div>
+                <div class="reading-preview-thumb">
+                  <img src="/assets/img/contents/3way-business-bag-history/01.jpg" alt="3WAYビジネスバッグとビジネスリュックの歴史" loading="lazy">
+                </div>
+                <div class="reading-preview-thumb">
+                  <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="マルチルームビジネスバッグを考える" loading="lazy">
+                </div>
               </div>
             </a>
           </div>
