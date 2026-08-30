@@ -80,30 +80,63 @@
       .history-lead{
         font-size:1rem;
       }
+      .history-timeline{
+        border-top:0;
+      }
       .history-head{
         display:none;
       }
-      .history-row{
+      .history-row:not(.history-head){
         display:block;
-        padding:1rem 0;
+        position:relative;
+        margin:0 0 1.35rem .35rem;
+        padding:0 0 1.2rem 1.25rem;
+        border:0;
+        border-left:2px solid var(--bs-border-color);
+      }
+      .history-row:not(.history-head)::before{
+        content:"";
+        position:absolute;
+        top:.35rem;
+        left:-.38rem;
+        width:.65rem;
+        height:.65rem;
+        border-radius:50%;
+        background:var(--bs-body-color);
       }
       .history-year{
-        display:inline-block;
-        padding:.3rem .65rem;
-        margin-bottom:.65rem;
-        border-radius:.5rem;
+        display:block;
+        padding:0;
+        margin:0 0 .8rem;
+        background:transparent;
+        font-size:1.15rem;
+        line-height:1.4;
       }
       .history-cell{
-        padding:.35rem 0;
+        padding:0;
+        margin:0 0 .9rem;
+        line-height:1.75;
+      }
+      .history-cell:last-child{
+        margin-bottom:0;
       }
       .history-cell + .history-cell{
-        border-left:0;
-        border-top:1px dashed var(--bs-border-color);
-        margin-top:.6rem;
-        padding-top:.8rem;
+        border:0;
+        margin-top:0;
+        padding-top:0;
+      }
+      .history-cell.text-secondary{
+        display:none;
       }
       .history-label{
-        display:block;
+        display:inline-block;
+        margin:0 0 .4rem;
+        padding:.15rem .55rem;
+        border-radius:999px;
+        background:var(--bs-tertiary-bg);
+        color:var(--bs-secondary-color);
+        font-size:.72rem;
+        letter-spacing:0;
       }
     }
   </style>
@@ -193,8 +226,7 @@
 
       <section class="section">
         <div class="container container-narrow">
-          <h2 class="h3 mb-3">3WAYビジネスバッグとビジネスリュックの歴史</h2>
-          <p class="text-secondary mb-4">PCでは2つの流れを左右に、スマホでは年ごとに上下へ並べて表示します。</p>
+          <h2 class="h3 mb-4">3WAYビジネスバッグとビジネスリュックの歴史</h2>
 
           <div class="history-timeline" role="table" aria-label="3WAYビジネスバッグとビジネスリュックの歴史年表">
             <div class="history-row history-head" role="row">
@@ -205,103 +237,103 @@
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">1907年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>腰・肩・背中の3通りで使える「三徳鞄」が考案される。現代のビジネスバッグとは異なるものの、一つの鞄を複数の持ち方で使う発想がすでに存在していた。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>腰・肩・背中の3通りで使える「三徳鞄」が考案される。現代のビジネスバッグとは異なるものの、一つの鞄を複数の持ち方で使う発想がすでに存在していた。</div>
               <div class="history-cell text-secondary" role="cell"><span class="history-label">ビジネスリュック</span>―</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">1991年頃</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>吉田カバンが、ブリーフケース・肩掛け・リュックとして使える3WAY仕様のバッグを展開していたとの記録がある。ただし、今回確認できた公開資料では、当時の商品名や写真までは特定できなかった。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>吉田カバンが、ブリーフケース・肩掛け・リュックとして使える3WAY仕様のバッグを展開していたとの記録がある。ただし、今回確認できた公開資料では、当時の商品名や写真までは特定できなかった。</div>
               <div class="history-cell text-secondary" role="cell"><span class="history-label">ビジネスリュック</span>―</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">1996年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>PORTER「TANKER 3WAY BRIEFCASE」登場。商品と形状を確認できる代表的な3WAYバッグ。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>PORTER「TANKER 3WAY BRIEFCASE」登場。商品と形状を確認できる代表的な3WAYバッグ。</div>
               <div class="history-cell text-secondary" role="cell"><span class="history-label">ビジネスリュック</span>―</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">1997年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>ドラマ『ラブジェネレーション』でTANKER 3WAY BRIEFCASEが使用され、大きな話題に。吉田カバン本社や販売店には問い合わせが殺到したと伝えられている。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>ドラマ『ラブジェネレーション』でTANKER 3WAY BRIEFCASEが使用され、大きな話題に。吉田カバン本社や販売店には問い合わせが殺到したと伝えられている。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>この頃は、まだ革製ブリーフケースなど横持ちのビジネスバッグが主流。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">1998年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>3WAYビジネスバッグはすでに存在。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>3WAYビジネスバッグはすでに存在。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>エースが「ACE GENE」をスタート。当時はまだ革製ブリーフケースが主流だった。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2005年</div>
-              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAYビジネスバッグ</span>―</div>
+              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAY</span>―</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>環境省が「クールビズ」を開始。ノーネクタイ・ノージャケットなど、ビジネスウェアのカジュアル化が進み始める。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2007年頃</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>3WAYビジネスバッグはすでに一つの商品カテゴリーとして存在。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>3WAYビジネスバッグはすでに一つの商品カテゴリーとして存在。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>エースが健康志向や徒歩通勤などの変化に注目し、ビジネスリュックの開発を本格化。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2010年</div>
-              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAYビジネスバッグ</span>―</div>
+              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAY</span>―</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>エースが公開しているビジネスリュック販売推移データの基準年。2010年を100とする。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2011年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>「背負える」という3WAYの実用性も改めて注目される。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>「背負える」という3WAYの実用性も改めて注目される。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>東日本大震災で多数の帰宅困難者が発生。徒歩での長距離移動を経験した人も多く、両手が空くリュックが注目される。エースの販売個数は前年の<strong>137％</strong>。同年、節電対策として「スーパークールビズ」も始まる。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2012～2013年頃</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>横型ブリーフケースを基本とした3WAYは継続。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>横型ブリーフケースを基本とした3WAYは継続。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>PCや書類を仕事で持ち歩くことを前提にした、ビジネス専用リュックが増えていく。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2014年頃</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>従来型3WAYは引き続き販売。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>従来型3WAYは引き続き販売。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>スーツに合わせることを意識したスクエア型のビジネスリュックが目立つようになる。四角い書類やPCを収納しやすく、カジュアルに見えすぎない形へ。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2015～2016年頃</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>横型ブリーフケースを基本に、必要に応じて背負う3WAYが継続。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>横型ブリーフケースを基本に、必要に応じて背負う3WAYが継続。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>スーツ姿でリュックを背負うことが珍しくなくなり、黒・スクエア・薄型など現在につながるビジネスリュックの形が定着。2016年のエース販売個数は2011年の<strong>489％</strong>。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2016年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>従来型3WAYと並存。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>従来型3WAYと並存。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>「移動中はリュック、訪問時は横持ち」という考え方の商品も登場。リュックを基本にしながら、必要なときにビジネスバッグとして横持ちするという使い方が現れる。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2017年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>従来型3WAYも引き続き存在。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>従来型3WAYも引き続き存在。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>通勤でリュックを使う人の増加を受け、エースもリュック・3WAY商品のラインアップを拡充。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2018年</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>ブリーフケースを基本とした3WAYと、リュック主体の商品が並存。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>ブリーフケースを基本とした3WAYと、リュック主体の商品が並存。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>ビジネスリュック市場では「リュック顔の3WAY」がトレンドとして紹介される。エースの販売個数は2010年の<strong>約9倍</strong>。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">2019年</div>
-              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAYビジネスバッグ</span>―</div>
+              <div class="history-cell text-secondary" role="cell"><span class="history-label">3WAY</span>―</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>エースのビジネスリュック販売個数は、2010年との比較で<strong>1277％</strong>に到達。</div>
             </div>
 
             <div class="history-row" role="row">
               <div class="history-year" role="rowheader">現在</div>
-              <div class="history-cell" role="cell"><span class="history-label">3WAYビジネスバッグ</span>横持ちのビジネスバッグを基本にした「背負うこともできる3WAYビジネスバッグ」は現在も存在。</div>
+              <div class="history-cell" role="cell"><span class="history-label">3WAY</span>横持ちのビジネスバッグを基本にした「背負うこともできる3WAYビジネスバッグ」は現在も存在。</div>
               <div class="history-cell" role="cell"><span class="history-label">ビジネスリュック</span>ビジネスリュックを基本に、必要なときには横持ちできる「3WAYビジネスリュック」も一般的な商品カテゴリーになっている。</div>
             </div>
           </div>
