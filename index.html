@@ -72,7 +72,7 @@
       left:0;
       right:0;
       bottom:0;
-      height:41%;
+      height:34%;
       z-index:5;
       pointer-events:none;
       background:rgba(255,255,255,.90);
@@ -153,6 +153,14 @@
     #contents .contents-group-btn.contents-group-reading > .d-flex .link-secondary::after{
       content:"読み物一覧を見る";
     }
+    /* 左寄せの並びを維持しつつ、左右に同じ余白を確保する */
+    #contents .contents-group-btn .row.flex-nowrap.overflow-x-auto{
+      width:100%;
+      margin-right:0;
+      margin-left:0;
+      padding-right:4%;
+      padding-left:4%;
+    }
     #contents .contents-group-btn .row article h4{
       transition:opacity .18s ease;
     }
@@ -201,9 +209,9 @@
     /* 読み物は古い記事から右下へずらして重ね、最新記事を最前面に表示 */
     #contents .reading-preview-stack{
       position:relative;
-      width:100%;
+      width:92%;
       aspect-ratio:4/3;
-      margin:.75rem 0 1.25rem;
+      margin:.75rem 4% 1.25rem;
     }
     #contents .reading-preview-thumb{
       position:absolute;
@@ -240,7 +248,7 @@
 
     @media (max-width:767.98px){
       #contents .contents-group-btn::before{
-        height:45%;
+        height:38%;
       }
       #contents .contents-group-btn::after{
         bottom:28.5%;
@@ -269,7 +277,7 @@
         max-width:40%;
       }
       #contents .reading-preview-stack{
-        margin:.65rem 0 1rem;
+        margin:.65rem 4% 1rem;
       }
     }
     /* Hero直下：開発コンセプト（高さを抑えたメッセージ帯） */
