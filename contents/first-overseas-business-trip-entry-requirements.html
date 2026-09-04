@@ -16,17 +16,29 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <style>
-    .article-body{font-size:1.05rem;line-height:1.9;}
-    .article-body h2{margin-bottom:1.5rem;}
-    .article-body p{margin-bottom:1.25rem;}
-    .article-float-figure{margin:0 0 1.25rem;}
+    .article-page .article-hero{padding:32px 0 24px;border-top:0;}
+    .article-page .article-intro{padding:18px 0 10px;border-top:0;}
+    .article-page .article-content-section{padding:24px 0;border-top:0;}
+    .article-page .article-footer-section{padding:20px 0 32px;border-top:0;}
+    .article-body{font-size:1.05rem;line-height:1.8;}
+    .article-body h2{margin:0 0 .75rem;}
+    .article-body h2:not(:first-of-type){margin-top:1.5rem;}
+    .article-body p{margin-bottom:.75rem;}
+    .article-body p:last-child{margin-bottom:0;}
+    .article-note{margin-bottom:1rem!important;}
+    .article-float-figure{margin:0 0 1rem;}
     @media (min-width:992px){
       .article-float-figure{float:right;width:42%;margin:0 0 1rem 1.5rem;}
       .article-float-figure-left{float:left;margin:0 1.5rem 1rem 0;}
       .article-float-group::after{content:"";display:block;clear:both;}
     }
     @media (max-width:767.98px){
-      .article-body{font-size:1rem;}
+      .article-page .article-hero{padding:28px 0 20px;}
+      .article-page .article-intro{padding:16px 0 8px;}
+      .article-page .article-content-section{padding:20px 0;}
+      .article-page .article-footer-section{padding:16px 0 28px;}
+      .article-body{font-size:1rem;line-height:1.75;}
+      .article-body h2:not(:first-of-type){margin-top:1.25rem;}
     }
   </style>
 
@@ -65,9 +77,9 @@
 <body>
   <div data-include="/includes/header.html" aria-busy="true"></div>
 
-  <main>
+  <main class="article-page">
     <article>
-      <section class="section">
+      <section class="section article-hero">
         <div class="container container-narrow">
           <div class="kicker">BUSINESS TRIP COLUMN ― 初めての海外出張・準備編 ―</div>
           <h1 class="h2 mb-3">初めての海外出張。<br class="d-sm-none">パスポートだけでは不十分かも？</h1>
@@ -75,17 +87,14 @@
         </div>
       </section>
 
-      <section class="section pt-0">
+      <section class="section article-intro">
         <div class="container container-narrow article-body">
           <p>こんにちは。ADDEVAの開発担当Nです。</p>
-
-          <p>初めて海外出張が決まったら、まず最初に渡航先の入国条件をチェックしてください。</p>
-
-          <p class="mb-0">確認するポイントは、以下の3つです。</p>
+          <p>海外出張が決まったら、航空券等よりも先に、まずは以下の３つのポイントを最優先で確認することをおすすめします。</p>
         </div>
       </section>
 
-      <section class="section">
+      <section class="section article-content-section">
         <div class="container container-narrow article-body">
           <div class="article-float-group">
             <figure class="article-float-figure">
@@ -93,39 +102,23 @@
             </figure>
 
             <h2 class="h3">1. パスポートの「残存期間」</h2>
-
             <p>パスポートの「残存期間」は、「有効期限」とは違うことに注意してください。</p>
-
             <p>国によって、入国時に必要なパスポートの残存有効期間が決められています。</p>
+            <p>不足している場合はパスポートの更新が必要になるため、航空券やホテルを予約する前に確認することをおすすめします。</p>
 
-            <p class="mb-0">不足している場合はパスポートの更新が必要になるため、航空券やホテルを予約する前に確認することをおすすめします。</p>
+            <h2 class="h3">2. ビザ</h2>
+            <p>日本のパスポートでは、短期滞在なら多くの国へビザなしで入国できますが、すべての国ではありません。</p>
+            <p>海外出張の場合は、渡航先の商用での入国条件を確認してください。</p>
+
+            <h2 class="h3">3. 電子渡航認証</h2>
+            <p>「ビザ不要＝事前手続き不要」ではありません。</p>
+            <p>例えばアメリカでは、一定の条件でビザが免除される場合でも、ESTAによる電子渡航認証が必要です。</p>
+            <p>ビザが不要な国でも、電子渡航認証やオンラインでの事前登録が必要な場合があるため、あわせて確認してください。</p>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container container-narrow article-body">
-          <h2 class="h3">2. ビザ</h2>
-
-          <p>日本のパスポートでは、短期滞在なら多くの国へビザなしで入国できますが、すべての国ではありません。</p>
-
-          <p class="mb-0">海外出張の場合は、渡航先の商用での入国条件を確認してください。</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="container container-narrow article-body">
-          <h2 class="h3">3. 電子渡航認証</h2>
-
-          <p>「ビザ不要＝事前手続き不要」ではありません。</p>
-
-          <p>例えばアメリカでは、一定の条件でビザが免除される場合でも、ESTAによる電子渡航認証が必要です。</p>
-
-          <p class="mb-0">ビザが不要な国でも、電子渡航認証やオンラインでの事前登録が必要な場合があるため、あわせて確認してください。</p>
-        </div>
-      </section>
-
-      <section class="section">
+      <section class="section article-content-section">
         <div class="container container-narrow article-body">
           <p>ポイントは以上となりますが、失敗しないための注意点を以下に書いておきます。</p>
 
@@ -134,33 +127,30 @@
               <img src="/assets/img/contents/first-overseas-business-trip-entry-requirements/2.jpg" alt="海外出張の日程を決める前にパソコンで航空券の価格を比較するイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">
             </figure>
 
-            <div class="border-start border-3 ps-3 mb-4">
+            <div class="border-start border-3 ps-3 article-note">
               <p><strong>ビザを申請する前に、航空券の価格を確認する</strong></p>
-              <p class="mb-0">航空券の価格は、時期や日程によって驚くほど変わります。数日ずらすだけで大きく価格が変わる場合もあります。日程を調整できる出張なら、希望日の前後も含めて航空券価格を確認してから、日程を固めてビザを申請することをおすすめします。</p>
+              <p>航空券の価格は、時期や日程によって驚くほど変わります。数日ずらすだけで大きく価格が変わる場合もあります。日程を調整できる出張なら、希望日の前後も含めて航空券価格を確認してから、日程を固めてビザを申請することをおすすめします。</p>
             </div>
           </div>
 
-          <div class="border-start border-3 ps-3 mb-4">
+          <div class="border-start border-3 ps-3 article-note">
             <p><strong>入国条件は頻繁に変わる</strong></p>
-            <p class="mb-0">世界情勢だけでなく、感染症の流行、ビザ制度の変更、申請手続きのオンライン化などによっても変わります。以前行ったことのある国でも、「前回と同じ」と考えず、必ず最新の情報を確認してください。</p>
+            <p>世界情勢だけでなく、感染症の流行、ビザ制度の変更、申請手続きのオンライン化などによっても変わります。以前行ったことのある国でも、「前回と同じ」と考えず、必ず最新の情報を確認してください。</p>
           </div>
 
-          <div class="border-start border-3 ps-3 mb-4">
+          <div class="border-start border-3 ps-3 article-note">
             <p><strong>AIで調べるなら、情報のソースまで確認する</strong></p>
-            <p class="mb-0">最近はAIを使えば、ビザや入国条件について簡単に調べられるようになりました。ただし、AIが間違った情報や古い情報を示すこともあります。AIの回答だけで判断せず、その情報の出典まで確認することをおすすめします。特に入国条件については、外務省、渡航先の大使館・領事館、渡航先政府などの最新の公式情報で最終確認してください。</p>
+            <p>最近はAIを使えば、ビザや入国条件について簡単に調べられるようになりました。ただし、AIが間違った情報や古い情報を示すこともあります。AIの回答だけで判断せず、その情報の出典まで確認することをおすすめします。特に入国条件については、外務省、渡航先の大使館・領事館、渡航先政府などの最新の公式情報で最終確認してください。</p>
           </div>
 
           <p>なお、ビザには、観光、商用、就労、留学など、渡航目的に応じてさまざまな種類があります。</p>
-
           <p>海外出張の場合は、まず商用での入国条件を確認してください。</p>
-
           <p>日本のパスポートでは、短期商用ならビザ不要の国もありますが、国や滞在期間によって条件は異なります。</p>
-
-          <p class="mb-0">「日本人だからビザは不要だろう」と判断せず、渡航先ごとに確認するのが基本です。</p>
+          <p>「日本人だからビザは不要だろう」と判断せず、渡航先ごとに確認するのが基本です。</p>
         </div>
       </section>
 
-      <section class="section pt-0">
+      <section class="section article-footer-section">
         <div class="container container-narrow">
           <div class="border-top pt-4">
             <div class="border rounded-3 p-4">
