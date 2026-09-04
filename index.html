@@ -355,6 +355,59 @@
       }
     }
 
+    /* TOP UPDATES：最新5件を通常表示する更新情報枠 */
+    #updates.section{
+      padding:22px 0 24px;
+      border-top:0;
+    }
+    .updates-title-row{
+      display:flex;
+      align-items:baseline;
+      gap:.75rem;
+      margin-bottom:.65rem;
+    }
+    .updates-title-row .kicker,
+    .updates-title-row h2{
+      margin:0;
+    }
+    .updates-list{
+      border-top:1px solid var(--line);
+    }
+    .update-item{
+      display:grid;
+      grid-template-columns:8rem minmax(0,1fr);
+      gap:1rem;
+      padding:.62rem 0;
+      border-bottom:1px solid var(--line);
+      color:var(--ink);
+      text-decoration:none;
+    }
+    .update-date{
+      color:#6b7280;
+      font-size:.8rem;
+      font-variant-numeric:tabular-nums;
+      line-height:1.5;
+      white-space:nowrap;
+    }
+    .update-text{
+      font-size:.9rem;
+      line-height:1.5;
+    }
+    .update-item:hover .update-text{
+      text-decoration:underline;
+    }
+    @media (max-width:575.98px){
+      #updates.section{padding:18px 0 20px;}
+      .updates-title-row{gap:.55rem;margin-bottom:.5rem;}
+      .update-item{
+        grid-template-columns:6.2rem minmax(0,1fr);
+        gap:.55rem;
+        padding:.55rem 0;
+      }
+      .update-date{font-size:.68rem;}
+      .update-text{font-size:.8rem;line-height:1.45;}
+    }
+
   </style>
 
 
@@ -524,6 +577,34 @@
         <p class="development-concept-label">― ADDEVAの開発コンセプト ―</p>
         <h2 id="development-concept-title" class="development-concept-title">日常の小さな不便に注目する。</h2>
         <p class="development-concept-text">日々バッグを使う中で感じる小さな不便に目を向け、ひとつずつ解決することから、ADDEVAの商品開発は始まります。</p>
+      </div>
+    </section>
+
+    <!-- ===== UPDATES ===== -->
+    <section id="updates" class="section" aria-labelledby="updates-title">
+      <div class="container container-narrow">
+        <div class="updates-title-row">
+          <div class="kicker">UPDATES</div>
+          <h2 id="updates-title" class="h5">更新情報</h2>
+        </div>
+        <div class="updates-list" aria-label="ADDEVA 更新情報">
+          <a class="update-item" href="/contents/first-overseas-business-trip-entry-requirements.html">
+            <time class="update-date" datetime="2026-09-04">2026.09.04</time>
+            <span class="update-text">「初めての海外出張。パスポートだけでは不十分かも？」を公開しました</span>
+          </a>
+          <a class="update-item" href="/contents/3way-business-bag-vs-backpack.html">
+            <time class="update-date" datetime="2026-08-30">2026.08.30</time>
+            <span class="update-text">「3WAYビジネスバッグと3WAYビジネスリュックを考える」を公開しました</span>
+          </a>
+          <a class="update-item" href="/contents/3way-business-bag-history.html">
+            <time class="update-date" datetime="2026-08-30">2026.08.30</time>
+            <span class="update-text">「3WAYビジネスバッグとビジネスリュックの歴史」を公開しました</span>
+          </a>
+          <a class="update-item" href="/contents/multi-room-business-bag.html">
+            <time class="update-date" datetime="2026-08-29">2026.08.29</time>
+            <span class="update-text">「マルチルームビジネスバッグを考える」を公開しました</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -710,15 +791,15 @@
                 <span class="small link-secondary text-nowrap">一覧を見る →</span>
               </div>
 
-              <div class="reading-preview-stack" aria-label="読み物コンテンツ 3記事">
+              <div class="reading-preview-stack" aria-label="最新の読み物コンテンツ 3記事">
                 <div class="reading-preview-thumb reading-preview-oldest">
-                  <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="マルチルームビジネスバッグを考える" loading="lazy">
-                </div>
-                <div class="reading-preview-thumb reading-preview-middle">
                   <img src="/assets/img/contents/3way-business-bag-history/01.jpg" alt="3WAYビジネスバッグとビジネスリュックの歴史" loading="lazy">
                 </div>
-                <div class="reading-preview-thumb reading-preview-latest">
+                <div class="reading-preview-thumb reading-preview-middle">
                   <img src="/assets/img/contents/3way-business-bag-vs-backpack/7.jpg" alt="3WAYビジネスバッグと3WAYビジネスリュックを考える" loading="lazy">
+                </div>
+                <div class="reading-preview-thumb reading-preview-latest">
+                  <img src="/assets/img/contents/first-overseas-business-trip-entry-requirements/1.jpg" alt="初めての海外出張。パスポートだけでは不十分かも？" loading="lazy">
                 </div>
               </div>
             </a>
