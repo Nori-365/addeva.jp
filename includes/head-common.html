@@ -285,6 +285,11 @@
         const listLink = getListLink(links);
         const otherLinks = links.filter((a) => a !== topLink && a !== listLink);
 
+        if (topLink) {
+          topLink.classList.remove('btn-outline-secondary');
+          topLink.classList.add('btn-outline-dark');
+        }
+
         otherLinks.forEach((a) => group.appendChild(a));
         if (listLink) group.appendChild(listLink);
         if (topLink) group.appendChild(topLink);
