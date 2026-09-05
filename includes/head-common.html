@@ -239,6 +239,66 @@
   })();
 </script>
 
+<!-- 読み物ページ：次の記事導線と下部ナビゲーションを統一 -->
+<style>
+  @media (max-width: 575.98px) {
+    .article-next-link {
+      display:block !important;
+      width:100%;
+    }
+  }
+</style>
+<script>
+  (() => {
+    const setupArticleNavigation = () => {
+      document.querySelectorAll('nav[aria-label="読み物コンテンツのナビゲーション"]').forEach((nav) => {
+        const group = nav.querySelector('.d-flex');
+        if (!group) return;
+
+        const getLinks = () => [...group.querySelectorAll(':scope > a')];
+        const getTopLink = (links) => links.find((a) => a.getAttribute('href') === '/contents/');
+        const getListLink = (links) => links.find((a) => a.getAttribute('href') === '/contents/#column');
+
+        const nextBlock = nav.previousElementSibling;
+        const isNextBlock = nextBlock?.classList.contains('mt-4') &&
+          nextBlock.querySelector(':scope > .small')?.textContent?.trim() === '次の記事';
+
+        if (isNextBlock) {
+          const links = getLinks();
+          const topLink = getTopLink(links);
+          const listLink = getListLink(links);
+          const nextNavLink = [...links].reverse().find((a) =>
+            a !== topLink && a !== listLink && a.textContent.trim().startsWith('次の記事：')
+          );
+          const nextArticleLink = nextBlock.querySelector('p a');
+
+          if (nextArticleLink) {
+            if (nextNavLink) nextArticleLink.textContent = nextNavLink.textContent.trim();
+            nextArticleLink.classList.add('btn', 'btn-outline-dark', 'article-next-link', 'mb-2');
+          }
+
+          if (nextNavLink) nextNavLink.remove();
+        }
+
+        const links = getLinks();
+        const topLink = getTopLink(links);
+        const listLink = getListLink(links);
+        const otherLinks = links.filter((a) => a !== topLink && a !== listLink);
+
+        otherLinks.forEach((a) => group.appendChild(a));
+        if (listLink) group.appendChild(listLink);
+        if (topLink) group.appendChild(topLink);
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupArticleNavigation, { once:true });
+    } else {
+      setupArticleNavigation();
+    }
+  })();
+</script>
+
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
