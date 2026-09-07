@@ -47,6 +47,17 @@
 - 検索対象の公開ページについては、通常検索だけでなくAI検索からの発見・引用・参照も考慮して、クロール可否、index設定、内部リンク、構造化データ、sitemap.xml等の整合性を確認する。
 - 正規URLは `https://addeva.jp/`（wwwなし）に統一し、canonical および og:url は原則として正規URLの絶対URLを使用する。
 
+## FAQ管理ルール
+- FAQの正本データは `/data/faq/` 配下のJSONファイルとする。
+- 現在のFAQ正本は以下の3ファイル。
+  - `/data/faq/b2b.json`：法人向けサービス（B2B）のFAQ
+  - `/data/faq/urbanflex.json`：UrbanFlexのFAQ
+  - `/data/faq/bsc20.json`：BSC-20のFAQ
+- FAQは `group_id` でグループを識別し、各 `items[].id` で個別FAQを識別する。
+- 商品ページやFAQ総合ページへ掲載する場合は、正本JSONから必要なgroup / itemだけを抽出し、公開HTMLへ静的に書き出す。ブラウザ側で全FAQを取得してhidden表示・動的フィルターする方式は使用しない。
+- FAQを更新する場合は正本JSONを先に修正し、その内容から表示用HTMLとFAQPage JSON-LDを同期する。HTML本文やJSON-LDだけを単独で正本として更新しない。
+- ページごとのFAQ掲載数や並び順は、そのページの目的に応じて必要なitemだけを選択できる。
+
 ## TOP 更新情報の運用
 - TOPページ `/index.html` の `#updates` は「UPDATES / 更新情報」として、新規ページ公開・既存ページの主要更新を掲載する。
 - TOPには最新5件を通常表示し、枠内スクロールは使用しない。
