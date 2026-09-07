@@ -57,76 +57,38 @@
   }
   </script>
 
-  <!-- FAQ JSON-LD（代表的なQ&Aのみ構造化） -->
+  <!-- FAQ JSON-LD（/data/faq/bsc20.json を正本として同期） -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "機内持ち込みはできますか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "横型と縦型SSサイズは、多くの航空会社の機内持ち込み手荷物サイズを意識して設計しています。実際の搭載可否は、ご利用の航空会社のサイズ・重量規定に従ってご確認ください。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "何泊分の荷物が入りますか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "SS・横型は1〜2泊、Sは2〜3泊、Mは4〜6泊程度を目安としています。実際の必要容量は、季節や荷物量、衣類のかさによって変わりますので、あくまで目安としてご覧ください。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "走行音は静かですか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "走行音は路面状況により変わりますが、「思ったより静か」「小回りが利きスムーズ」という声が多く寄せられています。一方、非常に静かなPU製静音タイヤと比べると音が大きく感じられる場面もあります。当社では、耐久性と安全性を重視した車輪を採用しています。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "ストッパーは付いていますか？電車や斜面で転がりませんか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "ストッパー機能は搭載していません。4輪タイプは走行性が高いぶん、斜面や揺れる車内では動きやすくなります。壁側に寄せて置く、横向きにする、手を添えるなど、状況に応じて転がりを抑える置き方をおすすめしています。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "キャスター交換や静音化はできますか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "市販の静音タイヤなどへの交換は、基本的にお客様ご自身の判断・自己責任でお願いしています。PU製静音車輪は数年で急激に劣化し、移動中に破損するリスクがあるため、当社としては旅行用スーツケースへの使用を推奨していません。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "雨・撥水性能はどうですか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "表生地の裏面にはPVC・EVA等のラミネート加工を施し、防水性に配慮した構造です。表面には簡易撥水加工もあり、小雨程度であれば内部まで浸みにくくなっています。ただしファスナー部など完全防水ではないため、長時間の雨や強い雨では、ビニール袋やカバーなどで荷物を保護することをおすすめします。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "ビジネス用途にも向いていますか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "仕事用・出張用としてのレビューが多数あり、小回りの良さやポケットの多さ、シンプルで落ち着いたデザインがビジネスシーンでも高く評価されています。"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "価格に対しての満足度はどうですか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "「この価格でこの品質」「値段以上のスーツケース」といったレビューを長年にわたり多くいただいています。コストパフォーマンス重視の方にも選ばれているシリーズです。"
-        }
-      }
+      {"@type":"Question","name":"機内持ち込みはできますか？","acceptedAnswer":{"@type":"Answer","text":"横型と縦型のSSサイズは機内持ち込みを意識して選ばれており、レビューでも「機内持ち込みを最優先」「機内持ち込みサイズにした」との声があります。実際の搭載可否は各社のサイズ・重量規定に従ってご確認ください。"}},
+      {"@type":"Question","name":"何泊目安は、正しいですか？","acceptedAnswer":{"@type":"Answer","text":"例えばSSは「1〜2泊」ですが、人によっては「2泊3日でもちょうど良い」とのレビューがあります。Mは「最初は大きく感じたが実際よく入る」との声もあります。荷物量や季節で変わるため、目安としてご参考ください。"}},
+      {"@type":"Question","name":"走行音は静かですか？","acceptedAnswer":{"@type":"Answer","text":"走行音は路面によって大きく変わります。「思ったより静か」「ほとんど音が気にならない」という声が多い一方、非常に静かなPU材質のタイヤと比べれば「音が大きい」との指摘もあります。なお、当社ではPU製静音タイヤは本体より早く経年劣化が進みやすいため、旅行用スーツケースの足回りとしては採用していません。"}},
+      {"@type":"Question","name":"電車や斜面で転がってしまいませんか？","acceptedAnswer":{"@type":"Answer","text":"4輪タイプは滑走性が高いため、停止時に動いてしまう場合があります。電車等では壁側に置く・横向きに置く・手を添える等の工夫でご対応ください。"}},
+      {"@type":"Question","name":"ストッパーは付いていますか？","acceptedAnswer":{"@type":"Answer","text":"ストッパーは非搭載です。「ストッパー機能があれば嬉しい」というお声をいただくことがあります。電車等では上記の置き方で対策ください。"}},
+      {"@type":"Question","name":"走行性や小回りはどうですか？","acceptedAnswer":{"@type":"Answer","text":"「滑らか」「小回りが利く」「狭い通路でもスムーズ」という高評価が多いです。一方で、路面によっては音が出やすいとの声もあります。"}},
+      {"@type":"Question","name":"耐久性は？","acceptedAnswer":{"@type":"Answer","text":"長く使っても大きな不具合がないというレビューを複数いただいています。もちろん使用環境により異なりますが、日常使いと旅行の両方で長くお使いいただけるよう設計しています。"}},
+      {"@type":"Question","name":"TSAロックの使い勝手は？","acceptedAnswer":{"@type":"Answer","text":"お客様の操作性は通常のダイヤルロックと変わりません。TSA職員（アメリカ空港セキュリティ機関）が専用ツールで開錠検査可能なロックです。※渡航先のルールによっては、TSA規格以外の鍵をかけることを禁止される場合があります。"}},
+      {"@type":"Question","name":"色はどれが人気？見つけやすさは？","acceptedAnswer":{"@type":"Answer","text":"人気は概ね「1.黒、2.ネイビーブルー、3.ブラウン」ですが大きな差はなく、いずれも好評です。「ターンテーブルで見つけやすい色」を選ぶ方も多く、ビジネス用途では定番の黒が人気です。"}},
+      {"@type":"Question","name":"内部収納の使い勝手は？","acceptedAnswer":{"@type":"Answer","text":"「ポケットが多く使い勝手が良い」「中敷き＋メッシュポケットで収納力UP」との声を多くいただきます。クロスバンドも荷崩れ防止に好評で、衣類と小物をバランスよく整理できます。"}},
+      {"@type":"Question","name":"コストパフォーマンスはどうですか？","acceptedAnswer":{"@type":"Answer","text":"「この価格でこの品質」「値段以上」「この価格でこの造り」といった評価を長年にわたりいただいています。価格帯と仕上がりのバランスを重視する方におすすめのソフトキャリーケースです。"}},
+      {"@type":"Question","name":"重量感は？","acceptedAnswer":{"@type":"Answer","text":"「本体が軽くて収納力も高い」という感想があります。実測重量はサイズごとの製品仕様をご確認ください。持ち上げる時間を減らし、転がして移動する時間を長くすることで、体への負担も軽減できます。"}},
+      {"@type":"Question","name":"4輪の利点・注意点は？","acceptedAnswer":{"@type":"Answer","text":"利点は「小回り」「狭い通路でもスムーズ」。注意点は「停止時に動きやすいことがある」点です。状況に応じて手を添えたり、置き方を工夫したりしてお使いください。"}},
+      {"@type":"Question","name":"横持ちハンドルは付いていますか？","acceptedAnswer":{"@type":"Answer","text":"SSモデルはトップハンドルのみの仕様です。他サイズには横持ちハンドルが付いており、階段や段差での持ち運びに便利です。"}},
+      {"@type":"Question","name":"容量は思ったより入りますか？","acceptedAnswer":{"@type":"Answer","text":"「見た目より入った」「少々小さいと思ったが結構入る」との声が複数あります。圧縮袋の使用や衣類のたたみ方の工夫で、体感容量はさらに変わります。"}},
+      {"@type":"Question","name":"ビジネス用途に向いていますか？","acceptedAnswer":{"@type":"Answer","text":"仕事用のレビューが多数あり、出張での使い勝手や小回りの良さが評価されています。落ち着いた色展開で、ビジネスシーンにも自然に馴染むソフトキャリーケースです。"}},
+      {"@type":"Question","name":"路面によって押し心地は変わりますか？","acceptedAnswer":{"@type":"Answer","text":"はい。カーペット・荒いタイル・段差などで体感が変化します。音・振動が気になる場面では速度を落とし、段差は持ち上げて回避してください。"}},
+      {"@type":"Question","name":"海外旅行でも使えますか？","acceptedAnswer":{"@type":"Answer","text":"「海外でも問題なく使用できている」というレビューがあります。TSAロック搭載でセキュリティチェックもスムーズです。各国・各航空会社の受託・機内持込規定は事前にご確認ください。"}},
+      {"@type":"Question","name":"フロントオープンは出し入れが便利？","acceptedAnswer":{"@type":"Answer","text":"外でバッグを開けたいときに便利な構成です。書類や小物の出し入れが容易との声が多数あります。混雑した場所でも、最小限の開閉で取り出しができるのがメリットです。"}},
+      {"@type":"Question","name":"斜面やバス・電車での置き方のコツは？","acceptedAnswer":{"@type":"Answer","text":"横置きできる場面では横置きをおすすめします。横置きできないときは、車輪を壁側に向ける・手すり側に置くなどで動きを抑えられます。動きやすい場所では、手や足元で軽く支えてください。"}},
+      {"@type":"Question","name":"キャスター交換や静音化はできますか？","acceptedAnswer":{"@type":"Answer","text":"一時期流行した「静音キャスター」への交換をご希望の場合でも、当社ではPU製静音タイヤをおすすめしていません。3年ほどで経年劣化が進み、使用中に破損する恐れがあるためです。キャリーケースは移動中に足回りが壊れると行程に支障が出ますので、旅行用途では耐久性と安全性を優先することを推奨しています。"}},
+      {"@type":"Question","name":"雨・撥水はどう？","acceptedAnswer":{"@type":"Answer","text":"表生地は防水です。生地の裏側にはPU・EVA・PVC等のラミネート加工が施されているため、表面の撥水性が低下しても、生地そのものが水を通すわけではありません。一方、一般的なソフトキャリーケースと同様に、ファスナーや伸縮ハンドル部分などに開口部があるため、製品全体としては完全防水ではありません。長時間の雨や強い雨では、これらの部分から水が侵入する可能性があります。"}},
+      {"@type":"Question","name":"収納固定はしっかりできますか？","acceptedAnswer":{"@type":"Answer","text":"クロスバンド＋中敷き＋メッシュポケット構成で、荷崩れ抑制と小物整理がしやすいと評判です。衣類をしっかり固定しつつ、ビジネス書類や小物類も整理して収納できます。"}},
+      {"@type":"Question","name":"機内持ち込みサイズのSSと横型の使い分けは？","acceptedAnswer":{"@type":"Answer","text":"形の好みで選ばれる方が多いです。横型はパイロットスーツケースの意匠に憧れて選ぶ方もいます。SSは幅が狭く混雑した駅で取り回しやすく、外で立ったままの開閉も行いやすいです。一方、横型は前面取り出しのしやすさから、商談時など椅子に座りながらの開閉を評価する声が多いです。"}},
+      {"@type":"Question","name":"リピート購入はありますか？","acceptedAnswer":{"@type":"Answer","text":"はい。リピート率の高い商品です。「会社で重いものを運ぶ用途で複数台リピート」「2個目も満足」といったレビューが複数あります。"}},
+      {"@type":"Question","name":"重い荷物でも大丈夫？","acceptedAnswer":{"@type":"Answer","text":"「重いものを入れても小回りが利いて使いやすい」との声があります。ただし設計はあくまで「旅行用スーツケース」です。無理な過積載は避け、取扱いにはご注意ください。使用中に「動きが重い」と感じたら、早めに移動を止め、車輪が熱を持っていないかご確認ください。"}}
     ]
   }
   </script>
@@ -507,392 +469,65 @@
       </div>
     </section>
 
-    <!-- FAQ -->
+    <!-- FAQ（/data/faq/bsc20.json を正本として同期） -->
     <section class="section">
       <div class="container container-narrow">
         <div class="kicker">FAQ</div>
         <h2 class="h3">よくあるご質問</h2>
 
         <div class="accordion" id="accBSC20">
-
-          <!-- Q1 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q1">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a1" aria-expanded="false" aria-controls="bsc-a1">
-                機内持ち込みはできますか？
-              </button>
-            </h3>
-            <div id="bsc-a1" class="accordion-collapse collapse" aria-labelledby="bsc-q1" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 横型と縦型のSSサイズは機内持ち込みを意識して選ばれており、レビューでも「機内持ち込みを最優先」「機内持ち込みサイズにした」との声があります。実際の搭載可否は各社のサイズ・重量規定に従ってご確認ください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q2 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q2">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a2" aria-expanded="false" aria-controls="bsc-a2">
-                何泊目安は、正しいですか？
-              </button>
-            </h3>
-            <div id="bsc-a2" class="accordion-collapse collapse" aria-labelledby="bsc-q2" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 例えばSSは「1〜2泊」ですが、人によっては「2泊3日でもちょうど良い」とのレビューがあります。Mは「最初は大きく感じたが実際よく入る」との声も。荷物量や季節で変わるため目安としてご参考ください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q3 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q3">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a3" aria-expanded="false" aria-controls="bsc-a3">
-                走行音は静かですか？
-              </button>
-            </h3>
-            <div id="bsc-a3" class="accordion-collapse collapse" aria-labelledby="bsc-q3" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 走行音は路面によって大きく変わります。「思ったより静か」「ほとんど音が気にならない」という声が多い一方、非常に静かなPU材質のタイヤと比べれば「音が大きい」との指摘もあります。なお、当社ではPU製静音タイヤは本体より早く経年劣化が進みやすいため、旅行用スーツケースの足回りとしては採用していません。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q4 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q4">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a4" aria-expanded="false" aria-controls="bsc-a4">
-                電車や斜面で転がってしまいませんか？
-              </button>
-            </h3>
-            <div id="bsc-a4" class="accordion-collapse collapse" aria-labelledby="bsc-q4" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 4輪タイプは滑走性が高いため、停止時に動いてしまう場合があります。電車等では壁側に置く・横向きに置く・手を添える等の工夫でご対応ください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q5 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q5">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a5" aria-expanded="false" aria-controls="bsc-a5">
-            ストッパーは付いていますか？
-              </button>
-            </h3>
-            <div id="bsc-a5" class="accordion-collapse collapse" aria-labelledby="bsc-q5" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> ストッパーは非搭載です。「ストッパー機能があれば嬉しい」というお声をいただくことがあります。電車等では上記の置き方で対策ください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q6 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q6">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a6" aria-expanded="false" aria-controls="bsc-a6">
-                走行性や小回りはどうですか？
-              </button>
-            </h3>
-            <div id="bsc-a6" class="accordion-collapse collapse" aria-labelledby="bsc-q6" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「滑らか」「小回りが利く」「狭い通路でもスムーズ」という高評価が多いです。一方で、路面によっては音が出やすいとの声もあります。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q7 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q7">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a7" aria-expanded="false" aria-controls="bsc-a7">
-                耐久性は？
-              </button>
-            </h3>
-            <div id="bsc-a7" class="accordion-collapse collapse" aria-labelledby="bsc-q7" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 長く使っても大きな不具合がないというレビューを複数いただいています。もちろん使用環境により異なりますが、日常使いと旅行の両方で長くお使いいただけるよう設計しています。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q8 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q8">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a8" aria-expanded="false" aria-controls="bsc-a8">
-                TSAロックの使い勝手は？
-              </button>
-            </h3>
-            <div id="bsc-a8" class="accordion-collapse collapse" aria-labelledby="bsc-q8" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> お客様の操作性は通常のダイヤルロックと変わりません。TSA職員（アメリカ空港セキュリティ機関）が専用ツールで開錠検査可能なロックです。※渡航先のルールによっては、TSA規格以外の鍵をかけることを禁止される場合があります。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q9 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q9">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a9" aria-expanded="false" aria-controls="bsc-a9">
-                色はどれが人気？見つけやすさは？
-              </button>
-            </h3>
-            <div id="bsc-a9" class="accordion-collapse collapse" aria-labelledby="bsc-q9" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 人気は概ね「1.黒、2.ネイビーブルー、3.ブラウン」ですが大きな差はなく、いずれも好評です。「ターンテーブルで見つけやすい色」を選ぶ方も多く、ビジネス用途では定番の黒が人気です。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q10 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q10">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a10" aria-expanded="false" aria-controls="bsc-a10">
-                内部収納の使い勝手は？
-              </button>
-            </h3>
-            <div id="bsc-a10" class="accordion-collapse collapse" aria-labelledby="bsc-q10" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「ポケットが多く使い勝手が良い」「中敷き＋メッシュポケットで収納力UP」との声を多くいただきます。クロスバンドも荷崩れ防止に好評で、衣類と小物をバランスよく整理できます。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q11 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q11">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a11" aria-expanded="false" aria-controls="bsc-a11">
-                コスパは良い？
-              </button>
-            </h3>
-            <div id="bsc-a11" class="accordion-collapse collapse" aria-labelledby="bsc-q11" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「この価格でこの品質」「値段以上の高級感」「コスパが良い」という評価を多数いただいています。価格帯と仕上がりのバランスを重視する方におすすめのソフトキャリーケースです。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q12 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q12">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a12" aria-expanded="false" aria-controls="bsc-a12">
-                重量感は？
-              </button>
-            </h3>
-            <div id="bsc-a12" class="accordion-collapse collapse" aria-labelledby="bsc-q12" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「本体が軽くて収納力も高い」という感想があります。実測重量はサイズごとの製品仕様をご確認ください。持ち上げる時間を減らし、転がして移動する時間を長くすることで、体への負担も軽減できます。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q13 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q13">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a13" aria-expanded="false" aria-controls="bsc-a13">
-                4輪の利点・注意点は？
-              </button>
-            </h3>
-            <div id="bsc-a13" class="accordion-collapse collapse" aria-labelledby="bsc-q13" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 利点は「小回り」「狭い通路でもスムーズ」。注意点は「停止時に動きやすいことがある」点です。状況に応じて手を添えたり、置き方を工夫したりしてお使いください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q14 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q14">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a14" aria-expanded="false" aria-controls="bsc-a14">
-                横持ちハンドルは付いていますか？
-              </button>
-            </h3>
-            <div id="bsc-a14" class="accordion-collapse collapse" aria-labelledby="bsc-q14" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> SSモデルはトップハンドルのみの仕様です。他サイズには横持ちハンドルが付いており、階段や段差での持ち運びに便利です。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q15 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q15">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a15" aria-expanded="false" aria-controls="bsc-a15">
-                容量は思ったより入りますか？
-              </button>
-            </h3>
-            <div id="bsc-a15" class="accordion-collapse collapse" aria-labelledby="bsc-q15" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「見た目より入った」「少々小さいと思ったが結構入る」との声が複数あります。圧縮袋の使用や衣類のたたみ方の工夫で、体感容量はさらに変わります。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q16 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q16">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a16" aria-expanded="false" aria-controls="bsc-a16">
-                ビジネス用途に向いていますか？
-              </button>
-            </h3>
-            <div id="bsc-a16" class="accordion-collapse collapse" aria-labelledby="bsc-q16" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 仕事用のレビューが多数あり、出張での使い勝手や小回りの良さが評価されています。落ち着いた色展開で、ビジネスシーンにも自然に馴染むソフトキャリーケースです。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q17 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q17">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a17" aria-expanded="false" aria-controls="bsc-a17">
-                路面によって押し心地は変わりますか？
-              </button>
-            </h3>
-            <div id="bsc-a17" class="accordion-collapse collapse" aria-labelledby="bsc-q17" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> はい。カーペット・荒いタイル・段差などで体感が変化します。音・振動が気になる場面では速度を落とし、段差は持ち上げて回避してください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q18 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q18">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a18" aria-expanded="false" aria-controls="bsc-a18">
-                海外旅行でも使えますか？
-              </button>
-            </h3>
-            <div id="bsc-a18" class="accordion-collapse collapse" aria-labelledby="bsc-q18" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「海外でも問題なく使用できている」というレビューがあります。TSAロック搭載でセキュリティチェックもスムーズです。各国・各航空会社の受託・機内持込規定は事前にご確認ください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q19 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q19">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a19" aria-expanded="false" aria-controls="bsc-a19">
-                フロントオープンは出し入れが便利？
-              </button>
-            </h3>
-            <div id="bsc-a19" class="accordion-collapse collapse" aria-labelledby="bsc-q19" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 外でバッグを開けたいときに便利な構成です。書類や小物の出し入れが容易との声が多数あります。混雑した場所でも、最小限の開閉で取り出しができるのがメリットです。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q20 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q20">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a20" aria-expanded="false" aria-controls="bsc-a20">
-                斜面やバス・電車での置き方のコツは？
-              </button>
-            </h3>
-            <div id="bsc-a20" class="accordion-collapse collapse" aria-labelledby="bsc-q20" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 横置きできる場面では横置きをおすすめします。横置きできないときは、車輪を壁側に向ける・手すり側に置くなどで動きを抑えられます。動きやすい場所では、手や足元で軽く支えてください。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q21 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q21">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a21" aria-expanded="false" aria-controls="bsc-a21">
-                キャスター交換や静音化はできますか？
-              </button>
-            </h3>
-            <div id="bsc-a21" class="accordion-collapse collapse" aria-labelledby="bsc-q21" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 一時期流行した「静音キャスター」への交換をご希望の場合でも、当社ではPU製静音タイヤをおすすめしていません。3年ほどで経年劣化が進み、使用中に破損する恐れがあるためです。キャリーケースは移動中に足回りが壊れると行程に支障が出ますので、旅行用途では耐久性と安全性を優先することを推奨しています。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q22 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q22">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a22" aria-expanded="false" aria-controls="bsc-a22">
-                雨・撥水はどう？
-              </button>
-            </h3>
-            <div id="bsc-a22" class="accordion-collapse collapse" aria-labelledby="bsc-q22" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 表生地の裏側にはPVC・EVA等のラミネート加工が施されており、防水生地です。表面には簡易撥水加工もあります。撥水は使用で徐々に低下しますが、防水層は基本的に変わりません。ただしファスナー等は完全防水ではないため、長時間の雨では浸み込むことがあります。雨天時は収納物をビニールに入れる・レインカバーを使う等の保護を推奨します。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q23 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q23">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a23" aria-expanded="false" aria-controls="bsc-a23">
-                収納固定はしっかりできますか？
-              </button>
-            </h3>
-            <div id="bsc-a23" class="accordion-collapse collapse" aria-labelledby="bsc-q23" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> クロスバンド＋中敷き＋メッシュポケット構成で、荷崩れ抑制と小物整理がしやすいと評判です。衣類をしっかり固定しつつ、ビジネス書類や小物類も整理して収納できます。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q24 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q24">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a24" aria-expanded="false" aria-controls="bsc-a24">
-                機内持ち込みサイズのSSと横型の使い分けは？
-              </button>
-            </h3>
-            <div id="bsc-a24" class="accordion-collapse collapse" aria-labelledby="bsc-q24" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 形の好みで選ばれる方が多いです。横型はパイロットスーツケースの意匠に憧れて選ぶ方も。SSは幅が狭く混雑した駅で取り回しやすく、外で立ったままの開閉も行いやすいです。一方、横型は前面取り出しのしやすさから、商談時など椅子に座りながらの開閉を評価する声が多いです。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q25 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q25">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a25" aria-expanded="false" aria-controls="bsc-a25">
-                価格帯に対しての満足度は？
-              </button>
-            </h3>
-            <div id="bsc-a25" class="accordion-collapse collapse" aria-labelledby="bsc-q25" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「値段以上」「この価格でこの造り」との評価が長年にわたり見られます。トラベルスーツケースとしてコストパフォーマンスを重視する方に好評です。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q26 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q26">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a26" aria-expanded="false" aria-controls="bsc-a26">
-                リピート購入はありますか？
-              </button>
-            </h3>
-            <div id="bsc-a26" class="accordion-collapse collapse" aria-labelledby="bsc-q26" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> はい。リピート率の高い商品です。「会社で重いものを運ぶ用途で複数台リピート」「2個目も満足」といったレビューが複数あります。
-              </div>
-            </div>
-          </div>
-
-          <!-- Q27 -->
-          <div class="accordion-item">
-            <h3 class="accordion-header" id="bsc-q27">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a27" aria-expanded="false" aria-controls="bsc-a27">
-                重い荷物でも大丈夫？
-              </button>
-            </h3>
-            <div id="bsc-a27" class="accordion-collapse collapse" aria-labelledby="bsc-q27" data-bs-parent="#accBSC20">
-              <div class="accordion-body">
-                <strong>A.</strong> 「重いものを入れても小回りが利いて使いやすい」との声があります。ただし設計はあくまで「旅行用スーツケース」です。無理な過積載は避け、取扱いにはご注意ください。使用中に「動きが重い」と感じたら、早めに移動を止め、車輪が熱を持っていないかご確認ください。
-              </div>
-            </div>
-          </div>
-
+          <!-- Q1 / bsc-01 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q1"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a1" aria-expanded="false" aria-controls="bsc-a1">機内持ち込みはできますか？</button></h3><div id="bsc-a1" class="accordion-collapse collapse" aria-labelledby="bsc-q1" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 横型と縦型のSSサイズは機内持ち込みを意識して選ばれており、レビューでも「機内持ち込みを最優先」「機内持ち込みサイズにした」との声があります。実際の搭載可否は各社のサイズ・重量規定に従ってご確認ください。</div></div></div>
+          <!-- Q2 / bsc-02 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q2"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a2" aria-expanded="false" aria-controls="bsc-a2">何泊目安は、正しいですか？</button></h3><div id="bsc-a2" class="accordion-collapse collapse" aria-labelledby="bsc-q2" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 例えばSSは「1〜2泊」ですが、人によっては「2泊3日でもちょうど良い」とのレビューがあります。Mは「最初は大きく感じたが実際よく入る」との声もあります。荷物量や季節で変わるため、目安としてご参考ください。</div></div></div>
+          <!-- Q3 / bsc-03 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q3"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a3" aria-expanded="false" aria-controls="bsc-a3">走行音は静かですか？</button></h3><div id="bsc-a3" class="accordion-collapse collapse" aria-labelledby="bsc-q3" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 走行音は路面によって大きく変わります。「思ったより静か」「ほとんど音が気にならない」という声が多い一方、非常に静かなPU材質のタイヤと比べれば「音が大きい」との指摘もあります。なお、当社ではPU製静音タイヤは本体より早く経年劣化が進みやすいため、旅行用スーツケースの足回りとしては採用していません。</div></div></div>
+          <!-- Q4 / bsc-04 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q4"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a4" aria-expanded="false" aria-controls="bsc-a4">電車や斜面で転がってしまいませんか？</button></h3><div id="bsc-a4" class="accordion-collapse collapse" aria-labelledby="bsc-q4" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 4輪タイプは滑走性が高いため、停止時に動いてしまう場合があります。電車等では壁側に置く・横向きに置く・手を添える等の工夫でご対応ください。</div></div></div>
+          <!-- Q5 / bsc-05 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q5"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a5" aria-expanded="false" aria-controls="bsc-a5">ストッパーは付いていますか？</button></h3><div id="bsc-a5" class="accordion-collapse collapse" aria-labelledby="bsc-q5" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> ストッパーは非搭載です。「ストッパー機能があれば嬉しい」というお声をいただくことがあります。電車等では上記の置き方で対策ください。</div></div></div>
+          <!-- Q6 / bsc-06 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q6"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a6" aria-expanded="false" aria-controls="bsc-a6">走行性や小回りはどうですか？</button></h3><div id="bsc-a6" class="accordion-collapse collapse" aria-labelledby="bsc-q6" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「滑らか」「小回りが利く」「狭い通路でもスムーズ」という高評価が多いです。一方で、路面によっては音が出やすいとの声もあります。</div></div></div>
+          <!-- Q7 / bsc-07 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q7"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a7" aria-expanded="false" aria-controls="bsc-a7">耐久性は？</button></h3><div id="bsc-a7" class="accordion-collapse collapse" aria-labelledby="bsc-q7" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 長く使っても大きな不具合がないというレビューを複数いただいています。もちろん使用環境により異なりますが、日常使いと旅行の両方で長くお使いいただけるよう設計しています。</div></div></div>
+          <!-- Q8 / bsc-08 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q8"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a8" aria-expanded="false" aria-controls="bsc-a8">TSAロックの使い勝手は？</button></h3><div id="bsc-a8" class="accordion-collapse collapse" aria-labelledby="bsc-q8" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> お客様の操作性は通常のダイヤルロックと変わりません。TSA職員（アメリカ空港セキュリティ機関）が専用ツールで開錠検査可能なロックです。※渡航先のルールによっては、TSA規格以外の鍵をかけることを禁止される場合があります。</div></div></div>
+          <!-- Q9 / bsc-09 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q9"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a9" aria-expanded="false" aria-controls="bsc-a9">色はどれが人気？見つけやすさは？</button></h3><div id="bsc-a9" class="accordion-collapse collapse" aria-labelledby="bsc-q9" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 人気は概ね「1.黒、2.ネイビーブルー、3.ブラウン」ですが大きな差はなく、いずれも好評です。「ターンテーブルで見つけやすい色」を選ぶ方も多く、ビジネス用途では定番の黒が人気です。</div></div></div>
+          <!-- Q10 / bsc-10 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q10"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a10" aria-expanded="false" aria-controls="bsc-a10">内部収納の使い勝手は？</button></h3><div id="bsc-a10" class="accordion-collapse collapse" aria-labelledby="bsc-q10" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「ポケットが多く使い勝手が良い」「中敷き＋メッシュポケットで収納力UP」との声を多くいただきます。クロスバンドも荷崩れ防止に好評で、衣類と小物をバランスよく整理できます。</div></div></div>
+          <!-- Q11 / bsc-11 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q11"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a11" aria-expanded="false" aria-controls="bsc-a11">コストパフォーマンスはどうですか？</button></h3><div id="bsc-a11" class="accordion-collapse collapse" aria-labelledby="bsc-q11" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「この価格でこの品質」「値段以上」「この価格でこの造り」といった評価を長年にわたりいただいています。価格帯と仕上がりのバランスを重視する方におすすめのソフトキャリーケースです。</div></div></div>
+          <!-- Q12 / bsc-12 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q12"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a12" aria-expanded="false" aria-controls="bsc-a12">重量感は？</button></h3><div id="bsc-a12" class="accordion-collapse collapse" aria-labelledby="bsc-q12" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「本体が軽くて収納力も高い」という感想があります。実測重量はサイズごとの製品仕様をご確認ください。持ち上げる時間を減らし、転がして移動する時間を長くすることで、体への負担も軽減できます。</div></div></div>
+          <!-- Q13 / bsc-13 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q13"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a13" aria-expanded="false" aria-controls="bsc-a13">4輪の利点・注意点は？</button></h3><div id="bsc-a13" class="accordion-collapse collapse" aria-labelledby="bsc-q13" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 利点は「小回り」「狭い通路でもスムーズ」。注意点は「停止時に動きやすいことがある」点です。状況に応じて手を添えたり、置き方を工夫したりしてお使いください。</div></div></div>
+          <!-- Q14 / bsc-14 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q14"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a14" aria-expanded="false" aria-controls="bsc-a14">横持ちハンドルは付いていますか？</button></h3><div id="bsc-a14" class="accordion-collapse collapse" aria-labelledby="bsc-q14" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> SSモデルはトップハンドルのみの仕様です。他サイズには横持ちハンドルが付いており、階段や段差での持ち運びに便利です。</div></div></div>
+          <!-- Q15 / bsc-15 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q15"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a15" aria-expanded="false" aria-controls="bsc-a15">容量は思ったより入りますか？</button></h3><div id="bsc-a15" class="accordion-collapse collapse" aria-labelledby="bsc-q15" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「見た目より入った」「少々小さいと思ったが結構入る」との声が複数あります。圧縮袋の使用や衣類のたたみ方の工夫で、体感容量はさらに変わります。</div></div></div>
+          <!-- Q16 / bsc-16 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q16"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a16" aria-expanded="false" aria-controls="bsc-a16">ビジネス用途に向いていますか？</button></h3><div id="bsc-a16" class="accordion-collapse collapse" aria-labelledby="bsc-q16" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 仕事用のレビューが多数あり、出張での使い勝手や小回りの良さが評価されています。落ち着いた色展開で、ビジネスシーンにも自然に馴染むソフトキャリーケースです。</div></div></div>
+          <!-- Q17 / bsc-17 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q17"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a17" aria-expanded="false" aria-controls="bsc-a17">路面によって押し心地は変わりますか？</button></h3><div id="bsc-a17" class="accordion-collapse collapse" aria-labelledby="bsc-q17" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> はい。カーペット・荒いタイル・段差などで体感が変化します。音・振動が気になる場面では速度を落とし、段差は持ち上げて回避してください。</div></div></div>
+          <!-- Q18 / bsc-18 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q18"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a18" aria-expanded="false" aria-controls="bsc-a18">海外旅行でも使えますか？</button></h3><div id="bsc-a18" class="accordion-collapse collapse" aria-labelledby="bsc-q18" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「海外でも問題なく使用できている」というレビューがあります。TSAロック搭載でセキュリティチェックもスムーズです。各国・各航空会社の受託・機内持込規定は事前にご確認ください。</div></div></div>
+          <!-- Q19 / bsc-19 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q19"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a19" aria-expanded="false" aria-controls="bsc-a19">フロントオープンは出し入れが便利？</button></h3><div id="bsc-a19" class="accordion-collapse collapse" aria-labelledby="bsc-q19" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 外でバッグを開けたいときに便利な構成です。書類や小物の出し入れが容易との声が多数あります。混雑した場所でも、最小限の開閉で取り出しができるのがメリットです。</div></div></div>
+          <!-- Q20 / bsc-20 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q20"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a20" aria-expanded="false" aria-controls="bsc-a20">斜面やバス・電車での置き方のコツは？</button></h3><div id="bsc-a20" class="accordion-collapse collapse" aria-labelledby="bsc-q20" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 横置きできる場面では横置きをおすすめします。横置きできないときは、車輪を壁側に向ける・手すり側に置くなどで動きを抑えられます。動きやすい場所では、手や足元で軽く支えてください。</div></div></div>
+          <!-- Q21 / bsc-21 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q21"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a21" aria-expanded="false" aria-controls="bsc-a21">キャスター交換や静音化はできますか？</button></h3><div id="bsc-a21" class="accordion-collapse collapse" aria-labelledby="bsc-q21" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 一時期流行した「静音キャスター」への交換をご希望の場合でも、当社ではPU製静音タイヤをおすすめしていません。3年ほどで経年劣化が進み、使用中に破損する恐れがあるためです。キャリーケースは移動中に足回りが壊れると行程に支障が出ますので、旅行用途では耐久性と安全性を優先することを推奨しています。</div></div></div>
+          <!-- Q22 / bsc-22 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q22"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a22" aria-expanded="false" aria-controls="bsc-a22">雨・撥水はどう？</button></h3><div id="bsc-a22" class="accordion-collapse collapse" aria-labelledby="bsc-q22" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 表生地は防水です。生地の裏側にはPU・EVA・PVC等のラミネート加工が施されているため、表面の撥水性が低下しても、生地そのものが水を通すわけではありません。一方、一般的なソフトキャリーケースと同様に、ファスナーや伸縮ハンドル部分などに開口部があるため、製品全体としては完全防水ではありません。長時間の雨や強い雨では、これらの部分から水が侵入する可能性があります。</div></div></div>
+          <!-- Q23 / bsc-23 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q23"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a23" aria-expanded="false" aria-controls="bsc-a23">収納固定はしっかりできますか？</button></h3><div id="bsc-a23" class="accordion-collapse collapse" aria-labelledby="bsc-q23" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> クロスバンド＋中敷き＋メッシュポケット構成で、荷崩れ抑制と小物整理がしやすいと評判です。衣類をしっかり固定しつつ、ビジネス書類や小物類も整理して収納できます。</div></div></div>
+          <!-- Q24 / bsc-24 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q24"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a24" aria-expanded="false" aria-controls="bsc-a24">機内持ち込みサイズのSSと横型の使い分けは？</button></h3><div id="bsc-a24" class="accordion-collapse collapse" aria-labelledby="bsc-q24" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 形の好みで選ばれる方が多いです。横型はパイロットスーツケースの意匠に憧れて選ぶ方もいます。SSは幅が狭く混雑した駅で取り回しやすく、外で立ったままの開閉も行いやすいです。一方、横型は前面取り出しのしやすさから、商談時など椅子に座りながらの開閉を評価する声が多いです。</div></div></div>
+          <!-- Q25 / bsc-25 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q25"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a25" aria-expanded="false" aria-controls="bsc-a25">リピート購入はありますか？</button></h3><div id="bsc-a25" class="accordion-collapse collapse" aria-labelledby="bsc-q25" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> はい。リピート率の高い商品です。「会社で重いものを運ぶ用途で複数台リピート」「2個目も満足」といったレビューが複数あります。</div></div></div>
+          <!-- Q26 / bsc-26 -->
+          <div class="accordion-item"><h3 class="accordion-header" id="bsc-q26"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bsc-a26" aria-expanded="false" aria-controls="bsc-a26">重い荷物でも大丈夫？</button></h3><div id="bsc-a26" class="accordion-collapse collapse" aria-labelledby="bsc-q26" data-bs-parent="#accBSC20"><div class="accordion-body"><strong>A.</strong> 「重いものを入れても小回りが利いて使いやすい」との声があります。ただし設計はあくまで「旅行用スーツケース」です。無理な過積載は避け、取扱いにはご注意ください。使用中に「動きが重い」と感じたら、早めに移動を止め、車輪が熱を持っていないかご確認ください。</div></div></div>
         </div>
       </div>
     </section>
