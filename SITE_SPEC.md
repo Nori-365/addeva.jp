@@ -7,6 +7,8 @@
 
 ## 更新方法
 - HTML / CSS / JS：GitHub経由
+- HTML / CSS / JSの更新は対象ファイルを直接`main`へCommitし、一時workflowから`GITHUB_TOKEN`で別Commitさせる方式は使用しない。
+- `GITHUB_TOKEN`によるpushでは`push`トリガーの`Deploy to Sakura VPS`が起動しないため、通常更新では必ず直接Commitする。
 - API・サーバー設定：GitHub管理外。必要時にユーザーからファイルを受け取る
 - API・設定ファイルのアップロード：WinSCP
 - SSH操作：PuTTY
