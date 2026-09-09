@@ -326,8 +326,8 @@
             {method:'Wise QR', condition:'利用不可', result:'―'},
             {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
             {method:'銀行（BCEL）', condition:'約1.26%', calc:{type:'rate', value:1.26}},
-            {method:'市内優良両替所', condition:'×', result:'―'},
-            {method:'空港両替', condition:'公開JPY実測値不足', result:'算定不可'}
+            {method:'市内優良両替所', condition:'公開JPY比較値不足', result:'算定不可'},
+            {method:'空港両替', condition:'約0.61% ※参考実測', calc:{type:'rate', value:0.61}}
           ]
         },
         cambodia: {
@@ -358,9 +358,9 @@
             {method:'Wiseデビットカード', condition:'利用不可', result:'―'},
             {method:'Wise QR', condition:'利用不可', result:'―'},
             {method:'Wise → ATM出金', condition:'利用不可', result:'―'},
-            {method:'銀行', condition:'外国為替制度が特殊', result:'単純比較困難'},
-            {method:'市内優良両替所', condition:'認可両替所あり・外国為替制度が特殊', result:'単純比較困難'},
-            {method:'空港両替', condition:'外国為替制度が特殊', result:'単純比較困難'}
+            {method:'銀行', condition:'複数為替レートが存在', result:'単純比較困難'},
+            {method:'市内優良両替所', condition:'認可Money Changerを利用', result:'単純比較困難'},
+            {method:'空港両替', condition:'KBZ・AYA等で両替可能', result:'単純比較困難'}
           ]
         },
         timorleste: {
