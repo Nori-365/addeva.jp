@@ -23,12 +23,12 @@ jobs:
           page = Path('contents/overseas-business-trip-payment-exchange.html')
           src = page.read_text(encoding='utf-8')
 
-          old = '''          <h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
+          old = '''<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
 
           <p>人によって、現地で使用する予定の金額は異なります。</p>
           <p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>'''
 
-          new = '''          <h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
+          new = '''<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
 
           <p>本題に入る前に、現地での決済や、ATMからの現金引き出し時に、注意しなければいけないことがあります。</p>
           <p>それは、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれたら、「現地通貨を選ぶ」ということです。</p>
