@@ -234,7 +234,7 @@
       .comparison-condition::before{content:"条件";font-weight:700;color:#6b737b;grid-column:1;grid-row:1 / span 2;}
       .comparison-condition-main,
       .comparison-condition-subnote{grid-column:2;}
-      .comparison-cost::before{content:"概算コスト";font-weight:700;color:#6b737b;}
+      .comparison-cost::before{content:attr(data-label);font-weight:700;color:#6b737b;}
       .cash-limit-grid-head{display:none;}
       .cash-limit-row{display:block;border-bottom:0;}
       .cash-limit-cell{
@@ -352,7 +352,7 @@
               <div class="comparison-grid-head" aria-hidden="true">
                 <div>方法</div>
                 <div>コスト率・条件</div>
-                <div>比較金額での概算</div>
+                <div id="outboundAmountHeader">100,000円での概算</div>
               </div>
               <div id="comparisonRows"></div>
 
@@ -360,7 +360,7 @@
               <div class="comparison-grid-head" aria-hidden="true">
                 <div>方法</div>
                 <div>コスト率・条件</div>
-                <div>比較金額での概算</div>
+                <div id="returnAmountHeader">100,000円での概算</div>
               </div>
               <div id="returnRows"></div>
               <div id="returnDetail" class="return-detail"></div>
@@ -757,6 +757,8 @@
       const amountInput = document.getElementById('amountInput');
       const countryTitle = document.getElementById('countryTitle');
       const amountLabel = document.getElementById('amountLabel');
+      const outboundAmountHeader = document.getElementById('outboundAmountHeader');
+      const returnAmountHeader = document.getElementById('returnAmountHeader');
       const cashLocal = document.getElementById('cashLocal');
       const cashForeign = document.getElementById('cashForeign');
       const cashCombined = document.getElementById('cashCombined');
@@ -814,6 +816,9 @@
         const amount = parseAmount(amountInput.value);
         countryTitle.textContent = country.name;
         amountLabel.textContent = `決済・両替の比較金額：${yenFormatter.format(amount)}円相当`;
+        const amountHeaderText = `${yenFormatter.format(amount)}円での概算`;
+        outboundAmountHeader.textContent = amountHeaderText;
+        returnAmountHeader.textContent = amountHeaderText;
 
         const buildRows = (rows) => rows.map(row => {
           const item = document.createElement('div');
@@ -839,6 +844,7 @@
           const result = document.createElement('div');
           const resultText = calcResult(row, amount);
           result.className = `comparison-cost${['―','算定不可','要調査','単純比較困難','複数為替レートのため単純算定不可','両替不可','個別確認'].includes(resultText) ? ' is-muted' : ''}`;
+          result.dataset.label = amountHeaderText;
           result.textContent = resultText;
 
           item.append(method, condition, result);
