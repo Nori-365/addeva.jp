@@ -113,6 +113,11 @@
     .comparison-row:last-child{border-bottom:0;}
     .comparison-method{font-weight:650;}
     .comparison-condition{font-size:.94rem;color:#49515a;}
+    .comparison-condition-main{display:block;}
+    .comparison-condition-subnote{display:block;margin-top:.2rem;font-size:.86rem;line-height:1.45;color:#68717a;}
+    .comparison-condition.status-ok .comparison-condition-main{font-weight:700;color:#2f6f44;}
+    .comparison-condition.status-ng .comparison-condition-main{font-weight:700;color:#9b2c2c;}
+    .comparison-condition.status-warn .comparison-condition-main{font-weight:700;color:#8a5a00;}
     .comparison-cost{font-weight:700;line-height:1.45;}
     .comparison-cost.is-muted{font-weight:500;color:#6c757d;}
     .comparison-note,
@@ -160,7 +165,9 @@
       .comparison-condition,
       .comparison-cost{display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:8px;align-items:start;}
       .comparison-condition{margin-bottom:.25rem;font-size:.9rem;}
-      .comparison-condition::before{content:"条件";font-weight:700;color:#6b737b;}
+      .comparison-condition::before{content:"条件";font-weight:700;color:#6b737b;grid-column:1;grid-row:1 / span 2;}
+      .comparison-condition-main,
+      .comparison-condition-subnote{grid-column:2;}
       .comparison-cost::before{content:"概算コスト";font-weight:700;color:#6b737b;}
       .comparison-note,
       .country-notes{margin-top:14px;padding:12px 13px;font-size:.84rem;}
@@ -188,10 +195,8 @@
 
       <section class="section article-intro">
         <div class="container container-narrow article-body">
-          <p>こんにちは。ADDEVAのNです。</p>
-          <p>今日は、海外出張先での支払い・決済や、両替についてお話しします。</p>
-          <p>私が頻繁に行くベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。皆さまの参考になれば幸いです。</p>
-          <p>どの決済が良いのか、どこで両替するのが良いのかは、国によってかなり違うことがわかりました。</p>
+          <p>こんにちは。ADDEVAのNです。<br>今回は、海外出張先での支払い・決済や、両替についてお話しします。<br>私が頻繁に行くベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。皆さまの参考になれば幸いです。</p>
+          <p>この記事では、<br>１．国別の外国人用QR決済の普及率と手数料率、両替する場所とその手数料率を見る。<br>２．帰国時に現地通貨を日本円に戻す手数料を見る。<br>３．その人に合った決済方法と両替方法<br>についてお話ししていきます。</p>
           <p>まずは、渡航先と利用予定金額を選んで、決済・両替方法によってどのくらい差が出るのか比較してみてください。</p>
         </div>
       </section>
@@ -271,14 +276,15 @@
         vietnam: {
           name: 'ベトナム',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'旅行者向け現地QR', condition:'日本人短期出張者向けの簡単な仕組みは現時点では限定的', result:'―'},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（Agribank）', condition:'約2.79%', calc:{type:'rate', value:2.79}},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'旅行者向け現地QR決済', condition:'日本人短期出張者向けの簡単な仕組みは現時点では限定的', result:'―'},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → VND（直接両替）', condition:'○ 直接両替可能。銀行・空港・市内の認可両替先などで取扱いあり', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（Agribank）', condition:'約2.79%', calc:{type:'rate', value:2.79}},
             {method:'市内両替所（Giang Son / Quang Huy・認可状況を確認して利用）', condition:'約0.91% ※実測参考', calc:{type:'rate', value:0.91}},
-            {method:'空港・良い窓口', condition:'約0.61%', calc:{type:'rate', value:0.61}},
-            {method:'空港・悪い窓口', condition:'約4.88%', calc:{type:'rate', value:4.88}}
+            {method:'空港両替・良い窓口', condition:'約0.61%', calc:{type:'rate', value:0.61}},
+            {method:'空港両替・悪い窓口', condition:'約4.88%', calc:{type:'rate', value:4.88}}
           ],
           notes: [
             'VietQRは非常に普及していますが、日本人短期出張者がそのまま利用できる仕組みではありません。',
@@ -290,14 +296,15 @@
         thailand: {
           name: 'タイ',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'旅行者向け現地QR（TAGTHAi Easy Pay / PromptPay）', condition:'サービス手数料0%／KBank FX差 約2.38% ※調査日例', calc:{type:'rate', value:2.38}},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（Krungsri）', condition:'約1.92%', calc:{type:'rate', value:1.92}},
-            {method:'市内優良両替所（SuperRich）', condition:'約0.63%', calc:{type:'rate', value:0.63}},
-            {method:'空港・優良店', condition:'約3.00%', calc:{type:'rate', value:3.00}},
-            {method:'空港・銀行系', condition:'約3.05%', calc:{type:'rate', value:3.05}}
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'旅行者向け現地QR決済（TAGTHAi Easy Pay / PromptPay）', condition:'サービス手数料0%／KBank FX差 約2.38% ※調査日例', calc:{type:'rate', value:2.38}},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → THB（直接両替）', condition:'○ 直接両替可能。銀行・SuperRich等・空港でJPY紙幣を取扱い', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（Krungsri）', condition:'約1.92%', calc:{type:'rate', value:1.92}},
+            {method:'市内両替所（SuperRich）', condition:'約0.63%', calc:{type:'rate', value:0.63}},
+            {method:'空港両替・優良店', condition:'約3.00%', calc:{type:'rate', value:3.00}},
+            {method:'空港両替・銀行系', condition:'約3.05%', calc:{type:'rate', value:3.05}}
           ],
           notes: [
             'Wise QRは利用できませんが、外国人旅行者向けのTAGTHAi Easy PayでPromptPayを利用できます。',
@@ -309,12 +316,13 @@
         malaysia: {
           name: 'マレーシア',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR（DuitNow QR）', condition:'約0.73%〜 ※Wise側の両替コスト目安', calc:{type:'minRate', value:0.73}},
-            {method:"旅行者向け現地QR（Touch 'n Go eWallet）", condition:'海外発行カードからのチャージ 最大2.6% ※1', calc:{type:'maxRatePlus', value:2.6, suffix:'＋カード会社側費用'}},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（Maybank）', condition:'約7.13%', calc:{type:'rate', value:7.13}},
-            {method:'市内優良両替所（My Money Master / Max Money）', condition:'約0.2〜0.7%', calc:{type:'rangeRate', min:0.2, max:0.7}},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済（DuitNow QR）', condition:'約0.73%〜 ※Wise側の両替コスト目安', calc:{type:'minRate', value:0.73}},
+            {method:"旅行者向け現地QR決済（Touch 'n Go eWallet）", condition:'海外発行カードからのチャージ 最大2.6% ※1', calc:{type:'maxRatePlus', value:2.6, suffix:'＋カード会社側費用'}},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → MYR（直接両替）', condition:'○ 直接両替可能。銀行・認可Money Changer・空港で取扱い', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（Maybank）', condition:'約7.13%', calc:{type:'rate', value:7.13}},
+            {method:'市内両替所（My Money Master / Max Money）', condition:'約0.2〜0.7%', calc:{type:'rangeRate', min:0.2, max:0.7}},
             {method:'空港両替', condition:'約1.7〜4.2% ※推計', calc:{type:'rangeRate', min:1.7, max:4.2}}
           ],
           notes: [
@@ -329,11 +337,12 @@
         singapore: {
           name: 'シンガポール',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR（PayNow・事業者QR）', condition:'約0.73%〜 ※Wise両替手数料の比較用目安', calc:{type:'minRate', value:0.73}},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（UOB）', condition:'約2.43%', calc:{type:'rate', value:2.43}},
-            {method:'市内優良両替所（The Arcade内 Money Changer）', condition:'約0.20%', calc:{type:'rate', value:0.20}},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済（PayNow・事業者QR）', condition:'約0.73%〜 ※Wise両替手数料の比較用目安', calc:{type:'minRate', value:0.73}},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → SGD（直接両替）', condition:'○ 直接両替可能。銀行・Money Changer等で取扱い', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（UOB）', condition:'約2.43%', calc:{type:'rate', value:2.43}},
+            {method:'市内両替所（The Arcade内 Money Changer）', condition:'約0.20%', calc:{type:'rate', value:0.20}},
             {method:'空港両替', condition:'約3.2〜4.2% ※参考推計', calc:{type:'rangeRate', min:3.2, max:4.2}}
           ],
           notes: [
@@ -345,12 +354,13 @@
         philippines: {
           name: 'フィリピン',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR（QR Ph）', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'旅行者向け現地QR（GCash GTourist）', condition:'固定率なし／リンクカード・FX条件による', result:'算定不可'},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（BPI）', condition:'約2.24%', calc:{type:'rate', value:2.24}},
-            {method:"市内優良両替所（Sanry's / Czarina）", condition:'約0.45%', calc:{type:'rate', value:0.45}},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済（QR Ph）', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'旅行者向け現地QR決済（GCash GTourist）', condition:'固定率なし／リンクカード・FX条件による', result:'算定不可'},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → PHP（直接両替）', condition:'○ 直接両替可能。銀行・専門両替所等で取扱い', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（BPI）', condition:'約2.24%', calc:{type:'rate', value:2.24}},
+            {method:"市内両替所（Sanry's / Czarina）", condition:'約0.45%', calc:{type:'rate', value:0.45}},
             {method:'空港両替', condition:'約3.2% ※推計', calc:{type:'rate', value:3.2}}
           ],
           notes: [
@@ -365,11 +375,12 @@
         indonesia: {
           name: 'インドネシア',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（BCA）', condition:'約1.09%', calc:{type:'rate', value:1.09}},
-            {method:'市内優良両替所（VIP Money Changer）', condition:'約0.32%', calc:{type:'rate', value:0.32}},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → IDR（直接両替）', condition:'○ 直接両替可能。銀行・認可Money Changer等で取扱い', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（BCA）', condition:'約1.09%', calc:{type:'rate', value:1.09}},
+            {method:'市内両替所（VIP Money Changer）', condition:'約0.32%', calc:{type:'rate', value:0.32}},
             {method:'空港両替', condition:'約5.3〜10.3% ※推計', calc:{type:'rangeRate', min:5.3, max:10.3}}
           ],
           notes: [
@@ -381,12 +392,13 @@
         laos: {
           name: 'ラオス',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'旅行者向け現地QR（LOCA PAY / LaoQR）', condition:'3%＋5,000 LAK／回', calc:{type:'laoQr'}},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（BCEL）', condition:'約1.26%', calc:{type:'rate', value:1.26}},
-            {method:'市内優良両替所', condition:'認可両替所あり／JPY比較値不足', result:'算定不可'},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'旅行者向け現地QR決済（LOCA PAY / LaoQR）', condition:'3%＋5,000 LAK／回', calc:{type:'laoQr'}},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → LAK（直接両替）', condition:'○ 直接両替可能。ワットタイ国際空港でもJPY→LAKの取扱いを確認', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（BCEL）', condition:'約1.26%', calc:{type:'rate', value:1.26}},
+            {method:'市内両替所', condition:'認可両替所あり／JPY比較値不足', result:'算定不可'},
             {method:'空港両替', condition:'約0.61% ※参考実測', calc:{type:'rate', value:0.61}}
           ],
           notes: [
@@ -400,30 +412,32 @@
         cambodia: {
           name: 'カンボジア',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'日本登録ユーザー利用不可', result:'―'},
-            {method:'旅行者向け現地QR（Bakong Tourists / KHQR）', condition:'約3.5〜3.75% ※利用者実測参考', calc:{type:'rangeRateReference', min:3.5, max:3.75}},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行', condition:'約1.20% ※参考', calc:{type:'rate', value:1.20}},
-            {method:'市内優良両替所（Ly Hour Exchange & Jewelry）', condition:'要調査', result:'要調査'},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'日本登録ユーザー利用不可', result:'―'},
+            {method:'旅行者向け現地QR決済（Bakong Tourists / KHQR）', condition:'約3.5〜3.75% ※利用者実測参考', calc:{type:'rangeRateReference', min:3.5, max:3.75}},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → KHR（直接両替）', condition:'○ 直接両替可能。銀行等でJPY紙幣の取扱いあり', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替', condition:'約1.20% ※参考', calc:{type:'rate', value:1.20}},
+            {method:'市内両替所（Ly Hour Exchange & Jewelry）', condition:'要調査', result:'要調査'},
             {method:'空港両替', condition:'公開JPY実測値不足', result:'算定不可'}
           ],
           notes: [
             '日本登録WiseからKHQRを直接利用することはできません。',
-            'Bakong Touristsを使えば外国人旅行者でもKHQRを利用できます。',
-            'KHQRが使える店舗は非常に多くあります。',
-            'Bakong Touristsの約3.5〜3.75％は公式固定手数料ではありません。Visa／Mastercardやカード発行会社側の条件などにより変わり、利用者実測の参考値です。',
-            'USDも使えますが、KHR・KHQR利用も広く普及しています。'
+            'Bakong Touristsを使えば、外国人旅行者でもKHQRを利用できます。',
+            'KHQRが使える店舗は非常に多く、クレジットカード端末がない店舗でも支払える場面があります。',
+            'Bakong Touristsの約3.5〜3.75％は公式固定手数料ではなく、利用者実測の参考値です。Visa/Mastercardやカード発行会社側の条件などにより変わります。',
+            'USDも広く利用されていますが、日本円からKHRへ直接両替することも可能です。KHR・KHQRも広く普及しています。'
           ]
         },
         brunei: {
           name: 'ブルネイ',
           rows: [
-            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
-            {method:'銀行（BIBD）', condition:'約6.39%', calc:{type:'rate', value:6.39}},
-            {method:'市内優良両替所（Husne Money Changer等）', condition:'要調査', result:'要調査'},
+            {method:'Wiseデビットカード決済', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', calc:{type:'wiseAtm'}},
+            {method:'日本円現金 → BND（直接両替）', condition:'○ 直接両替可能。空港等でJPY取扱い例あり', result:'下記の両替先ごとに比較', status:'ok'},
+            {method:'銀行両替（BIBD）', condition:'約6.39%', calc:{type:'rate', value:6.39}},
+            {method:'市内両替所（Husne Money Changer等）', condition:'要調査', result:'要調査'},
             {method:'空港両替', condition:'公開JPYレート不足', result:'算定不可'}
           ],
           notes: [
@@ -436,17 +450,19 @@
         myanmar: {
           name: 'ミャンマー',
           rows: [
-            {method:'Wiseデビットカード', condition:'利用不可', result:'―'},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'Wise → ATM出金', condition:'利用不可', result:'―'},
-            {method:'銀行', condition:'複数為替レートが存在', result:'単純比較困難'},
-            {method:'市内優良両替所', condition:'認可Money Changerを利用', result:'単純比較困難'},
+            {method:'Wiseデビットカード決済', condition:'利用不可', result:'―'},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'Wise ATM出金（現地通貨）', condition:'利用不可', result:'―'},
+            {method:'日本円現金 → MMK（直接両替）', condition:'× 直接両替不可', subnote:'日本出発前にUSDなど、現地で両替可能な外貨を準備してください。', result:'―', status:'ng'},
+            {method:'銀行両替', condition:'複数為替レートが存在', result:'単純比較困難'},
+            {method:'市内両替所', condition:'認可Money Changerを利用', result:'単純比較困難'},
             {method:'空港両替', condition:'KBZ・AYA等で利用可', result:'単純比較困難'}
           ],
           notes: [
             'ミャンマーではWiseデビットカードだけでなく、Wiseサービス自体の利用に制限があります。',
             '空港では銀行系両替カウンターを利用できます。',
             '複数の為替レートが存在するため、他国と同じ％比較は行いません。',
+            '日本円現金からMMKへの直接両替はできないため、日本出発前にUSDなど現地で両替可能な外貨を準備してください。',
             'USD等を持参する場合、紙幣の状態を厳しく確認されることがあります。',
             '無認可の両替業者は利用しないでください。'
           ]
@@ -454,18 +470,19 @@
         timorleste: {
           name: '東ティモール',
           rows: [
-            {method:'Wiseデビットカード', condition:'JPY→USD両替手数料', result:'要計算'},
-            {method:'Wise QR', condition:'利用不可', result:'―'},
-            {method:'Wise → ATM出金', condition:'両替＋ATM式', result:'要計算＋現地ATM手数料'},
-            {method:'銀行', condition:'JPY比較データ不足', result:'算定不可'},
-            {method:'市内優良両替所（Global EX等）', condition:'JPY比較データ不足', result:'算定不可'},
+            {method:'Wiseデビットカード決済', condition:'JPY→USD両替手数料', result:'要計算'},
+            {method:'Wise QR決済', condition:'利用不可', result:'―'},
+            {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', result:'要計算＋現地ATM手数料'},
+            {method:'日本円現金 → USD（直接両替）', condition:'△ JPY現金の安定した取扱いを確認できず', subnote:'日本でUSDを用意してから渡航することを強く推奨します。', result:'日本でUSD現金を準備推奨', status:'warn'},
+            {method:'銀行両替', condition:'JPY比較データ不足', result:'算定不可'},
+            {method:'市内両替所（Global EX等）', condition:'JPY比較データ不足', result:'算定不可'},
             {method:'空港両替', condition:'JPY比較データ不足', result:'算定不可'}
           ],
           notes: [
             '通貨はUSDです。',
             'Diliではカード・ATMを利用できる場所もありますが、地方では現金依存度が高くなります。',
             '他国のような「JPY→現地独自通貨」の比較には向きません。',
-            'USD現金を事前に用意しておくことも重要な選択肢です。日本円→USDのコストは今回の比較には含めていません。'
+            '日本でUSD現金を用意してから渡航することを強く推奨します。日本円→USDのコストは今回の比較には含めていません。'
           ]
         }
       };
@@ -528,8 +545,17 @@
           method.textContent = row.method;
 
           const condition = document.createElement('div');
-          condition.className = 'comparison-condition';
-          condition.textContent = row.condition;
+          condition.className = `comparison-condition${row.status ? ` status-${row.status}` : ''}`;
+          const conditionMain = document.createElement('span');
+          conditionMain.className = 'comparison-condition-main';
+          conditionMain.textContent = row.condition;
+          condition.append(conditionMain);
+          if (row.subnote) {
+            const conditionSubnote = document.createElement('span');
+            conditionSubnote.className = 'comparison-condition-subnote';
+            conditionSubnote.textContent = row.subnote;
+            condition.append(conditionSubnote);
+          }
 
           const result = document.createElement('div');
           const resultText = calcResult(row, amount);
