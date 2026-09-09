@@ -237,7 +237,6 @@
     }
     .country-notes ul{margin:0;padding-left:1.25rem;}
     .country-notes li{margin:.2rem 0;}
-    .country-guide-item[hidden]{display:none!important;}
     .country-guide-item .accordion-body{font-size:.94rem;line-height:1.7;}
     .country-guide-item .accordion-body h4{font-size:1rem;font-weight:700;margin:1rem 0 .35rem;}
     .country-guide-item .accordion-body h4:first-child{margin-top:0;}
@@ -530,10 +529,10 @@
       <section class="section article-content-section" id="country-guides">
         <div class="container container-narrow article-body">
           <h2 class="article-major-title">ASEAN各国の両替・支払い方法</h2>
-          <p>上の比較表で選択している国以外の情報も、国ごとに確認できます。国名をタップすると、現金の申告基準、支払い方法、日本円からの両替、余った現地通貨を日本円へ戻す方法の概要が開きます。</p>
+          <p>上の比較表とは見せ方を変えて、ASEAN各国の情報を国ごとに確認できます。国名をタップすると、現金の申告基準、支払い方法、日本円からの両替、余った現地通貨を日本円へ戻す方法の概要が開きます。</p>
 
           <div class="accordion mt-3" id="countryGuideAccordion">
-            <div class="accordion-item country-guide-item" data-country-guide="vietnam" hidden>
+            <div class="accordion-item country-guide-item" data-country-guide="vietnam">
               <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#guideVietnam" aria-expanded="false" aria-controls="guideVietnam">ベトナムの両替・支払い方法</button></h3>
               <div id="guideVietnam" class="accordion-collapse collapse" data-bs-parent="#countryGuideAccordion"><div class="accordion-body">
                 <h4>現金の持ち込み・持ち出し</h4><p>現地通貨は15,000,000 VND超、外国通貨はUSD5,000相当超で申告が必要です。VNDと外国通貨は別々に判定します。</p>
@@ -1068,7 +1067,6 @@
       const returnDetail = document.getElementById('returnDetail');
       const returnConclusion = document.getElementById('returnConclusion');
       const countryNotesList = document.getElementById('countryNotesList');
-      const countryGuideItems = document.querySelectorAll('[data-country-guide]');
       const yenFormatter = new Intl.NumberFormat('ja-JP', {maximumFractionDigits:0});
 
       const parseAmount = (value) => {
@@ -1120,10 +1118,6 @@
         const amountHeaderText = `${yenFormatter.format(amount)}円での概算`;
         outboundAmountHeader.textContent = amountHeaderText;
         returnAmountHeader.textContent = amountHeaderText;
-
-        countryGuideItems.forEach(item => {
-          item.hidden = item.dataset.countryGuide === countrySelect.value;
-        });
 
         const buildRows = (rows) => rows.map(row => {
           const item = document.createElement('div');
