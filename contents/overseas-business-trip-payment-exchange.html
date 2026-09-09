@@ -169,6 +169,7 @@
       line-height:1.5;
     }
     .comparison-result-header + .comparison-table-title{margin-top:0;}
+    .cash-limit-table + .comparison-table-title{margin-top:30px;}
     .return-detail{
       margin-top:12px;
       font-size:.9rem;
@@ -329,7 +330,7 @@
               </div>
 
               <h4 class="comparison-table-title">1．現金の持ち込み・持ち出し申告</h4>
-              <p class="cash-limit-lead"><strong>重要：</strong>申告基準を超える現金等は必ず申告してください。無申告は没収・罰則等の対象となる場合があります。</p>
+              <p class="cash-limit-lead"><strong>日本へ帰国するとき：</strong>日本円・外国通貨・小切手等をすべて合計して<strong>100万円相当を超える場合、日本の税関への申告が必要</strong>です。<br><strong>重要：</strong>申告基準を超える現金等は必ず申告してください。無申告は没収・罰則等の対象となる場合があります。</p>
               <div class="cash-limit-table">
                 <div class="cash-limit-grid-head" aria-hidden="true">
                   <div>現地通貨</div>
@@ -397,7 +398,7 @@
             local: '15,000,000 VND超で申告',
             foreign: 'USD5,000相当超で申告',
             combined: 'VNDと外国通貨は別々に判定',
-            note: '到着時申告。難易度は低〜中。空港では15〜30分程度余裕を見込む。申告書は出国まで保管。'
+            note: '到着時申告。難易度は低〜中。空港では15〜30分程度を目安に余裕を見込む。申告書は出国まで保管。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★★☆・10軒中6〜7軒程度', calc:{type:'minRate', value:0.73}},
@@ -431,7 +432,7 @@
             local: '日本へ50,000 THB超の持出しはBOT許可',
             foreign: 'USD15,000相当超で申告',
             combined: '合計450,000 THB相当超でも申告',
-            note: 'オンライン申告可。難易度は低め。空港では5〜15分程度余裕を見込む。'
+            note: 'オンライン申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★☆☆・10軒中5〜7軒程度', calc:{type:'minRate', value:0.73}},
@@ -464,7 +465,7 @@
             local: 'USD10,000相当超のMYRはBNM事前許可',
             foreign: 'USD10,000相当以上で申告',
             combined: '複数通貨を合算して判定',
-            note: 'Customs Form No.7を税関へ提出。難易度は中程度。空港では10〜20分程度余裕を見込む。'
+            note: 'Customs Form No.7を税関へ提出。難易度は中程度。空港では10〜20分程度を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★★★・10軒中8〜9軒程度', calc:{type:'minRate', value:0.73}},
@@ -528,7 +529,7 @@
             local: '50,000 PHP超はBSP事前許可',
             foreign: 'USD10,000相当超で申告',
             combined: 'PHPは別枠。外国通貨同士は合算',
-            note: 'eTravel / e-CDFで72時間前から電子申告可。難易度は低め。空港では5〜15分程度余裕を見込む。'
+            note: 'eTravel / e-CDFで72時間前から電子申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★☆☆・10軒中5〜6軒程度', calc:{type:'minRate', value:0.73}},
@@ -562,7 +563,7 @@
             local: 'Rp100,000,000相当以上は申告。IDRはBI許可にも注意',
             foreign: 'Rp100,000,000相当以上で申告',
             combined: '複数通貨の総額で判定',
-            note: 'All Indonesiaで到着3日前から申告可。難易度は低め。空港では5〜15分程度余裕を見込む。'
+            note: 'All Indonesiaで到着3日前から申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★★☆・10軒中6〜7軒程度', calc:{type:'minRate', value:0.73}},
@@ -592,7 +593,7 @@
             local: '100,000,000 LAK相当超が基準',
             foreign: 'LAK換算して判定',
             combined: '全通貨を合算して判定',
-            note: '高額現金ではBank of Lao PDRの許可が関係するため事前確認推奨。難易度は高め。空港では30分以上余裕を見込む。'
+            note: '高額現金ではBank of Lao PDRの許可が関係するため事前確認推奨。難易度は高め。空港では30分以上を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★☆☆☆・10軒中2〜3軒程度', calc:{type:'minRate', value:0.73}},
@@ -625,7 +626,7 @@
             local: 'USD10,000相当以上が申告基準',
             foreign: 'USD10,000相当以上で申告',
             combined: '合計がUSD10,000相当に近い場合は申告推奨',
-            note: '到着時に税関申告。難易度は中程度。空港では10〜20分程度余裕を見込む。申告書は出国まで保管。'
+            note: '到着時に税関申告。難易度は中程度。空港では10〜20分程度を目安に余裕を見込む。申告書は出国まで保管。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★☆☆☆・10軒中3〜4軒程度', calc:{type:'minRate', value:0.73}},
@@ -659,7 +660,7 @@
             local: 'BNDも合算対象',
             foreign: '日本円なども合算対象',
             combined: '全通貨等の合計BND15,000以上で申告',
-            note: 'S37 CBNI Formを提出。事前に用紙準備可。難易度は低〜中。空港では10〜20分程度余裕を見込む。'
+            note: 'S37 CBNI Formを提出。事前に用紙準備可。難易度は低〜中。空港では10〜20分程度を目安に余裕を見込む。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'約0.73%〜 ／ 使いやすさ目安（体感） ★★★★☆・10軒中7〜8軒程度', calc:{type:'minRate', value:0.73}},
@@ -691,7 +692,7 @@
             local: 'MMKの国外持出し不可',
             foreign: 'USD10,000相当超で申告',
             combined: '外国通貨をUSD相当に換算して判定',
-            note: '外国為替管理が特殊。難易度は高め。空港では30分以上余裕を見込む。入国時の外国為替申告書類は出国まで保管。'
+            note: '外国為替管理が特殊。難易度は高め。空港では30分以上を目安に余裕を見込む。入国時の外国為替申告書類は出国まで保管。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'利用不可 ／ 使いやすさ目安 ―', result:'―'},
@@ -725,7 +726,7 @@
             local: 'USD20,000以上は事前許可＋申告',
             foreign: 'USD換算して判定',
             combined: '全通貨を合算してUSD20,000以上で判定',
-            note: 'Central Bankの事前許可が必要。難易度は非常に高い。許可済みでも空港では15〜30分程度余裕を見込む。事前許可には申請時期により手数料が発生。'
+            note: 'Central Bankの事前許可が必要。難易度は非常に高い。許可済みでも空港では15〜30分程度を目安に余裕を見込む。事前許可には申請時期により手数料が発生。'
           },
           rows: [
             {method:'Wiseデビットカード決済', condition:'JPY→USD両替手数料 ／ 使いやすさ目安（体感） ★☆☆☆☆・10軒中1軒程度', result:'要計算'},
