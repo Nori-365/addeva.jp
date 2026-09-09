@@ -120,6 +120,17 @@
     .comparison-condition.status-warn .comparison-condition-main{font-weight:700;color:#8a5a00;}
     .comparison-cost{font-weight:700;line-height:1.45;}
     .comparison-cost.is-muted{font-weight:500;color:#6c757d;}
+    .cash-limit-lead{
+      margin:0 0 8px;
+      color:#8a2f2f;
+      font-size:.88rem;
+      line-height:1.55;
+    }
+    .cash-limit-table{
+      border:1px solid var(--line,#d9dee3);
+      border-radius:9px;
+      overflow:hidden;
+    }
     .cash-limit-grid-head,
     .cash-limit-row{
       display:grid;
@@ -128,7 +139,6 @@
     }
     .cash-limit-grid-head{
       background:#f1f3f5;
-      border-radius:9px 9px 0 0;
       font-size:.84rem;
       font-weight:700;
       color:#5d6670;
@@ -137,29 +147,21 @@
     .cash-limit-cell{padding:11px 12px;}
     .cash-limit-row{border-bottom:1px solid var(--line,#e1e5e9);}
     .cash-limit-cell{font-weight:700;line-height:1.55;}
-    .cash-warning{
-      margin-top:12px;
-      padding:11px 13px;
-      border:1px solid #e4b6b6;
-      border-radius:9px;
-      background:#fff4f4;
-      color:#7a2d2d;
-      font-size:.9rem;
-      line-height:1.6;
-    }
-    .cash-rule-note,
-    .cash-common-note{
-      margin-top:10px;
-      padding:11px 13px;
-      border-radius:9px;
+    .cash-limit-note-row{
+      display:grid;
+      grid-template-columns:90px minmax(0,1fr);
+      background:#f7f8fa;
       font-size:.88rem;
-      line-height:1.65;
+      line-height:1.6;
+      color:#4f5963;
     }
-    .cash-rule-note{background:#f7f8fa;color:#4f5963;}
-    .cash-rule-note h5{margin:0 0 .35rem;font-size:.92rem;font-weight:700;}
-    .cash-common-note{background:#f7f8fa;color:#555e67;}
-    .cash-common-note p{margin:0 0 .55rem;}
-    .cash-common-note p:last-child{margin-bottom:0;}
+    .cash-limit-note-label,
+    .cash-limit-note-text{padding:10px 12px;}
+    .cash-limit-note-label{
+      font-weight:700;
+      color:#5d6670;
+      border-right:1px solid var(--line,#e1e5e9);
+    }
     .comparison-table-title{
       margin:18px 0 8px;
       font-size:1.05rem;
@@ -246,8 +248,12 @@
       .cash-limit-cell:nth-child(1)::before{content:"現地通貨";}
       .cash-limit-cell:nth-child(2)::before{content:"日本円など外国通貨";}
       .cash-limit-cell:nth-child(3)::before{content:"合算ルール";}
-      .cash-warning{margin-top:10px;padding:10px 11px;font-size:.84rem;}
-      .cash-rule-note,.cash-common-note{margin-top:9px;padding:10px 11px;font-size:.82rem;}
+      .cash-limit-lead{font-size:.82rem;margin-bottom:7px;}
+      .cash-limit-table{border-left:0;border-right:0;border-radius:0;}
+      .cash-limit-note-row{grid-template-columns:5.2em minmax(0,1fr);font-size:.82rem;}
+      .cash-limit-note-label,.cash-limit-note-text{padding:9px 0;}
+      .cash-limit-note-label{padding-right:8px;}
+      .cash-limit-note-text{padding-left:10px;}
       .comparison-table-title{margin:16px 0 7px;font-size:1rem;}
       .return-detail{margin-top:10px;font-size:.84rem;}
       .return-conclusion{margin-top:9px;padding:10px 11px;font-size:.88rem;}
@@ -323,24 +329,22 @@
               </div>
 
               <h4 class="comparison-table-title">1．現金の持ち込み・持ち出し申告</h4>
-              <div class="cash-limit-grid-head" aria-hidden="true">
-                <div>現地通貨</div>
-                <div>日本円など外国通貨</div>
-                <div>合算ルール（複数通貨）</div>
-              </div>
-              <div class="cash-limit-row">
-                <div id="cashLocal" class="cash-limit-cell"></div>
-                <div id="cashForeign" class="cash-limit-cell"></div>
-                <div id="cashCombined" class="cash-limit-cell"></div>
-              </div>
-              <div class="cash-warning"><strong>重要：</strong>申告基準を超える現金等を申告せず持ち込み・持ち出しすると、没収・罰則等の対象になる可能性があります。必要な申告や事前許可を必ず確認してください。</div>
-              <div class="cash-rule-note">
-                <h5>備考</h5>
-                <div id="cashNote"></div>
-              </div>
-              <div class="cash-common-note">
-                <p><strong>日本へ帰国するとき</strong><br>日本円・外国通貨・小切手等をすべて合計して<strong>100万円相当を超える場合、日本の税関への申告が必要</strong>です。</p>
-                <p><strong>所要時間について</strong><br>表示している時間は税関が公表した平均処理時間ではなく、手続き内容をもとにした<strong>通常より余裕を見ておきたい追加時間の目安</strong>です。空港の混雑や確認内容によって変わります。</p>
+              <p class="cash-limit-lead"><strong>重要：</strong>申告基準を超える現金等は必ず申告してください。無申告は没収・罰則等の対象となる場合があります。</p>
+              <div class="cash-limit-table">
+                <div class="cash-limit-grid-head" aria-hidden="true">
+                  <div>現地通貨</div>
+                  <div>日本円など外国通貨</div>
+                  <div>合算ルール（複数通貨）</div>
+                </div>
+                <div class="cash-limit-row">
+                  <div id="cashLocal" class="cash-limit-cell"></div>
+                  <div id="cashForeign" class="cash-limit-cell"></div>
+                  <div id="cashCombined" class="cash-limit-cell"></div>
+                </div>
+                <div class="cash-limit-note-row">
+                  <div class="cash-limit-note-label">備考</div>
+                  <div id="cashNote" class="cash-limit-note-text"></div>
+                </div>
               </div>
 
               <h4 class="comparison-table-title">2．現地での決済・日本円から現地通貨への両替</h4>
@@ -441,8 +445,8 @@
             {method:'空港両替・銀行系', condition:'約3.05%', calc:{type:'rate', value:3.05}}
           ],
           returnRows: [
-            {method:'市内・SuperRich', condition:'約0.27%', calc:{type:'rate', value:0.27}},
-            {method:'スワンナプーム空港B1・SuperRich', condition:'約0.27%前後', calc:{type:'rate', value:0.27}},
+            {method:'市内両替（SuperRich）', condition:'約0.27%', calc:{type:'rate', value:0.27}},
+            {method:'スワンナプーム空港B1両替（SuperRich）', condition:'約0.27%前後', calc:{type:'rateAround', value:0.27}},
             {method:'日本の空港両替（成田GPA）', condition:'約11.0%', calc:{type:'rate', value:11.0}}
           ],
           returnDetail: 'SuperRich 1965は、THBから外貨へ交換するレートは全支店共通と案内しているため、JPY在庫があれば空港B1支店でも市内とほぼ同条件で戻せます。',
@@ -473,8 +477,8 @@
             {method:'空港両替', condition:'約1.7〜4.2% ※推計', calc:{type:'rangeRate', min:1.7, max:4.2}}
           ],
           returnRows: [
-            {method:'市内・Max Money等', condition:'約0.1〜0.3%', calc:{type:'rangeRate', min:0.1, max:0.3}},
-            {method:'KLIA・Travelex', condition:'JPY取扱いあり／空港店のMYR→JPY実売値は公開取得できず', result:'算定不可'},
+            {method:'市内両替（Max Money等）', condition:'約0.1〜0.3%', calc:{type:'rangeRate', min:0.1, max:0.3}},
+            {method:'KLIA空港両替（Travelex）', condition:'JPY取扱いあり／空港店のMYR→JPY実売値は公開取得できず', result:'算定不可'},
             {method:'日本の空港両替（成田GPA）', condition:'約13.4%', calc:{type:'rate', value:13.4}}
           ],
           returnDetail: 'Max Moneyなど市内トップ店では仲値との差が0.1％台となる例があります。KLIAのTravelexはJPYを取り扱いますが、MYR→JPYの店頭実売値は公開値を確認できないため数値化していません。',
@@ -506,8 +510,8 @@
             {method:'空港両替', condition:'約3.2〜4.2% ※参考推計', calc:{type:'rangeRate', min:3.2, max:4.2}}
           ],
           returnRows: [
-            {method:'市内優良Money Changer', condition:'約0.2〜0.5%', calc:{type:'rangeRate', min:0.2, max:0.5}},
-            {method:'チャンギ空港両替', condition:'約3.3%前後 ※参考実測', calc:{type:'rate', value:3.3}},
+            {method:'市内両替（優良Money Changer）', condition:'約0.2〜0.5%', calc:{type:'rangeRate', min:0.2, max:0.5}},
+            {method:'チャンギ空港両替', condition:'約3.3%前後 ※参考実測', calc:{type:'rateAround', value:3.3}},
             {method:'日本の空港両替（成田GPA）', condition:'約6.5%', calc:{type:'rate', value:6.5}}
           ],
           returnDetail: '市内の優良Money Changerは仲値にかなり近いレートになる場合があります。チャンギ空港は市内より数％不利になった実測例があります。',
@@ -537,8 +541,8 @@
             {method:'空港両替', condition:'約3.2% ※推計', calc:{type:'rate', value:3.2}}
           ],
           returnRows: [
-            {method:"市内・Sanry's", condition:'約1.16%', calc:{type:'rate', value:1.16}},
-            {method:'NAIA Terminal 3', condition:'約6.6%', calc:{type:'rate', value:6.6}},
+            {method:"市内両替（Sanry's）", condition:'約1.16%', calc:{type:'rate', value:1.16}},
+            {method:'NAIA Terminal 3空港両替', condition:'約6.6%', calc:{type:'rate', value:6.6}},
             {method:'日本の空港両替（成田GPA）', condition:'約20.5%', calc:{type:'rate', value:20.5}}
           ],
           returnDetail: "同じ旅行者による2026年7月の実測では、PHP→JPYはSanry'sで約1.16％、NAIA Terminal 3で約6.6％でした。日本の空港ではさらに大きな差になります。",
@@ -570,7 +574,7 @@
             {method:'空港両替', condition:'約5.3〜10.3% ※推計', calc:{type:'rangeRate', min:5.3, max:10.3}}
           ],
           returnRows: [
-            {method:'市内認可Money Changer', condition:'約0〜1%程度', calc:{type:'rangeRate', min:0, max:1}},
+            {method:'市内両替（認可Money Changer）', condition:'約0〜1%程度', calc:{type:'rangeRate', min:0, max:1}},
             {method:'バリ／ジャカルタ空港両替', condition:'JPY取扱いあり／IDR→JPYの比較可能な公開値不足', result:'算定不可'},
             {method:'日本の空港両替（成田GPA）', condition:'約29.3%', calc:{type:'rate', value:29.3}}
           ],
@@ -601,14 +605,14 @@
             {method:'空港両替', condition:'約0.61% ※参考実測', calc:{type:'rate', value:0.61}}
           ],
           returnRows: [
-            {method:'市内・銀行両替（BCEL）', condition:'約0.5%前後', calc:{type:'rate', value:0.5}},
-            {method:'ワットタイ空港両替', condition:'仲値とほぼ同等の公開参考値', calc:{type:'rangeRateReference', min:0, max:1}},
-            {method:'日本の主要空港', condition:'LAK取扱いなし', result:'両替不可'}
+            {method:'市内・銀行両替（BCEL）', condition:'約0.5%前後', calc:{type:'rateAround', value:0.5}},
+            {method:'ワットタイ空港両替', condition:'仲値とほぼ同等の公開参考値', calc:{type:'rangeRateApprox', min:0, max:1}},
+            {method:'日本の主要空港両替', condition:'LAK取扱いなし', result:'両替不可'}
           ],
           returnDetail: 'ワットタイ空港の公開値は同時期の仲値とほぼ同水準でした。丸めの影響で空港値の方が良く見える場合があるため、0％とは断定せず参考値として扱います。',
           returnConclusion: 'LAKは必ずラオス出国前にJPY、USDまたはTHBへ戻す。',
           notes: [
-            '空港でも日本円からLAKへ直接両替できます。',
+            '空港でも日本円からLAKへ両替できます。',
             '外国人旅行者向けLOCA PAYを使えばLaoQRで支払えます。',
             'LOCA PAYは3％＋5,000 LAK／1決済です。比較表では決済回数を選ばないため、利用予定金額を1回で決済した場合として計算しています。',
             '市内にも認可両替所があるため、「市内優良両替所なし」とはしていません。',
@@ -635,18 +639,18 @@
           ],
           returnRows: [
             {method:'市内・銀行両替（ABA Bank）', condition:'約1.1%', calc:{type:'rate', value:1.1}},
-            {method:'市内両替所（Ly Hour）', condition:'JPY取扱いあり／当日JPY売値は店頭確認', result:'算定不可'},
+            {method:'市内両替（Ly Hour）', condition:'JPY取扱いあり／当日JPY売値は店頭確認', result:'算定不可'},
             {method:'Techo国際空港両替', condition:'JPYへ交換可能な窓口あり／実売レート未取得', result:'算定不可'},
-            {method:'日本の主要空港', condition:'KHR取扱いなし', result:'両替不可'}
+            {method:'日本の主要空港両替', condition:'KHR取扱いなし', result:'両替不可'}
           ],
           returnDetail: 'ABAの公開レートからはKHR→JPYのコストが約1.1％となる例があります。Ly Hourは有力候補ですが公開JPYレートを確認できないため、ABAと店頭レートを比較して良い方を選ぶのが実務的です。',
           returnConclusion: 'KHRはカンボジア国内で処理する。USDで余っている分はそのまま日本へ持ち帰ってもよい。',
           notes: [
             '日本登録WiseからKHQRを直接利用することはできません。',
-            'Bakong Touristsを使えば外国人旅行者でもKHQRを利用できます。',
-            'KHQRが使える店舗は非常に多くあります。',
-            'Bakong Touristsの約3.5〜3.75％は公式固定手数料ではなく、利用者実測の参考値です。',
-            'USDも広く使われていますが、日本円からKHRへ直接両替することも可能です。'
+            'Bakong Touristsを使えば、外国人旅行者でもKHQRを利用できます。',
+            'KHQRが使える店舗は非常に多く、クレジットカード端末がない店舗でも支払える場面があります。',
+            'Bakong Touristsの約3.5〜3.75％は公式固定手数料ではなく、利用者実測の参考値です。Visa/Mastercardやカード発行会社側の条件などにより変わります。',
+            'USDも広く利用されていますが、日本円からKHRへ直接両替することも可能です。KHR・KHQRも広く普及しています。'
           ]
         },
         brunei: {
@@ -667,10 +671,10 @@
             {method:'空港両替', condition:'公開JPYレート不足', result:'算定不可'}
           ],
           returnRows: [
-            {method:'BND→SGD（認可銀行）', condition:'0%', calc:{type:'rate', value:0}},
-            {method:'BND→JPY直接', condition:'銀行・両替所では可能だが、レートは比較的不利', result:'個別確認'},
-            {method:'日本の主要空港', condition:'BND取扱いなし', result:'両替不可'},
-            {method:'SGDへ替えて日本空港でJPY', condition:'約6.5% ※成田GPA例', calc:{type:'rate', value:6.5}}
+            {method:'BND→SGD両替（認可銀行）', condition:'0%', result:'0円'},
+            {method:'BND→JPY直接両替', condition:'銀行・両替所では可能だが、レートは比較的不利', result:'個別確認'},
+            {method:'日本の主要空港両替', condition:'BND取扱いなし', result:'両替不可'},
+            {method:'SGDへ両替後、日本空港でJPYへ両替', condition:'約6.5% ※成田GPA例', calc:{type:'rate', value:6.5}}
           ],
           returnDetail: 'ブルネイとシンガポールの認可銀行では、BNDとSGDを1：1・手数料なしで交換できる制度があります。',
           returnConclusion: 'BNDのまま日本へ持ち帰らず、まずSGDへ0％で変える。',
@@ -699,10 +703,10 @@
             {method:'空港両替', condition:'KBZ・AYA等で利用可', result:'単純比較困難'}
           ],
           returnRows: [
-            {method:'MMK→JPY直接', condition:'不可', result:'―'},
-            {method:'市内認可Money Changer', condition:'MMK→USD・SGD・THB等', result:'複数為替レートのため単純算定不可'},
+            {method:'MMK→JPY直接両替', condition:'不可', result:'―'},
+            {method:'市内両替（認可Money Changer）', condition:'MMK→USD・SGD・THB等', result:'複数為替レートのため単純算定不可'},
             {method:'ヤンゴン空港両替', condition:'USD・SGD・THB等へ交換可能', result:'単純算定不可'},
-            {method:'日本の主要空港', condition:'MMK取扱いなし', result:'両替不可'}
+            {method:'日本の主要空港両替', condition:'MMK取扱いなし', result:'両替不可'}
           ],
           returnDetail: 'ミャンマーは為替制度が特殊なため、他国と同じような％比較は行いません。JPYへの直接交換を前提にせず、出国前に交換可能な外貨へ戻す考え方が必要です。',
           returnConclusion: 'MMKは出国前にUSD・SGD・THB等へ戻す。JPYへの直接交換は前提にしない。',
@@ -710,6 +714,7 @@
             'ミャンマーではWiseデビットカードだけでなく、Wiseサービス自体の利用に制限があります。',
             '空港では銀行系両替カウンターを利用できます。',
             '複数の為替レートが存在するため、他国と同じ％比較は行いません。',
+            '日本円現金からMMKへの直接両替はできないため、日本出発前にUSDなど現地で両替可能な外貨を準備してください。',
             'USD等を持参する場合、紙幣の状態を厳しく確認されることがあります。',
             '無認可の両替業者は利用しないでください。'
           ]
@@ -726,15 +731,15 @@
             {method:'Wiseデビットカード決済', condition:'JPY→USD両替手数料 ／ 使いやすさ目安（体感） ★☆☆☆☆・10軒中1軒程度', result:'要計算'},
             {method:'Wise QR決済', condition:'利用不可', result:'―'},
             {method:'Wise ATM出金（現地通貨）', condition:'両替＋ATM式', result:'要計算＋現地ATM手数料'},
-            {method:'日本円現金 → USD（直接両替）', condition:'△ JPY現金の安定した取扱いを確認できず', subnote:'日本でUSD現金を準備してから渡航することを強く推奨します。', result:'日本でUSD現金を準備推奨', status:'warn'},
+            {method:'日本円現金 → USD（直接両替）', condition:'△ JPY現金の安定した取扱いを確認できず', subnote:'日本でUSDを用意してから渡航することを強く推奨します。', result:'日本でUSD現金を準備推奨', status:'warn'},
             {method:'銀行両替', condition:'JPY比較データ不足', result:'算定不可'},
             {method:'市内両替所（Global EX等）', condition:'JPY比較データ不足', result:'算定不可'},
             {method:'空港両替', condition:'JPY比較データ不足', result:'算定不可'}
           ],
           returnRows: [
-            {method:'現地でJPYへ交換', condition:'不要。使用通貨がUSD', result:'―'},
-            {method:'USDのまま日本へ持ち帰る', condition:'0%', calc:{type:'rate', value:0}},
-            {method:'日本の空港でUSD→JPY（成田GPA）', condition:'約2.9%', calc:{type:'rate', value:2.9}}
+            {method:'現地でJPYへ両替', condition:'不要。使用通貨がUSD', result:'―'},
+            {method:'USDのまま日本へ持ち帰る', condition:'0%', result:'0円'},
+            {method:'日本の空港でUSD→JPY両替（成田GPA）', condition:'約2.9%', calc:{type:'rate', value:2.9}}
           ],
           returnDetail: '東ティモールはUSDそのものを使用するため、余った紙幣を現地で別通貨へ変える必要はありません。',
           returnConclusion: 'USDのまま持ち帰り、必要なら日本で円へ戻す。',
@@ -742,7 +747,7 @@
             '通貨はUSDです。',
             'Diliではカード・ATMを利用できる場所もありますが、地方では現金依存度が高くなります。',
             '他国のような「JPY→現地独自通貨」の比較には向きません。',
-            '日本でUSD現金を用意してから渡航することを強く推奨します。余ったUSDはそのまま日本へ持ち帰れます。'
+            '日本でUSD現金を用意してから渡航することを強く推奨します。日本円→USDのコストは今回の比較には含めていません。'
           ]
         }
       };
@@ -774,11 +779,17 @@
         if (c.type === 'rate') {
           return `約${yenFormatter.format(amount * c.value / 100)}円`;
         }
+        if (c.type === 'rateAround') {
+          return `約${yenFormatter.format(amount * c.value / 100)}円前後`;
+        }
         if (c.type === 'minRate') {
           return `約${yenFormatter.format(amount * c.value / 100)}円〜`;
         }
         if (c.type === 'rangeRate') {
           return `約${yenFormatter.format(amount * c.min / 100)}〜${yenFormatter.format(amount * c.max / 100)}円`;
+        }
+        if (c.type === 'rangeRateApprox') {
+          return `約${yenFormatter.format(amount * c.min / 100)}〜${yenFormatter.format(amount * c.max / 100)}円程度の目安`;
         }
         if (c.type === 'rangeRateReference') {
           return `約${yenFormatter.format(amount * c.min / 100)}〜${yenFormatter.format(amount * c.max / 100)}円 ※参考`;
