@@ -1,0 +1,51 @@
+name: Temporary replace payment article section 5
+
+on:
+  push:
+    paths:
+      - '.github/workflows/temp-replace-payment-section5.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Replace section 5
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          page = Path('contents/overseas-business-trip-payment-exchange.html')
+          src = page.read_text(encoding='utf-8')
+
+          old = '''          <h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、現地通貨を選ぶ</h3>
+          <p>海外でカード決済をしたり、ATMから現金を引き出したりすると、<strong>「日本円（JPY）で支払いますか？」</strong>と表示されることがあります。</p>
+          <p>日本円を選ぶと、店舗やATM側の為替レートで換算される場合があります。</p>
+          <p><strong>基本的には、JPYではなく現地通貨を選びます。</strong></p>
+          <p>これはWiseだけでなく、クレジットカードや他のデビットカードでも同じです。</p>'''
+
+          new = '''          <h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>
+          <p>海外でカード決済をしたり、ATMから現金を引き出したりすると、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれる場合があります。</p>
+          <p><strong>この場合は、現地通貨を選んでください。</strong></p>
+          <p>現地通貨を選ぶことで、現地通貨のまま日本のカード会社へ請求され、<strong>カード会社所定の為替レート・手数料で日本円に換算してくれます。</strong></p>
+          <p>一方、日本円を選ぶと、<strong>店舗やATM側が先に日本円へ換算してからカード会社へ請求</strong>することになり、この換算レートには、多くの場合、<strong>高いコストが含まれます。</strong></p>
+          <p>日本円の口座から引き落とされるカードでも、<strong>「現地通貨」を選んで問題ありません。</strong></p>
+          <p><strong>「日本のカードだから日本円」ではなく、「日本円か現地通貨かを聞かれたら、現地通貨」と覚えておくことをおすすめします。</strong></p>'''
+
+          assert old in src, 'target section 5 not found'
+          page.write_text(src.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/temp-replace-payment-section5.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add contents/overseas-business-trip-payment-exchange.html .github/workflows/temp-replace-payment-section5.yml
+          git commit -m "Update section 5 payment currency guidance"
+          git push origin HEAD:main
