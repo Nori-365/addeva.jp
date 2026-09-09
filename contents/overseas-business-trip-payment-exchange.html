@@ -488,6 +488,33 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script defer src="/common.js"></script>
+
+  <!-- 共通ヘッダー／フッター -->
+  <script>
+    (function () {
+      async function includeFragments() {
+        const nodes = document.querySelectorAll('[data-include]');
+        await Promise.all([...nodes].map(async (el) => {
+          const file = el.getAttribute('data-include');
+          try {
+            const resp = await fetch(file, { cache: 'no-cache' });
+            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
+            const html = await resp.text();
+            el.outerHTML = html;
+          } catch (e) {
+            console.error('Include failed:', file, e);
+          }
+        }));
+      }
+      document.addEventListener('DOMContentLoaded', async () => {
+        await includeFragments();
+        const y = document.getElementById('y');
+        if (y) y.textContent = new Date().getFullYear();
+      });
+    })();
+  </script>
+
+  <!-- このページ固有：国選択・比較金額・比較表の切替 -->
   <script>
     (() => {
       const data = {
