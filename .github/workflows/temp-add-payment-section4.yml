@@ -16,43 +16,8 @@ jobs:
         with:
           ref: main
       - name: Add section 4
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          page = Path('contents/overseas-business-trip-payment-exchange.html')
-          src = page.read_text(encoding='utf-8')
-          assert '4．その人に合った決済方法と両替方法' not in src
-          marker = '    </article>\n  </main>'
-          assert marker in src
-
-          section = '''      <section class="section article-content-section">
-        <div class="container container-narrow article-body">
-          <h2 class="h3">4．その人に合った決済方法と両替方法</h2>
-
-          <p>人によって、現地で使用する予定の金額は異なります。</p>
-          <p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>
-          <p>初めて行く国では現地の状況が分からないので、どうしても少し保険をかけた考え方になると思います。</p>
-          <p>今回、この資料を作ってみた私の意見としては、次のように考えます。</p>
-
-          <h3 class="h4 mt-4">1．持ち込み・持ち出しの制限にかからない金額に留める</h3>
-          <p>これは、本当に気をつけることをおすすめします。</p>
-          <p>実際、帰国日にベトナムの空港で、検査に引っ掛かっている日本人を何度も目にしています。</p>
-          <p>余談ですが、私も何度も検査官に声をかけられ、持っている現金を見せたことがあります。</p>
-          <p>有名ブランドのバッグを持っていると、かなりの確率で検査官に声をかけられました。</p>
-          <p>なお、私のブランド「ADDEVA」のバッグを持っていて、検査官に声をかけられたことはありません。苦笑。</p>
-          <p>空港での手続き自体がそれほど難しくなくても、英語であれこれ聞かれ、それに対応するのは面倒です。</p>
-          <p>しかも、その手続き中に、長いイミグレーションの列がどんどん伸びていくのを横目で見ていると、かなりストレスになります。</p>
-          <p>必要な場合を除けば、<strong>最初から申告基準にかからない金額にしておくのが一番楽</strong>です。</p>
-          <p>私は出発日と帰国日には、必ず財布の中の金額を確認しています。</p>
-
-          <h3 class="h4 mt-4">2．ある程度の現地通貨は必要</h3>
-          <p>仕事で行く場合、訪問先の方と食事に行く機会もあります。</p>
-          <p>子会社や取引先のスタッフとの親睦会が開かれることもあるでしょう。</p>
-          <p>そのとき、カードが使えないローカルのレストランに行くこともあります。</p>
-          <p>また、ローカルフードを楽しめるようになってくると、出張でも旅は間違いなく楽しくなります。</p>
-          <p>そのため、<strong>完全キャッシュレスを前提にせず、ある程度の現地通貨は持っておいた方が安心</strong>だと思います。</p>
-          <p>ただし、WiseデビットやQR決済、ATMからの現金引き出しという予備手段もあります。</p>
+        env:
+          SECTION_B64: "ICAgICAgPHNlY3Rpb24gY2xhc3M9InNlY3Rpb24gYXJ0aWNsZS1jb250ZW50LXNlY3Rpb24iPgogICAgICAgIDxkaXYgY2xhc3M9ImNvbnRhaW5lciBjb250YWluZXItbmFycm93IGFydGljbGUtYm9keSI+CiAgICAgICAgICA8aDIgY2xhc3M9ImgzIj40LuOBneOBruS6uuOBq+WQiOOBh+OBn+axuua4i+aWueazleOBqOS4oeabuOaWueazleOAgjwvaDI+CgogICAgICAgICAgPHA+5Lq644Gu44KI44Gj44Gm44CB54++5Zyw44Gn5L2/55So44GZ44KL5LqI5a6a44Gu6YeR6aGN44Gv55Ww44Gq44KK44G+44GZ44CCPC9wPgogICAgICAgICAgPHA+44G+44Gf44CBPHN0cm9uZz7jgIznj77ph5HjgpLlpJrjgY/mjIHjgZ/jgarjgYTlronlv4PjgavjgIHjgYTjgY/jgonjgb7jgafjgarjgonjgrPjgrnjg4jjgpLmiafjgYjjgovjgYvjgI08L3N0cm9uZz7jgajjgYTjgYbjgaHlgqToppbjgoLpgZXjgYbjgafjgZfjgofjgYbjgII8L3A+CiAgICAgICAgICA8cD7liJ3jgoHjgabooYzjgY/lm73jgafjga/jgIHnj77lnLDjga7nirbms4HjgYzliIbjgYvjgonjgarjgYTjga7jgafjgIHjganjgYbjgZfjgabjgoLlsJHjgZfkv53pmprjgpLjgYvjgZHjgZ/ogIPjgYjmlrnjgavjgarjgovjgajjgZ3jgYTjgb7jgZnjgII8L3A+CiAgICAgICAgICA8cD7ku4rlm57jgIHjgZPjga7os4fmlpnjgpLkvZzjgaPjgabjgb/jgZ/jp4Hjga7mhI/opovjgajjgZfjgabjga/jgIHmrKHjga7jgojjgYbjgavogIPjgYjjgb7jgZnjgII8L3A+CgogICAgICAgICAgPGgzIGNsYXNzPSJoNCBtdC00Ij4xLuWMleOBoei+vOOBv+ODu+aMgeOBoeWHuuOBl+OBruWItuimp+OBq+OBi+OBi+OCieOBquOBhOmHkemhjeOBq+eVmeOCgeOCizwvaDM+CiAgICAgICAgICA8cD7jgZPjgozjga/jgIHmnKzlvZPjgavmsJfjgpLjgaTjgZHjgovjgZPjgajjgpLjgYrjgZnjgZnjgoHjgZfjgb7jgZnjgII8L3A+CiAgICAgICAgICA8cD7lrp/pmpvjgIHluLDlm73ml6Xjgavjg5njg4jjg4rjg6Djga7nqbrmuK/jgafjgIHmqJzmn7vjgavlvJfjgYvjgYvjgaPjgabjgYTjgovml6XmnKzkurrjgpLkvZXluqbjgoLnm67jgavjgZfjgabjgYTjgb7jgZnjgII8L3A+CiAgICAgICAgICA8cD7kvZnorfHjgafjgZnjgYzjgIHnp4HjgoLkvZXluqbjgoLmqJzmn7vlrpjjgavlo7DjgpLjgYvjgZHjgonjgozjgIHmjIHjgaPjgabjgYTjgovnj77ph5HjgpLopovjgZvjgZ/jgZPjgajjgYzjgYLjgorjgb7jgZnjgII8L3A+CiAgICAgICAgICA8cD7mnInlkI3jg5bjg6njg7Pjg4njga7jg5Djg4PjgrDjgpLmjIHjgaPjgabjgYTjgovjgajjgIHjgYvjgarjgorjga7oioznjofjgafmqJzmn7vlrpjjgavlo7DjgpLjgYvjgZHjgonjgozjgb7jgZfjgZ/jgII8L3A+CiAgICAgICAgICA8cD7jgarjgYrjgIHnp4Hjga7jg5bjg6njg7Pjg4njgI 「ADDEVA」44Gu44OQ44OD44Kw44KS5oyB44Gj44Gm44GE44Gm44CB5qSc5p+l5a6Y44Gr5aOw44KS44GL44GR44KJ44KM44Gf44GT44Go44Gv44GC44KK44G+44Gb44KT44CC6Ium56yR44CCPC9wPgogICAgICAgICAgPHA+56m65riv44Gn44Gu5omL57aa44GN6Ieq5L2T44GM44Gd44KM44G744Gp6Zuj44GX44GP44Gq44GP44Gm44KC44CB6Iux6Kqe44Gn44GC44KM44GT44KM6IGe44GL44KM44CB44Gd44KM44Gr5a++5b+c44GZ44KL44Gu44Gv6Z2i5YCS44Gn44GZ44CCPC9wPgogICAgICAgICAgPHA+44GX44GL44KC44CB44Gd44Gu5omL57aa44GN5Lit44Gr44CB6ZW344GE44Kk44Of44Kw44Os44O844K344On44Oz44Gu5YiX44GM44Gp44KT44Gp44KT5Ly444Gz44Gm44GE44GP44Gu44KS5qiq55uu44Gn6KaL44Gm44GE44KL44Go44CB44GL44Gq44KK44K544OI44Os44K544Gr44Gq44KK44G+44GZ44CCPC9wPgogICAgICAgICAgPHA+5b+F6KaB44Gq5aC05ZCI44KS6Zmk44GR44Gw44CBPHN0cm9uZz7mnIDliJ3jgYvjgonnlLPph4jln7rmuZbjgavjgYvjgYvjgonjgarjgYTph5HpoY3jgavjgZfjgabjgYrjgY/jga7jgYzkuIDnlarmpb0jgrwvc3Ryb25nPuOBp+OBmeOAgjwvcD4KICAgICAgICAgIDxwPuengeOBr+WHuuWQj+aXpeOBq+W4sOWbveaXpeOBq+OBr+OAgeW/hemci+iyoeW4g+OBruS4reOBruaHhemtkOOCkueiuuiqjeOBl+OBpuOBhOOBvuOBmeOAgjwvcD4KCiAgICAgICAgICA8aDMgY2xhc3M9Img0IG10LTQiPjIu44GC44KL56iL5bqm44Gu54++5Zyw6YCa6LKo44Gv5b+F6KaBPC9oMz4KICAgICAgICAgIDxwPuS7leS6i+OBp+iMkeOBj+WgtOWQiOOAgeioquWVj+WFiOOBruaWueOBqOmjn+S6i+OBq+ihjOOBj+apn+S8muOCguOBguOCiu+OBmeOAgjwvcD4KICAgICAgICAgIDxwPuWtkOS8muekvuaIluWPl+W8leWFiOOBruOCueOCv+ODg+ODleOBq+OBruimquaXp+S8muOBj+mWi+OBi+OCjOOCi+OBk+OBqOOCguOBguOCi+OBp+OBl+OCh+OBhuOAgjwvcD4KICAgICAgICAgIDxwPuOBneOBruOBqOOBjeOAgeOCq+ODvOODieOBj+S9v+OBiOOBquOBhOODreODvOOCq+ODq+OBruODrOOCueODiOODqeODs+OBq+ihjOOBj+OBk+OBqOOCguOBguOCiu+OBmeOAgjwvcD4KICAgICAgICAgIDxwPuOBvuOBn+OAgeODreODvOOCq+ODq+ODleODvOODieOCkuao muOBjeOCi+OCh+OBhuOBq+OBquOBo+OBpuOBj+OCi+OBqO eOAgeWHuOW8teOBp+aXheOB r+g oc+OBhOmWi iOBhOOAAjwvcD4KICAgICAgICAgIDxwPuOBneOBruOBn+OCgeOAgePHN0cm9uZz7lrozlhajjgq3jg6Pjg4Pjgrfjg6Xjg6zjgrnjgpLliY3mj5DjgavjgZvjgZrjgIHjgYLjgovnqIvluqbjga7nj77lnLDpgJrovqnjga/mjIHjgaPjgabjgYrjgYTjgZ/mlrnjgYzlu4Plv4PjgYwjPC9zdHJvbmc+44Gg44Go5oCd44GE44G+44GZ44CCPC9wPgogICAgICAgICAgPHA+44Gf44Gg44GX44CBV2lzZeODh+ODk+ODg+ODiOOCh1FS5rG65riI44CBQVRN44GL44KJ44Gu54++6YeR5byV44GN5Ye644GX44Go44GE44GG5LqI5YKZ5omL5q615もあります。</p>
           <p><strong>最初から使う予定額をすべて現金にする必要はありません。</strong></p>
           <p>特に次にいつ行くかわからない国では、現金を余らせれば日本円へ戻すときにもコストがかかります。</p>
           <p>必要と思う分だけ現金を用意し、足りない分をカードやQRで補うという考え方もよいと思います。</p>
@@ -79,15 +44,3 @@ jobs:
         </div>
       </section>
 
-'''
-          page.write_text(src.replace(marker, section + marker, 1), encoding='utf-8')
-          PY
-
-      - name: Remove temporary workflow and commit
-        run: |
-          rm .github/workflows/temp-add-payment-section4.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add contents/overseas-business-trip-payment-exchange.html .github/workflows/temp-add-payment-section4.yml
-          git commit -m "Add payment and exchange guidance section"
-          git push origin HEAD:main
