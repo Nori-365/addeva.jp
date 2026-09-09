@@ -24,6 +24,13 @@
     .article-body h2{margin:0 0 .75rem;}
     .article-body p{margin-bottom:.75rem;}
     .article-body p:last-child{margin-bottom:0;}
+    .article-float-figure{margin:0 0 1rem;}
+    @media (min-width:992px){
+      .article-float-figure{width:42%;}
+      .article-float-figure.float-right{float:right;margin:0 0 1rem 1.5rem;}
+      .article-float-figure.float-left{float:left;margin:0 1.5rem 1rem 0;}
+      .article-float-group::after{content:"";display:block;clear:both;}
+    }
 
     .comparison-panel{
       margin-top:1rem;
@@ -289,8 +296,11 @@
       </section>
 
       <section class="section article-intro">
-        <div class="container container-narrow article-body">
+        <div class="container container-narrow article-body article-float-group">
           <p>こんにちは。ADDEVAのNです。<br>今回は、海外出張先での支払い・決済や、両替についてお話しします。<br>私が頻繁に行くベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。皆さまの参考になれば幸いです。</p>
+          <figure class="article-float-figure float-right">
+            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/1.jpg" alt="海外の空港で、スマートフォン・カード・現金などの決済や両替方法を考える海外出張者のイメージ" class="img-fluid w-100 rounded-3 border" loading="eager">
+          </figure>
           <p>この記事では、<br>１．現金の持ち込み・持ち出し申告について。<br>２．国別の外国人用QR決済の普及率と手数料率、両替する場所とその手数料率を見る。<br>３．帰国時に現地通貨を日本円に戻す手数料を見る。<br>４．その人に合った決済方法と両替方法<br>についてお話ししていきます。</p>
           <p>まずは、渡航先と利用予定金額を選んで、決済・両替方法によってどのくらい差が出るのか比較してみてください。</p>
         </div>
@@ -409,7 +419,11 @@
           <p>必要な場合を除けば、<strong>最初から申告基準にかからない金額にしておくのが一番楽</strong>です。</p>
           <p>私は出発日と帰国日には、必ず財布の中の金額を確認しています。</p>
 
+          <div class="article-float-group">
           <h3 class="h4 mt-4">2．ある程度の現地通貨は必要</h3>
+          <figure class="article-float-figure float-right">
+            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/2.jpg" alt="海外出張先のローカルレストランで、現地通貨の現金で支払うビジネスマンのイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">
+          </figure>
           <p>仕事で行く場合、訪問先の方と食事に行く機会もあります。</p>
           <p>子会社や取引先のスタッフとの親睦会が開かれることもあるでしょう。</p>
           <p>そのとき、カードが使えないローカルのレストランに行くこともあります。</p>
@@ -420,6 +434,8 @@
           <p>特に次にいつ行くかわからない国では、現金を余らせれば日本円へ戻すときにもコストがかかります。</p>
           <p>必要と思う分だけ現金を用意し、足りない分をカードやQRで補うという考え方もよいと思います。</p>
 
+          </div>
+
           <h3 class="h4 mt-4">3．現地通貨を日本円に戻すなら、街中で済ませる</h3>
           <p>帰国時に現地通貨を日本円へ戻す場合、私は街中の両替所で済ませてから空港へ向かうことをおすすめします。</p>
           <p>空港まで行ってから日本円の在庫がないと言われる可能性もあります。</p>
@@ -427,13 +443,19 @@
           <p>途中で現金が不足することもあるので、滞在中にレートの良い街中の両替所を一つ確認しておき、帰国時にもそこで日本円へ戻しておく。</p>
           <p>私はこれが一番確実だと思います。</p>
 
+          <div class="article-float-group">
           <h3 class="h4 mt-4">4．Wiseの決済は強力</h3>
+          <figure class="article-float-figure float-right">
+            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/3.jpg" alt="海外の店舗で決済端末を使ってキャッシュレス決済をするビジネスマンのイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">
+          </figure>
           <p>今回の調査で、<strong>Wiseの決済がとても頼りになる</strong>ことがよく分かりました。</p>
           <p>今はデビットカード決済が中心の国でも、QR決済は今後さらに各国で普及していくと思います。</p>
           <p>Wiseは、日本円を入れておけば、必ずしも渡航前に現地通貨へ両替しておく必要はありません。現地でカード決済をすると、必要に応じて自動的に現地通貨へ換算して支払うこともできます。</p>
           <p>もちろん、事前にVNDやTHBなどへ両替しておくこともできます。</p>
           <p>年会費もかからないので、海外出張へ行く機会がある方は、<strong>今のうちに使い始めてみるのもよいと思います。</strong></p>
-<h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>
+</div>
+
+          <h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>
 <p>海外でカード決済をしたり、ATMから現金を引き出したりすると、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれる場合があります。</p>
 <p><strong>この場合は、現地通貨を選んでください。</strong></p>
 <p>現地通貨を選ぶことで、現地通貨のまま日本のカード会社へ請求され、<strong>カード会社所定の為替レート・手数料で日本円に換算してくれます。</strong></p>
