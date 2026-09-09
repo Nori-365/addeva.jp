@@ -45,6 +45,18 @@
 </script>
 <!-- End delayed Meta Pixel Code -->
 
+<!-- TOP Hero：未読込スライドの高さを先に確保し、レイアウトシフトを防止 -->
+<style>
+  #heroCarousel .carousel-item .col-12.col-lg-7 > a > img {
+    aspect-ratio: auto 1170 / 1008;
+    height: auto !important;
+  }
+  #heroCarousel .carousel-item .d-none.d-lg-block.col-lg-5 > a > img {
+    aspect-ratio: auto 830 / 1008;
+    height: auto !important;
+  }
+</style>
+
 <!-- 共通ヘッダー：ページタイトル表示と固定ヘッダー高さを同期 -->
 <style>
   nav.subnav-shadow{
