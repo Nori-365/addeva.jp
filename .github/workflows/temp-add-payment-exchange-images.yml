@@ -23,40 +23,38 @@ jobs:
           page = Path('contents/overseas-business-trip-payment-exchange.html')
           src = page.read_text(encoding='utf-8')
 
-          # Reuse the same float-image treatment as the other overseas-business-trip articles.
           if '.article-float-figure{' not in src:
               css_marker = '    .article-body p:last-child{margin-bottom:0;}\n'
               css = '''    .article-float-figure{margin:0 0 1rem;}\n    @media (min-width:992px){\n      .article-float-figure{width:42%;}\n      .article-float-figure.float-right{float:right;margin:0 0 1rem 1.5rem;}\n      .article-float-figure.float-left{float:left;margin:0 1.5rem 1rem 0;}\n      .article-float-group::after{content:"";display:block;clear:both;}\n    }\n'''
               assert css_marker in src, 'CSS marker not found'
               src = src.replace(css_marker, css_marker + css, 1)
 
-          # Image 1: after the opening introduction, before the article outline.
-          intro_p = '          <p>こんにちは。ADDEVAのNです。<br>今回は、海外出張先での支払い・決済や、両替についてお話しします。<br>私が頻繁に行くベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。皆さまの参考になれば幸いです。</p>\n'
+          intro_p = '<p>こんにちは。ADDEVAのNです。<br>今回は、海外出張先での支払い・決済や、両替についてお話しします。<br>私が頻繁に行くベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。皆さまの参考になれば幸いです。</p>'
           fig1 = '''          <figure class="article-float-figure float-right">\n            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/1.jpg" alt="海外の空港で、スマートフォン・カード・現金などの決済や両替方法を考える海外出張者のイメージ" class="img-fluid w-100 rounded-3 border" loading="eager">\n          </figure>\n'''
           if '/overseas-business-trip-payment-exchange/1.jpg' not in src:
               assert intro_p in src, 'intro paragraph not found'
-              src = src.replace('        <div class="container container-narrow article-body">\n' + intro_p,
-                                '        <div class="container container-narrow article-body article-float-group">\n' + intro_p + fig1, 1)
+              intro_div = '<div class="container container-narrow article-body">'
+              intro_pos = src.index(intro_p)
+              div_pos = src.rfind(intro_div, 0, intro_pos)
+              assert div_pos >= 0, 'intro container not found'
+              src = src[:div_pos] + src[div_pos:].replace(intro_div, '<div class="container container-narrow article-body article-float-group">', 1)
+              src = src.replace(intro_p, intro_p + '\n' + fig1.rstrip('\n'), 1)
 
-          # Image 2: cash at a local restaurant, subsection 2.
-          h2 = '          <h3 class="h4 mt-4">2．ある程度の現地通貨は必要</h3>\n'
+          h2 = '<h3 class="h4 mt-4">2．ある程度の現地通貨は必要</h3>'
+          h3 = '<h3 class="h4 mt-4">3．現地通貨を日本円に戻すなら、街中で済ませる</h3>'
           fig2 = '''          <figure class="article-float-figure float-right">\n            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/2.jpg" alt="海外出張先のローカルレストランで、現地通貨の現金で支払うビジネスマンのイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">\n          </figure>\n'''
           if '/overseas-business-trip-payment-exchange/2.jpg' not in src:
-              assert h2 in src, 'subsection 2 heading not found'
-              src = src.replace(h2, '          <div class="article-float-group">\n' + h2 + fig2, 1)
-              h3 = '          <h3 class="h4 mt-4">3．現地通貨を日本円に戻すなら、街中で済ませる</h3>\n'
-              assert h3 in src, 'subsection 3 heading not found'
-              src = src.replace(h3, '          </div>\n\n' + h3, 1)
+              assert h2 in src and h3 in src, 'subsection 2/3 heading not found'
+              src = src.replace(h2, '<div class="article-float-group">\n          ' + h2 + '\n' + fig2.rstrip('\n'), 1)
+              src = src.replace(h3, '</div>\n\n          ' + h3, 1)
 
-          # Image 3: cashless/card payment, subsection 4.
-          h4 = '          <h3 class="h4 mt-4">4．Wiseの決済は強力</h3>\n'
+          h4 = '<h3 class="h4 mt-4">4．Wiseの決済は強力</h3>'
+          h5 = '<h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>'
           fig3 = '''          <figure class="article-float-figure float-right">\n            <img src="/assets/img/contents/overseas-business-trip-payment-exchange/3.jpg" alt="海外の店舗で決済端末を使ってキャッシュレス決済をするビジネスマンのイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">\n          </figure>\n'''
           if '/overseas-business-trip-payment-exchange/3.jpg' not in src:
-              assert h4 in src, 'subsection 4 heading not found'
-              src = src.replace(h4, '          <div class="article-float-group">\n' + h4 + fig3, 1)
-              h5 = '          <h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>\n'
-              assert h5 in src, 'subsection 5 heading not found'
-              src = src.replace(h5, '          </div>\n\n' + h5, 1)
+              assert h4 in src and h5 in src, 'subsection 4/5 heading not found'
+              src = src.replace(h4, '<div class="article-float-group">\n          ' + h4 + '\n' + fig3.rstrip('\n'), 1)
+              src = src.replace(h5, '</div>\n\n          ' + h5, 1)
 
           page.write_text(src, encoding='utf-8')
           PY
