@@ -1,0 +1,55 @@
+name: Temporary adjust payment article heading hierarchy
+
+on:
+  push:
+    paths:
+      - '.github/workflows/temp-adjust-payment-heading-hierarchy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Adjust heading hierarchy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          page = Path('contents/overseas-business-trip-payment-exchange.html')
+          src = page.read_text(encoding='utf-8')
+
+          replacements = {
+            '      font-size:1.45rem;\n      font-weight:700;\n      line-height:1.35;': '      font-size:1.05rem;\n      font-weight:700;\n      line-height:1.35;',
+            '      font-size:1.05rem;\n      font-weight:700;\n      line-height:1.5;\n    }\n    .comparison-result-header + .comparison-table-title': '      font-size:1.45rem;\n      font-weight:700;\n      line-height:1.5;\n    }\n    .article-major-title{\n      margin:0 0 .75rem;\n      font-size:1.45rem;\n      font-weight:700;\n      line-height:1.5;\n    }\n    .article-subsection-title{\n      font-size:1.15rem;\n      font-weight:700;\n      line-height:1.5;\n    }\n    .comparison-result-header + .comparison-table-title',
+            '      .comparison-country{font-size:1.3rem;}': '      .comparison-country{font-size:1rem;}',
+            '      .comparison-table-title{margin:16px 0 7px;font-size:1rem;}': '      .comparison-table-title{margin:16px 0 7px;font-size:1.3rem;}\n      .article-major-title{font-size:1.3rem;}\n      .article-subsection-title{font-size:1.08rem;}',
+            '<h2 class="h3">4．その人に合った決済方法と両替方法</h2>': '<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>',
+            '<h3 class="h4 mt-4">1．持ち込み・持ち出しの制限にかからない金額に留める</h3>': '<h3 class="article-subsection-title mt-4">4-1．持ち込み・持ち出しの制限にかからない金額に留める</h3>',
+            '<h3 class="h4 mt-4">2．ある程度の現地通貨は必要</h3>': '<h3 class="article-subsection-title mt-4">4-2．ある程度の現地通貨は必要</h3>',
+            '<h3 class="h4 mt-4">3．現地通貨を日本円に戻すなら、街中で済ませる</h3>': '<h3 class="article-subsection-title mt-4">4-3．現地通貨を日本円に戻すなら、街中で済ませる</h3>',
+            '<h3 class="h4 mt-4">4．Wiseの決済は強力</h3>': '<h3 class="article-subsection-title mt-4">4-4．Wiseの決済は強力</h3>',
+            '<h3 class="h4 mt-4">5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>': '<h3 class="article-subsection-title mt-4">4-5．カード決済やATMでの現金引き出しでは、「現地通貨」を選ぶ</h3>',
+          }
+
+          for old, new in replacements.items():
+              if old not in src:
+                  raise SystemExit(f'target not found: {old[:80]}')
+              src = src.replace(old, new, 1)
+
+          page.write_text(src, encoding='utf-8')
+          PY
+
+      - name: Remove temporary workflow and commit
+        run: |
+          rm .github/workflows/temp-adjust-payment-heading-hierarchy.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add contents/overseas-business-trip-payment-exchange.html .github/workflows/temp-adjust-payment-heading-hierarchy.yml
+          git commit -m "Adjust payment article heading hierarchy"
+          git push origin HEAD:main
