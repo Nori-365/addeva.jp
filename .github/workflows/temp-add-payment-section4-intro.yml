@@ -19,25 +19,22 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           page = Path('contents/overseas-business-trip-payment-exchange.html')
           src = page.read_text(encoding='utf-8')
 
-          old = '''<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
+          pattern = re.compile(
+              r'<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>\s*'
+              r'<p>人によって、現地で使用する予定の金額は異なります。</p>\s*'
+              r'<p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>'
+          )
 
-          <p>人によって、現地で使用する予定の金額は異なります。</p>
-          <p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>'''
+          new = '<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>\n\n          <p>本題に入る前に、現地での決済や、ATMからの現金引き出し時に、注意しなければいけないことがあります。</p>\n          <p>それは、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれたら、「現地通貨を選ぶ」ということです。</p>\n          <p>今回のお話の趣旨と異なるので、4-5の最後に書きましたが、手数料差が大きくなる可能性があるのでご注意ください。</p>\n          <p>さて、人によって、現地で使用する予定の金額は異なります。</p>\n          <p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>'
 
-          new = '''<h2 class="article-major-title">4．その人に合った決済方法と両替方法</h2>
-
-          <p>本題に入る前に、現地での決済や、ATMからの現金引き出し時に、注意しなければいけないことがあります。</p>
-          <p>それは、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれたら、「現地通貨を選ぶ」ということです。</p>
-          <p>今回のお話の趣旨と異なるので、4-5の最後に書きましたが、手数料差が大きくなる可能性があるのでご注意ください。</p>
-          <p>さて、人によって、現地で使用する予定の金額は異なります。</p>
-          <p>また、<strong>「現金を多く持たない安心に、いくらまでならコストを払えるか」</strong>という価値観も違うでしょう。</p>'''
-
-          assert old in src, 'target section 4 intro not found'
-          page.write_text(src.replace(old, new, 1), encoding='utf-8')
+          updated, count = pattern.subn(new, src, count=1)
+          assert count == 1, f'target section 4 intro replacement count={count}'
+          page.write_text(updated, encoding='utf-8')
           PY
 
       - name: Remove temporary workflow and commit
