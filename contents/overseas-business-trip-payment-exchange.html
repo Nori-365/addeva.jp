@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <script>(async(d,u)=>{try{const r=await fetch(u,{cache:'no-cache'}),h=await r.text(),tpl=d.createElement('template');tpl.innerHTML=h;[...tpl.content.childNodes].forEach(n=>{if(n.tagName==='SCRIPT'){const s=d.createElement('script');[...n.attributes].forEach(a=>s.setAttribute(a.name,a.value));s.textContent=n.textContent;d.head.appendChild(s);}else{d.head.appendChild(n);}});}catch(e){console.error('head include failed:',u,e);}})(document,'/includes/head-common.html');</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>海外出張 現地での決済と両替について｜ADDEVA</title>
+  <meta name="description" content="海外出張先での支払い・決済と両替について、ASEAN各国のWise、銀行、市内優良両替所、空港両替などのコストを比較します。">
+  <link rel="canonical" href="https://addeva.jp/contents/overseas-business-trip-payment-exchange.html">
+  <meta name="robots" content="noindex,nofollow">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/main.css?v=3.8">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    .article-page .article-hero{padding:32px 0 24px;border-top:0;}
+    .article-page .article-intro{padding:18px 0 18px;border-top:0;}
+    .article-page .article-content-section{padding:24px 0;border-top:1px solid var(--line);}
+    .article-page .article-footer-section{padding:20px 0 32px;border-top:0;}
+    .article-body{font-size:1.05rem;line-height:1.8;}
+    .article-body h2{margin:0 0 .75rem;}
+    .article-body p{margin-bottom:.75rem;}
+    .article-body p:last-child{margin-bottom:0;}
+
+    .comparison-panel{
+      margin-top:1rem;
+      border:1px solid var(--line,#d9dee3);
+      border-radius:16px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:0 6px 20px rgba(0,0,0,.04);
+    }
+    .comparison-controls{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:16px;
+      padding:18px;
+      background:#f7f8fa;
+      border-bottom:1px solid var(--line,#d9dee3);
+    }
+    .comparison-control label{
+      display:block;
+      margin-bottom:.4rem;
+      font-weight:700;
+      font-size:.95rem;
+    }
+    .comparison-control select,
+    .comparison-control input{
+      width:100%;
+      min-height:46px;
+      border:1px solid #b9c1c9;
+      border-radius:10px;
+      background:#fff;
+      padding:.62rem .8rem;
+      font:inherit;
+      color:inherit;
+    }
+    .amount-input-wrap{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:8px;
+    }
+    .amount-unit{font-weight:700;white-space:nowrap;}
+    .comparison-initial-note{
+      margin:.65rem 0 0;
+      font-size:.86rem;
+      color:#68717a;
+    }
+    .comparison-result{padding:20px 18px 18px;}
+    .comparison-result-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .comparison-country{
+      margin:0;
+      font-size:1.45rem;
+      font-weight:700;
+      line-height:1.35;
+    }
+    .comparison-amount-label{
+      margin:0;
+      color:#68717a;
+      font-size:.9rem;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .comparison-grid-head,
+    .comparison-row{
+      display:grid;
+      grid-template-columns:minmax(220px,1.55fr) minmax(150px,.85fr) minmax(210px,1fr);
+      gap:14px;
+      align-items:center;
+    }
+    .comparison-grid-head{
+      padding:10px 12px;
+      background:#f1f3f5;
+      border-radius:9px 9px 0 0;
+      font-size:.84rem;
+      font-weight:700;
+      color:#5d6670;
+    }
+    .comparison-row{
+      padding:13px 12px;
+      border-bottom:1px solid var(--line,#e1e5e9);
+    }
+    .comparison-row:last-child{border-bottom:0;}
+    .comparison-method{font-weight:650;}
+    .comparison-condition{font-size:.94rem;color:#49515a;}
+    .comparison-cost{font-weight:700;line-height:1.45;}
+    .comparison-cost.is-muted{font-weight:500;color:#6c757d;}
+    .comparison-note{
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:10px;
+      background:#f7f8fa;
+      font-size:.88rem;
+      line-height:1.65;
+      color:#555e67;
+    }
+    .comparison-note p{margin:0 0 .5rem;}
+    .comparison-note p:last-child{margin-bottom:0;}
+
+    @media (max-width:767.98px){
+      .article-page .article-hero{padding:28px 0 20px;}
+      .article-page .article-intro{padding:16px 0;}
+      .article-page .article-content-section{padding:20px 0;}
+      .article-body{font-size:1rem;line-height:1.75;}
+      .comparison-panel{border-radius:12px;}
+      .comparison-controls{grid-template-columns:1fr;gap:12px;padding:14px;}
+      .comparison-result{padding:16px 14px 14px;}
+      .comparison-result-header{display:block;margin-bottom:12px;}
+      .comparison-country{font-size:1.3rem;}
+      .comparison-amount-label{margin-top:.25rem;text-align:left;white-space:normal;}
+      .comparison-grid-head{display:none;}
+      .comparison-row{
+        display:block;
+        padding:13px 0;
+      }
+      .comparison-method{font-size:1rem;margin-bottom:.38rem;}
+      .comparison-condition,
+      .comparison-cost{display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:8px;align-items:start;}
+      .comparison-condition{margin-bottom:.25rem;font-size:.9rem;}
+      .comparison-condition::before{content:"条件";font-weight:700;color:#6b737b;}
+      .comparison-cost::before{content:"概算コスト";font-weight:700;color:#6b737b;}
+      .comparison-note{margin-top:14px;padding:12px 13px;font-size:.84rem;}
+    }
+  </style>
+
+  <meta property="og:site_name" content="ADDEVA">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://addeva.jp/contents/overseas-business-trip-payment-exchange.html">
+  <meta property="og:title" content="海外出張 現地での決済と両替について">
+  <meta property="og:description" content="海外出張先での支払い・決済と両替について、ASEAN各国のコストを比較します。">
+  <meta property="og:locale" content="ja_JP">
+</head>
+<body>
+  <div data-include="/includes/header.html" aria-busy="true"></div>
+
+  <main class="article-page">
+    <article>
+      <section class="section article-hero">
+        <div class="container container-narrow">
+          <div class="kicker">BUSINESS TRIP COLUMN ― 海外出張を快適にする・決済と両替編 ―</div>
+          <h1 class="h2 mb-0">海外出張　現地での決済と両替について</h1>
+        </div>
+      </section>
+
+      <section class="section article-intro">
+        <div class="container container-narrow article-body">
+          <p>こんにちは。ADDEVAのNです。</p>
+          <p>今日は、海外出張先での支払い・決済や、両替についてお話しします。</p>
+          <p>為替手数料や両替レートは、国や支払い方法によってかなり違います。</p>
+          <p>そこで今回は、私が長く通っているベトナムでの経験も踏まえながら、ASEAN各国についてChatGPTと調べてみました。</p>
+          <p>まずは、渡航先と利用予定金額を選んで、決済・両替方法によってどのくらい差が出るのか比較してみてください。</p>
+          <p>利用予定金額の初期値は10万円ですが、自由に変更できます。</p>
+          <p>皆さまの参考になれば幸いです。</p>
+        </div>
+      </section>
+
+      <section class="section article-content-section">
+        <div class="container container-narrow article-body">
+          <h2 class="h3">渡航先ごとの決済・両替コストを比較</h2>
+
+          <div class="comparison-panel">
+            <div class="comparison-controls">
+              <div class="comparison-control">
+                <label for="countrySelect">渡航先</label>
+                <select id="countrySelect" aria-label="渡航先を選択">
+                  <option value="vietnam" selected>ベトナム</option>
+                  <option value="thailand">タイ</option>
+                  <option value="malaysia">マレーシア</option>
+                  <option value="singapore">シンガポール</option>
+                  <option value="philippines">フィリピン</option>
+                  <option value="indonesia">インドネシア</option>
+                  <option value="laos">ラオス</option>
+                  <option value="cambodia">カンボジア</option>
+                  <option value="brunei">ブルネイ</option>
+                  <option value="myanmar">ミャンマー</option>
+                  <option value="timorleste">東ティモール</option>
+                </select>
+              </div>
+
+              <div class="comparison-control">
+                <label for="amountInput">利用予定金額</label>
+                <div class="amount-input-wrap">
+                  <input id="amountInput" type="text" inputmode="numeric" autocomplete="off" value="100,000" aria-label="利用予定金額（円）">
+                  <span class="amount-unit">円</span>
+                </div>
+                <p class="comparison-initial-note">※初期表示は「ベトナム」「100,000円」。</p>
+              </div>
+            </div>
+
+            <div class="comparison-result" aria-live="polite">
+              <div class="comparison-result-header">
+                <h3 id="countryTitle" class="comparison-country">ベトナム</h3>
+                <p id="amountLabel" class="comparison-amount-label">100,000円の場合</p>
+              </div>
+
+              <div class="comparison-grid-head" aria-hidden="true">
+                <div>方法</div>
+                <div>コスト率・条件</div>
+                <div>利用予定金額での概算</div>
+              </div>
+              <div id="comparisonRows"></div>
+
+              <div class="comparison-note">
+                <p>※表示する為替コストは、調査時点の市場レートと各銀行・両替所などのレートを比較した目安です。為替レートや手数料は変動します。</p>
+                <p>※「推計」「参考推計」と表示した数値は、公開されている複数のレートや市内との差から算出した参考値です。</p>
+                <p>※Wiseの両替手数料は、通貨や利用時点によって異なります。表では比較のため、約0.73％〜を目安として使用しています。</p>
+                <p>※WiseのATM出金は、Wise側の両替・出金手数料に加え、現地ATM運営会社から別途手数料を請求される場合があります。</p>
+                <p>※「市内優良両替所」は、その国で一般的に良いレートが期待できる専門両替店・認可Money Changer・貴金属店系両替所などを指します。<strong>銀行は別項目として比較しています。</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <div data-include="/includes/footer.html" aria-busy="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/common.js"></script>
+  <script>
+    (() => {
+      const data = {
+        vietnam: {
+          name: 'ベトナム',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（Agribank）', condition:'約2.79%', calc:{type:'rate', value:2.79}},
+            {method:'市内優良両替所（Giang Son / Quang Huy）', condition:'約0.91%', calc:{type:'rate', value:0.91}},
+            {method:'空港・良い窓口', condition:'約0.61%', calc:{type:'rate', value:0.61}},
+            {method:'空港・悪い窓口', condition:'約4.88%', calc:{type:'rate', value:4.88}}
+          ]
+        },
+        thailand: {
+          name: 'タイ',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（Krungsri）', condition:'約1.92%', calc:{type:'rate', value:1.92}},
+            {method:'市内優良両替所（SuperRich）', condition:'約0.63%', calc:{type:'rate', value:0.63}},
+            {method:'空港・優良店', condition:'約3.00%', calc:{type:'rate', value:3.00}},
+            {method:'空港・銀行系', condition:'約3.05%', calc:{type:'rate', value:3.05}}
+          ]
+        },
+        malaysia: {
+          name: 'マレーシア',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR（DuitNow QR）', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（Maybank）', condition:'約7.13%', calc:{type:'rate', value:7.13}},
+            {method:'市内優良両替所（My Money Master / Max Money）', condition:'約0.2〜0.7%', calc:{type:'rangeRate', min:0.2, max:0.7}},
+            {method:'空港両替', condition:'約1.7〜4.2% ※推計', calc:{type:'rangeRate', min:1.7, max:4.2}}
+          ]
+        },
+        singapore: {
+          name: 'シンガポール',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR（PayNow）', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（UOB）', condition:'約2.43%', calc:{type:'rate', value:2.43}},
+            {method:'市内優良両替所（The Arcade内 Money Changer）', condition:'約0.20%', calc:{type:'rate', value:0.20}},
+            {method:'空港両替', condition:'約3.2〜4.2% ※参考推計', calc:{type:'rangeRate', min:3.2, max:4.2}}
+          ]
+        },
+        philippines: {
+          name: 'フィリピン',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR（QR Ph）', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（BPI）', condition:'約2.24%', calc:{type:'rate', value:2.24}},
+            {method:"市内優良両替所（Sanry's / Czarina）", condition:'約0.45%', calc:{type:'rate', value:0.45}},
+            {method:'空港両替', condition:'約3.2% ※推計', calc:{type:'rate', value:3.2}}
+          ]
+        },
+        indonesia: {
+          name: 'インドネシア',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（BCA）', condition:'約1.09%', calc:{type:'rate', value:1.09}},
+            {method:'市内優良両替所（VIP Money Changer）', condition:'約0.32%', calc:{type:'rate', value:0.32}},
+            {method:'空港両替', condition:'約5.3〜10.3% ※推計', calc:{type:'rangeRate', min:5.3, max:10.3}}
+          ]
+        },
+        laos: {
+          name: 'ラオス',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（BCEL）', condition:'約1.26%', calc:{type:'rate', value:1.26}},
+            {method:'市内優良両替所', condition:'×', result:'―'},
+            {method:'空港両替', condition:'公開JPY実測値不足', result:'算定不可'}
+          ]
+        },
+        cambodia: {
+          name: 'カンボジア',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'日本登録ユーザー利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行', condition:'約1.20% ※参考', calc:{type:'rate', value:1.20}},
+            {method:'市内優良両替所（Ly Hour Exchange & Jewelry）', condition:'要調査', result:'要調査'},
+            {method:'空港両替', condition:'公開JPY実測値不足', result:'算定不可'}
+          ]
+        },
+        brunei: {
+          name: 'ブルネイ',
+          rows: [
+            {method:'Wiseデビットカード', condition:'約0.73%〜', calc:{type:'minRate', value:0.73}},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', calc:{type:'atmRate', value:2.143}},
+            {method:'銀行（BIBD）', condition:'約6.39%', calc:{type:'rate', value:6.39}},
+            {method:'市内優良両替所（Husne Money Changer等）', condition:'要調査', result:'要調査'},
+            {method:'空港両替', condition:'公開JPYレート不足', result:'算定不可'}
+          ]
+        },
+        myanmar: {
+          name: 'ミャンマー',
+          rows: [
+            {method:'Wiseデビットカード', condition:'利用不可', result:'―'},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'利用不可', result:'―'},
+            {method:'銀行', condition:'外国為替制度が特殊', result:'単純比較困難'},
+            {method:'市内優良両替所', condition:'認可両替所あり・外国為替制度が特殊', result:'単純比較困難'},
+            {method:'空港両替', condition:'外国為替制度が特殊', result:'単純比較困難'}
+          ]
+        },
+        timorleste: {
+          name: '東ティモール',
+          rows: [
+            {method:'Wiseデビットカード', condition:'JPY→USD両替手数料', result:'要計算'},
+            {method:'Wise QR', condition:'利用不可', result:'―'},
+            {method:'Wise → ATM出金', condition:'両替＋ATM式', result:'要計算＋現地ATM手数料'},
+            {method:'銀行', condition:'JPY比較データ不足', result:'算定不可'},
+            {method:'市内優良両替所（Global EX等）', condition:'JPY比較データ不足', result:'算定不可'},
+            {method:'空港両替', condition:'JPY比較データ不足', result:'算定不可'}
+          ]
+        }
+      };
+
+      const countrySelect = document.getElementById('countrySelect');
+      const amountInput = document.getElementById('amountInput');
+      const countryTitle = document.getElementById('countryTitle');
+      const amountLabel = document.getElementById('amountLabel');
+      const comparisonRows = document.getElementById('comparisonRows');
+      const yenFormatter = new Intl.NumberFormat('ja-JP', {maximumFractionDigits:0});
+
+      const parseAmount = (value) => {
+        const cleaned = String(value).replace(/[^0-9]/g, '');
+        const number = Number(cleaned);
+        return Number.isFinite(number) && number > 0 ? number : 100000;
+      };
+
+      const calcResult = (row, amount) => {
+        if (!row.calc) return row.result || '―';
+        const c = row.calc;
+        if (c.type === 'rate') {
+          return `約${yenFormatter.format(amount * c.value / 100)}円`;
+        }
+        if (c.type === 'minRate') {
+          return `約${yenFormatter.format(amount * c.value / 100)}円〜`;
+        }
+        if (c.type === 'rangeRate') {
+          return `約${yenFormatter.format(amount * c.min / 100)}〜${yenFormatter.format(amount * c.max / 100)}円`;
+        }
+        if (c.type === 'atmRate') {
+          return `約${yenFormatter.format(amount * c.value / 100)}円〜＋現地ATM手数料`;
+        }
+        return row.result || '―';
+      };
+
+      const render = () => {
+        const country = data[countrySelect.value] || data.vietnam;
+        const amount = parseAmount(amountInput.value);
+        countryTitle.textContent = country.name;
+        amountLabel.textContent = `${yenFormatter.format(amount)}円の場合`;
+
+        comparisonRows.replaceChildren(...country.rows.map(row => {
+          const item = document.createElement('div');
+          item.className = 'comparison-row';
+
+          const method = document.createElement('div');
+          method.className = 'comparison-method';
+          method.textContent = row.method;
+
+          const condition = document.createElement('div');
+          condition.className = 'comparison-condition';
+          condition.textContent = row.condition;
+
+          const result = document.createElement('div');
+          const resultText = calcResult(row, amount);
+          result.className = `comparison-cost${['―','算定不可','要調査','単純比較困難'].includes(resultText) ? ' is-muted' : ''}`;
+          result.textContent = resultText;
+
+          item.append(method, condition, result);
+          return item;
+        }));
+      };
+
+      countrySelect.addEventListener('change', render);
+      amountInput.addEventListener('focus', () => {
+        amountInput.value = String(parseAmount(amountInput.value));
+        amountInput.select();
+      });
+      amountInput.addEventListener('input', render);
+      amountInput.addEventListener('blur', () => {
+        const amount = parseAmount(amountInput.value);
+        amountInput.value = yenFormatter.format(amount);
+        render();
+      });
+      amountInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') amountInput.blur();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
