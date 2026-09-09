@@ -325,7 +325,7 @@
     margin-left:.5rem;
     padding:.18rem .48rem;
     border-radius:999px;
-    background:#dc3545;
+    background:#2C3E50;
     color:#fff;
     font-size:.58em;
     font-weight:700;
@@ -333,58 +333,7 @@
     vertical-align:.18em;
     white-space:nowrap;
   }
-
-  #contents .contents-group-reading h3.popularity-badge-testing::after {
-    display:none;
-  }
-  .popularity-badge-tests {
-    display:inline-flex;
-    flex-wrap:wrap;
-    gap:.35rem;
-    margin-left:.5rem;
-    vertical-align:.18em;
-  }
-  .popularity-badge-test {
-    display:inline-block;
-    padding:.18rem .48rem;
-    border-radius:999px;
-    font-size:.58em;
-    font-weight:700;
-    line-height:1.2;
-    white-space:nowrap;
-  }
 </style>
-<script>
-  (() => {
-    const path = location.pathname === '/index.html' ? '/' : location.pathname;
-    if (path !== '/') return;
-
-    const mountPopularityBadgeTests = () => {
-      const title = document.querySelector('#contents .contents-group-reading h3');
-      if (!title || title.querySelector('.popularity-badge-tests')) return;
-
-      title.classList.add('popularity-badge-testing');
-
-      const group = document.createElement('span');
-      group.className = 'popularity-badge-tests';
-      group.setAttribute('aria-label', '人気バッジ色比較');
-      group.innerHTML = `
-        <span class="popularity-badge-test" style="background:#dc3545;color:#fff;">人気</span>
-        <span class="popularity-badge-test" style="background:#EAA320;color:#333333;">人気</span>
-        <span class="popularity-badge-test" style="background:#333333;color:#FFFFFF;">人気</span>
-        <span class="popularity-badge-test" style="background:#A23A3A;color:#FFFFFF;">人気</span>
-        <span class="popularity-badge-test" style="background:#2C3E50;color:#FFFFFF;">人気</span>
-      `;
-      title.appendChild(group);
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', mountPopularityBadgeTests, { once:true });
-    } else {
-      mountPopularityBadgeTests();
-    }
-  })();
-</script>
 
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
