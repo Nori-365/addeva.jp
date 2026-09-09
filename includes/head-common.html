@@ -316,6 +316,25 @@
   })();
 </script>
 
+<!-- TOP・CONTENTS：読み物セクションの人気マーク -->
+<style>
+  #contents .contents-group-reading h3::after,
+  #column > .container > h2::after {
+    content:"人気";
+    display:inline-block;
+    margin-left:.5rem;
+    padding:.18rem .48rem;
+    border-radius:999px;
+    background:#dc3545;
+    color:#fff;
+    font-size:.58em;
+    font-weight:700;
+    line-height:1.2;
+    vertical-align:.18em;
+    white-space:nowrap;
+  }
+</style>
+
 <!-- ここから先は“共通化したいタグ”を必要に応じて追加してください -->
 <!-- 例）
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
