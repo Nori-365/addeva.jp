@@ -391,7 +391,7 @@
               </div>
 
               <h4 class="comparison-table-title">1．現金の持ち込み・持ち出し｜申告が必要になる金額</h4>
-              <p class="cash-limit-lead">重要：申告基準を超える現金等は必ず申告してください。<strong>無申告は没収・罰則等の対象となる場合があります。</strong>なお、日本でも、現金等の合計が<strong>100万円相当を超える場合</strong>は、出国時・帰国時ともに税関への申告が必要です。</p>
+              <p class="cash-limit-lead">重要：申告基準を超える現金等は必ず申告してください。<strong>無申告は没収・罰則等の対象となる場合があります。</strong>なお、日本でも、現金等の合計が<strong>100万円相当を超える場合</strong>は、出国時・帰国時ともに税関への申告が必要です。<br>※日本円相当額は2026年9月10日時点の為替レートによる概算です。</p>
               <div class="cash-limit-table">
                 <div class="cash-limit-grid-head" aria-hidden="true">
                   <div>現地通貨</div>
@@ -409,7 +409,7 @@
                 </div>
               </div>
 
-              <h4 class="comparison-table-title">2．現地での決済・日本円から現地通貨への両替</h4>
+              <h4 class="comparison-table-title">2．現地での決済方法・日本円から現地通貨への両替方法｜手数料比較</h4>
               <div class="comparison-grid-head" aria-hidden="true">
                 <div>方法</div>
                 <div>コスト率・条件</div>
@@ -417,7 +417,7 @@
               </div>
               <div id="comparisonRows"></div>
 
-              <h4 class="comparison-table-title">3．余った現地通貨を日本円へ戻す</h4>
+              <h4 class="comparison-table-title">3．余った現地通貨を日本円へ戻す際の手数料</h4>
               <p class="comparison-subnote">※実際には、持ち込んだ金額と持ち帰る金額が同じになることはありませんが、比較をわかりやすくするため、ここでは同じ金額で計算しています。</p>
               <div class="comparison-grid-head" aria-hidden="true">
                 <div>方法</div>
@@ -705,8 +705,8 @@
         vietnam: {
           name: 'ベトナム',
           cashRules: {
-            local: '15,000,000 VND超で申告',
-            foreign: 'USD5,000相当超で申告',
+            local: '15,000,000 VND超で申告（日本円で約8.9万円）',
+            foreign: 'USD5,000相当超で申告（日本円で約76.8万円）',
             combined: 'VNDと外国通貨は別々に判定',
             note: '到着時申告。難易度は低〜中。空港では15〜30分程度を目安に余裕を見込む。申告書は出国まで保管。'
           },
@@ -738,8 +738,8 @@
         china: {
           name: '中国',
           cashRules: {
-            local: '20,000 CNY以上で申告',
-            foreign: 'USD5,000相当以上で申告',
+            local: '20,000 CNY以上で申告（日本円で約45.7万円）',
+            foreign: 'USD5,000相当以上で申告（日本円で約76.8万円）',
             combined: 'CNYと外国通貨は別枠で判定',
             note: '外国通貨をUSD5,000相当以上持ち込み、出国時に再び持ち出す予定の場合は、入国時の税関申告書類を出国時まで保管。'
           },
@@ -776,9 +776,9 @@
         thailand: {
           name: 'タイ',
           cashRules: {
-            local: '日本へ50,000 THB超の持出しはBOT許可',
-            foreign: 'USD15,000相当超で申告',
-            combined: '合計450,000 THB相当超でも申告',
+            local: '日本へ50,000 THB超の持出しはBOT許可（日本円で約23.3万円）',
+            foreign: 'USD15,000相当超で申告（日本円で約230.4万円）',
+            combined: '合計450,000 THB相当超でも申告（日本円で約209.9万円）',
             note: 'オンライン申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
           rows: [
@@ -809,8 +809,8 @@
         malaysia: {
           name: 'マレーシア',
           cashRules: {
-            local: 'USD10,000相当超のMYRはBNM事前許可',
-            foreign: 'USD10,000相当以上で申告',
+            local: 'USD10,000相当超のMYRはBNM事前許可（日本円で約153.6万円）',
+            foreign: 'USD10,000相当以上で申告（日本円で約153.6万円）',
             combined: '複数通貨を合算して判定',
             note: 'Customs Form No.7を税関へ提出。難易度は中程度。空港では10〜20分程度を目安に余裕を見込む。'
           },
@@ -845,7 +845,7 @@
           cashRules: {
             local: '金額自体の上限なし',
             foreign: '金額自体の上限なし',
-            combined: '全通貨等を合算してS$20,000超で申告',
+            combined: '全通貨等を合算してS$20,000超で申告（日本円で約242.9万円）',
             note: 'e-727で72時間前からオンライン申告可。難易度は非常に低め。空港では0〜10分程度が目安。'
           },
           rows: [
@@ -873,8 +873,8 @@
         philippines: {
           name: 'フィリピン',
           cashRules: {
-            local: '50,000 PHP超はBSP事前許可',
-            foreign: 'USD10,000相当超で申告',
+            local: '50,000 PHP超はBSP事前許可（日本円で約12.3万円）',
+            foreign: 'USD10,000相当超で申告（日本円で約153.6万円）',
             combined: 'PHPは別枠。外国通貨同士は合算',
             note: 'eTravel / e-CDFで72時間前から電子申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
@@ -906,8 +906,8 @@
         indonesia: {
           name: 'インドネシア',
           cashRules: {
-            local: 'Rp100,000,000相当以上は申告。IDRはBI許可にも注意',
-            foreign: 'Rp100,000,000相当以上で申告',
+            local: 'Rp100,000,000相当以上は申告（日本円で約87.5万円）。IDRはBI許可にも注意',
+            foreign: 'Rp100,000,000相当以上で申告（日本円で約87.5万円）',
             combined: '複数通貨の総額で判定',
             note: 'All Indonesiaで到着3日前から申告可。難易度は低め。空港では5〜15分程度を目安に余裕を見込む。'
           },
@@ -937,9 +937,9 @@
         laos: {
           name: 'ラオス',
           cashRules: {
-            local: '100,000,000 LAK相当超が基準',
-            foreign: 'LAK換算して判定',
-            combined: '全通貨を合算して判定',
+            local: '100,000,000 LAK相当超が基準（日本円で約68.6万円）',
+            foreign: '100,000,000 LAK相当超が基準（日本円で約68.6万円）',
+            combined: '全通貨を合算して100,000,000 LAK相当超で判定（日本円で約68.6万円）',
             note: '高額現金ではBank of Lao PDRの許可が関係するため事前確認推奨。難易度は高め。空港では30分以上を目安に余裕を見込む。'
           },
           rows: [
@@ -969,9 +969,9 @@
         cambodia: {
           name: 'カンボジア',
           cashRules: {
-            local: 'USD10,000相当以上が申告基準',
-            foreign: 'USD10,000相当以上で申告',
-            combined: '合計がUSD10,000相当に近い場合は申告推奨',
+            local: 'USD10,000相当以上が申告基準（日本円で約153.6万円）',
+            foreign: 'USD10,000相当以上で申告（日本円で約153.6万円）',
+            combined: '合計がUSD10,000相当に近い場合は申告推奨（日本円で約153.6万円）',
             note: '到着時に税関申告。難易度は中程度。空港では10〜20分程度を目安に余裕を見込む。申告書は出国まで保管。'
           },
           rows: [
@@ -1005,7 +1005,7 @@
           cashRules: {
             local: 'BNDも合算対象',
             foreign: '日本円なども合算対象',
-            combined: '全通貨等の合計BND15,000以上で申告',
+            combined: '全通貨等の合計BND15,000以上で申告（日本円で約182.2万円）',
             note: 'S37 CBNI Formを提出。事前に用紙準備可。難易度は低〜中。空港では10〜20分程度を目安に余裕を見込む。'
           },
           rows: [
@@ -1036,7 +1036,7 @@
           name: 'ミャンマー',
           cashRules: {
             local: 'MMKの国外持出し不可',
-            foreign: 'USD10,000相当超で申告',
+            foreign: 'USD10,000相当超で申告（日本円で約153.6万円）',
             combined: '外国通貨をUSD相当に換算して判定',
             note: '外国為替管理が特殊。難易度は高め。空港では30分以上を目安に余裕を見込む。入国時の外国為替申告書類は出国まで保管。'
           },
@@ -1069,9 +1069,9 @@
         timorleste: {
           name: '東ティモール',
           cashRules: {
-            local: 'USD20,000以上は事前許可＋申告',
-            foreign: 'USD換算して判定',
-            combined: '全通貨を合算してUSD20,000以上で判定',
+            local: 'USD20,000以上は事前許可＋申告（日本円で約307.2万円）',
+            foreign: 'USD20,000相当以上で判定（日本円で約307.2万円）',
+            combined: '全通貨を合算してUSD20,000以上で判定（日本円で約307.2万円）',
             note: 'Central Bankの事前許可が必要。難易度は非常に高い。許可済みでも空港では15〜30分程度を目安に余裕を見込む。事前許可には申請時期により手数料が発生。'
           },
           rows: [
