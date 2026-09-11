@@ -42,6 +42,7 @@
     .article-notes{margin-top:14px;padding:14px 16px;background:#f7f8fa;border-radius:10px;color:#555e67;font-size:.88rem;line-height:1.65;}
     .article-notes p{margin:0 0 .45rem;}
     .article-notes p:last-child{margin-bottom:0;}
+    .common-notes{margin:0 0 24px;}
     .survey-date{margin-top:8px;color:#747d86;font-size:.82rem;}
     .comparison-block + .comparison-block{margin-top:32px;padding-top:28px;border-top:1px solid var(--line,#d9dee3);}
 
@@ -59,6 +60,7 @@
       .comparison-table thead th:first-child,.comparison-table tbody th{min-width:92px;}
       .table-scroll-note{display:block;}
       .article-notes{padding:12px 13px;font-size:.84rem;}
+      .common-notes{margin-bottom:20px;}
       .comparison-block + .comparison-block{margin-top:26px;padding-top:22px;}
     }
   </style>
@@ -110,68 +112,71 @@
 
       <section class="section article-content-section">
         <div class="container container-narrow article-body">
+          <div class="article-notes common-notes">
+            <p><strong>比較表の共通注意事項</strong></p>
+            <p>※ ahamoの「追加0円」は、すでにahamoを契約している人が海外で利用する際の追加料金が0円という意味です。新規契約料金が0円という意味ではありません。</p>
+            <p>楽天モバイル1,500円は、海外2GBまではプラン内、追加3GB × 500円＝1,500円として、合計5GB利用した場合の追加料金です。</p>
+            <p>※料金・サービス内容は2026年9月調査時点です。料金や提供条件は変更される場合があります。</p>
+          </div>
+
           <div class="comparison-block">
             <h2 class="h3">7日間のスマホ通信費を国別に比較</h2>
             <p class="comparison-lead">各サービスで条件が異なるため、表の見出しに比較条件を併記しています。現地SIMと日本購入eSIMは5GB以上を基準に比較しています。</p>
             <p class="table-scroll-note">※表は横にスクロールできます。国名は左側に固定されます。</p>
             <div class="comparison-table-wrap" role="region" aria-label="中国・ASEAN各国と東ティモールの7日間スマホ通信費比較" tabindex="0">
               <table class="comparison-table">
-                <thead><tr><th scope="col">国</th><th scope="col">ahamo<br>7日・最大30GB</th><th scope="col">現地SIM<br>7日・5GB以上</th><th scope="col">楽天モバイル<br>7日・5GB利用</th><th scope="col">日本購入eSIM<br>7日・5GB以上</th><th scope="col">docomo<br>7日・国内容量利用</th><th scope="col">au海外放題<br>7日・定額</th><th scope="col">SoftBank<br>7日・定額</th><th scope="col">WiFiBOX<br>7日・1GB/日</th></tr></thead>
+                <thead><tr><th scope="col">国</th><th scope="col">ahamo<br>7日・最大30GB</th><th scope="col">現地SIM<br>7日・5GB以上</th><th scope="col">楽天モバイル<br>7日・5GB利用</th><th scope="col">日本購入eSIM<br>7日・5GB以上</th><th scope="col">docomo<br>7日・国内データ容量利用</th><th scope="col">au海外放題<br>7日・定額</th><th scope="col">SoftBank<br>7日・定額</th><th scope="col">WiFiBOX<br>7日・1GB/日</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row">ベトナム</th><td class="price-zero">0円※</td><td>約180円</td><td>1,500円</td><td>1,080円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>4,830円</td></tr>
-                  <tr><th scope="row">タイ</th><td class="price-zero">0円※</td><td>約460円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>4,830円</td></tr>
-                  <tr><th scope="row">インドネシア</th><td class="price-zero">0円※</td><td>約200円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
-                  <tr><th scope="row">フィリピン</th><td class="price-zero">0円※</td><td>約240円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
-                  <tr><th scope="row">マレーシア</th><td class="price-zero">0円※</td><td>約570円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
-                  <tr><th scope="row">カンボジア</th><td class="price-zero">0円※</td><td>約230円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,930円</td></tr>
-                  <tr><th scope="row">シンガポール</th><td class="price-zero">0円※</td><td>約1,220円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
-                  <tr><th scope="row">中国</th><td class="price-zero">0円※</td><td>約1,330円～</td><td>1,500円</td><td>1,080円</td><td>5,280円</td><td>7,000円</td><td>6,860円</td><td>6,230円</td></tr>
-                  <tr><th scope="row">ラオス</th><td class="price-zero">0円※</td><td>約100円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>11,830円</td></tr>
-                  <tr><th scope="row">ブルネイ</th><td class="price-zero">0円※</td><td>約1,220円</td><td class="not-available">―</td><td>3,680円</td><td>5,280円</td><td class="not-available">―</td><td>6,860円</td><td>11,830円</td></tr>
-                  <tr><th scope="row">ミャンマー</th><td class="price-zero">0円※</td><td>約450円※※</td><td>1,500円</td><td>8,280円</td><td>5,280円</td><td>7,000円</td><td>6,860円</td><td>11,830円</td></tr>
+                  <tr><th scope="row">ベトナム</th><td class="price-zero">追加0円※</td><td>約180円</td><td>1,500円</td><td>1,080円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>4,830円</td></tr>
+                  <tr><th scope="row">タイ</th><td class="price-zero">追加0円※</td><td>約460円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>4,830円</td></tr>
+                  <tr><th scope="row">インドネシア</th><td class="price-zero">追加0円※</td><td>約200円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
+                  <tr><th scope="row">フィリピン</th><td class="price-zero">追加0円※</td><td>約240円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
+                  <tr><th scope="row">マレーシア</th><td class="price-zero">追加0円※</td><td>約570円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
+                  <tr><th scope="row">カンボジア</th><td class="price-zero">追加0円※</td><td>約230円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,930円</td></tr>
+                  <tr><th scope="row">シンガポール</th><td class="price-zero">追加0円※</td><td>約1,220円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>6,230円</td></tr>
+                  <tr><th scope="row">中国</th><td class="price-zero">追加0円※</td><td>約1,330円～</td><td>1,500円</td><td>1,080円</td><td>5,280円</td><td>7,000円</td><td>6,860円</td><td>6,230円</td></tr>
+                  <tr><th scope="row">ラオス</th><td class="price-zero">追加0円※</td><td>約100円</td><td>1,500円</td><td>1,630円</td><td>5,280円</td><td>5,600円</td><td>6,860円</td><td>11,830円</td></tr>
+                  <tr><th scope="row">ブルネイ</th><td class="price-zero">追加0円※</td><td>約1,220円</td><td class="not-available">―</td><td>3,680円</td><td>5,280円</td><td class="not-available">―</td><td>6,860円</td><td>11,830円</td></tr>
+                  <tr><th scope="row">ミャンマー</th><td class="price-zero">追加0円※</td><td>約450円※※</td><td>1,500円</td><td>8,280円</td><td>5,280円</td><td>7,000円</td><td>6,860円</td><td>11,830円</td></tr>
                   <tr><th scope="row">東ティモール</th><td class="not-available">―</td><td>約150円</td><td class="not-available">―</td><td>11,800円</td><td class="not-available">―</td><td class="not-available">―</td><td class="not-available">―</td><td class="not-available">―</td></tr>
                 </tbody>
               </table>
             </div>
             <div class="article-notes">
-              <p>※ ahamo 0円＝すでにahamoを契約している人の「海外利用の追加料金が0円」。新規契約料金が0円という意味ではありません。</p>
               <p>※※ ミャンマーの約450円は10GB・7日データパックの確認価格で、SIM本体・新規登録費が別途必要になる可能性があります。</p>
-              <p>楽天モバイル1,500円は「海外2GBまではプラン内＋追加3GB（500円/GB）」として、合計5GB利用した場合の追加料金です。</p>
             </div>
           </div>
 
           <div class="comparison-block">
             <h2 class="h3">30日間のスマホ通信費を国別に比較</h2>
-            <p class="comparison-lead">7日版と同じ比較方法で、30日間利用した場合の料金を比較しています。現地SIMと日本購入eSIMは5GB以上を基準にしています。ahamoは15日を超える海外利用で通信速度が制限されるため、30日間を通常速度で利用できるサービスとは同列に扱わず、該当セルをグレー表示しています。</p>
+            <p class="comparison-lead"><strong>ahamoは30日出張では注意が必要です。</strong>海外で最初にデータ通信した日から15日を超えると、通信速度が最大128kbpsに制限されます。最大128kbpsではデータ通信が非常に遅く、動画の視聴は現実的ではありません。そのため、30日間を通常速度で利用できるサービスとは同列に扱わず、ahamoのセルをグレー表示しています。</p>
+            <p class="comparison-lead">その他のサービスは7日版と同じ比較方法で、30日間利用した場合の料金を比較しています。現地SIMと日本購入eSIMは5GB以上を基準にしています。</p>
             <p class="table-scroll-note">※表は横にスクロールできます。国名は左側に固定されます。</p>
             <div class="comparison-table-wrap" role="region" aria-label="中国・ASEAN各国と東ティモールの30日間スマホ通信費比較" tabindex="0">
               <table class="comparison-table">
-                <thead><tr><th scope="col">国</th><th scope="col">ahamo<br>30日・最大30GB※</th><th scope="col">現地SIM<br>30日・5GB以上</th><th scope="col">楽天モバイル<br>30日・5GB利用</th><th scope="col">日本購入eSIM<br>30日・5GB以上</th><th scope="col">docomo<br>30日・国内容量利用</th><th scope="col">au海外放題<br>30日・定額</th><th scope="col">SoftBank<br>30日・定額</th><th scope="col">WiFiBOX<br>30日・1GB/日</th></tr></thead>
+                <thead><tr><th scope="col">国</th><th scope="col">ahamo<br>30日利用※</th><th scope="col">現地SIM<br>30日・5GB以上</th><th scope="col">楽天モバイル<br>30日・5GB利用</th><th scope="col">日本購入eSIM<br>30日・5GB以上</th><th scope="col">docomo<br>30日・国内データ容量利用</th><th scope="col">au海外放題<br>30日・定額</th><th scope="col">SoftBank<br>30日・定額</th><th scope="col">WiFiBOX<br>30日・1GB/日</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row">ベトナム</th><td class="limited-plan">0円※</td><td>約540円</td><td>1,500円</td><td>1,380円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>20,700円</td></tr>
-                  <tr><th scope="row">タイ</th><td class="limited-plan">0円※</td><td>約550円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>20,700円</td></tr>
-                  <tr><th scope="row">フィリピン</th><td class="limited-plan">0円※</td><td>約740円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
-                  <tr><th scope="row">インドネシア</th><td class="limited-plan">0円※</td><td>約870円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
-                  <tr><th scope="row">シンガポール</th><td class="limited-plan">0円※</td><td>約1,820円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
-                  <tr><th scope="row">マレーシア</th><td class="limited-plan">0円※</td><td>約1,890円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
-                  <tr><th scope="row">カンボジア</th><td class="limited-plan">0円※</td><td>約920円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>29,700円</td></tr>
-                  <tr><th scope="row">中国</th><td class="limited-plan">0円※</td><td>約3,450円～</td><td>1,500円</td><td>1,380円</td><td>22,480円</td><td>30,000円</td><td>29,400円</td><td>26,700円</td></tr>
-                  <tr><th scope="row">ラオス</th><td class="limited-plan">0円※</td><td>約240円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>50,700円</td></tr>
-                  <tr><th scope="row">ミャンマー</th><td class="limited-plan">0円※</td><td>約910円</td><td>1,500円</td><td>8,280円</td><td>22,480円</td><td>30,000円</td><td>29,400円</td><td>50,700円</td></tr>
-                  <tr><th scope="row">ブルネイ</th><td class="limited-plan">0円※</td><td>約1,220円</td><td class="not-available">―</td><td>3,980円</td><td>22,480円</td><td class="not-available">―</td><td>29,400円</td><td>50,700円</td></tr>
+                  <tr><th scope="row">ベトナム</th><td class="limited-plan">追加0円※</td><td>約540円</td><td>1,500円</td><td>1,380円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>20,700円</td></tr>
+                  <tr><th scope="row">タイ</th><td class="limited-plan">追加0円※</td><td>約550円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>20,700円</td></tr>
+                  <tr><th scope="row">フィリピン</th><td class="limited-plan">追加0円※</td><td>約740円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
+                  <tr><th scope="row">インドネシア</th><td class="limited-plan">追加0円※</td><td>約870円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
+                  <tr><th scope="row">シンガポール</th><td class="limited-plan">追加0円※</td><td>約1,820円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
+                  <tr><th scope="row">マレーシア</th><td class="limited-plan">追加0円※</td><td>約1,890円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>26,700円</td></tr>
+                  <tr><th scope="row">カンボジア</th><td class="limited-plan">追加0円※</td><td>約920円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>29,700円</td></tr>
+                  <tr><th scope="row">中国</th><td class="limited-plan">追加0円※</td><td>約3,450円～</td><td>1,500円</td><td>1,380円</td><td>22,480円</td><td>30,000円</td><td>29,400円</td><td>26,700円</td></tr>
+                  <tr><th scope="row">ラオス</th><td class="limited-plan">追加0円※</td><td>約240円</td><td>1,500円</td><td>1,930円</td><td>22,480円</td><td>24,000円</td><td>29,400円</td><td>50,700円</td></tr>
+                  <tr><th scope="row">ミャンマー</th><td class="limited-plan">追加0円※</td><td>約910円</td><td>1,500円</td><td>8,280円</td><td>22,480円</td><td>30,000円</td><td>29,400円</td><td>50,700円</td></tr>
+                  <tr><th scope="row">ブルネイ</th><td class="limited-plan">追加0円※</td><td>約1,220円</td><td class="not-available">―</td><td>3,980円</td><td>22,480円</td><td class="not-available">―</td><td>29,400円</td><td>50,700円</td></tr>
                   <tr><th scope="row">東ティモール</th><td class="not-available">―</td><td>約620円</td><td class="not-available">―</td><td>11,800円※※</td><td>29,400円</td><td class="not-available">―</td><td>29,400円</td><td>50,700円</td></tr>
                 </tbody>
               </table>
             </div>
             <div class="article-notes">
-              <p>※ ahamoの0円は、すでにahamoを契約している人の「海外利用の追加料金が0円」という意味です。ただし、海外で最初にデータ通信した日から15日を超えると通信速度が最大128kbpsに制限されるため、30日出張の通信手段としては通常の「30日・最大30GB」と同列には扱えません。</p>
-              <p>楽天モバイル1,500円は、30日間トータルで5GB利用する前提です。海外2GBまではプラン内、追加3GB × 500円＝1,500円として計算しています。</p>
+              <p>※ ahamoは海外で最初にデータ通信した日から15日を超えると、通信速度が最大128kbpsに制限されます。30日間を通常速度で利用できるプランではありません。</p>
               <p>ブルネイの日本購入eSIMは、Glocal eSIMの30日・5GB＝3,980円を公式確認した価格です。</p>
               <p>※※ 東ティモールの11,800円は30日専用商品ではなく、日本から購入できる10GB・180日有効の商品を30日滞在にも利用するケースです。</p>
             </div>
           </div>
-
-          <p class="survey-date">※料金・サービス内容は2026年9月調査時点。料金や提供条件は変更される場合があります。</p>
         </div>
       </section>
     </article>
