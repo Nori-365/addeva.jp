@@ -34,11 +34,6 @@
 
     .comparison-panel{
       margin-top:1rem;
-      border:1px solid var(--line,#d9dee3);
-      border-radius:16px;
-      background:#fff;
-      overflow:hidden;
-      box-shadow:0 6px 20px rgba(0,0,0,.04);
     }
     .comparison-controls{
       display:grid;
@@ -46,7 +41,8 @@
       gap:16px;
       padding:18px;
       background:#f7f8fa;
-      border-bottom:1px solid var(--line,#d9dee3);
+      border:1px solid var(--line,#d9dee3);
+      border-radius:14px;
     }
     .comparison-control label{
       display:block;
@@ -77,13 +73,13 @@
       font-size:.86rem;
       color:#68717a;
     }
-    .comparison-result{padding:20px 18px 18px;}
+    .comparison-result{padding:20px 0 0;}
     .comparison-result-header{
       display:flex;
       justify-content:space-between;
       align-items:end;
       gap:12px;
-      margin-bottom:14px;
+      margin:0 2px 14px;
     }
     .comparison-country{
       margin:0;
@@ -98,6 +94,15 @@
       text-align:right;
       white-space:nowrap;
     }
+    .comparison-card{
+      padding:18px;
+      border:1px solid var(--line,#d9dee3);
+      border-radius:14px;
+      background:#fff;
+      box-shadow:0 4px 14px rgba(0,0,0,.035);
+    }
+    .comparison-card + .comparison-card{margin-top:18px;}
+    .comparison-card .comparison-table-title{margin-top:0;}
     .comparison-grid-head,
     .comparison-row{
       display:grid;
@@ -186,8 +191,6 @@
       font-weight:700;
       line-height:1.5;
     }
-    .comparison-result-header + .comparison-table-title{margin-top:0;}
-    .cash-limit-table + .comparison-table-title{margin-top:30px;}
     .comparison-subnote{
       margin:0 0 8px;
       font-size:.88rem;
@@ -249,12 +252,13 @@
       .article-page .article-content-section{padding:20px 0;}
       .article-page .article-footer-section{padding:16px 0 28px;}
       .article-body{font-size:1rem;line-height:1.75;}
-      .comparison-panel{border-radius:12px;}
-      .comparison-controls{grid-template-columns:1fr;gap:12px;padding:14px;}
-      .comparison-result{padding:16px 14px 14px;}
-      .comparison-result-header{display:block;margin-bottom:12px;}
+      .comparison-controls{grid-template-columns:1fr;gap:12px;padding:14px;border-radius:12px;}
+      .comparison-result{padding:16px 0 0;}
+      .comparison-result-header{display:block;margin:0 2px 12px;}
       .comparison-country{font-size:1rem;}
       .comparison-amount-label{margin-top:.25rem;text-align:left;white-space:normal;}
+      .comparison-card{padding:14px 12px;border-radius:12px;box-shadow:none;}
+      .comparison-card + .comparison-card{margin-top:14px;}
       .comparison-grid-head{display:none;}
       .comparison-row{display:block;padding:13px 0;}
       .comparison-method{font-size:1rem;margin-bottom:.38rem;}
@@ -285,7 +289,7 @@
       .cash-limit-note-label,.cash-limit-note-text{padding:9px 0;}
       .cash-limit-note-label{padding-right:8px;}
       .cash-limit-note-text{padding-left:10px;}
-      .comparison-table-title{margin:16px 0 7px;font-size:1.3rem;}
+      .comparison-table-title{margin:0 0 7px;font-size:1.3rem;}
       .article-major-title{font-size:1.3rem;}
       .article-subsection-title{font-size:1.08rem;}
       .return-detail{margin-top:10px;font-size:.84rem;}
@@ -390,43 +394,49 @@
                 <p id="amountLabel" class="comparison-amount-label">決済・両替の比較金額：100,000円相当</p>
               </div>
 
-              <h4 class="comparison-table-title">1．現金の持ち込み・持ち出し｜申告が必要になる金額</h4>
-              <p class="cash-limit-lead">重要：申告基準を超える現金等は必ず申告してください。<strong>無申告は没収・罰則等の対象となる場合があります。</strong>なお、日本でも、現金等の合計が<strong>100万円相当を超える場合</strong>は、出国時・帰国時ともに税関への申告が必要です。<br>※日本円相当額は2026年9月10日時点の為替レートによる概算です。</p>
-              <div class="cash-limit-table">
-                <div class="cash-limit-grid-head" aria-hidden="true">
-                  <div>現地通貨</div>
-                  <div>日本円など外国通貨</div>
-                  <div>合算ルール（複数通貨）</div>
-                </div>
-                <div class="cash-limit-row">
-                  <div id="cashLocal" class="cash-limit-cell"></div>
-                  <div id="cashForeign" class="cash-limit-cell"></div>
-                  <div id="cashCombined" class="cash-limit-cell"></div>
-                </div>
-                <div class="cash-limit-note-row">
-                  <div class="cash-limit-note-label">備考</div>
-                  <div id="cashNote" class="cash-limit-note-text"></div>
+              <div class="comparison-card">
+                <h4 class="comparison-table-title">1．現金の持ち込み・持ち出し｜申告が必要になる金額</h4>
+                <p class="cash-limit-lead">重要：申告基準を超える現金等は必ず申告してください。<strong>無申告は没収・罰則等の対象となる場合があります。</strong>なお、日本でも、現金等の合計が<strong>100万円相当を超える場合</strong>は、出国時・帰国時ともに税関への申告が必要です。<br>※日本円相当額は2026年9月10日時点の為替レートによる概算です。</p>
+                <div class="cash-limit-table">
+                  <div class="cash-limit-grid-head" aria-hidden="true">
+                    <div>現地通貨</div>
+                    <div>日本円など外国通貨</div>
+                    <div>合算ルール（複数通貨）</div>
+                  </div>
+                  <div class="cash-limit-row">
+                    <div id="cashLocal" class="cash-limit-cell"></div>
+                    <div id="cashForeign" class="cash-limit-cell"></div>
+                    <div id="cashCombined" class="cash-limit-cell"></div>
+                  </div>
+                  <div class="cash-limit-note-row">
+                    <div class="cash-limit-note-label">備考</div>
+                    <div id="cashNote" class="cash-limit-note-text"></div>
+                  </div>
                 </div>
               </div>
 
-              <h4 class="comparison-table-title">2．現地での決済方法・日本円から現地通貨への両替方法｜手数料比較</h4>
-              <div class="comparison-grid-head" aria-hidden="true">
-                <div>方法</div>
-                <div>コスト率・条件</div>
-                <div id="outboundAmountHeader">100,000円での概算</div>
+              <div class="comparison-card">
+                <h4 class="comparison-table-title">2．現地での決済方法・日本円から現地通貨への両替方法｜手数料比較</h4>
+                <div class="comparison-grid-head" aria-hidden="true">
+                  <div>方法</div>
+                  <div>コスト率・条件</div>
+                  <div id="outboundAmountHeader">100,000円での概算</div>
+                </div>
+                <div id="comparisonRows"></div>
               </div>
-              <div id="comparisonRows"></div>
 
-              <h4 class="comparison-table-title">3．余った現地通貨を日本円へ戻す際の手数料</h4>
-              <p class="comparison-subnote">※実際には、持ち込んだ金額と持ち帰る金額が同じになることはありませんが、比較をわかりやすくするため、ここでは同じ金額で計算しています。</p>
-              <div class="comparison-grid-head" aria-hidden="true">
-                <div>方法</div>
-                <div>コスト率・条件</div>
-                <div id="returnAmountHeader">100,000円での概算</div>
+              <div class="comparison-card">
+                <h4 class="comparison-table-title">3．余った現地通貨を日本円へ戻す際の手数料</h4>
+                <p class="comparison-subnote">※実際には、持ち込んだ金額と持ち帰る金額が同じになることはありませんが、比較をわかりやすくするため、ここでは同じ金額で計算しています。</p>
+                <div class="comparison-grid-head" aria-hidden="true">
+                  <div>方法</div>
+                  <div>コスト率・条件</div>
+                  <div id="returnAmountHeader">100,000円での概算</div>
+                </div>
+                <div id="returnRows"></div>
+                <div id="returnDetail" class="return-detail"></div>
+                <div id="returnConclusion" class="return-conclusion"></div>
               </div>
-              <div id="returnRows"></div>
-              <div id="returnDetail" class="return-detail"></div>
-              <div id="returnConclusion" class="return-conclusion"></div>
 
               <div id="countryNotes" class="country-notes">
                 <h4>注意事項</h4>
@@ -453,8 +463,9 @@
           <p>本題に入る前に、現地での決済や、ATMからの現金引き出し時に、注意しなければいけないことがあります。</p>
           <p>それは、<strong>「日本円（JPY）と現地通貨、どちらで決済しますか？」</strong>と聞かれたら、「現地通貨を選ぶ」ということです。</p>
           <p>今回のお話の趣旨と異なるので、4-5の最後に書きましたが、手数料差が大きくなる可能性があるのでご注意ください。</p>
+          <br>
 
-          <div class="article-float-group pt-lg-4">
+          <div class="article-float-group">
             <figure class="article-float-figure float-right">
               <img src="/assets/img/contents/overseas-business-trip-payment-exchange/4.jpg" alt="海外出張先で、現金・カード・スマートフォンなど複数の決済方法を検討するイメージ" class="img-fluid w-100 rounded-3 border" loading="lazy">
             </figure>
