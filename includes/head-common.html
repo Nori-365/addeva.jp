@@ -351,6 +351,50 @@
   })();
 </script>
 
+<!-- SIM国別ページ：親ページへの導線とUrbanFlex案内（ベトナムで試行） -->
+<script>
+  (() => {
+    if (location.pathname !== '/contents/overseas-business-trip-sim-esim-vietnam.html') return;
+
+    const mountSimCountryFooter = () => {
+      const article = document.querySelector('main.article-page article');
+      if (!article || article.querySelector('.sim-country-footer')) return;
+
+      const section = document.createElement('section');
+      section.className = 'section article-footer-section sim-country-footer';
+      section.innerHTML = `
+        <div class="container container-narrow article-body">
+          <div class="p-4 p-md-5 bg-light border rounded-3 mb-3">
+            <div class="small text-secondary mb-2">中国・ASEANの通信費を比較</div>
+            <p>ベトナム以外の国も含めて、現地SIM、日本購入eSIM、海外ローミング、レンタルWi-Fiの料金を7日・30日で比較しています。</p>
+            <a class="btn btn-outline-dark px-4" href="/contents/overseas-business-trip-sim-esim-roaming.html">SIM・eSIM・海外ローミングの国別比較へ戻る</a>
+          </div>
+
+          <div class="p-4 p-md-5 border rounded-3">
+            <div class="small text-secondary mb-2">ADDEVA UrbanFlex</div>
+            <p>UrbanFlexは、ADDEVAが海外出張のために最適化した3WAYビジネスリュックです。よろしければ、チェックしてください。</p>
+            <a class="btn btn-dark px-4" href="/product/urbanflex/">3WAYビジネスリュック UrbanFlexを見る</a>
+          </div>
+
+          <nav class="mt-3" aria-label="読み物コンテンツのナビゲーション">
+            <div class="d-flex flex-column flex-sm-row flex-wrap gap-2">
+              <a class="btn btn-outline-dark" href="/contents/#column">読み物一覧へ</a>
+              <a class="btn btn-outline-dark" href="/contents/">コンテンツTOPへ</a>
+            </div>
+          </nav>
+        </div>`;
+
+      article.appendChild(section);
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', mountSimCountryFooter, { once:true });
+    } else {
+      mountSimCountryFooter();
+    }
+  })();
+</script>
+
 <!-- TOP・CONTENTS：読み物セクションの人気マーク -->
 <style>
   #contents .contents-group-reading h3::after,
