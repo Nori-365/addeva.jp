@@ -73,9 +73,12 @@
       .comparison-table th,.comparison-table td{padding:10px 8px;}
       .comparison-table thead th{min-width:122px;}
       .comparison-table thead th:first-child,.comparison-table tbody th{min-width:92px;}
-      .wifi-table{font-size:.84rem;min-width:680px;}
+      .wifi-table{font-size:.84rem;min-width:545px;table-layout:fixed;}
       .wifi-table th,.wifi-table td{padding:10px 9px;}
-      .wifi-table tbody th{width:92px;white-space:normal;}
+      .wifi-table thead th:nth-child(1),.wifi-table tbody th{width:80px;}
+      .wifi-table thead th:nth-child(2),.wifi-table tbody td:nth-child(2){width:245px;}
+      .wifi-table thead th:nth-child(3),.wifi-table tbody td:nth-child(3){width:220px;}
+      .wifi-table tbody th{white-space:normal;}
       .wifi-detail{font-size:.82rem;}
       .table-scroll-note{display:block;}
       .article-notes{padding:12px 13px;font-size:.84rem;}
@@ -177,7 +180,7 @@
               <table class="wifi-table">
                 <thead><tr><th scope="col">国</th><th scope="col">店舗・ホテルWi-Fi実用度</th><th scope="col">現地SIMの紹介</th></tr></thead>
                 <tbody>
-                  <tr><th scope="row">ベトナム</th><td><span class="wifi-stars">★★★★★</span><span class="wifi-detail">非常に多い。小さなカフェ・飲食店でもかなり普通に使える</span></td><td><a class="wifi-link" href="/contents/overseas-business-trip-sim-esim-vietnam.html">ベトナムのSIM・eSIMを見る →</a></td></tr>
+                  <tr><th scope="row">ベトナム</th><td><span class="wifi-stars">★★★★★</span><span class="wifi-detail">非常に多い。小さなカフェ・飲食店でもかなり普通に使える</span></td><td><a class="wifi-link" href="/contents/overseas-business-trip-sim-esim-vietnam.html">SIM・eSIMを見る →</a></td></tr>
                   <tr><th scope="row">シンガポール</th><td><span class="wifi-stars">★★★★★</span><span class="wifi-detail">店舗Wi-Fiに加え、公共Wi-Fiも非常に充実</span></td><td class="wifi-pending">準備中</td></tr>
                   <tr><th scope="row">マレーシア</th><td><span class="wifi-stars">★★★★★</span><span class="wifi-detail">ホテル・モール・カフェ・飲食店でかなり一般的</span></td><td class="wifi-pending">準備中</td></tr>
                   <tr><th scope="row">タイ</th><td><span class="wifi-stars">★★★★★</span><span class="wifi-detail">ホテル・カフェ・飲食店・空港などで非常に一般的</span></td><td class="wifi-pending">準備中</td></tr>
