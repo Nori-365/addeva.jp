@@ -351,10 +351,24 @@
   })();
 </script>
 
-<!-- SIM国別ページ：親ページへの導線とUrbanFlex案内（ベトナムで試行） -->
+<!-- SIM国別ページ：親ページへの導線とUrbanFlex案内（12か国共通） -->
 <script>
   (() => {
-    if (location.pathname !== '/contents/overseas-business-trip-sim-esim-vietnam.html') return;
+    const simCountryPages = new Set([
+      '/contents/overseas-business-trip-sim-esim-vietnam.html',
+      '/contents/overseas-business-trip-sim-esim-thailand.html',
+      '/contents/overseas-business-trip-sim-esim-indonesia.html',
+      '/contents/overseas-business-trip-sim-esim-philippines.html',
+      '/contents/overseas-business-trip-sim-esim-malaysia.html',
+      '/contents/overseas-business-trip-sim-esim-cambodia.html',
+      '/contents/overseas-business-trip-sim-esim-singapore.html',
+      '/contents/overseas-business-trip-sim-esim-china.html',
+      '/contents/overseas-business-trip-sim-esim-laos.html',
+      '/contents/overseas-business-trip-sim-esim-brunei.html',
+      '/contents/overseas-business-trip-sim-esim-myanmar.html',
+      '/contents/overseas-business-trip-sim-esim-timor-leste.html'
+    ]);
+    if (!simCountryPages.has(location.pathname)) return;
 
     const mountSimCountryFooter = () => {
       const article = document.querySelector('main.article-page article');
