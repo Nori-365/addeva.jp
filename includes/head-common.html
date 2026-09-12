@@ -262,6 +262,14 @@
 </style>
 <script>
   (() => {
+    const autoNextArticles = {
+      '/contents/overseas-business-trip-payment-exchange.html': {
+        href: '/contents/overseas-business-trip-sim-esim-roaming.html',
+        label: '次の記事：海外出張のSIM・eSIM・海外ローミング比較',
+        description: '次の記事では、中国・ASEAN各国の現地SIM、日本購入eSIM、海外ローミング、レンタルWi-Fiの通信費を7日・30日で比較します。'
+      }
+    };
+
     const setupArticleNavigation = () => {
       document.querySelectorAll('nav[aria-label="読み物コンテンツのナビゲーション"]').forEach((nav) => {
         const group = nav.querySelector('.d-flex');
@@ -271,9 +279,36 @@
         const getTopLink = (links) => links.find((a) => a.getAttribute('href') === '/contents/');
         const getListLink = (links) => links.find((a) => a.getAttribute('href') === '/contents/#column');
 
-        const nextBlock = nav.previousElementSibling;
-        const isNextBlock = nextBlock?.classList.contains('mt-4') &&
+        let nextBlock = nav.previousElementSibling;
+        let isNextBlock = nextBlock?.classList.contains('mt-4') &&
           nextBlock.querySelector(':scope > .small')?.textContent?.trim() === '次の記事';
+
+        const autoNext = autoNextArticles[location.pathname];
+        if (!isNextBlock && autoNext) {
+          const block = document.createElement('div');
+          block.className = 'mt-4';
+
+          const heading = document.createElement('div');
+          heading.className = 'small text-secondary mb-2';
+          heading.textContent = '次の記事';
+
+          const buttonRow = document.createElement('div');
+          buttonRow.className = 'd-flex flex-column flex-sm-row mb-2';
+          const button = document.createElement('a');
+          button.className = 'btn btn-outline-dark article-next-link';
+          button.href = autoNext.href;
+          button.textContent = autoNext.label;
+          buttonRow.appendChild(button);
+
+          const description = document.createElement('p');
+          description.className = 'mb-0';
+          description.textContent = autoNext.description;
+
+          block.append(heading, buttonRow, description);
+          nav.before(block);
+          nextBlock = block;
+          isNextBlock = true;
+        }
 
         if (isNextBlock) {
           const links = getLinks();
