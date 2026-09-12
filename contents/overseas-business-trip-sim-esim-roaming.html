@@ -27,6 +27,10 @@
       .article-float-figure.float-left{float:left;margin:0 1.5rem 1rem 0;}
       .article-float-group::after{content:"";display:block;clear:both;}
     }
+    @media (max-width:991.98px){
+      .article-intro .article-float-group{display:flex;flex-direction:column;}
+      .article-intro .article-float-figure{order:99;margin:.25rem 0 0;}
+    }
     .comparison-lead{margin:0 0 12px;color:#5f6872;font-size:.92rem;line-height:1.65;}
     .comparison-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line,#d9dee3);border-radius:12px;background:#fff;}
     .comparison-table{width:100%;min-width:1320px;margin:0;border-collapse:separate;border-spacing:0;font-size:.88rem;line-height:1.45;}
