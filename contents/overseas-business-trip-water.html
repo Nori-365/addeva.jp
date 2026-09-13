@@ -46,6 +46,13 @@
       .vegetable-washing-table th,.vegetable-washing-table td{padding:10px 3px;}
     }
     @media(max-width:767.98px){.ice-percentage{display:block;}}
+    #article-top,.article-content-section h2[id]{scroll-margin-top:calc(var(--addeva-header-height, 64px) + env(safe-area-inset-top, 0px) + 16px);}
+    .article-jump-nav{margin-top:20px;padding:16px 20px;background:#f7f8fa;border:1px solid var(--line,#d9dee3);border-radius:10px;}
+    .article-jump-nav ol{margin:0;padding-left:1.5rem;}
+    .article-jump-nav li{padding-left:.25rem;}
+    .article-jump-nav a{display:block;padding:10px 0;line-height:1.5;text-underline-offset:3px;}
+    .article-body .article-back-top{margin-top:20px;text-align:right;font-size:.9rem;}
+    .article-back-top a{display:inline-block;padding:10px 0;text-underline-offset:3px;}
   </style>
   <meta property="og:site_name" content="ADDEVA">
   <meta property="og:type" content="article">
@@ -61,10 +68,19 @@
   <div data-include="/includes/header.html" aria-busy="true"></div>
   <main class="article-page">
     <article>
-      <section class="section article-hero">
+      <section class="section article-hero" id="article-top">
         <div class="container container-narrow">
           <div class="kicker">BUSINESS TRIP COLUMN ― 海外出張を快適にする・水事情編 ―</div>
           <h1 class="h2 mb-0">海外の水、長期滞在者はどこまで気にする？｜中国・ASEAN各国の日本人実体験を調査</h1>
+          <nav class="article-jump-nav" aria-label="この記事の目次">
+            <ol>
+              <li><a href="#boiled-tap-water">沸かした水を飲む？</a></li>
+              <li><a href="#toothbrushing-water">歯磨きに使う水</a></li>
+              <li><a href="#restaurant-salad">お店で生野菜・サラダ</a></li>
+              <li><a href="#washing-raw-vegetables">自宅で生野菜を洗う水</a></li>
+              <li><a href="#restaurant-ice">お店の氷入り飲料</a></li>
+            </ol>
+          </nav>
         </div>
       </section>
       <section class="section article-intro">
@@ -121,6 +137,7 @@
           <p>これは、私の周りにいる日本人へ実際に聞いた感覚とは少し違います。</p>
           <p>これはあくまで私の推測ですが、お腹を壊した人は、その体験をSNSやブログなどで発信することが多い一方で、「普通に飲んでいるけれど特に何も起きていない」という人は、わざわざそのことを書かない場合が多いからかもしれません。</p>
           <p>そのため、SNS上の体験談だけを集めると、実際よりも少し慎重な方向に偏る可能性はあると思います。</p>
+          <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
       <section class="section article-content-section" aria-labelledby="toothbrushing-water">
@@ -150,6 +167,7 @@
           <p>飲み水と比べると、歯磨きでは水道水を使っている人が多いという結果でした。<br>
           私も歯磨きには水道水を使っていますが、まれに少し変な味を感じることがあります。<br>
           そんなときは、水道水ですすいだあと、最後に一度だけミネラルウォーターですすぐようにしています。</p>
+          <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
       <section class="section article-content-section" aria-labelledby="restaurant-salad">
@@ -178,6 +196,7 @@
           </div>
           <p>やはり私と同じように、多くの人がレストランで生野菜やサラダを食べていました。</p>
           <p>また、私は自宅でサラダを作ることはありませんが、ベトナムでは、生野菜を水道水でよく洗ったあと、塩水に少しつける方法もよく使われているようです。</p>
+          <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
       <section class="section article-content-section" aria-labelledby="washing-raw-vegetables">
@@ -205,6 +224,7 @@
           <div class="article-notes">
             <p>※タイの1人は洗浄工程で水道水を使用。最後まで水道水だけで洗っていると確認できた例ではありません。</p>
           </div>
+          <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
       <section class="section article-content-section" aria-labelledby="restaurant-ice">
@@ -238,6 +258,7 @@
           <p>ただし、絶対に勘違いしてほしくないのですが、ベトナムを含む多くの国で、安全基準を満たしていない氷が実際に確認されています。</p>
           <p>冷蔵庫で十分に冷えた飲み物であれば、わざわざ氷を入れない方が安全です。</p>
           <p>また、氷がすべて溶けてから長時間置かれたような飲み物は、衛生面を考えると、無理に飲まずに廃棄した方がよいでしょう。</p>
+          <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
       <!-- 続きの本文と公的情報の比較表は、原稿確定後に追加する。
