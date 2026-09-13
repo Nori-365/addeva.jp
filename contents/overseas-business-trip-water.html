@@ -20,6 +20,16 @@
     .article-body h2{margin:0 0 .75rem;}
     .article-body p{margin-bottom:.75rem;}
     .article-body p:last-child{margin-bottom:0;}
+    .article-float-figure{margin:0 0 1rem;}
+    .article-float-group::after{content:"";display:block;clear:both;}
+    .water-comment-layout{margin-top:.25rem;}
+    .water-comment-image{margin:1rem 0 0;}
+    @media(min-width:992px){
+      .article-float-figure{width:42%;}
+      .article-float-figure.float-right{float:right;margin:0 0 1rem 1.5rem;}
+      .water-comment-layout{display:grid;grid-template-columns:minmax(0,1fr) 38%;gap:1.5rem;align-items:start;}
+      .water-comment-image{margin:0;}
+    }
     .water-table-wrap{margin:1.25rem 0;overflow-x:auto;border:1px solid var(--line,#d9dee3);border-radius:10px;}
     .water-table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.94rem;line-height:1.5;}
     .water-table th,.water-table td{padding:12px 10px;border-bottom:1px solid #e3e7eb;border-right:1px solid #e3e7eb;text-align:center;vertical-align:middle;}
@@ -85,13 +95,16 @@
         </div>
       </section>
       <section class="section article-intro">
-        <div class="container container-narrow article-body">
+        <div class="container container-narrow article-body article-float-group">
           <p>こんにちは。ADDEVAのNです。</p>
           <p>日本人が海外へ行けば、多くの人が気をつけることの一つが「水」だと思います。</p>
           <p>旅行会社や旅行情報サイトを見ると、「水道水は飲まない」「氷は避ける」「生野菜には注意する」など、基本的にはリスクを避けるための情報が書かれています。</p>
           <p>もちろん、短期の海外旅行で、貴重な1日をお腹を壊して台無しにしてしまっては意味がありませんので、それも一つの考え方だと思います。</p>
           <p>実際、日本から来るお客様の中には、「シーフードも一切食べない」という方もいらっしゃいます。</p>
           <p>しかし、長期出張者や長期滞在者の場合、それではずっと我慢を続けなければなりません。</p>
+          <figure class="article-float-figure float-right">
+            <img src="/assets/img/contents/overseas-business-trip-water/1.jpg" alt="ベトナムの飲食店でシーフード料理とサイゴンビールを楽しむイメージ" width="1536" height="1024" class="img-fluid w-100 rounded-3 border" loading="eager">
+          </figure>
           <p>実際、ベトナムのシーフードは安くて、とてもおいしいです。</p>
           <p>また、ベトナムの飲食店では、飲み物を常温で保管しているお店もたくさんあります。グラスに氷を入れ、そこに飲み物を注いで飲むことが前提なんです。</p>
           <p>私はベトナムの飲食店では普通に氷を入れてもらいますし、自宅では浄水器を通した水道水を沸かして、お茶やコーヒーとして飲んでいます。</p>
@@ -131,13 +144,20 @@
             <p>※浄水器を通してから沸かしているケースも「飲んでいる」に含めています。</p>
             <p>※母数が少ない国も多いため、割合ではなく人数で表示しています。</p>
           </div>
-          <p>この結果を見て、私は自分の体験にかなり近いと感じました。</p>
-          <p>実は私は、中国とカンボジアでは何度かお腹を壊した経験があり、お茶やコーヒーを入れるときでもミネラルウォーターを使っていました。</p>
-          <p>今回の調査でも、中国やカンボジアでは、水道水を沸かして飲んでいる人が少ないという結果でした。</p>
-          <p>一方、ベトナムについては、私が思っていたより慎重な結果でした。</p>
-          <p>これは、私の周りにいる日本人へ実際に聞いた感覚とは少し違います。</p>
-          <p>これはあくまで私の推測ですが、お腹を壊した人は、その体験をSNSやブログなどで発信することが多い一方で、「普通に飲んでいるけれど特に何も起きていない」という人は、わざわざそのことを書かない場合が多いからかもしれません。</p>
-          <p>そのため、SNS上の体験談だけを集めると、実際よりも少し慎重な方向に偏る可能性はあると思います。</p>
+          <div class="water-comment-layout">
+            <div class="water-comment-text">
+              <p>この結果を見て、私は自分の体験にかなり近いと感じました。</p>
+              <p>実は私は、中国とカンボジアでは何度かお腹を壊した経験があり、お茶やコーヒーを入れるときでもミネラルウォーターを使っていました。</p>
+              <p>今回の調査でも、中国やカンボジアでは、水道水を沸かして飲んでいる人が少ないという結果でした。</p>
+              <p>一方、ベトナムについては、私が思っていたより慎重な結果でした。</p>
+              <p>これは、私の周りにいる日本人へ実際に聞いた感覚とは少し違います。</p>
+              <p>これはあくまで私の推測ですが、お腹を壊した人は、その体験をSNSやブログなどで発信することが多い一方で、「普通に飲んでいるけれど特に何も起きていない」という人は、わざわざそのことを書かない場合が多いからかもしれません。</p>
+              <p>そのため、SNS上の体験談だけを集めると、実際よりも少し慎重な方向に偏る可能性はあると思います。</p>
+            </div>
+            <figure class="water-comment-image">
+              <img src="/assets/img/contents/overseas-business-trip-water/2.jpg" alt="水道の蛇口からコップに水を注ぐイメージ" width="1536" height="1024" class="img-fluid w-100 rounded-3 border" loading="lazy">
+            </figure>
+          </div>
           <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
       </section>
