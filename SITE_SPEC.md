@@ -49,6 +49,14 @@
 - 検索対象の公開ページについては、通常検索だけでなくAI検索からの発見・引用・参照も考慮して、クロール可否、index設定、内部リンク、構造化データ、sitemap.xml等の整合性を確認する。
 - 正規URLは `https://addeva.jp/`（wwwなし）に統一し、canonical および og:url は原則として正規URLの絶対URLを使用する。
 
+## リダイレクト運用ルール
+- `www.addeva.jp` から正規ホスト `addeva.jp` への301リダイレクトは恒久運用とする。
+- ページURLを変更した場合は、旧URLから対応する新URLへ301リダイレクトを設定し、原則として少なくとも1年間は維持する。
+- 個別ページの301リダイレクトは恒久的に残す前提とはせず、約1年後を目安に見直す。Google Search Console等で旧URLがほぼ消え、新URLへの移行が確認でき、外部リンク等に問題がない場合は削除してよい。
+- 2026-09-14に追加した以下の旧海外出張記事の個別301は、2027年9月頃を見直し目安とする。
+  - `/contents/first-overseas-business-trip-items.html` → `/contents/overseas-business-trip-items.html`
+  - `/contents/first-overseas-business-trip-entry-requirements.html` → `/contents/overseas-business-trip-entry-requirements.html`
+
 ## FAQ管理ルール
 - FAQの正本データは `/data/faq/` 配下のJSONファイルとする。
 - 現在のFAQ正本は以下の3ファイル。
