@@ -16,93 +16,16 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <style>
-    .column-list{
-      display:flex;
-      flex-direction:column;
-      gap:.75rem;
-      margin-top:1rem;
-    }
-    .column-card{
-      display:grid;
-      grid-template-columns:190px minmax(0,1fr);
-      min-height:126px;
-      overflow:hidden;
-      border:1px solid var(--line);
-      border-radius:12px;
-      color:var(--ink);
-      text-decoration:none;
-      background:#fff;
-      transition:transform .16s ease, box-shadow .16s ease;
-    }
-    .column-card:hover{
-      transform:translateY(-1px);
-      box-shadow:0 8px 22px rgba(17,24,39,.08);
-    }
-    .column-card-thumb{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-width:0;
-      background:#fff;
-      border-right:1px solid var(--line);
-    }
-    .column-card-thumb img{
-      display:block;
-      width:100%;
-      height:100%;
-      aspect-ratio:3/2;
-      object-fit:contain;
-      background:#fff;
-    }
-    .column-card-copy{
-      align-self:center;
-      min-width:0;
-      padding:.85rem 1rem;
-    }
-    .column-card-category{
-      margin-bottom:.2rem;
-      color:#6b7280;
-      font-size:.76rem;
-      line-height:1.35;
-    }
-    .column-card-title{
-      margin:0 0 .3rem;
-      font-size:1.05rem;
-      font-weight:700;
-      line-height:1.4;
-    }
-    .column-card-description{
-      margin:0;
-      color:#6b7280;
-      font-size:.88rem;
-      line-height:1.55;
-    }
-    @media (max-width:575.98px){
-      .column-list{gap:.55rem;}
-      .column-card{
-        grid-template-columns:108px minmax(0,1fr);
-        min-height:92px;
-        border-radius:10px;
-      }
-      .column-card-copy{padding:.55rem .65rem;}
-      .column-card-category{
-        margin-bottom:.1rem;
-        font-size:.66rem;
-      }
-      .column-card-title{
-        margin-bottom:.18rem;
-        font-size:.9rem;
-        line-height:1.35;
-      }
-      .column-card-description{
-        display:-webkit-box;
-        overflow:hidden;
-        -webkit-box-orient:vertical;
-        -webkit-line-clamp:2;
-        font-size:.72rem;
-        line-height:1.4;
-      }
-    }
+    .column-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem;}
+    .column-card{display:grid;grid-template-columns:190px minmax(0,1fr);min-height:126px;overflow:hidden;border:1px solid var(--line);border-radius:12px;color:var(--ink);text-decoration:none;background:#fff;transition:transform .16s ease, box-shadow .16s ease;}
+    .column-card:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(17,24,39,.08);}
+    .column-card-thumb{display:flex;align-items:center;justify-content:center;min-width:0;background:#fff;border-right:1px solid var(--line);}
+    .column-card-thumb img{display:block;width:100%;height:100%;aspect-ratio:3/2;object-fit:contain;background:#fff;}
+    .column-card-copy{align-self:center;min-width:0;padding:.85rem 1rem;}
+    .column-card-category{margin-bottom:.2rem;color:#6b7280;font-size:.76rem;line-height:1.35;}
+    .column-card-title{margin:0 0 .3rem;font-size:1.05rem;font-weight:700;line-height:1.4;}
+    .column-card-description{margin:0;color:#6b7280;font-size:.88rem;line-height:1.55;}
+    @media (max-width:575.98px){.column-list{gap:.55rem;}.column-card{grid-template-columns:108px minmax(0,1fr);min-height:92px;border-radius:10px;}.column-card-copy{padding:.55rem .65rem;}.column-card-category{margin-bottom:.1rem;font-size:.66rem;}.column-card-title{margin-bottom:.18rem;font-size:.9rem;line-height:1.35;}.column-card-description{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:.72rem;line-height:1.4;}}
   </style>
 </head>
 <body>
@@ -116,25 +39,18 @@
       </div>
     </section>
 
-    <!-- ===== 商品紹介 ===== -->
     <section class="section" id="product-video">
       <div class="container container-narrow">
         <div class="kicker">PRODUCT VIDEO</div>
         <h2 class="h3">商品紹介</h2>
-
         <div class="row g-4 mt-1">
           <article class="col-12 col-lg-8">
             <a href="https://www.youtube.com/watch?v=oiSiXbD4X5A&t=1s" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="UrbanFlex 商品紹介動画をYouTubeで見る">
               <div class="position-relative">
                 <img src="/assets/img/contents/urbanflex-main.jpg" alt="UrbanFlex 商品紹介動画" class="img-fluid w-100 rounded-3 border" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-3 py-2">
-                  <i class="bi bi-play-fill" aria-hidden="true"></i> YouTube
-                </span>
+                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-3 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i> YouTube</span>
               </div>
-              <div class="pt-3">
-                <div class="small text-secondary">ADDEVA UrbanFlex</div>
-                <h3 class="h5 mb-0">商品紹介｜UrbanFlex</h3>
-              </div>
+              <div class="pt-3"><div class="small text-secondary">ADDEVA UrbanFlex</div><h3 class="h5 mb-0">商品紹介｜UrbanFlex</h3></div>
             </a>
             <p class="small text-secondary mt-2 mb-2">通勤・営業・出張・旅行まで1つで対応する3WAY大容量ビジネスリュック「UrbanFlex」を紹介。3WAY＋キャリーオン、収納設計、2R-18と3REX-40の違いなど、主な機能を動画でまとめています。</p>
             <p class="mb-0"><a href="/product/urbanflex/">3WAYビジネスリュック UrbanFlexの製品詳細を見る</a></p>
@@ -143,238 +59,47 @@
       </div>
     </section>
 
-    <!-- ===== ビジネスバッグを考える ===== -->
     <section class="section" id="business-bag">
       <div class="container container-narrow">
         <div class="kicker">BUSINESS BAG</div>
         <h2 class="h3">ビジネスバッグを考える</h2>
-
         <div class="row row-cols-2 row-cols-lg-4 g-3 g-md-4 mt-1">
-          <article class="col">
-            <a href="https://www.youtube.com/shorts/Hk0BtOOca6c" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="リュックで雨…レインコートのボタンが！の動画をYouTubeで見る">
-              <div class="position-relative">
-                <img src="/assets/img/contents/raincoat-Hk0BtOOca6c.jpg" alt="リュックで雨…レインコートのボタンが！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
-              </div>
-              <h3 class="h6 mt-2 mb-0">リュックで雨…レインコートのボタンが！</h3>
-            </a>
-            <p class="small text-secondary mt-2 mb-0">雨の日、リュックを背負うとレインコートの前ボタンが閉まらないことがあります。そんなときに使える、リュックとレインコートを併用するためのちょっとしたコツを紹介します。</p>
-          </article>
-
-          <article class="col">
-            <a href="https://www.youtube.com/shorts/JXmnnmEbEns" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="3WAYバッグの切替面倒問題を2アクションで解決する動画をYouTubeで見る">
-              <div class="position-relative">
-                <img src="/assets/img/contents/3way-switch-JXmnnmEbEns.jpg" alt="3WAYバッグの切替面倒問題 → 2アクションで解決！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
-              </div>
-              <h3 class="h6 mt-2 mb-0">3WAYバッグの切替面倒問題 → 2アクションで解決！</h3>
-            </a>
-            <p class="small text-secondary mt-2 mb-0">3WAYバッグをリュックから手持ちへ切り替える際、ショルダーストラップを収納する手間をどう減らすか。UrbanFlexの独自の背面固定方式と、2アクションで切り替える仕組みを紹介します。</p>
-          </article>
-
-          <article class="col">
-            <a href="https://www.youtube.com/shorts/uOBaiDAeSD8" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="ビジネスリュックの余ったベルトが…の動画をYouTubeで見る">
-              <div class="position-relative">
-                <img src="/assets/img/contents/loose-belt-uOBaiDAeSD8.jpg" alt="ビジネスリュックの余ったベルトが…" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
-              </div>
-              <h3 class="h6 mt-2 mb-0">ビジネスリュックの余ったベルトが…</h3>
-            </a>
-            <p class="small text-secondary mt-2 mb-0">リュックの長さを調整したあとに余ったショルダーベルトが、歩くたびにぶらぶらする小さなストレス。UrbanFlexの「Quick Hold Strap」で余ったベルトをまとめる仕組みを紹介します。</p>
-          </article>
-
-          <article class="col">
-            <a href="https://www.youtube.com/shorts/G3rFuWhBiUU" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="スマホの落下リスクを低減するビジネスリュック！の動画をYouTubeで見る">
-              <div class="position-relative">
-                <img src="/assets/img/contents/smartphone-drop-G3rFuWhBiUU.jpg" alt="スマホの落下リスクを低減するビジネスリュック！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
-              </div>
-              <h3 class="h6 mt-2 mb-0">スマホの落下リスクを低減するビジネスリュック！</h3>
-            </a>
-            <p class="small text-secondary mt-2 mb-0">ほかのことに気を取られながら、スマホをポケットから取り出す瞬間の落下リスクに着目。背負い・前持ちのどちらでもスマホを一時収納しやすい、UrbanFlexの独立ポケットを紹介します。</p>
-          </article>
+          <article class="col"><a href="https://www.youtube.com/shorts/Hk0BtOOca6c" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="リュックで雨…レインコートのボタンが！の動画をYouTubeで見る"><div class="position-relative"><img src="/assets/img/contents/raincoat-Hk0BtOOca6c.jpg" alt="リュックで雨…レインコートのボタンが！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy"><span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span></div><h3 class="h6 mt-2 mb-0">リュックで雨…レインコートのボタンが！</h3></a><p class="small text-secondary mt-2 mb-0">雨の日、リュックを背負うとレインコートの前ボタンが閉まらないことがあります。そんなときに使える、リュックとレインコートを併用するためのちょっとしたコツを紹介します。</p></article>
+          <article class="col"><a href="https://www.youtube.com/shorts/JXmnnmEbEns" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="3WAYバッグの切替面倒問題を2アクションで解決する動画をYouTubeで見る"><div class="position-relative"><img src="/assets/img/contents/3way-switch-JXmnnmEbEns.jpg" alt="3WAYバッグの切替面倒問題 → 2アクションで解決！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy"><span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span></div><h3 class="h6 mt-2 mb-0">3WAYバッグの切替面倒問題 → 2アクションで解決！</h3></a><p class="small text-secondary mt-2 mb-0">3WAYバッグをリュックから手持ちへ切り替える際、ショルダーストラップを収納する手間をどう減らすか。UrbanFlexの独自の背面固定方式と、2アクションで切り替える仕組みを紹介します。</p></article>
+          <article class="col"><a href="https://www.youtube.com/shorts/uOBaiDAeSD8" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="ビジネスリュックの余ったベルトが…の動画をYouTubeで見る"><div class="position-relative"><img src="/assets/img/contents/loose-belt-uOBaiDAeSD8.jpg" alt="ビジネスリュックの余ったベルトが…" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy"><span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span></div><h3 class="h6 mt-2 mb-0">ビジネスリュックの余ったベルトが…</h3></a><p class="small text-secondary mt-2 mb-0">リュックの長さを調整したあとに余ったショルダーベルトが、歩くたびにぶらぶらする小さなストレス。UrbanFlexの「Quick Hold Strap」で余ったベルトをまとめる仕組みを紹介します。</p></article>
+          <article class="col"><a href="https://www.youtube.com/shorts/G3rFuWhBiUU" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="スマホの落下リスクを低減するビジネスリュック！の動画をYouTubeで見る"><div class="position-relative"><img src="/assets/img/contents/smartphone-drop-G3rFuWhBiUU.jpg" alt="スマホの落下リスクを低減するビジネスリュック！" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy"><span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span></div><h3 class="h6 mt-2 mb-0">スマホの落下リスクを低減するビジネスリュック！</h3></a><p class="small text-secondary mt-2 mb-0">ほかのことに気を取られながら、スマホをポケットから取り出す瞬間の落下リスクに着目。背負い・前持ちのどちらでもスマホを一時収納しやすい、UrbanFlexの独立ポケットを紹介します。</p></article>
         </div>
       </div>
     </section>
 
-    <!-- ===== 旅の知識 ===== -->
-    <section class="section" id="travel">
-      <div class="container container-narrow">
-        <div class="kicker">TRAVEL</div>
-        <h2 class="h3">旅の知識</h2>
+    <section class="section" id="travel"><div class="container container-narrow"><div class="kicker">TRAVEL</div><h2 class="h3">旅の知識</h2><div class="row row-cols-2 row-cols-lg-4 g-3 g-md-4 mt-1"><article class="col"><a href="https://www.youtube.com/shorts/wp_IjHmvjYw" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="あなたのパスポートケースは大丈夫？の動画をYouTubeで見る"><div class="position-relative"><img src="/assets/img/contents/passport-case-wp_IjHmvjYw.jpg" alt="あなたのパスポートケースは大丈夫？" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy"><span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span></div><h3 class="h6 mt-2 mb-0">あなたのパスポートケースは大丈夫？</h3></a><p class="small text-secondary mt-2 mb-0">海外旅行中、パスポートケースのカードスロットが緩んでいると、支払い時にカードが滑り落ちることがあります。紛失トラブルを防ぐため、出発前にカードスロットの緩みを確認しておくポイントを紹介します。</p></article></div></div></section>
 
-        <div class="row row-cols-2 row-cols-lg-4 g-3 g-md-4 mt-1">
-          <article class="col">
-            <a href="https://www.youtube.com/shorts/wp_IjHmvjYw" target="_blank" rel="noopener" class="d-block text-dark text-decoration-none" aria-label="あなたのパスポートケースは大丈夫？の動画をYouTubeで見る">
-              <div class="position-relative">
-                <img src="/assets/img/contents/passport-case-wp_IjHmvjYw.jpg" alt="あなたのパスポートケースは大丈夫？" class="w-100 rounded-3 border" style="aspect-ratio:9/16;object-fit:cover" loading="lazy">
-                <span class="position-absolute top-50 start-50 translate-middle badge rounded-pill text-bg-dark px-2 py-2"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
-              </div>
-              <h3 class="h6 mt-2 mb-0">あなたのパスポートケースは大丈夫？</h3>
-            </a>
-            <p class="small text-secondary mt-2 mb-0">海外旅行中、パスポートケースのカードスロットが緩んでいると、支払い時にカードが滑り落ちることがあります。紛失トラブルを防ぐため、出発前にカードスロットの緩みを確認しておくポイントを紹介します。</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 読み物 ===== -->
     <section class="section" id="column">
       <div class="container container-narrow">
         <div class="kicker">COLUMN</div>
         <h2 class="h3">読み物</h2>
-
         <div class="column-list">
           <a href="/contents/overseas-business-trip-water.html" class="column-card" aria-label="海外出張の水道水、長期滞在者はどこまで気にする？ 中国・ASEAN各国の日本人実体験を調査 を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/overseas-business-trip-water/1.jpg" alt="海外出張先の飲食店で水や氷、生野菜について考えるイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・水事情</div>
-              <h3 class="column-card-title">海外出張の水道水、長期滞在者はどこまで気にする？｜中国・ASEAN各国の日本人実体験を調査</h3>
-              <p class="column-card-description">中国・ASEAN各国の日本人長期滞在者の実体験から、水道水の煮沸、歯磨き、生野菜・サラダ、レストランの氷を国別に比較します。</p>
-            </div>
+            <div class="column-card-thumb"><img src="/assets/img/contents/overseas-business-trip-water/2.jpg" alt="海外出張先で水道水について考えるイメージ" loading="lazy"></div>
+            <div class="column-card-copy"><div class="column-card-category">海外出張・水事情</div><h3 class="column-card-title">海外出張の水道水、長期滞在者はどこまで気にする？｜中国・ASEAN各国の日本人実体験を調査</h3><p class="column-card-description">中国・ASEAN各国の日本人長期滞在者の実体験から、水道水の煮沸、歯磨き、生野菜・サラダ、レストランの氷を国別に比較します。</p></div>
           </a>
-
-          <a href="/contents/overseas-business-trip-sim-esim-roaming.html" class="column-card" aria-label="海外出張のスマホ通信費を比較｜SIM・eSIM・海外ローミングはどれが安い？ を読む">
-            <div class="column-card-thumb">
-              <img src="/contents/overseas-business-trip-sim-esim-roaming/sim.jpg" alt="海外出張でSIM・eSIM・海外ローミングなどのスマホ通信手段を利用するイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・通信</div>
-              <h3 class="column-card-title">海外出張のスマホ通信費を比較｜SIM・eSIM・海外ローミングはどれが安い？</h3>
-              <p class="column-card-description">中国・ASEAN諸国について、現地SIM、日本購入eSIM、ahamo、楽天モバイル、docomo、au、SoftBank、WiFiBOXの7日・30日料金と、店舗・ホテルWi-Fiの実用度を比較します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-payment-exchange.html" class="column-card" aria-label="海外出張 現地での決済と両替について を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/overseas-business-trip-payment-exchange/1.jpg" alt="海外出張先での決済・両替方法を考えるイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・決済・両替</div>
-              <h3 class="column-card-title">海外出張　現地での決済と両替について</h3>
-              <p class="column-card-description">中国・ASEAN各国の現金持ち込み・持ち出し、カード・QR決済、Wise、銀行・市内・空港の両替コスト、余った現地通貨を日本円へ戻す方法を比較します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-airport-access.html" class="column-card" aria-label="海外出張、空港までの交通手段は？ 私が空港バスに行きついた理由 を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/overseas-business-trip-airport-access/1.jpg" alt="通勤時間帯の駅ホームで2個のスーツケースを持つ海外出張中のビジネスマン" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・空港アクセス</div>
-              <h3 class="column-card-title">海外出張、空港までの交通手段は？ 私が空港バスに行きついた理由</h3>
-              <p class="column-card-description">マイカー、電車、空港バスを利用してきた経験から、海外出張で空港まで移動する方法と、空港連絡バス・リムジンバスの快適さや荷物の注意点を紹介します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-packing.html" class="column-card" aria-label="海外出張の荷物｜機内持ち込み・預け荷物に何を入れる？ を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/overseas-business-trip-packing/1.jpg" alt="海外出張の機内持ち込み・預け荷物をスーツケース、キャリー、ビジネスリュックに分けるイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・荷物</div>
-              <h3 class="column-card-title">海外出張の荷物｜機内持ち込み・預け荷物に何を入れる？</h3>
-              <p class="column-card-description">海外出張の機内持ち込み・預け荷物に何を入れる？10年間の出張経験から、3つのバッグ構成別に荷物の分け方を紹介します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-luggage.html" class="column-card" aria-label="海外出張のバッグ・スーツケース｜荷物の組み合わせと選び方 を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/first-overseas-business-trip-luggage/7.jpg" alt="大型スーツケース、機内持ち込みキャリーケース、ビジネスリュックを組み合わせた海外出張の荷物イメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・バッグ</div>
-              <h3 class="column-card-title">海外出張のバッグ・スーツケース｜荷物の組み合わせと選び方</h3>
-              <p class="column-card-description">大型スーツケース、機内持ち込みキャリーケース、3WAYビジネスリュックの使い分けと、移動を快適にする荷物の組み合わせを実体験から紹介します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-items.html" class="column-card" aria-label="海外出張の持ち物｜必要なもの・持っていくと便利なもの を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/first-overseas-business-trip-items.html/2.jpg" alt="海外出張で持っていくことをおすすめするもののイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・持ち物</div>
-              <h3 class="column-card-title">海外出張の持ち物｜必要なもの・持っていくと便利なもの</h3>
-              <p class="column-card-description">海外出張で必要なパスポートや入出国情報と、Eチケット、充電用品、変換プラグ、上着など、持っていくと便利なものを実体験から紹介します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/overseas-business-trip-entry-requirements.html" class="column-card" aria-label="海外出張の準備｜パスポート・ビザ・電子渡航認証を確認 を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/first-overseas-business-trip-entry-requirements/1.jpg" alt="海外出張前にパスポート・航空券・スマホで入国条件を確認するイメージ" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">海外出張・準備</div>
-              <h3 class="column-card-title">海外出張の準備｜パスポート・ビザ・電子渡航認証を確認</h3>
-              <p class="column-card-description">海外出張の準備で確認したい、パスポートの残存期間、ビザ、電子渡航認証。長期出張や経由便を含め、渡航前に確認したい入国条件を紹介します。</p>
-            </div>
-          </a>
-
-          <a href="/contents/3way-business-bag-vs-backpack.html" class="column-card" aria-label="3WAYビジネスバッグと3WAYビジネスリュックを考える を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/3way-business-bag-vs-backpack/7.jpg" alt="3WAYビジネスバッグと3WAYビジネスリュックの違いを表した図解" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">3WAYバッグを考える</div>
-              <h3 class="column-card-title">3WAYビジネスバッグと3WAYビジネスリュックを考える</h3>
-              <p class="column-card-description">「背負うことができるビジネスバッグ」と「横持ちもできるビジネスリュック」。何を基本に設計しているのかという視点から、両者の違いと選び方を考えます。</p>
-            </div>
-          </a>
-
-          <a href="/contents/3way-business-bag-history.html" class="column-card" aria-label="3WAYビジネスバッグとビジネスリュックの歴史を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/3way-business-bag-history/01.jpg" alt="3WAYビジネスバッグとビジネスリュックの歴史を表した図解" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">ビジネスバッグの歴史</div>
-              <h3 class="column-card-title">3WAYビジネスバッグとビジネスリュックの歴史</h3>
-              <p class="column-card-description">1907年の三徳鞄からPORTER、クールビズ、東日本大震災、現在まで。横持ち3WAYとビジネスリュック、2つの流れを同じ年表で振り返ります。</p>
-            </div>
-          </a>
-
-          <a href="/contents/multi-room-business-bag.html" class="column-card" aria-label="マルチルームビジネスバッグを考える を読む">
-            <div class="column-card-thumb">
-              <img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="1ルーム・2ルーム・3ルームのマルチルームビジネスバッグ構造比較" loading="lazy">
-            </div>
-            <div class="column-card-copy">
-              <div class="column-card-category">ビジネスバッグを考える</div>
-              <h3 class="column-card-title">マルチルームビジネスバッグを考える</h3>
-              <p class="column-card-description">2ルーム・3ルームのビジネスバッグを実際に使った経験と、バッグを作る立場の視点から、メリット・デメリット、マチ拡張、収納の選び方を考えます。</p>
-            </div>
-          </a>
+          <a href="/contents/overseas-business-trip-sim-esim-roaming.html" class="column-card" aria-label="海外出張のスマホ通信費を比較｜SIM・eSIM・海外ローミングはどれが安い？ を読む"><div class="column-card-thumb"><img src="/contents/overseas-business-trip-sim-esim-roaming/sim.jpg" alt="海外出張でSIM・eSIM・海外ローミングなどのスマホ通信手段を利用するイメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・通信</div><h3 class="column-card-title">海外出張のスマホ通信費を比較｜SIM・eSIM・海外ローミングはどれが安い？</h3><p class="column-card-description">中国・ASEAN諸国について、現地SIM、日本購入eSIM、ahamo、楽天モバイル、docomo、au、SoftBank、WiFiBOXの7日・30日料金と、店舗・ホテルWi-Fiの実用度を比較します。</p></div></a>
+          <a href="/contents/overseas-business-trip-payment-exchange.html" class="column-card" aria-label="海外出張 現地での決済と両替について を読む"><div class="column-card-thumb"><img src="/assets/img/contents/overseas-business-trip-payment-exchange/1.jpg" alt="海外出張先での決済・両替方法を考えるイメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・決済・両替</div><h3 class="column-card-title">海外出張　現地での決済と両替について</h3><p class="column-card-description">中国・ASEAN各国の現金持ち込み・持ち出し、カード・QR決済、Wise、銀行・市内・空港の両替コスト、余った現地通貨を日本円へ戻す方法を比較します。</p></div></a>
+          <a href="/contents/overseas-business-trip-airport-access.html" class="column-card" aria-label="海外出張、空港までの交通手段は？ 私が空港バスに行きついた理由 を読む"><div class="column-card-thumb"><img src="/assets/img/contents/overseas-business-trip-airport-access/1.jpg" alt="通勤時間帯の駅ホームで2個のスーツケースを持つ海外出張中のビジネスマン" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・空港アクセス</div><h3 class="column-card-title">海外出張、空港までの交通手段は？ 私が空港バスに行きついた理由</h3><p class="column-card-description">マイカー、電車、空港バスを利用してきた経験から、海外出張で空港まで移動する方法と、空港連絡バス・リムジンバスの快適さや荷物の注意点を紹介します。</p></div></a>
+          <a href="/contents/overseas-business-trip-packing.html" class="column-card" aria-label="海外出張の荷物｜機内持ち込み・預け荷物に何を入れる？ を読む"><div class="column-card-thumb"><img src="/assets/img/contents/overseas-business-trip-packing/1.jpg" alt="海外出張の機内持ち込み・預け荷物をスーツケース、キャリー、ビジネスリュックに分けるイメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・荷物</div><h3 class="column-card-title">海外出張の荷物｜機内持ち込み・預け荷物に何を入れる？</h3><p class="column-card-description">海外出張の機内持ち込み・預け荷物に何を入れる？10年間の出張経験から、3つのバッグ構成別に荷物の分け方を紹介します。</p></div></a>
+          <a href="/contents/overseas-business-trip-luggage.html" class="column-card" aria-label="海外出張のバッグ・スーツケース｜荷物の組み合わせと選び方 を読む"><div class="column-card-thumb"><img src="/assets/img/contents/first-overseas-business-trip-luggage/7.jpg" alt="大型スーツケース、機内持ち込みキャリーケース、ビジネスリュックを組み合わせた海外出張の荷物イメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・バッグ</div><h3 class="column-card-title">海外出張のバッグ・スーツケース｜荷物の組み合わせと選び方</h3><p class="column-card-description">大型スーツケース、機内持ち込みキャリーケース、3WAYビジネスリュックの使い分けと、移動を快適にする荷物の組み合わせを実体験から紹介します。</p></div></a>
+          <a href="/contents/overseas-business-trip-items.html" class="column-card" aria-label="海外出張の持ち物｜必要なもの・持っていくと便利なもの を読む"><div class="column-card-thumb"><img src="/assets/img/contents/first-overseas-business-trip-items.html/2.jpg" alt="海外出張で持っていくことをおすすめするもののイメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・持ち物</div><h3 class="column-card-title">海外出張の持ち物｜必要なもの・持っていくと便利なもの</h3><p class="column-card-description">海外出張で必要なパスポートや入出国情報と、Eチケット、充電用品、変換プラグ、上着など、持っていくと便利なものを実体験から紹介します。</p></div></a>
+          <a href="/contents/overseas-business-trip-entry-requirements.html" class="column-card" aria-label="海外出張の準備｜パスポート・ビザ・電子渡航認証を確認 を読む"><div class="column-card-thumb"><img src="/assets/img/contents/first-overseas-business-trip-entry-requirements/1.jpg" alt="海外出張前にパスポート・航空券・スマホで入国条件を確認するイメージ" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">海外出張・準備</div><h3 class="column-card-title">海外出張の準備｜パスポート・ビザ・電子渡航認証を確認</h3><p class="column-card-description">海外出張の準備で確認したい、パスポートの残存期間、ビザ、電子渡航認証。長期出張や経由便を含め、渡航前に確認したい入国条件を紹介します。</p></div></a>
+          <a href="/contents/3way-business-bag-vs-backpack.html" class="column-card" aria-label="3WAYビジネスバッグと3WAYビジネスリュックを考える を読む"><div class="column-card-thumb"><img src="/assets/img/contents/3way-business-bag-vs-backpack/7.jpg" alt="3WAYビジネスバッグと3WAYビジネスリュックの違いを表した図解" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">3WAYバッグを考える</div><h3 class="column-card-title">3WAYビジネスバッグと3WAYビジネスリュックを考える</h3><p class="column-card-description">「背負うことができるビジネスバッグ」と「横持ちもできるビジネスリュック」。何を基本に設計しているのかという視点から、両者の違いと選び方を考えます。</p></div></a>
+          <a href="/contents/3way-business-bag-history.html" class="column-card" aria-label="3WAYビジネスバッグとビジネスリュックの歴史を読む"><div class="column-card-thumb"><img src="/assets/img/contents/3way-business-bag-history/01.jpg" alt="3WAYビジネスバッグとビジネスリュックの歴史を表した図解" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">ビジネスバッグの歴史</div><h3 class="column-card-title">3WAYビジネスバッグとビジネスリュックの歴史</h3><p class="column-card-description">1907年の三徳鞄からPORTER、クールビズ、東日本大震災、現在まで。横持ち3WAYとビジネスリュック、2つの流れを同じ年表で振り返ります。</p></div></a>
+          <a href="/contents/multi-room-business-bag.html" class="column-card" aria-label="マルチルームビジネスバッグを考える を読む"><div class="column-card-thumb"><img src="/assets/img/contents/multi-room-business-bag/multi-room-business-bag01.jpg" alt="1ルーム・2ルーム・3ルームのマルチルームビジネスバッグ構造比較" loading="lazy"></div><div class="column-card-copy"><div class="column-card-category">ビジネスバッグを考える</div><h3 class="column-card-title">マルチルームビジネスバッグを考える</h3><p class="column-card-description">2ルーム・3ルームのビジネスバッグを実際に使った経験と、バッグを作る立場の視点から、メリット・デメリット、マチ拡張、収納の選び方を考えます。</p></div></a>
         </div>
       </div>
     </section>
   </main>
 
   <div data-include="/includes/footer.html" aria-busy="true"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    (function () {
-      async function includeFragments() {
-        const nodes = document.querySelectorAll('[data-include]');
-        await Promise.all([...nodes].map(async (el) => {
-          const file = el.getAttribute('data-include');
-          try {
-            const resp = await fetch(file, { cache: 'no-cache' });
-            if (!resp.ok) throw new Error(resp.status + ' ' + resp.statusText);
-            const html = await resp.text();
-            el.outerHTML = html;
-          } catch (e) {
-            console.error('Include failed:', file, e);
-          }
-        }));
-      }
-      document.addEventListener('DOMContentLoaded', async () => {
-        await includeFragments();
-        const y = document.getElementById('y');
-        if (y) y.textContent = new Date().getFullYear();
-      });
-    })();
-  </script>
+  <script>(function(){async function includeFragments(){const nodes=document.querySelectorAll('[data-include]');await Promise.all([...nodes].map(async(el)=>{const file=el.getAttribute('data-include');try{const resp=await fetch(file,{cache:'no-cache'});if(!resp.ok)throw new Error(resp.status+' '+resp.statusText);const html=await resp.text();el.outerHTML=html;}catch(e){console.error('Include failed:',file,e);}}));}document.addEventListener('DOMContentLoaded',async()=>{await includeFragments();const y=document.getElementById('y');if(y)y.textContent=new Date().getFullYear();});})();</script>
 </body>
 </html>
