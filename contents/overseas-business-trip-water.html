@@ -23,12 +23,18 @@
     .article-float-figure{margin:0 0 1rem;}
     .article-float-group::after{content:"";display:block;clear:both;}
     .water-comment-layout{margin-top:.25rem;}
+    .water-comment-layout::after{content:"";display:block;clear:both;}
     .water-comment-image{margin:1rem 0 0;}
+    @media(max-width:991.98px){
+      .water-comment-layout{display:flex;flex-direction:column;}
+      .water-comment-before-mobile-image{order:1;}
+      .water-comment-image{order:2;margin:.25rem 0 1rem;}
+      .water-comment-after-mobile-image{order:3;}
+    }
     @media(min-width:992px){
       .article-float-figure{width:42%;}
       .article-float-figure.float-right{float:right;margin:0 0 1rem 1.5rem;}
-      .water-comment-layout{display:grid;grid-template-columns:minmax(0,1fr) 38%;gap:1.5rem;align-items:start;}
-      .water-comment-image{margin:0;}
+      .water-comment-image{float:right;width:38%;margin:0 0 1rem 1.5rem;}
     }
     .water-table-wrap{margin:1.25rem 0;overflow-x:auto;border:1px solid var(--line,#d9dee3);border-radius:10px;}
     .water-table{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:.94rem;line-height:1.5;}
@@ -141,12 +147,17 @@
             </table>
           </div>
           <div class="water-comment-layout">
-            <div class="water-comment-text">
+            <figure class="water-comment-image">
+              <img src="/assets/img/contents/overseas-business-trip-water/2.jpg" alt="水道の蛇口からコップに水を注ぐイメージ" width="1536" height="1024" class="img-fluid w-100 rounded-3 border" loading="lazy">
+            </figure>
+            <div class="water-comment-before-mobile-image">
               <p>そんな私も、実はコロナ禍までは、水道水を沸かして飲むことはありませんでした。</p>
               <p>私は毎朝、コーヒーを1〜2杯淹れて飲みます。コロナ禍にミネラルウォーターを買いに行けなくなり、料理用に使っていたBritaの浄水器でろ過した水道水を沸かし、コーヒーを淹れるようになりました。</p>
               <p>水道水でコーヒーを淹れなかった理由は、味です。当時、実際に飲み比べてみて、なんとなくミネラルウォーターのほうがおいしいと感じていました。</p>
               <p>しかし、毎日Britaの浄水器を通した水道水を沸かして飲んでいるうちに、味の違いが気にならなくなりました。ミネラルウォーターで淹れたコーヒーと飲み比べても、私には違いを感じなくなりました。</p>
               <p>今では、ミネラルウォーターを買いに行けますが、浄水器でろ過した水道水を沸かして、コーヒーを淹れています。</p>
+            </div>
+            <div class="water-comment-after-mobile-image">
               <p>さて、表の話に戻ります。</p>
               <p>こうした経験をしている私から見ると、今回のベトナムの調査結果は、水道水を沸かして飲んでいる人が、私が想像していたよりも少ない結果でした。</p>
               <p>「水道水は使わないようにしている」と書く人のほうが、実際にお腹を壊したなどの経験があり、情報発信する動機が生まれやすいのかな、と考えました。</p>
@@ -154,9 +165,6 @@
               <p>私自身は、この表を見るとき、「ほとんどの人が飲まない国なら、私も飲まない」という見方をします。</p>
               <p>これは、あくまで上記のような経験を持つ私自身の考え方であり、水道水を沸かして飲むことをおすすめするものではありません。実際に試す場合は、現地の最新情報をご確認のうえ、自己責任でお願いします。</p>
             </div>
-            <figure class="water-comment-image">
-              <img src="/assets/img/contents/overseas-business-trip-water/2.jpg" alt="水道の蛇口からコップに水を注ぐイメージ" width="1536" height="1024" class="img-fluid w-100 rounded-3 border" loading="lazy">
-            </figure>
           </div>
           <p class="article-back-top"><a href="#article-top">↑ 先頭に戻る</a></p>
         </div>
