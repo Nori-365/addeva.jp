@@ -27,6 +27,9 @@
     .battery-rule-list li{margin-bottom:.45rem;}
     .battery-rule-list li:last-child{margin-bottom:0;}
     .battery-note{margin:1rem 0 0;padding:14px 16px;background:#f7f8fa;border:1px solid var(--line,#d9dee3);border-radius:10px;color:#555e67;font-size:.9rem;line-height:1.65;}
+    .country-jump-nav{display:flex;flex-wrap:wrap;align-items:center;gap:.15rem .45rem;margin:.55rem 0 .9rem;font-size:.95rem;line-height:1.7;}
+    .country-jump-nav a{text-underline-offset:3px;white-space:nowrap;}
+    .country-jump-nav .sep{color:#8a929a;}
     .battery-table-wrap{margin:1.25rem 0;overflow-x:auto;border:1px solid var(--line,#d9dee3);border-radius:10px;-webkit-overflow-scrolling:touch;}
     .battery-table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;font-size:.9rem;line-height:1.5;}
     .battery-table .col-country{width:12%;}
@@ -46,12 +49,13 @@
     .status-ng{color:#a12828;}
     .status-check{color:#775d00;}
     .status-info{color:#5b6470;}
-    #article-top,.article-content-section h2[id]{scroll-margin-top:calc(var(--addeva-header-height, 64px) + env(safe-area-inset-top, 0px) + 16px);}
+    #article-top,.article-content-section h2[id],.country-rule-row[id]{scroll-margin-top:calc(var(--addeva-header-height, 64px) + env(safe-area-inset-top, 0px) + 16px);}
     @media(max-width:767.98px){
       .article-page .article-hero{padding:28px 0 20px;}
       .article-page .article-intro{padding:16px 0;}
       .article-page .article-content-section{padding:20px 0 28px;}
       .article-body{font-size:1rem;line-height:1.75;}
+      .country-jump-nav{font-size:.9rem;gap:.1rem .4rem;}
       .battery-table-wrap{overflow-x:visible;}
       .battery-table{font-size:.76rem;min-width:0;width:100%;table-layout:fixed;line-height:1.4;}
       .battery-table .col-country{width:15%;}
@@ -120,14 +124,32 @@
             <li><strong>機内では、モバイルバッテリーの充電と使用（スマホなどへ給電）をしない</strong>。</li>
           </ul>
           <p class="mt-3">まずは、この日本のルールを押さえてください。</p>
-          <p>そのうえで、次の渡航先の航空会社欄の注意点をご確認ください。<br>特に、日本では160Whまで可ですが、各国では、100Wh超の場合に申請が必要な国や、NGな国があることに注意が必要です。</p>
+          <p>そのうえで、次の渡航先の航空会社欄の注意点をご確認ください。</p>
         </div>
       </section>
 
       <section class="section article-content-section" aria-labelledby="country-airline-rules">
         <div class="container container-narrow article-body">
           <h2 class="h3" id="country-airline-rules">2．中国＋ASEAN諸国別、航空会社別の注意点</h2>
-          <div class="battery-note"><strong>※2026年9月現在。</strong>モバイルバッテリーの規定は、今後変更される可能性があります。<br>以下の「100Wh超」は、<strong>100Wh超～160Wh以下</strong>を意味します。<br>「可」は、航空会社の承認などを条件に持ち込み可能。「NG」は持ち込み不可。「要確認」は公開情報だけでは条件を確定できなかったものです。</div>
+          <p>調査して、最も重要なポイントは、バッテリーの容量制限が日本とは異なるという点です。</p>
+          <p>日本では160Whまで可ですが、各国では、100Wh超の場合に申請が必要な国や、NGな国があることに特に注意が必要です。</p>
+          <p>国ごとの注意点とは別に、ご利用される航空会社の容量制限を、ご確認ください。</p>
+          <p>表が大きいので、各国へのジャンプリンクを用意しました。</p>
+          <nav class="country-jump-nav" aria-label="国別ジャンプリンク">
+            <a href="#country-china">中国</a><span class="sep">/</span>
+            <a href="#country-vietnam">ベトナム</a><span class="sep">/</span>
+            <a href="#country-thailand">タイ</a><span class="sep">/</span>
+            <a href="#country-singapore">シンガポール</a><span class="sep">/</span>
+            <a href="#country-malaysia">マレーシア</a><span class="sep">/</span>
+            <a href="#country-philippines">フィリピン</a><span class="sep">/</span>
+            <a href="#country-brunei">ブルネイ</a><span class="sep">/</span>
+            <a href="#country-indonesia">インドネシア</a><span class="sep">/</span>
+            <a href="#country-cambodia">カンボジア</a><span class="sep">/</span>
+            <a href="#country-laos">ラオス</a><span class="sep">/</span>
+            <a href="#country-myanmar">ミャンマー</a><span class="sep">/</span>
+            <a href="#country-timor-leste">東ティモール</a>
+          </nav>
+          <div class="battery-note">以下の「100Wh超」は、<strong>100Wh超～160Wh以下</strong>を意味します。</div>
           <div class="battery-table-wrap" role="region" aria-label="中国・ASEAN諸国のモバイルバッテリー持ち込みルール比較" tabindex="0">
             <table class="battery-table">
               <colgroup>
@@ -145,7 +167,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="country-rule-row"><th class="country" scope="row">中国</th><td class="country-rule" colspan="3"><strong>中国国内線はCCC（3C）マーク必須。</strong> マークなし・不鮮明・リコール対象品は不可。</td></tr>
+                <tr class="country-rule-row" id="country-china"><th class="country" scope="row">中国</th><td class="country-rule" colspan="3"><strong>中国国内線はCCC（3C）マーク必須。</strong> マークなし・不鮮明・リコール対象品は不可。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Air China</td><td class="status status-ok">可</td><td class="action">承認必要。一般便の申請時期は明記なし</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">China Eastern</td><td class="status status-ok">可</td><td class="action">申請時期は明記なし</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">China Southern</td><td class="status status-ok">可</td><td class="action"><strong>チェックイン時に申告・承認</strong></td></tr>
@@ -159,7 +181,7 @@
                 <tr><td class="country-spacer"></td><td class="airline">Beijing Capital Airlines</td><td class="status status-ok">可</td><td class="action">申請時期は明記なし</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">XiamenAir</td><td class="status status-check">要確認</td><td class="action">要確認</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">ベトナム</th><td class="country-rule" colspan="3"><strong>機内ではバッグから取り出し、見える場所で保管する。</strong> ※Vietnam Airlines とVietravel Airlines は、異なる航空会社です。</td></tr>
+                <tr class="country-rule-row" id="country-vietnam"><th class="country" scope="row">ベトナム</th><td class="country-rule" colspan="3"><strong>機内ではバッグから取り出し、見える場所で保管する。</strong> ※Vietnam Airlines とVietravel Airlines は、異なる航空会社です。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Vietnam Airlines</td><td class="status status-ok">可</td><td class="action"><strong>事前承認が必要。加えて、Power Bankはチェックインカウンターで申告</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Pacific Airlines</td><td class="status status-check">要確認</td><td class="action">100Wh超の最新の具体的手続きを確認できず</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">VASCO</td><td class="status status-check">要確認</td><td class="action">100Wh超の最新の具体的手続きを確認できず</td></tr>
@@ -168,7 +190,7 @@
                 <tr><td class="country-spacer"></td><td class="airline">Sun PhuQuoc Airways</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Vietravel Airlines</td><td class="status status-check">要確認</td><td class="action">100Wh超の最新の具体的手続きを確認できず</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">タイ</th><td class="country-rule" colspan="3">100Wh超～160Wh以下は国の規定上、航空会社の承認対象。ただし各社がより厳しい規定を設定。</td></tr>
+                <tr class="country-rule-row" id="country-thailand"><th class="country" scope="row">タイ</th><td class="country-rule" colspan="3">100Wh超～160Wh以下は国の規定上、航空会社の承認対象。ただし各社がより厳しい規定を設定。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Thai Airways</td><td class="status status-ng">NG</td><td class="action">最新のPower Bank専用規定では<strong>100Wh以下・2個まで</strong>。100Wh超は不可。一般の予備電池規定とは別扱いです。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Bangkok Airways</td><td class="status status-ng">NG</td><td class="action">2026年6月1日更新規定で、Power Bankは<strong>100Wh以下のみ</strong>。100～160Whの「予備電池」は承認制ですが、Power Bankは明確に禁止。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Thai AirAsia</td><td class="status status-ng">NG</td><td class="action">Power Bankは<strong>100Wh以下・2個まで</strong>。100Wh超は禁止。</td></tr>
@@ -177,11 +199,11 @@
                 <tr><td class="country-spacer"></td><td class="airline">Thai Vietjet</td><td class="status status-check">要確認</td><td class="action">2026年のPower Bank専用最新公式情報を十分に確認できず</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Nok Air</td><td class="status status-check">要確認</td><td class="action">同様に最新Power Bank専用規定を確認できず</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">シンガポール</th><td class="country-rule" colspan="3"><strong>100Wh超～160Wh以下は、空港到着前に航空会社の承認を取る必要がある。</strong></td></tr>
+                <tr class="country-rule-row" id="country-singapore"><th class="country" scope="row">シンガポール</th><td class="country-rule" colspan="3"><strong>100Wh超～160Wh以下は、空港到着前に航空会社の承認を取る必要がある。</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Singapore Airlines</td><td class="status status-ok">可</td><td class="action"><strong>事前承認。メーカー・型番・Whを航空会社へ事前連絡</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Scoot</td><td class="status status-ok">可</td><td class="action"><strong>事前承認。メーカー・型番・Whを航空会社へ事前連絡</strong></td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">マレーシア</th><td class="country-rule" colspan="3"><strong>2026年4月30日から、Power Bankは1人2個まで。</strong> 機内での充電・給電は禁止。頭上収納を避けて手元で管理し、短絡防止を行う。100Wh超の扱いは航空会社によって異なる。</td></tr>
+                <tr class="country-rule-row" id="country-malaysia"><th class="country" scope="row">マレーシア</th><td class="country-rule" colspan="3"><strong>2026年4月30日から、Power Bankは1人2個まで。</strong> 機内での充電・給電は禁止。頭上収納を避けて手元で管理し、短絡防止を行う。100Wh超の扱いは航空会社によって異なる。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Malaysia Airlines</td><td class="status status-ok">可</td><td class="action"><strong>航空会社承認必要。申請方法・時期は明記なし</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">AirAsia Malaysia</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">AirAsia X</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
@@ -189,7 +211,7 @@
                 <tr><td class="country-spacer"></td><td class="airline">Batik Air Malaysia</td><td class="status status-ng">NG</td><td class="action">Power Bankは100Whまたは20,000mAh以下</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">AirBorneo</td><td class="status status-check">要確認</td><td class="action">100Wh超の現行公式情報を明確に確認できず</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">フィリピン</th><td class="country-rule" colspan="3">国の規定では100Wh超～160Wh以下は航空会社承認で持ち込み可能だが、主要航空会社はより厳しい。</td></tr>
+                <tr class="country-rule-row" id="country-philippines"><th class="country" scope="row">フィリピン</th><td class="country-rule" colspan="3">国の規定では100Wh超～160Wh以下は航空会社承認で持ち込み可能だが、主要航空会社はより厳しい。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Philippine Airlines</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">PAL Express</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Cebu Pacific</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
@@ -197,10 +219,10 @@
                 <tr><td class="country-spacer"></td><td class="airline">AirAsia Philippines</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Sunlight Air</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">ブルネイ</th><td class="country-rule" colspan="3">Royal Bruneiでは、<strong>バッグから取り出し、袋などで保護して座席前ポケットで保管する。</strong></td></tr>
+                <tr class="country-rule-row" id="country-brunei"><th class="country" scope="row">ブルネイ</th><td class="country-rule" colspan="3">Royal Bruneiでは、<strong>バッグから取り出し、袋などで保護して座席前ポケットで保管する。</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Royal Brunei</td><td class="status status-ok">可</td><td class="action"><strong>事前承認</strong></td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">インドネシア</th><td class="country-rule" colspan="3">国の規定では100Wh超～160Wh以下は航空会社の承認で持ち込み可能。</td></tr>
+                <tr class="country-rule-row" id="country-indonesia"><th class="country" scope="row">インドネシア</th><td class="country-rule" colspan="3">国の規定では100Wh超～160Wh以下は航空会社の承認で持ち込み可能。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Garuda Indonesia</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Citilink</td><td class="status status-ok">可</td><td class="action">承認必要。申請時期は明記なし</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Lion Air</td><td class="status status-ok">可</td><td class="action">承認必要。申請時期は明記なし</td></tr>
@@ -212,28 +234,29 @@
                 <tr><td class="country-spacer"></td><td class="airline">TransNusa</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Sriwijaya Air / NAM Air</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">カンボジア</th><td class="country-rule" colspan="3">航空会社によって異なる。</td></tr>
+                <tr class="country-rule-row" id="country-cambodia"><th class="country" scope="row">カンボジア</th><td class="country-rule" colspan="3">航空会社によって異なる。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Air Cambodia</td><td class="status status-ok">可</td><td class="action">申告方法の明記なし</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">AirAsia Cambodia</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Sky Angkor Airlines</td><td class="status status-check">要確認</td><td class="action">航空会社へ確認。申請時期不明</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Cambodia Airways</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">ラオス</th><td class="country-rule" colspan="3">国としてICAO・IATA基準に従っているが、モバイルバッテリーの詳細な公開情報が少ない。</td></tr>
+                <tr class="country-rule-row" id="country-laos"><th class="country" scope="row">ラオス</th><td class="country-rule" colspan="3">国としてICAO・IATA基準に従っているが、モバイルバッテリーの詳細な公開情報が少ない。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Lao Airlines</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Lao Skyway</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">ミャンマー</th><td class="country-rule" colspan="3">航空会社による差があり、公開情報が少ない。</td></tr>
+                <tr class="country-rule-row" id="country-myanmar"><th class="country" scope="row">ミャンマー</th><td class="country-rule" colspan="3">航空会社による差があり、公開情報が少ない。</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Myanmar National Airlines</td><td class="status status-ng">NG</td><td class="action">―</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Myanmar Airways International</td><td class="status status-check">要確認</td><td class="action">事前確認が必要</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Mingalar Aviation</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Mann Yadanarpon Airlines</td><td class="status status-check">要確認</td><td class="action">要確認</td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Air Thanlwin</td><td class="status status-info">情報不足</td><td class="action">要確認</td></tr>
 
-                <tr class="country-rule-row"><th class="country" scope="row">東ティモール</th><td class="country-rule" colspan="3"><strong>情報不足。</strong></td></tr>
+                <tr class="country-rule-row" id="country-timor-leste"><th class="country" scope="row">東ティモール</th><td class="country-rule" colspan="3"><strong>情報不足。</strong></td></tr>
                 <tr><td class="country-spacer"></td><td class="airline">Aero Dili</td><td class="status status-info">情報不足</td><td class="action">利用前に要確認</td></tr>
               </tbody>
             </table>
           </div>
+          <div class="battery-note"><strong>※2026年9月現在。</strong>モバイルバッテリーの規定は、今後変更される可能性があります。<br>「可」は、航空会社の承認などを条件に持ち込み可能。「NG」は持ち込み不可。「要確認」は公開情報だけでは条件を確定できなかったものです。</div>
         </div>
       </section>
 
