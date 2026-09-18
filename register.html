@@ -931,6 +931,10 @@
         } catch (e) {
           const msg = (e && e.message) ? e.message : "確認コードの送信に失敗しました。";
 
+          if (window.turnstile && typeof window.turnstile.reset === 'function') {
+            window.turnstile.reset();
+          }
+
           if (msg.includes("404")) {
             showError("APIが見つかりません（404）。サーバー側で /api/addeva/signup/email-otp/start が有効か、/api/openapi.json で email-otp を検索して確認してください。");
             return;
@@ -942,9 +946,6 @@
           }
 
           showError(msg);
-          if (window.turnstile && typeof window.turnstile.reset === 'function') {
-            window.turnstile.reset();
-          }
         }
       }
 
