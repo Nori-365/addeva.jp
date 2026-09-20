@@ -27,6 +27,22 @@
     .article-body p:last-child{margin-bottom:0;}
     .article-note{margin-bottom:1rem!important;}
     .visa-check-table{clear:both;margin:1.25rem 0 1.5rem;}
+    .passport-check-table{clear:both;margin:1.25rem 0 1.5rem;}
+    .passport-check-table .table{font-size:.94rem;line-height:1.6;}
+    .passport-check-table .table th,.passport-check-table .table td{vertical-align:top;overflow-wrap:anywhere;}
+    .passport-check-table .table th[scope="row"]{white-space:nowrap;}
+    @media (max-width:991.98px){
+      .passport-check-table .table{display:block;width:100%;min-width:0;}
+      .passport-check-table .table thead{display:none;}
+      .passport-check-table .table tbody{display:block;}
+      .passport-check-table .table tbody tr{display:block;margin:0 0 .75rem;border:1px solid var(--bs-border-color);border-radius:.5rem;overflow:hidden;}
+      .passport-check-table .table tbody tr:last-child{margin-bottom:0;}
+      .passport-check-table .table tbody tr > *{display:block;width:100%;white-space:normal;padding:.55rem .65rem;border:0!important;overflow-wrap:anywhere;}
+      .passport-check-table .table tbody th[scope="row"]{background:var(--bs-tertiary-bg)!important;font-weight:700;}
+      .passport-check-table .table tbody td+td{border-top:1px solid var(--bs-border-color)!important;}
+      .passport-check-table .passport-table-frame{border:0!important;}
+    }
+
     .visa-check-table .table{min-width:720px;font-size:.94rem;line-height:1.6;}
     .visa-check-table th,.visa-check-table td{vertical-align:top;}
     .visa-check-table th,.visa-check-table td:first-child{white-space:nowrap;}
@@ -144,7 +160,33 @@
             国によって、入国時に必要なパスポートの残存有効期間が決められています。<br>
             不足している場合はパスポートの更新が必要になるため、航空券やホテルを予約する前に確認することをおすすめします。</p>
 
-            <h2 class="h3">2. 海外出張でビザが必要か確認する</h2>
+            <div class="passport-check-table">
+              <h3 class="h5 mb-2">中国・ASEAN各国｜パスポートの残存有効期間</h3>
+              <p class="small text-secondary mb-2">日本国籍・一般旅券で短期渡航する場合の目安（2026年9月20日確認）。各国の最新条件は、表の「公式情報」から確認してください。</p>
+              <div class="passport-table-frame border rounded-3 p-2 p-lg-0">
+                <table class="table table-striped table-bordered mb-0">
+                  <thead class="table-light">
+                    <tr><th scope="col">渡航先</th><th scope="col">必要な残存有効期間</th><th scope="col">公式情報</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><th scope="row">中国</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>滞在予定期間を満たすこと</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://jp.china-embassy.gov.cn/jpn/lszc/hzqzyw/202411/t20241130_11535774.htm" target="_blank" rel="noopener noreferrer">駐日中国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">ベトナム</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.vn.emb-japan.go.jp/itpr_ja/JP_Shuttsunyukoku.html" target="_blank" rel="noopener noreferrer">在ベトナム日本国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">タイ</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://thaiembassy.at/en/tourist-visa-exemption.html" target="_blank" rel="noopener noreferrer">タイ王国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">マレーシア</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.my.emb-japan.go.jp/itpr_ja/11_000001_02331.html" target="_blank" rel="noopener noreferrer">在マレーシア日本国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">シンガポール</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.ica.gov.sg/enter-transit-depart/entering-singapore" target="_blank" rel="noopener noreferrer">シンガポール入国管理局 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">インドネシア</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.id.emb-japan.go.jp/itpr_ja/oshirase25_39.html" target="_blank" rel="noopener noreferrer">在インドネシア日本国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">フィリピン</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>滞在予定期間＋6か月を推奨</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.anzen.mofa.go.jp/m/mbimmigration_013.html" target="_blank" rel="noopener noreferrer">外務省 海外安全情報 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">カンボジア</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月超</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.evisa.gov.kh/information/tourist_visa/4?vcode=46" target="_blank" rel="noopener noreferrer">カンボジア政府 e-Visa <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">ラオス</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.anzen.mofa.go.jp/m/mbimmigration_020.html" target="_blank" rel="noopener noreferrer">外務省 海外安全情報 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">ミャンマー</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.mofa.gov.mm/consular-information/on-arrival-visa-information/" target="_blank" rel="noopener noreferrer">ミャンマー外務省 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">ブルネイ</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://www.bn.emb-japan.go.jp/itpr_ja/consul-7.html" target="_blank" rel="noopener noreferrer">在ブルネイ日本国大使館 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                    <tr><th scope="row">東ティモール</th><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">必要な残存有効期間</span>入国時6か月以上</td><td><span class="d-block d-lg-none fw-semibold small text-secondary mb-1">公式情報</span><a href="https://customs.gov.tl/travelers/obtaining-a-visa/" target="_blank" rel="noopener noreferrer">東ティモール税関当局 <span aria-hidden="true" class="small">↗</span></a></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+                        <h2 class="h3">2. 海外出張でビザが必要か確認する</h2>
             <p>日本のパスポートでは、短期滞在なら多くの国へビザなしで入国できますが、すべての国ではありません。特に長期出張の場合は、<strong>滞在期間に合わせて</strong>、必要なビザや入国条件を確認してください。<br>
             海外出張の場合は、渡航先の商用での入国条件を確認してください。</p>
 
