@@ -43,21 +43,18 @@
 
     .arrival-check-table{clear:both;margin:1.25rem 0 1.5rem;}
     .arrival-check-table .table{width:100%;min-width:0;table-layout:fixed;font-size:.94rem;line-height:1.6;}
-    .arrival-check-table .table th,.arrival-check-table .table td{vertical-align:top;overflow-wrap:anywhere;}
-    .arrival-check-table .table th:nth-child(1){width:21%;}
+    .arrival-check-table .table th,.arrival-check-table .table td{vertical-align:middle;overflow-wrap:anywhere;}
+    .arrival-check-table .table th:nth-child(1){width:22%;}
     .arrival-check-table .table th:nth-child(2){width:30%;}
-    .arrival-check-table .table th:nth-child(3){width:49%;}
+    .arrival-check-table .table th:nth-child(3){width:48%;}
     @media (max-width:767.98px){
-      .arrival-check-table .table{display:block;font-size:.9rem;}
-      .arrival-check-table .table thead{display:none;}
-      .arrival-check-table .table tbody{display:block;}
-      .arrival-check-table .table tbody tr{display:grid;grid-template-columns:32% minmax(0,1fr);margin:0 0 .6rem;border:1px solid var(--bs-border-color);border-radius:.5rem;overflow:hidden;}
-      .arrival-check-table .table tbody tr:last-child{margin-bottom:0;}
-      .arrival-check-table .table tbody tr > *{display:block;min-width:0;padding:.45rem .55rem;border:0!important;white-space:normal;}
-      .arrival-check-table .table tbody th[scope="row"]{background:var(--bs-tertiary-bg)!important;}
-      .arrival-check-table .table tbody td:nth-of-type(1){font-weight:600;}
-      .arrival-check-table .table tbody td:nth-of-type(2){grid-column:1/-1;border-top:1px solid var(--bs-border-color)!important;}
-      .arrival-check-table .arrival-table-frame{border:0!important;}
+      .arrival-check-table .table{font-size:.73rem;line-height:1.35;}
+      .arrival-check-table .table th,.arrival-check-table .table td{padding:.4rem .2rem;white-space:normal;overflow-wrap:normal;word-break:normal;}
+      .arrival-check-table .table th:nth-child(1){width:31%;}
+      .arrival-check-table .table th:nth-child(2){width:29%;}
+      .arrival-check-table .table th:nth-child(3){width:40%;}
+      .arrival-check-table .table tbody th[scope="row"]{white-space:nowrap;}
+      .arrival-check-table .table td a{overflow-wrap:anywhere;}
     }
     .visa-check-table .table{min-width:720px;font-size:.94rem;line-height:1.6;}
     .visa-check-table th,.visa-check-table td{vertical-align:top;}
@@ -243,24 +240,24 @@
             <div class="arrival-check-table">
               <h3 class="h5 mb-2">中国・ASEAN各国｜入国カード・事前申告の手続き</h3>
               <p class="small text-secondary mb-2">日本国籍・一般旅券で短期出張する場合の目安（2026年9月20日確認）。「なし」は、この表で対象とする一般入国者向けの入国カード・事前登録がないことを示します。</p>
-              <div class="arrival-table-frame border rounded-3 p-2 p-md-0">
+              <div class="arrival-table-frame border rounded-3">
                 <table class="table table-striped table-bordered mb-0">
                   <thead class="table-light">
                     <tr><th scope="col">渡航先</th><th scope="col">必要な手続き</th><th scope="col">手続き場所・オンライン登録</th></tr>
                   </thead>
                   <tbody>
-                    <tr><th scope="row">中国</th><td>外国人入国カード</td><td><a href="https://s.nia.gov.cn/ArrivalCardFillingPC/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">または到着時に記入</span></td></tr>
-                    <tr><th scope="row">ベトナム</th><td>なし（PAIは任意）</td><td><a href="https://prearrival.immigration.gov.vn/" target="_blank" rel="noopener noreferrer">PAIオンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">対象空港で任意</span></td></tr>
-                    <tr><th scope="row">タイ</th><td>TDAC</td><td><a href="https://tdac.immigration.go.th/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">入国前に登録</span></td></tr>
-                    <tr><th scope="row">マレーシア</th><td>MDAC</td><td><a href="https://imigresen-online.imi.gov.my/mdac/main" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">入国前に登録</span></td></tr>
-                    <tr><th scope="row">シンガポール</th><td>SG Arrival Card</td><td><a href="https://eservices.ica.gov.sg/sgarrivalcard/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">入国前に登録</span></td></tr>
-                    <tr><th scope="row">インドネシア</th><td>All Indonesia</td><td><a href="https://allindonesia.imigrasi.go.id/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">到着時の登録も可</span></td></tr>
-                    <tr><th scope="row">フィリピン</th><td>eTravel</td><td><a href="https://etravel.gov.ph/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">到着前72時間以内</span></td></tr>
-                    <tr><th scope="row">カンボジア</th><td>e-Arrival</td><td><a href="https://arrival.gov.kh/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">到着時の登録も可</span></td></tr>
-                    <tr><th scope="row">ラオス</th><td>LDIF（出入国カード）</td><td><a href="https://immigration.gov.la/en/registration/arrival/arrival-info" target="_blank" rel="noopener noreferrer">入国時のオンライン登録 <span aria-hidden="true">↗</span></a><br><a href="https://immigration.gov.la/en/registration/departure/departure-info" target="_blank" rel="noopener noreferrer">出国時のオンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">対象の空港・国境で必要</span></td></tr>
-                    <tr><th scope="row">ミャンマー</th><td>なし</td><td>―</td></tr>
-                    <tr><th scope="row">ブルネイ</th><td>E-Arrival Card／健康申告</td><td><a href="https://www.imm.gov.bn/" target="_blank" rel="noopener noreferrer">E-Arrival Card登録 <span aria-hidden="true">↗</span></a><br><a href="https://www.healthinfo.gov.bn/travel#/user/login" target="_blank" rel="noopener noreferrer">健康申告（BruHealth） <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">入国前に登録</span></td></tr>
-                    <tr><th scope="row">東ティモール</th><td>e-Declaration（到着申告）</td><td><a href="https://tilesw.customs.gov.tl/" target="_blank" rel="noopener noreferrer">オンライン登録 <span aria-hidden="true">↗</span></a><span class="d-block small text-secondary mt-1">到着5日前から登録可</span></td></tr>
+                    <tr><th scope="row">中国</th><td><span class="d-none d-md-inline">外国人入国カード</span><span class="d-md-none">入国カード</span></td><td><a href="https://s.nia.gov.cn/ArrivalCardFillingPC/" target="_blank" rel="noopener noreferrer" aria-label="中国：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">事前登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">または到着時に記入</span><span class="d-md-none">現地記入も可</span></span></td></tr>
+                    <tr><th scope="row">ベトナム</th><td><span class="d-none d-md-inline">なし（PAIは任意）</span><span class="d-md-none">なし（PAI任意）</span></td><td><a href="https://prearrival.immigration.gov.vn/" target="_blank" rel="noopener noreferrer" aria-label="ベトナム：PAIオンライン登録 ↗"><span class="d-none d-md-inline">PAIオンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">PAI登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">対象空港で任意</span></span></td></tr>
+                    <tr><th scope="row">タイ</th><td><span class="d-none d-md-inline">TDAC</span><span class="d-md-none">TDAC</span></td><td><a href="https://tdac.immigration.go.th/" target="_blank" rel="noopener noreferrer" aria-label="タイ：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">事前登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">入国前に登録</span></span></td></tr>
+                    <tr><th scope="row">マレーシア</th><td><span class="d-none d-md-inline">MDAC</span><span class="d-md-none">MDAC</span></td><td><a href="https://imigresen-online.imi.gov.my/mdac/main" target="_blank" rel="noopener noreferrer" aria-label="マレーシア：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">事前登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">入国前に登録</span></span></td></tr>
+                    <tr><th scope="row">シンガポール</th><td><span class="d-none d-md-inline">SG Arrival Card</span><span class="d-md-none">SG Arrival Card</span></td><td><a href="https://eservices.ica.gov.sg/sgarrivalcard/" target="_blank" rel="noopener noreferrer" aria-label="シンガポール：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">事前登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">入国前に登録</span></span></td></tr>
+                    <tr><th scope="row">インドネシア</th><td><span class="d-none d-md-inline">All Indonesia</span><span class="d-md-none">All Indonesia</span></td><td><a href="https://allindonesia.imigrasi.go.id/" target="_blank" rel="noopener noreferrer" aria-label="インドネシア：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">オンライン登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">到着時の登録も可</span><span class="d-md-none">到着時も可</span></span></td></tr>
+                    <tr><th scope="row">フィリピン</th><td><span class="d-none d-md-inline">eTravel</span><span class="d-md-none">eTravel</span></td><td><a href="https://etravel.gov.ph/" target="_blank" rel="noopener noreferrer" aria-label="フィリピン：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">オンライン登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">到着前72時間以内</span><span class="d-md-none">到着前72時間以内</span></span></td></tr>
+                    <tr><th scope="row">カンボジア</th><td><span class="d-none d-md-inline">e-Arrival</span><span class="d-md-none">e-Arrival</span></td><td><a href="https://arrival.gov.kh/" target="_blank" rel="noopener noreferrer" aria-label="カンボジア：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">オンライン登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">到着時の登録も可</span><span class="d-md-none">到着時も可</span></span></td></tr>
+                    <tr><th scope="row">ラオス</th><td><span class="d-none d-md-inline">LDIF（出入国カード）</span><span class="d-md-none">LDIF</span></td><td><a href="https://immigration.gov.la/en/registration/arrival/arrival-info" target="_blank" rel="noopener noreferrer" aria-label="ラオス：入国時のオンライン登録 ↗"><span class="d-none d-md-inline">入国時のオンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">入国登録 <span aria-hidden="true">↗</span></span></a><br><a href="https://immigration.gov.la/en/registration/departure/departure-info" target="_blank" rel="noopener noreferrer" aria-label="ラオス：出国時のオンライン登録 ↗"><span class="d-none d-md-inline">出国時のオンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">出国登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">対象の空港・国境で必要</span><span class="d-md-none">対象の空港・国境</span></span></td></tr>
+                    <tr><th scope="row">ミャンマー</th><td><span class="d-none d-md-inline">なし</span><span class="d-md-none">なし</span></td><td>―</td></tr>
+                    <tr><th scope="row">ブルネイ</th><td><span class="d-none d-md-inline">E-Arrival Card／健康申告</span><span class="d-md-none">E-Arrival等</span></td><td><a href="https://www.imm.gov.bn/" target="_blank" rel="noopener noreferrer" aria-label="ブルネイ：E-Arrival Card登録 ↗"><span class="d-none d-md-inline">E-Arrival Card登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">E-Arrival <span aria-hidden="true">↗</span></span></a><br><a href="https://www.healthinfo.gov.bn/travel#/user/login" target="_blank" rel="noopener noreferrer" aria-label="ブルネイ：健康申告（BruHealth） ↗"><span class="d-none d-md-inline">健康申告（BruHealth） <span aria-hidden="true">↗</span></span><span class="d-md-none">健康申告 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">入国前に登録</span></span></td></tr>
+                    <tr><th scope="row">東ティモール</th><td><span class="d-none d-md-inline">e-Declaration（到着申告）</span><span class="d-md-none">e-Declaration</span></td><td><a href="https://tilesw.customs.gov.tl/" target="_blank" rel="noopener noreferrer" aria-label="東ティモール：オンライン登録 ↗"><span class="d-none d-md-inline">オンライン登録 <span aria-hidden="true">↗</span></span><span class="d-md-none">オンライン登録 <span aria-hidden="true">↗</span></span></a><span class="d-block small text-secondary mt-1"><span class="d-none d-md-inline">到着5日前から登録可</span><span class="d-md-none">到着5日前から</span></span></td></tr>
                   </tbody>
                 </table>
               </div>
